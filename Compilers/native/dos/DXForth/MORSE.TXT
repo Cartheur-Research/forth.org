@@ -1,0 +1,95 @@
+MORSE - A Morse Code Trainer
+
+This is a Morse code trainer. It assumes that you already know
+Morse code but want an easy way to get your reading speed up.
+
+While the program could be used to learn Morse code from scratch,
+I don't recommend it as there are far easier and more enjoyable
+ways to do this (I would suggest a reputable cassette-based Morse
+code tutor course with graduated lessons).
+
+MORSE takes any ascii text file and sends it to the PC speaker as
+a stream of Morse code characters. Output may be redirected to a
+WAV or VOC sound file for dubbing to an audio cassette. The speed
+can be varied from 5 to 40 words per minute. The character speed
+may be set higher than the send speed (the "Farnsworth method")
+to aid learning. MORSE is also able to generate practice files
+consisting of groups of random characters.
+
+Speed, punctuation and tone settings are automatically saved when
+a random group file is generated. The settings will appear in the
+file and be used when later read in. Users can apply this feature
+to any text file by inserting an option line. If the first line
+of the file begins with [OPTIONS] then any switch settings on that
+line will be processed.
+
+If the program is run with the -I switch then the option line,
+if present, will be ignored.
+
+
+NOTES
+
+1. MORSE sound files
+
+   PCM audio sound files consume large amounts of disk space. The
+   WAV or VOC files produced by MORSE are no exception and a hard
+   disk will be required. However it is entirely possible to store
+   MORSE sound files onto a floppy disk if they are first packed
+   using a file archive program such as PKZIP or WinZIP. It will be
+   found that compression ratios of better than 99% is achievable
+   allowing a 60 minute sound file to be packed into a 75K byte ZIP
+   file!
+
+   MORSE sound files are recorded with the tone fixed at 750 Hz.
+
+2. Morse Code
+
+  Letters and numbers
+
+  A  DIT DAH                              T  DAH
+  B  DAH DIT DIT DIT                      U  DIT DIT DAH
+  C  DAH DIT DAH DIT                      V  DIT DIT DIT DAH
+  D  DAH DIT DIT                          W  DIT DAH DAH
+  E  DIT                                  X  DAH DIT DIT DAH
+  F  DIT DIT DAH DIT                      Y  DAH DIT DAH DAH
+  G  DAH DAH DIT                          Z  DAH DAH DIT DIT
+  H  DIT DIT DIT DIT
+  I  DIT DIT                              1  DIT DAH DAH DAH DAH
+  J  DIT DAH DAH DAH                      2  DIT DIT DAH DAH DAH
+  K  DAH DIT DAH                          3  DIT DIT DIT DAH DAH
+  L  DIT DAH DIT DIT                      4  DIT DIT DIT DIT DAH
+  M  DAH DAH                              5  DIT DIT DIT DIT DIT
+  N  DAH DIT                              6  DAH DIT DIT DIT DIT
+  O  DAH DAH DAH                          7  DAH DAH DIT DIT DIT
+  P  DIT DAH DAH DIT                      8  DAH DAH DAH DIT DIT
+  Q  DAH DAH DIT DAH                      9  DAH DAH DAH DAH DIT
+  R  DIT DAH DIT                          0  DAH DAH DAH DAH DAH
+  S  DIT DIT DIT
+
+  Basic punctuation
+
+  .  DIT DAH DIT DAH DIT DAH              period
+  ?  DIT DIT DAH DAH DIT DIT              question mark
+  /  DAH DIT DIT DAH DIT                  fraction bar
+
+  Extended punctuation
+
+  "  DIT DAH DIT DIT DAH DIT              quote
+  $  DIT DIT DIT DAH DIT DIT DAH          dollar
+  '  DIT DAH DAH DAH DAH DIT              apostrophe
+  |  DAH DIT DAH DAH DIT DAH              parenthesis
+  ,  DAH DAH DIT DIT DAH DAH              comma
+  -  DAH DIT DIT DIT DIT DAH              hyphen
+  :  DAH DAH DAH DIT DIT DIT              colon
+  ;  DAH DIT DAH DIT DAH DIT              semicolon
+  _  DIT DIT DAH DAH DIT DAH              underscore
+
+  Procedural signals
+
+  <CT>  DAH DIT DAH DIT DAH               commencing signal
+  <AR>  DIT DAH DIT DAH DIT               ending signal
+
+2. History
+
+   0.1   First release
+   0.2   Added automatic settings

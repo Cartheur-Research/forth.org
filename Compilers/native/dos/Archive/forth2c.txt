@@ -1,0 +1,281 @@
+
+Techniques for calling "C" routines from FORTH.
+
+Chuck Grandgent, 50 Westvale Drive, Concord MA 01742         10/8/87
+phone work 617-975-9622 with voice mail
+CIS 72330,450
+GEnie C.Grandgent
+
+The following MASM fragments are taken from an assembler source for
+Martin Tracy's Zen Forth (Zen is not normally assembler source, but
+is built with a metacompiler).
+
+I have put this commentary together to promote the discussion of 
+calling external routines written in other languages from Forth.
+
+Each illustrative fragment is tagged with the string "######  1  ######"
+so you can easily distinguish between each fragment.
+
+   Fragment        Description
+-----------------  -----------------------------------------------------
+######  1  ######  "CALL_C" macro for calling "C" routines
+######  2  ######  EXTRN references for outside "C" routines
+######  3  ######  Double-word places linker fills in with address
+                   (far pointer) to the "C" routines
+######  4  ######  a Forth word (READABS) which calls a "C" routine
+######  5  ######  the GEN_CCALL routine called by the CALL_C macro
+######  6  ######  an alternative way of doing it, replaced by GEN_CCALL
+
+Overview:
+
+Basically, here's what I'm doing:
+   1)  At startup time, a skeleton "C" routine calls the Forth routine
+       (assembler), which as been LINKed to the "C" object.
+       By starting in "C", we can save the registers that the "C"
+       compiler set up.
+       We then initialize the registers for the Forth environment.
+       When we go to call "C" later on, we will use the registers we have
+       saved to restore a register situation compatible with "C".
+
+   2)  Generate an external reference to the "C" routine, and have
+       the linker place the routine's address in a doubleword area.
+
+   3)  Build our Forth word which will interface with the "C" routine.
+       The Forth word simply has to remove the arguments from the Forth
+       stack and push them in the correct ORDER that "C" is expecting.
+       This scheme is for Large Model compiles only ( msc /AL ), so
+       addresses nead both segment and offset pushed. By using the CALL_C
+       macro, putting together the Forth word is easy and nearly fool-proof.
+
+   4)  The Forth word does not call the external routine directly, but
+       each Forth word accessing "C" routines calls the GEN_CCALL subroutine.
+       The GEN_CCALL subroutine saves the necessary registers used by Forth.
+       Then, the GEN_CCALL subroutine takes the external routine name and
+       number of arguments, passed by the CALL_C macro, and does some stack
+       stuffing.   Then it restores the register(s) which Microsoft "C" is
+       expecting, basically DS for C's initialized static data.  Then it
+       does the far call (indirectly) to the "C" routine.  When it comes
+       back it restores registers and continues Forth processing.
+
+There is probably some duplicated stack stuffing, but this scheme works
+fine for me, assuming all I need is Large model, with far pointers being
+passed as "C" arguments and also integer values.  I duplicated as much
+as possible what "C" actually does, by looking at the executing code
+with a debugger.  This was primarily to save time and grief.  I'm sure
+it's not the most expeditious method from the standpoint of performance.
+The scheme would have to be modified for other memory models and
+possibly other "C" compilers than the Microsoft "C" compiler (R4.0).
+ 
+(.RADIX    16)
+
+######  1  ######
+; Call external "C" routine using GEN_CCALL stack intermediary:
+; CALL_C E_READABS,5      E_READABS EXTERN_TAB entry name
+;                         5 is number of arguments we're passing
+CALL_C  MACRO   X,Y
+        MOV     CX,Y
+        LEA     BX,X
+        CALL    FAR PTR GEN_CCALL
+        ENDM
+
+######  2  ######
+; generate externals for the "C" routines, only if selected, only if MSDOS
+IFDEF MSDOS
+EXTRN _HELP:FAR
+ENDIF
+
+; generate externals for the "C" routines, only if selected, only if VRTX
+IFDEF VRTX
+EXTRN _IOOPEN:FAR
+EXTRN _IORESET:FAR
+EXTRN _IOWRITE:FAR
+EXTRN _IOCLOSE:FAR
+EXTRN _SC_CALL:FAR
+EXTRN _SC_PEND:FAR
+EXTRN _WRITE_ABS_MEM:FAR
+EXTRN _READ_ABS_MEM:FAR
+EXTRN _BACK_DBREAD:FAR
+EXTRN _BACK_DBWRITE:FAR
+EXTRN _READ_REGS:FAR
+EXTRN _WRITE_REGS:FAR
+EXTRN _WCMD:FAR
+EXTRN _RREP:FAR
+ENDIF
+
+IFDEF VRTX
+IFNDEF SELF
+EXTRN __DPUTS:FAR
+EXTRN __DGETS:FAR
+ENDIF
+ENDIF
+
+######  3  ######
+IFDEF VRTX
+EXTERN_TAB LABEL NEAR           ; Table of far pointers
+E_WRITEABS  DD    _WRITE_ABS_MEM
+E_READABS   DD    _READ_ABS_MEM
+E_DBREAD    DD    _BACK_DBREAD
+E_DBWRITE   DD    _BACK_DBWRITE
+E_READREGS  DD    _READ_REGS
+E_WRITEREGS DD    _WRITE_REGS
+E_WCMD      DD    _WCMD
+E_RREP      DD    _RREP
+E_DPUTS     DD    __DPUTS
+E_DGETS     DD    __DGETS
+E_IOOPEN    DD    _DIOOPEN
+E_IOCLOSE   DD    _DIOCLOSE
+E_IOWRITE   DD    _DIOWRITE
+ENDIF
+
+IFDEF MSDOS
+E_HELP      DD    _HELP
+ENDIF
+
+; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+######  4  ######
+READABZ DW        WRITEABZ
+        DB        7
+        DB        'READABS'  ; C986 READ_ABS_MEM() routine
+                             ; SYNTAX: READABS ( PAGE OFFSET LENGTH BUFFADR --- STATUS )
+READAB  LABEL     NEAR
+IFDEF VRTX
+        POP       CX        ; Length
+        POP       DX        ; Offset
+        POP       AX        ; Page
+
+        PUSH      BP        ; <<<======Setup for the VRTX call
+        MOV       BP,SP
+
+        PUSH      SS        ; Push segment for buffer
+        PUSH      BX        ; Push offset for buffer
+        PUSH      CX        ; Push length
+        PUSH      DX        ; Push offset
+        PUSH      AX        ; Push page
+
+;       CALL      FAR PTR READABS  ; This is what we used to do before CALL_C macro
+
+; Next three lines are what CALL_C macro does...
+;       MOV      CX,5            ; 5 Arguments pushed
+;       LEA       E_READABS      ; Address of READABS extern
+;       CALL      FAR PTR GEN_CCALL
+
+        CALL_C    E_READABS,5    ; Pass 5 arguments
+
+        MOV       SP,BP          ; <<<======Cleanup after the VRTX call
+        POP       BP
+
+        MOV      BX,AX           ; Return status code
+ENDIF
+        LODSW                   ; Back to Forth processing
+        JMP       AX
+; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+######  5  ######
+
+     GEN_CCALL   LABEL  FAR
+
+; To use this routine, use the macro, example:
+; Call external "C" routine using GEN_CCALL stack intermediary:
+; CALL_C E_READABS,5      E_READABS Extern_tab entry name
+;                         5 is number of arguments we're passing
+
+; Here's what we do for a generic "C" stack intermediary routine:
+; 1) Push all arguments before we get here, we only need to be concerned
+;    with pushing them in the correct order.
+; 2) Place number of arguments in CX, and use a LOOP mechanism for pushing
+;    the required number of arguments on the stack
+; 3) Place address of entry in extern table in BX
+; 4) do CALL, inter-segment, indirect, based on [BX]
+
+; The following OTHER registers ALSO get disturbed calling "C", save them:
+                   MOV    WORD PTR CS:SVGBP,BP      ; Save BP
+                   MOV    WORD PTR CS:SVGES,ES
+                   MOV    WORD PTR CS:SVGDI,DI
+                   MOV    WORD PTR CS:SVGBX,BX
+                   MOV    WORD PTR CS:SVGSI,SI
+; Note, might as well break down and save all the regs with a PUSHA
+                   PUSH   BP
+                   MOV    BP,SP                                 
+
+                   SUB    AX,AX         ; we always do this part
+                   PUSH   AX   
+                   PUSH   AX   
+                   MOV    AX,1
+                   PUSH   AX   
+; setup...
+                   MOV    AX,CX         ; # args
+                   SHL    AX,1          ; multiply by two
+;---------------------------------------------------------------------
+;                  MOV    SVADJ,AX      ; Save stack adjustment, not used
+;---------------------------------------------------------------------
+                   ADD    AX,4          ; allow for call setup                      
+GEN_CCALL1:        MOV    DX,BP         ; save original BP in DX
+                   ADD    BP,AX         ; add offset to BP
+                   PUSH   Word Ptr [BP] ; push indirect from BP
+                   MOV    BP,DX         ; restore BP to original value
+                   SUB    AX,2
+                   LOOP   GEN_CCALL1
+                   MOV    BP,DX         ; put BP back the way we found it
+
+;  Before we call the "C" routine, we MUST restore the original value
+;  of DS (as passed by "C"), else we won't find the correct static initialized
+;  data from the "C" program.  After we come back again from the "C" routine,
+;  we must put DS back the way FORTH likes it (DS==SS).
+        ASSUME DS:NOTHING, SS:_EZ_TEXT ,CS:_EZ_TEXT ,ES:_EZ_TEXT
+        MOV       DS,WORD PTR CS:SVDS
+        ASSUME DS:_EZ_TEXT, SS:_EZ_TEXT ,CS:_EZ_TEXT ,ES:_EZ_TEXT
+                   CALL   CS:DWORD PTR[BX] ; call inter-segment,indirect
+
+;---------------------------------------------------------------------
+; Makes no difference whether we do the following 2 lines or not.
+; Something must be buffering us from this requirement
+;       MOV       CX,WORD PTR CS:SVADJ   ; Adjust stack after call
+;       ADD       SP,CX         ; by # bytes of arg's we pushed
+;---------------------------------------------------------------------
+        MOV       BX,SS         ; Restore DS to SS
+        MOV       DS,BX
+
+
+                   MOV    SP,BP                                 
+                   POP    BP                                    
+
+; Following registers were probably disturbed when calling "C", restore them
+                   MOV    BP,WORD PTR CS:SVGBP      ; Restore disturbed registers
+                   MOV    ES,WORD PTR CS:SVGES
+                   MOV    DI,WORD PTR CS:SVGDI
+                   MOV    BX,WORD PTR CS:SVGBX
+                   MOV    SI,WORD PTR CS:SVGSI
+; Changed to restore all regs with a POPA
+                   RET_FAR
+
+SVADJ        DW        0    ; Save stack adjustment
+SVGBP        DW        0    ; Save BP
+SVGES        DW        0    ; Save ES
+SVGDI        DW        0    ; Save DI
+SVGBX        DW        0    ; Save BX
+SVGSI        DW        0    ; Save SI
+
+
+######  6  ######
+; This is the kind of thing we used before the CALL_C macro:
+;         READABS:  PUSH   BP ; "C" mimic stack intermediary routine                                    
+;                   MOV    BP,SP                                 
+;                   SUB    AX,AX
+;
+;                   PUSH   AX   ; We always did this part..
+;                   PUSH   AX   
+;                   MOV    AX,0001H
+;                   PUSH   AX      
+;
+;                   PUSH   Word Ptr 0EH[BP]
+;                   PUSH   Word Ptr 0CH[BP]
+;                   PUSH   Word Ptr 0AH[BP]
+;                   PUSH   Word Ptr 08H[BP]
+;                   PUSH   Word Ptr 06H[BP]
+;                   CALL   FAR PTR _READ_ABS_MEM                         
+;                   MOV    SP,BP                                 
+;                   POP    BP                                    
+;                   RET_FAR
+;-------------------------------------------------------------------
+
+

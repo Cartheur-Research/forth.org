@@ -1,0 +1,24 @@
+          Tips for Getting Started With PYGMY/PYGTOOLS
+
+    What follows are a few pointers for getting started with the Pygmy Forth System as modified to work with Pygtools.  It is assumed that the user is familiar with the basics of Forth and computer programming.  Most of the aids and tools described here are optional, and can be left out of any final code written.
+
+    For help with learning Forth I highly recommend "Starting Forth", by Leo Brodie.  It should be available from Prentice Hall.  (800) 922-0579
+
+    One definition that will be helpful is the "Unit".  Disk files may be accessed in the normal DOS manner, or in 1K chunks called either blocks or screens.  A file that is accessed as blocks is opened as a "Unit".  there may be 16 Units open at one time (normally) with the Unit numbers 0 thru 15.  The "block number" of a given chunk of disk is calculated by adding its relative position in the file to the Unit number * 1000.  Thus the 5th block in Unit 2 would be block 2004.  All Pygmy and PYGTOOL source code is stored and accessed as screens.
+     
+    The first tool available to ease learning this system is the Help key.  Either F1 or altH will bring up the help screens.  You can then page through them for more information on the various functions available.  
+
+    F4 will list all of the screen files that are currently open, and where in the block address space they may be found.
+
+    'Home' and 'L' will List the first screen of the currently active Unit.  'Page Down' (and Up) will step through the screens.  'End' will display the last screen.
+
+    F3 will start a search for the entered string.  F10 will continue the search to the end of the Unit.
+
+    WORDS will list all the words currently defined. (press a key to pause the listing)  V wordname will "View" the screen on which "wordname" is defined.
+
+    I have found that reading source code, if it is well done, can give you a good start on how to build your own applications.  So use these tools to browse through the screens provided.
+
+    If you find this package useful and wish to receive additional documentation, code, and support, please register Pygmy with Frank
+Sergeant, and Pygtools with me: L. Greg Lisle.
+
+    Happy Forthing!  

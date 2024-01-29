@@ -1,0 +1,30 @@
+DX-Forth 3.0 - Forth compiler for MS-DOS (15-Sep-02)
+----------------------------------------------------
+
+DX-Forth 3 is a Forth language compiler/development system for
+MS-DOS 2 or compatible disk operating systems.
+
+It is intended to be a complete, easy to use, programming
+tool for the creation of MS-DOS applications.
+
+DX-Forth's features include:
+
+ - Forth-94 Standard *
+ - Fast direct-threaded code
+ - Generate turnkey applications without compiler overhead
+ - Floating point and trigonometric functions
+ - Many extensions
+ - Multitasking
+ - Overlays for large applications
+ - Forth assembler for CODE words
+ - Full source code included
+
+* DX-Forth 3 currently lacks appropriate documentation to
+  qualify for Forth-94 compliance.  Some optional wordset
+  functions may also be missing.
+
+
+The archive includes two applications:
+
+HEXBIN - Hex/binary conversion utility
+KCS    - Kansas City Standard tape decoder/encoder

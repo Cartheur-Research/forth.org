@@ -1,0 +1,128 @@
+
+(   DBASE III FILE INTERCHANGE MODULE )
+( 06/14/1988 -- P.R.SAFFREN )
+
+
+( IN ORDER TO USE THIS MODULE CORRECTLY: )
+( {1} USE @HEADER TO OPEN FILE , RETURNS A 0 IF ALL GOES WELL )
+( {2} USE @REC TO GET DESIRED RECORD , RETURNS REC_SIZE IF ALL GOES WELL )
+( {3} USE @FLD TO GET TO DESIRED FIELD ADDRESS, REMEMBER DBIII FIELDS ARE NOT )
+(     COUNTED STRINGS! )
+( {4} USE !REC TO WRITE A RECORD, RETURNS REC_SIZE IF ALL GOES WELL )
+( {5} FINALLY USE !HEADER TO WRITE UPDATED DBIII POOP OUT TO DISK )
+( NOTE THAT THE date last updated PART OF THE DBIII FILE ISN'T MODIFIED )
+( THIS WASN'T NECESSARY FOR MY APPLICATION )
+
+
+( GOOD LUCK, YOU'LL NEED IT, IF YOU PROGRAM IN D-BASEIII !!! --PRS )
+
+
+
+
+
+
+\ S. GULIE'S LOCAL VARS -- QUICK AND DIRTY  
+: tallot 6 DP +! ;
+: temp1 HERE 2- ;
+: temp2 HERE 4 - ;
+: temp3 HERE 6 - ;
+: tfree -6 DP +! ;
+
+HEX
+EXISTS? dosint 0= .IF DOSINT .THEN
+
+( WE CAN ACCESS 2 DATABASES AT ONCE , ADD MORE IF YOU WANT )
+HCB IFILE0              ( INPUT FILE HANDLE 0 )
+HCB IFILE1		( INPUT FILE HANDLE #1 )
+
+
+
+( NOTE ABOUT BUFS... )
+( The first 20H btyes are actually the dbaseIII file header and must be )
+( left alone except for bumping the record count. The next 10H bytes are )
+( available for misc. dbaseIII stuff that is needed by this program. )
+( The first byte of this is used for the # of DESCRIPTORS IN THE FILE AS )
+( CONTAINED IN BUF . ) 
+( The last 80 bytes are for the max 128d field length map )
+
+
+
+CREATE buf1 A0 ALLOT            ( HFLM* )
+CREATE buf2 A0 ALLOT            ( *Header,Field Length Map DATA STRUC )
+VARIABLE buf
+VARIABLE file
+: BUF1 buf1 buf ! IFILE0 file ! ;
+: BUF2 buf2 buf ! IFILE1 file ! ;
+
+: BUF buf @ ;
+
+
+( uses current HFLM as contained in BUF )
+: @HEADER   ( READ IN POOP ON DBASE FILE, ^FILENAME---0 if ok )
+        tallot  
+        file @ NAME>HCB file @  2 FOPEN  0=
+         IF buf  @ A0 ERASE            ( CLEAR HFLM )
+            file @ 0 0 0 FSEEK 2DROP    ( SEEK TO BEGIN JUST IN CASE )
+            file @ BUF  30 FREAD -1 = temp3 ! ( temp3 is flag register )
+            BUF 20 + 10 ERASE           ( CLEAR OUT USER AREA )
+         BUF  8 + @  20 /  DUP 1- BUF  20 + C! 0 ( figure # of descriptors )
+          DO 
+           file @ BUF  I 30 + + 1 FREAD DROP 
+           file @ 1F 0 1 FSEEK 2DROP 
+          LOOP 
+         ELSE temp3 ON
+         THEN temp3 @ 
+         tfree ;
+
+
+
+( uses current HFLM as contained in BUF )
+: !HEADER   ( WRITE HFLM TO DISK, NOTE FILE IS ALREADY OPEN )
+        file @  0 0 0 FSEEK 2DROP    ( GO TO BEGIN OF FILE )
+        file @  BUF  20 FWRITE DROP 
+        file @  FCLOSE DROP ;
+
+
+CREATE REC1 A00 ALLOT
+CREATE REC2 A00 ALLOT
+
+
+( LOCATION FOR # OF RECORDS 32 BIT BUT 64K RECORDS IS MORE THAN ENUF )
+: #RECS BUF  4 +  ;                ( SINGLE DIGIT FOR NOW )
+
+: 1ST_REC BUF  8 + ;           ( LOCATION OF FIRST RECORD )
+
+: REC_SIZE BUF  0A + ;         ( LOCATION OF RECORD SIZE )
+
+
+( GET RECORD , ASSUMES DBASE FILE HAS BEEN SUCCESFULLY OPENED )
+(  recordstorage, rec# to get----FLAG -1 IF UNSUCCESSFUL SEEK )
+: @REC REC_SIZE @ * 1ST_REC @ + 1+ file @  SWAP 0 0  FSEEK 0= IF DROP
+	file @ SWAP REC_SIZE @ FREAD ELSE DROP -1 THEN ;
+
+( STORE REC BACK INTO BUFFER )
+( FIX OLD END OF FILE )
+( IF # > THAN CURRENT # OF RECS, LENGTHEN DBASE TO ACCOMODATE )
+( AND STORE RECORD AT END OF FILE )
+: !REC  ( REC_ADDRESS,# OF REC TO STORE TO )
+	DUP #RECS @ 1- >
+        	IF DROP file @  0 0 2 FSEEK 2DROP
+		  1 #RECS +! file @ SWAP
+		  REC_SIZE @ 2DUP + 1A SWAP C!
+                ELSE REC_SIZE @ * 1ST_REC @ + 
+		  file @  SWAP 0 0 FSEEK 2DROP
+                  file @  SWAP REC_SIZE  @ 1-
+                THEN FWRITE file @  0 0 0 FSEEK 2DROP ;
+
+
+
+
+: @FLD	( GET FIELD ADDRESS INTO RECORD  REC,#FIELD---ADDR )
+	DUP 0> 
+         IF 0 DO BUF  I 30 + + C@ + LOOP
+         ELSE DROP  
+         THEN 1+ ;
+
+
+
+

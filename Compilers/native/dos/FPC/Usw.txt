@@ -1,0 +1,20 @@
+> There are some PublicDomain Sources for  TCOM  around,
+> they will be as usefull for F-PC :
+> 
+> dbfSTRUC.seq
+> LISTdbf.seq
+> MAKEdbf.seq
+> PACKdbf.seq
+> ZAPdbf.seq
+
+You will find all these files in  USW.zip   on the german FORTH-CD
+(Forth Gesellschaft e.V. 1996jan)  under   AKG\...\AK1\TCOM_FPC\
+
+I don't know if the contents of this CD is available on any server.
+
+
+Arndt Klingelnberg      Forth: F-PC-ak and Triangle TDS ( + CAN )
+--
+                Aix la Chapelle   :-)   Euregio Meuse/Maas Rhein
+
+                Die OstKantone Belgiens, wo andere Ferien machen.

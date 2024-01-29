@@ -1,0 +1,67 @@
+
+CREATE STACK
+CREATE BUFF
+EDIT
+create buff 1024 allot
+~UP
+CREATE TOP
+EDIT
+variable top
+~UP
+CREATE WORDST
+EDIT
+variable wordst
+~UP
+EDIT
+: stack
+\ This is a universal stack word. I will explain by example:
+\    stack  A|AA        \ is the same as DUP
+\    stack  abc|bca     \ is the same as ROT
+\    stack  ABCD|       \ is the same as 2DROP 2DROP
+\    stack  ab|ababba   \ is the same as 2DUP 2DUP SWAP
+\    stack  ABCD|CDBA   \ is the same as 3 ROLL 3 ROLL SWAP
+\    stack  abc|abcabc  \ is the same as 2 PICK 2 PICK 2 PICK
+\ Notice that the stack expects the Specification of action to be in all
+\ caps or all lower case.  Mixing the cases is not checked for, and will
+\ likely crash your system.  Also on the left of the `|',  number the stack
+\ ABCD... where A is the deepest element on the stack. On the right, you
+\ get to do whatever you want. The left side is limited to 26 characters,
+\ the right is not really limited at all. (You can overflow the stack...)
+
+state c@ 0= if
+  124 word
+  dup c@ 0= if 0 23 gotoxy ." You got an error with stack!" abort endif
+  dup c@ 64 + top !
+  c@ 4 * 0 do
+    r@ buff + !
+  4 +loop
+  32 word dup 1+ wordst !
+  dup c@ 1 = if drop else
+    c@ 1 do
+     wordst @ i + c@ top @ - abs 2 shl        \ get offset
+     buff +                                   \ Abs addr
+     @
+    loop
+  endif
+else
+  124 word
+  dup c@ 0= if 0 23 gotoxy ." You got an error with stack!" abort endif
+  dup c@ 64 + top !
+  [compile] buff [compile] drop            \ insure buff's compilation.
+  c@ 4 * 0 do
+    i buff + ['] literal execute [compile] !
+  4 +loop
+  32 word dup 1+ wordst !
+  dup c@ 1 = if drop else
+    c@ 1 do
+      wordst @ i + c@ top @ - abs 2 shl        \ get offset
+      buff + ['] literal execute               \ Abs addr
+      [compile] @
+    loop
+  endif
+endif
+;
+immediate
+ABORT
+
+

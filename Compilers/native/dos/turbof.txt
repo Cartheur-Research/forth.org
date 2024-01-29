@@ -1,0 +1,20 @@
+Return-Path: 100647.3306@CompuServe.COM 
+Received: from arl-img-4.compuserve.com by taygeta.com (5.61/1.34)
+	id AA15389; Sat, 15 Jun 96 03:07:18 -0700
+Received: by arl-img-4.compuserve.com (8.6.10/5.950515)
+	id GAA08809; Sat, 15 Jun 1996 06:07:15 -0400
+Date: 15 Jun 96 06:03:50 EDT
+From: Marc PETREMANN <100647.3306@CompuServe.COM>
+To: CARTER-Skip <skip@taygeta.com>
+Subject: TURBO-Forth in incoming
+Message-Id: <960615100350_100647.3306_BHL102-1@CompuServe.COM>
+
+I have put this night 2 files:
+ - TURBOF.ZIP contents TURBO-Forth, a frenbch version of Forth langage for 8086
+to PENTIUM. Run under DOS. Complete with documentation (Help function).
+ - TFGRAF.ZIP a very powerfull graphic package for TURBO-Forth. Handle CGA, EGA,
+VGA, sVGA, HERCULES, in all graphics mode. full package of graphics functions,
+sounds and keyboards routines. Import and export PCX files. Handle 64 screens
+simultaneous.
+
+Best regards

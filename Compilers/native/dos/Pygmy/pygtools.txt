@@ -1,0 +1,58 @@
+			    PYGTOOLS.ZIP
+		  Copyright 1994  by L. G. Lisle
+							    22 August 1994
+
+   This is my second public release of Basic PYGTOOLS.  It is now a subset
+of my Full PYGTOOLS library which is available only from me.  There are
+more than 1000 words included in the Basic package.  They cover a wide
+range of topics including:
+     basic tools, F83 compatibility, double number math, advanced integer 
+     math, system utilities, advance terminal I/O, debugging tools, 
+     hardware device drivers and many others. 
+To explore these tools, move the files to a directory containing PYGMY.COM 
+and enter: BP       For more help  press:  F1.
+
+
+BUGS
+
+   I've used most of these tools for some time, therefore, most of the bugs 
+are, hopefully, squashed.  On the other hand, some of the code is still 
+somewhat experimental.  If you are the first to send me a bona fide bug 
+report, I'll give you a $5 credit on your registration.  If you fix it, 
+I'll give you the registration free.
+
+
+FILES
+
+   Files in this public distribution include:
+
+	BPTOOLS.SCR     the source code for the tools
+	BP.COM          a compiled version of PYGMY with my changes
+	HELPS.SCR       a collection of help screens
+	BPYGTOOL.TXT    documentation and help
+	PYGFILES.TXT    a list of files in each package
+	READ.ME         this file 
+	FILE_ID.DIZ     a description file
+
+
+REGISTRATION
+
+   I am asking a registration fee of $15 to encourage me to continue making
+these tools available.  To encourage you to register, I am offering to send 
+you:
+	 the latast source code for the tools with their shadows
+	 the documentation and help file for full tool set, 
+	 full information on my changes to PYGMY
+	 a recompilation of Brad Rodriguez' tools in GET form
+	 a menu program to make access easier
+	
+   For $25 I am offering the Full PYGTOOLS library, which includes an 
+additional set of utilities.  See PYGFILES.TXT, BPYGTOOL.TXT  and 
+screens u9-11 for details.
+
+   Please indicate desired media size, and send all communications to:
+
+		       Lyle Greg Lisle, P.E.  
+		       2160 Foxhunter Ct.
+		       Winston-Salem, NC  27106
+		       Internet:  L.SQUARED@GENIE.COM

@@ -1,0 +1,52 @@
+ FILE LISTS
+
+   Files in the Basic Pygtools Shareware Package include:
+
+	BPTOOLS.SCR     the source code for the tools
+	BP.COM          a compiled version of PYGMY with my changes
+	HELPS.SCR       a collection of help screens
+	BPYGTOOL.TXT    documentation and help
+	READ.ME         Introductory information 
+	FILE_ID.DIZ     a description file
+
+
+
+   Files in the Registered Basic Pygtools Package include:
+
+	BPTOOLS.SCR   the source code for the tools, latest version 
+	HELPS.SCR     a collection of help screens      "      "
+	PYGTOOLS.TXT  documentation and help for full tool set (this file)
+	BPTOOLS.DOW   the shadow screens for the tools
+	MAKELSQ.SCR   the file containing my changes to PYGMY
+	BRADTOOL.SCR  a recompilation of Brad Rodriguez' tools in GET form
+	DOPYG.BAT     a batch file to make access easier
+	BPTOOLS.ZIP   the latest version of the Shareware Package (to share)
+
+
+
+   Files in the Full Pygtools Package include:
+
+	PYGTOOLS.SCR   the source code for the full tool set
+	HELPS.SCR      a collection of help screens 
+	LL.COM         core executable with my changes
+	PYGTOOLS.TXT   documentation and help for full tool set  (this file)
+	PYGTOOLS.DOW   the shadow screens for the tools
+	MAKELSQ.SCR    the file containing my changes to PYGMY
+	BRADTOOL.SCR   a recompilation of Brad Rodriguez' tools in GET form
+	DOPYG.BAT      a batch file to make access easier
+	TBD            additional goodies?
+	BPTOOLS.ZIP   the latest version of the Shareware Package (to share)
+
+
+
+   Files in the Advanced Pygtools Package Include:
+
+	ADVTOOLS.SCR   the source code for the Advanced Tool Package
+	ADVTOOLS.DOW   the shadow screens for the Advanced Tool Package
+	ADVTOOLS.TXT   documentation for same
+        EXAMPLES.SCR   sample applications
+
+
+
+
+
