@@ -1,0 +1,52 @@
+F83 v2.1.0 Forth compiled for CP/M-86                       15-Dec-2000
+-------------------------------------
+
+In 1984, Laxen and Perry released version 2 of their F83 forth compiler.
+There were versions for the 8080 (CP/M-80), 68000 (CP/M-68K) and 8086
+(MS-DOS and CP/M-86).
+
+While the 8086 version of F83 included an MS-DOS executable, no CP/M-86
+executable was provided.  Luckily however, the authors included equates
+in the source code to allow recompilation for CP/M-86. 
+
+This archive is intended for CP/M-86 users.  It includes all the source
+and readme files from the F83 MS-DOS release and a CP/M-86 executable.
+
+
+*** THIS IS AN UNMODIFIED VERSION OF F83 2.1.0 FOR CP/M-86 ***
+
+
+
+Notes:
+
+1. The following source code locations hold the CP/M-86 / MS-DOS switches:
+
+   KERNEL86.BLK   Screen 1,44,45
+   EXTEND86.BLK   Screen 2,9
+
+2. Users with PC's faster than 4.77 MHz should adjust variable FUDGE so
+   that MS has the correct delay.  e.g. for 200 MHz Pentium cpu, type:
+
+   5000 FUDGE !  SAVE-SYSTEM F83.CMD
+
+   On fast systems, utilities such as WORDS will execute too fast.  One
+   solution is to add a delay after each line output.  To do this, edit
+   screen 3 line 4 of UTILITY.BLK as follows, then recompile F83.
+
+      #OUT @ +  RMARGIN @ > IF  50 MS  CR  LMARGIN @ SPACES  THEN ;
+
+3. Not all video functions which use IBM-PC INT 10h will work under
+   CP/M-86.  Here are some definitions using CP/M-86 escape codes
+   that will replace the existing definitions in F83.CMD
+
+   \ Position cursor
+   : AT  ( col row -- )  27 EMIT  ASCII Y EMIT  32 + EMIT  32 + EMIT ;
+
+   \ Clear screen and home cursor
+   : DARK  ( -- )  27 EMIT  ASCII E EMIT ;
+
+   A full set of 'Escape' codes for IBM CP/M-86 may be found at the
+   following website:
+
+      http://www.seasip.demon.co.uk/Cpm/cpm86esc.html
+
