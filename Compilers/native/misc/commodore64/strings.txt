@@ -1,0 +1,90 @@
+
+
+
+
+                          Forth String Words.
+                        as used by superforth 64
+
+
+
+  Note: s=string name. n=numeric. f=flag.
+
+
+  Notice that when a string is compiled into a dictionary definition
+   for use with the following string manipulators it is set up as follows.
+  Forth name field: lfa : cfa : pfa - containing - string length byte
+  then the string itself. (forth 79)
+    When a definition holding a string is encoutered in the input stream
+  the address of the first value in the parameter field is left on the stack.
+  Words that output such strings use the value at that address
+  as a counter for the string length.
+
+
+
+   Forth word: $variable :creates a string variable.
+    ( n ---) compile time. ( --- addr) run time.
+    example:  20 $variable test  :  allocates 20 bytes (not cells) into
+    a dictionary word called test. Execution of test leaves address on stack.
+
+
+   Forth word: $constant  : define string constant.
+    ( ---) compile time. ( --- addr) run time.
+    Example: $constant string1 "testing" : creates constant string called
+    string1 into dictionary. The length of the string is left in the
+    byte preceding the actual string in the dictionary.
+
+
+   Forth word: $clr : clear string in pad or variable.
+    ( s ---) 
+    example: test $clr or pad $clr                                                  clears the length byte in the string variable or pad.
+
+
+   Forth word: "  :immediate string.
+    ( --- s)  example: " this is a string"
+    the string is put into the pad area and the address is left on the stack.
+    It must be delimited by a closeing quote.
+
+
+   Forth word: "" : null string.
+    ( ---)   example: "" : leaves a null string in the pad area.
+    and the pad address on the stack.
+
+
+   Forth word: $. : display a string from variable or pad.
+    ( s ---)  example: test $. or pad $. : leaves address of the string at test
+    on stack then outputs it to the current display device.
+
+
+   Forth word: $cmp : compare strings.
+    ( s1 s2 --- f) compares 2 strings to see if they are identicle.
+    flag status: -1 if s1 < s2: 0 if equal : 1 if s1 > s2.                          flag is left on stack when $cmp is finished.
+
+
+   Forth word: $input : inputs a string from the curent input device.
+    ( --- s) After encoutering $input in the input stream
+    $input stops and waits for input from a current input device and
+    is terminated with a cr. the string is then transfered to the
+    pad and the pads address is left on the stack.
+
+
+   Forth word: $val : converts numeric string to a numeric value.
+   ( s1 --- n) example: " 123" pad $val : 
+   in the example the immdiate string 123 is placed in the pad
+   the pads address is placed on the stack then $val will convert it
+   to a 16 bit numeric. Note: you should abort is the string
+   contains non numeric charactors.
+
+
+
+    These are some of the high level definitions in this system.
+  also some of these definitions may need or refer to code definitions
+  these I do not care to take apart nor discus.
+  What i have given here is the basic concept of the use of some string
+  words for use with a forth system. It is up to You to fill the space
+  between the :  ;  I hope this small effort helps.
+
+
+                                                         Jim
+
+
+

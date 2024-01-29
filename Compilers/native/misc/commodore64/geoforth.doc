@@ -1,0 +1,9 @@
+This is Forth language for Geos.
+
+A full documentation is included in the archived file. The documentation
+is written on geoWrite format.
+
+To dearchive geoforth.arc use ARC2.xx archiver.
+When you dearchive, you will get two files: the program and the documentation.
+Next, you need to use convert2.5 (a lower version with not work proper) to
+convert the files to Geos type.

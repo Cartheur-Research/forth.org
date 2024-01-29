@@ -1,0 +1,268 @@
+
+\   ** The Execution Profiler **
+\ Tell which words take the most time when executing.  Also tell how many
+\ times each word is executed.  All data collection is transparent, except
+\ for a slight real-time slow-down (except for CERTAIN (not all) graphics
+\ applications which can slow down quite a bit for some reason).
+
+\ Copyright 1986 by Greg Guerin
+
+\ "Ported" (that's a joke!) to the Amiga by Roy E. Brunjes; only change needed
+\ was to add word TICKCOUNT (VERY trivial as you'll see).
+\ I also added the commentary during compilation (some of it instructional and
+\ some of it praising the best programming language ever created -- Forth).
+
+\ Extends action of : and ; to transparently collect data
+
+Find @clock not
+IfTrue
+  cr ." You must first include the file TIMER (containing the Amiga timing"
+  cr ." words).  Do that first and then try to compile this program again."
+  cr ." Compilation Aborted. " Abort
+IfEnd
+
+ANEW ExecProfiler...
+   1,000 minimum.object
+     500 minimum.vocab
+
+\ **** Variables control profiling activity
+
+variable Timing                \ set ON to compile profiling extra words
+variable Profiling             \ set ON to collect profile data at run-time
+  Timing off
+  Profiling off                \ start out: both OFF
+
+
+\ **** Form of area where data is collected for each word
+
+Structure ProfileData          \ form of data collection area
+   long: ^Pro.thread           \ token of previous profiled word
+   long: ^Pro.startTicks       \ tickcount on my entry
+   long: ^Pro.sumTicks         \ my cumulative elapsed tickcount
+   long: ^Pro.times            \ number of times I executed
+Structure.End
+
+
+\ *** Run-time words to collect data.
+\   For extra speed, rewrite in CODE
+
+: TickCount ( -- ticks )       \ Returns the number of ticks since 01/01/78
+
+  @clock drop centiseconds ;
+
+: WordStart  ( -- )            \ get data pointer from R-stack
+   R>  dup ProfileData +  >R   \ skip IP over data-area
+   >R                          \ keep ptr to data area
+   Profiling @  if             \ shall we collect data?
+      TickCount
+       R@ ^Pro.startTicks !    \ save starting tickcount
+      1  R@ ^Pro.times  +!     \ count this time thru
+   then
+   R>drop  ;                   \ remove data-area pointer
+
+: WordEnd  ( -- )              \ takes a following offset
+   R>  dup 2+  >R              \ skip IP over 2-byte offset
+   dup <w@  +  >R              \ add offset to old IP, save pointer
+   Profiling @  if
+      TickCount  R@ ^Pro.startTicks @  -   \ compute elapsed ticks
+       R@ ^Pro.sumTicks +!     \ sum to cumulative elapsed count
+   then
+   R>drop  ;                   \ remove data-area pointer
+
+
+\ **** Redefine : and ; to control compilation of WordStart & WordEnd
+
+\ First, define helper words...
+
+: ProfileErase  ( addr -- )       \ erase profile data, retain thread
+   locals|  theProData  |
+   theProData ^Pro.thread @       \ save thread
+    theProData ProfileData erase  \ erase all members
+     theProData ^Pro.thread !  ;  \ restore thread
+
+
+VARIABLE ProfileThread            \ used only for internal control
+  ProfileThread off
+
+: >Thread  ( token -- addr )      \ addr of data area
+   dup if                         \ 0 token gives 0
+      PFA 2+                      \ skips first token of def'n
+   then  ;
+
+: ThreadHead  ( -- [addr]or[0] )  \ addr of first data area
+   ProfileThread @  >Thread  ;
+
+: ThreadIt  ( addr1 -- addr2 )    \ follow one data-area thread
+   ^Pro.thread @  >Thread  ;
+
+: CompileWordEnd  ( -- )          \ compile WordEnd & offset, if Timing
+   ?Comp                          \ must already be in compiling state
+   Timing @  if
+      token.for WordEnd  w,       \ never trace WordEnd
+      ThreadHead back             \ compile offset to current data area
+   then  ;
+
+cr ." Changing behavior of the compiler (the word : )"
+cr ." THIS is just one thing (and what a big one) that makes Forth so"
+cr ." superior to other languages!" cr
+
+: : ( name ( -- )                 \ extend action of :
+   0 locals|  theProData  |
+   [compile] :                    \ do old action of :
+   Timing @  if                   \ ... and maybe the extended action, too
+      token.for WordStart  w,     \ guaranteed first token of def'n
+      here  to theProData         \ remember data-area start
+      ProfileData allot           \ reserve space for data area
+
+      \ fill in initial values of data area
+      ProfileThread @             \ put current thread...
+       theProData ^Pro.thread !   \ in new def'n
+      latest 2- >w@<              \ set current token...
+       ProfileThread !            \ as new thread
+      theProData ProfileErase     \ erase all other fields
+   then  ;
+immediate
+
+cr ." Modifying the behavior of word ; -- More Forth magic!  Programmers" cr
+   ." in other languages -- eat your hearts out!" cr
+
+: ;  ( -- )   \ extend action of ;
+   CompileWordEnd                 \ put WordEnd if Timing is on
+   [compile] ;  ;                 \ do old action of ;
+immediate
+
+: exit  ( -- )                    \ redefine to do WordEnd, then EXIT
+   CompileWordEnd                 \ put WordEnd if Timing is on
+   compile EXIT  ;                \ compile existing EXIT
+immediate
+
+
+\ Remove : and ; from Quick vocabulary, if present
+Quick.Vocab @  iftrue
+   : Chop ( name ( -- )
+      -1  Quick.Vocab @  #find if
+         drop behead              \ chop if found, else ignore
+      then  ;
+   Quick definitions
+    Chop :   Chop ;               \ else redefinitions won't be found
+   Forth definitions
+   Forget Chop
+ifend
+
+
+\  Manage ProfileThread during FORGET
+
+: ProForget  ( low -- low )       \ FORGETs between low and HERE
+   [ Forget.Token @  w,  ]        \ account for existing Forget.Token
+   locals| low  |
+
+   begin
+      ThreadHead                  \ examine current head...
+       low here  range            \ if in range, follow thread
+     while
+      ^Pro.thread @ 
+       ProfileThread !            \ move thread-head back by one...
+   repeat
+   drop                           \ left over from RANGE
+   low  ;                         \ return original input value
+
+token.for ProForget
+ Forget.Token !                   \ execute during FORGET
+
+: (NoProfile)  ( -- )             \ remove installed profiling control tokens
+   ' ProForget w@  Forget.Token !  ;
+on.forget (NoProfile)             \ execute before forgetting
+
+
+\ ****  Words to control profiling and result display
+
+\ apply token to each data area in thread
+: ApplyToThread  ( token\thread -- )
+   \ the token acts like: ( addr -- )
+   begin
+      ?dup                        \ 0 means "end of thread"
+     while
+      2dup swap execute           \ pass to action token
+       ThreadIt                   \ to next area
+      do.events drop              \ allows aborting from menu
+   repeat
+   drop  ;
+
+: StartProfile  ( -- )            \ erase all profile data, turn Profiling ON
+   token.for ProfileErase
+    ThreadHead                    \ ..to entire thread
+     ApplyToThread                \ erase all data areas
+   Profiling ON  ;
+
+
+decimal
+VARIABLE ProTotal            \ holds total elapsed time for printing info
+VARIABLE TooMuch             \ percentage which causes extra flag in display
+  70 TooMuch !               \ starts out: 70%
+
+: OneName  ( token -- )      \ print name in right-justified field
+   NFA  locals|  theName  |
+
+   theName 0= if             \ print substitute if no name
+      " <unknown name>" to theName
+   then
+
+   cr
+   theName count  31 and     \ compute name length
+    20 over -  spaces        \ put leading spaces
+     type                    \ put actual name
+   space  ;
+
+: OneProfile  ( addr -- )
+   locals|  theProData  |
+   \ print my info, CR, next one's name
+
+   theProData ^Pro.times @      \ number of times executed
+    6 .r  ." #  "
+
+   theProData ^Pro.sumTicks @   \ elapsed time
+    100 ProTotal @  */  dup 3 .r  ." %"
+     \ if TooMuch or more, print extra flag "="
+     TooMuch @ < if  space  else  ." ="  then
+   space
+
+   theProData ^Pro.sumTicks @   \ elapsed time, as ticks
+    7 .r  ." '"
+
+   theProData ^Pro.thread @ 
+    ?dup if                     \ don't print if thread ends
+      OneName
+   then  ;
+
+: Profiler ( word ( -- )        \ point out who takes the most time
+   0 0 locals|  theProData theToken  |
+   find  to theToken            \ look for the word
+
+   theToken if                  \ Found?  try to print profile
+      theToken PFA <w@          \ get first token of def'n
+       token.for WordStart
+        = not error" Has no profile data"
+
+      theToken PFA 2+           \ skip token of WordStart...
+       to theProData            \ to point at profile data area
+      theProData ^Pro.sumTicks @
+       ProTotal !               \ this word was 100%
+
+      theToken OneName          \ print this word's name
+      token.for OneProfile      \ apply to this sub-thread
+       theProData
+        ApplyToThread
+   then  ;
+
+cr
+." To use this execution profiler, the following must be done:" cr
+."    1.  Compile this program BEFORE you compile your Forth program." cr
+."    2.  In the source code for your program, add the following phrases:" cr
+."           TIMING ON   PROFILING ON " cr
+."    3.  Now, compile your Forth program and run it as you normally would." cr
+."    4.  When your program is done, at the ok prompt, type:" cr
+."        PROFILER your_main_word_name" cr
+."        where your_main_word_name is the name of the word that you typed" cr
+."        to start your application." cr
+
+

@@ -1,0 +1,5 @@
+CPMSTOIC.ZIP is the complete CP/M Users' Group disk #23, containing
+the MIT implementation of STOIC for CP/M.  All source code is included.
+A CP/M system or CP/M emulator is required to run this software.
+
+Uploaded by Brad Rodriguez, bj@forth.org.

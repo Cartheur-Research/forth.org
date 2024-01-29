@@ -1,0 +1,261 @@
+
+Forth Interest Group
+Category 18,  Topic 77
+Message 2         Thu Aug 23, 1990
+GARY-S                       at 07:00 EDT
+ 
+             
+  PORTED FROM UseNet =>
+              ------
+
+ From: thomson@cs.utah.edu (Rich Thomson)
+ Newsgroups: comp.lang.forth,comp.sys.amiga.tech
+ Subject: amiga-forth announcement/last submission
+ Message-ID: <1990Aug22.150836.1337@hellgate.utah.edu>
+ Date: 22 Aug 90 21:08:36 GMT
+ Organization: Oasis Technologies
+ Lines: 201
+       ^^^^^ split for ForthNet port - part a
+
+
+ Due to lack of traffic and lack of time on my part, I am discontinuing the
+ amiga-forth mailing list.  If anyone wants to take up the part of
+ administrator, I will be glad to forward them the subscriber list.  Here is
+ the last submission I had received.
+
+       -- Rich
+
+ Date: Thu, 26 Apr 90 11:01:03 EDT
+ From: dcatla!sunb!mclek@gatech.edu (Larry E. Kollar)
+ Subject: JForth AUX: support (a solution!), CR2LF
+
+
+ I haven't seen any issues from the mailing list since Volume 2, Issue 6, and
+ got to wondering why things are so quiet lately.  Then it occurred to me that
+ there probably haven't been any submissions, and I'm as responsible for that
+ as anyone.
+
+ It just so happens I have a couple of things I consider worthwhile....
+
+ >Subject:  Using JForth from AUX:
+
+ Since I added the hard disk and extra RAM, my wife has found Word Perfect
+ to be pretty easy to use -- which means that I'm starting to get pushed off
+ the machine from time to time.  To experiment with AUX: (and to impress
+ her) I grabbed one of her old TeleVideo CP/M computers, switched it to dumb
+ terminal mode, and hooked it to the serial port.
+
+ Then, I cast about for ways to run JForth from the terminal.  I thought of
+ vectoring some of the standard I/O words, then started digging through
+ the manual hoping to find an easier way.
+
+ The easier way is called CONSOLE!.  You can open a file or device, and use
+ CONSOLE! to send JForth's I/O through that file/device.  It works with AUX:,
+ but echoes everything twice.  It works perfectly with SER:, though.
+
+ I call the attached file "aux_support" (even though I'm really using SER:).
+ The word "start.aux" saves the pointer to the JForth window, so you can go
+ back to it with "end.aux".  I haven't tried typing "bye" from the serial
+ port;I assume JForth would close everything OK though (the built-in resource
+ tracking makes JForth worth buying all by itself).
+
+ Now, all I need is a text editor.  Anyone have FORTH source to a screen-
+ oriented editor (*not* a block editor!) they can email me?
+
+ Oh, the file.  This is all public domain.  I mailed a copy to Phil Burk; I
+ hope it gets into the next JGoodies or even included as part of the next
+ release.
+
+ ----------------------------- cut here -------------------------------------
+
+ \ AUX_SUPPORT -- stuff for switching I/O to a terminal and back
+ \            Larry Kollar, 1 Feb 90 -- Public Domain
+ \            Send comments, suggestions, money, flames to:
+ \               Larry Kollar
+ \               Rt. 3 Box 3068B
+ \               Dawsonville, GA  30534
+ \
+ \               Email:  mclek@dcatla.uucp (through May 3)
+
+ \ (Calling this "aux" support is really a misnomer, since we're really
+ \ sending I/O through SER:.  But who cares?  It works!  Now all we need
+ \ is a text editor that doesn't need major massaging for different
+ \ terminals (eventually, eventually).
+
+ anew TASK-AUX_SUPPORT
+
+ variable JF_WINDOW \ save pointer to original JForth window
+
+ : start.aux ( -- , switch I/O to serial port )
+     highlight-input OFF     ( delete this if you have an ANSI terminal )
+     console@ JF_WINDOW !
+     " SER:" $fopen console!
+ ;
+
+ : end.aux ( -- , return I/O to window on Workbench )
+     console@
+     JF_WINDOW @ console!
+     fclose ( the serial port )
+     highlight-input ON      ( delete this line if you deleted the other )
+ ;
+
+ ----------------------------- cut here -------------------------------------
+----------
+Forth Interest Group
+Category 18,  Topic 77
+Message 3         Thu Aug 23, 1990
+GARY-S                       at 07:01 EDT
+ 
+             
+  PORTED FROM UseNet =>
+              ------
+
+ From: thomson@cs.utah.edu (Rich Thomson)
+ Newsgroups: comp.lang.forth,comp.sys.amiga.tech
+ Subject: amiga-forth announcement/last submission
+ Message-ID: <1990Aug22.150836.1337@hellgate.utah.edu>
+ Date: 22 Aug 90 21:08:36 GMT
+ Organization: Oasis Technologies
+ Lines: 201
+       ^^^^^ split for ForthNet port - part b
+
+ >Subject:  cr2lf.f
+
+ I have a rather convoluted way of moving things between Usenet and my Amiga
+ (it involves a Mac and MSDOS-format disks).  It saves me a lot of long-
+ distance phone calls, but sometimes leaves me with text files that have CRs
+ where they should have LFs (dang Mac :-).
+
+ Even if you don't have any use for the main program, you might want to grab
+ the "open-input-file" and "close-input-file" words.  The "open..." word uses
+ FILEWORD to get a file name.  An "undocumented feature" of WORD and FILEWORD
+ (at least the JForth versions) is that if there isn't anything on the line,
+ they return a zero-length string.  I test for a zero-length string (dup c@)
+ and use the contents of the JForth CONSOLEIN variable if you don't enter a
+ file name.
+
+ The "close..." word only closes the file if it isn't equal to CONSOLEIN. If
+ you try closing the console twice, you get to see (and curse) that lovely
+ "task held" requester.
+
+ ----------------------------- cut here -------------------------------------
+
+ \ CR2LF -- Convert CR-terminated text files to normal Amiga files
+ \          (file to stdout - most useful with some kind of pipe)
+ \          Version:  1.0
+ \
+ \            Larry Kollar, 4/6/90 -- Public Domain
+ \            Send comments, suggestions, money, flames to:
+ \               Larry Kollar
+ \               Rt. 3 Box 3068B
+ \               Dawsonville, GA  30534
+ \
+ \               Email:  mclek@dcatla.uucp (until May 3)
+ \
+ \ ---------------------------------------------------------------------------
+
+ include? clone cl:topfile
+
+ anew task-cr2lf
+
+ \ --------------------------------------------------------------------------
+
+ \ clone parameters
+ tracking off
+ noconsole off
+ enable_cancel on
+ rawexpectecho off
+
+ \ --------------------------------------------------------------------------
+----------
+Forth Interest Group
+Category 18,  Topic 77
+Message 4         Thu Aug 23, 1990
+GARY-S                       at 07:02 EDT
+ 
+             
+  PORTED FROM UseNet =>
+              ------
+
+ From: thomson@cs.utah.edu (Rich Thomson)
+ Newsgroups: comp.lang.forth,comp.sys.amiga.tech
+ Subject: amiga-forth announcement/last submission
+ Message-ID: <1990Aug22.150836.1337@hellgate.utah.edu>
+ Date: 22 Aug 90 21:08:36 GMT
+ Organization: Oasis Technologies
+ Lines: 201
+       ^^^^^ split for ForthNet port - part c
+
+ \ --------------------------------------------------------------------------
+
+ variable filein
+ variable block-ptr
+ variable #read
+ 1024 constant block-size
+
+ \ open file on command line - if no file given, use stdin
+ \                             abort on bad file name
+
+ : open-input-file ( -- , get the input file with error checking )
+   fileword dup c@
+
+   if-not drop consolein @ filein ! ( no file = stdin )
+   else   $fopen ?dup               ( open the file )
+          if-not cr abort" Couldn't open file."
+          else   filein !
+          then
+   then
+ ;
+
+ : close-input-file ( -- , close input file if not consolein )
+   filein @ dup consolein @ =
+   if-not fclose else drop then
+ ;
+
+ : check-chars ( ptr # -- , march through & convert CR to LF )
+   0 do
+     dup i + c@ 13 =
+     if 10 over i + c! then
+   loop drop
+ ;
+
+ : do-cr2lf ( -- , this does the work )
+   begin
+     filein @ block-ptr @ block-size FREAD
+     dup 0 >             ( done yet? )
+   while
+     dup #read !                ( save for later )
+     block-ptr @ swap check-chars ( convert CRs in the block )
+     consoleout @ block-ptr @ #read @ FWRITE ( write 'em out )
+     -1 = if return then   ( must've cancelled on "disk full" or something )
+     cancelkey? if return then
+   repeat
+ ;
+
+ : cr2lf ( -- , this lets us clean up gracefully )
+   0 block-size allocblock? block-ptr ! ( bail out if can't get memory )
+   open-input-file
+
+   do-cr2lf ( did it this way so we can "return" into the clean-up code )
+
+   drop                  ( junk EOF char )
+   close-input-file      ( close the file )
+   block-ptr @ freeblock ( free mem )
+ ;
+
+ ----------------------------- cut here -------------------------------------
+
+ I'll send more stuff later.  I'm still piddling with my LKO object library;
+ I may just release what I have so y'all can laugh at my code. :-)
+
+ --
+ Larry Kollar    ...!{gatech,uunet}!dcatla!mclek
+ (This address is going away on May 3rd; will send replacement address when
+ I get it.  I hope mail to Fidonet works, because that's probably where it
+ will be.)
+
+ Rich Thomson thomson@cs.utah.edu  {bellcore,hplabs,uunet}!utah-cs!thomson
+ ``If everybody is thinking the same thing,is anybody thinking?''-Bob Johnson
+----------
+
+

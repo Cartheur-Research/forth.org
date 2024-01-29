@@ -1,0 +1,25 @@
+
+This file describes OS9TILE.LZH
+>From a mail message from Mike Coughlin, to Doug Philips, re: TILE for OS/9.
+
+coughlin@cfa0.harvard.edu
+Message-Id: <9210160307.AA12944@cfa0.HARVARD.EDU>
+To: dwp@willett.pgh.pa.us
+Subject: Re: 68000 Forth
+
+
++    Reguarding TILE; what I have is a compilation of TILE for the 
++Os-9/68k operating system, ready to go.
+
++    It is available by ftp from cabrales.cs.wisc.edu  128.105.2.70
++as file  pub/OSK/EFFO/pd6.lzh   A place where only the most dedicated
++would be able to find it. The Os-9 ftp archive changes machines without
++warning about every six months.
+
+That is what os9tile.lzh is.  I do not have a 68000 machine, nor do I have
+access to one, whether running OS/9, or not.  I am merely providing access
+to something someone else has provided.
+
+-Doug Philips  (dwp@willett.pgh.pa.us)
+
+

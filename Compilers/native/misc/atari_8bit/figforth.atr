@@ -1,0 +1,54 @@
+
+ATARI FIG FORTH DOC
+
+     Several years ago, Atari came out
+with a version of fig forth for the
+atari 8 bit machines.  It is a public
+domain language, and I am happy to
+share it with this board.  Please pass
+it around!
+
+     You will need the SHRINK program
+to create the forth language disks. 
+If you do not have a copy of SHRINK, I
+put one on the board.  SHRINK works
+well only with ATARI DOS 2.5, and you
+will need to unshrink the programs to
+SINGLE DENSITY disks.  Forth will
+become the operating system of the
+ATARI machine.  This version and the
+screens with it are NOT bug free.  If,
+however, you have an ATARI machine,
+and you want to play around with forth
+a bit, this is an excelent way to get
+started.
+
+     There are two disks to the set. 
+the file FIGFORTH.SHR will unshrink to
+the standard fig-forth kernel.  There
+are screens that will impliment every
+phase of the 8 bit ATARI.  Graphics,
+Sound, P/M functions etc.  You will
+need to use the translator disk if you
+have an XL or XE, and some of the P/M
+Graphics did mot work right for me on
+my 1200 XL.  Don't know about the 130
+XE or the 800 XL.
+
+     The second disk is FIGTUTOR.SHR. 
+This version has been expanded to
+include the screen editor, and has a
+self-paced tutorial telling you about
+the special features of the ATARI
+fig-forth.  It does not go far into
+FORTH itself, but does give a prety
+good rundown of the special ATARI
+functions and the workings of the
+editor.  To run the tutorial (after
+you unshrink it)  run translator or
+FIXXL for the XL & XE, then boot the
+forth disk.  When the screen comes up,
+type 10 UE <cr>.  The screens will
+take it from there.  Have fun!!
+
+

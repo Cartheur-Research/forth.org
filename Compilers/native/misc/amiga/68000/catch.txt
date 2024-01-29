@@ -1,0 +1,500 @@
+
+Forth Interest Group
+Category 18,  Topic 85
+Message 12        Wed Jun 20, 1990
+GARY-S                       at 07:55 EDT
+ 
+             
+  PORTED FROM UseNet =>
+              ------
+
+ From: wmb@MITCH.ENG.SUN.COM
+ Newsgroups: comp.lang.forth
+ Subject: CATCH and THROW
+ Message-ID: <9006191500.AA25356@ucbvax.Berkeley.EDU>
+ Date: 19 Jun 90 05:43:12 GMT
+ Sender: daemon@ucbvax.BERKELEY.EDU
+ Reply-To: wmb%MITCH.ENG.SUN.COM@SCFVM.GSFC.NASA.GOV
+ Organization: The Internet
+ Lines: 189
+       ^^^^^ Jerry Shifrin,note length
+
+ MB> ANS Forth CATCH and THROW implicitly
+ MB> perform this stacking action for you, for free.
+
+ DP> For FREE?
+ DP>    Catch frames must interfere with uses of the return stack in the
+ DP> same way that DO LOOP indicies do.
+
+ There is no interference, as I will attempt to explain.
+ By the way, this is one of the nicest features of CATCH and THROW ,
+ and was one of the reasons why I knew I had finally hit upon the
+ "right" design for error handling with CATCH and THROW (I have designed
+ and used 3 other schemes over the years).
+
+ The key point is this: EXACTLY one Forth word is executed in the
+ context of the error handler.  CATCH is very similar to EXECUTE
+ except that it saves the stack pointers before EXECUTEing the guarded
+ word, removes the saved pointers afterwards, and returns a flag indicating
+ whether or not the guarded word completed normally.
+
+ In the same way that a Forth word cannot legally muck around with
+ anything that its caller may have put on the return stack, and also
+ is unaffected by how its caller uses the return stack, a word guarded
+ by CATCH is oblivious to the fact that CATCH has put stuff on the
+ return stack.
+
+ Here's the implementation of CATCH and THROW in a mixture of Forth
+ and pseudo-code:
+
+ VARIABLE HANDLER  \ Most recent error frame
+
+ : CATCH  ( cfa -- 0|error-code )
+    <push parameter stack pointer on return stack>
+    <push contents of HANDLER on return stack>
+    <set HANDLER to current return stack pointer>
+    EXECUTE
+    <pop return stack into HANDLER>
+    <pop and discard saved parameter stack pointer from return stack>
+    0
+ ;
+
+ : THROW  ( error-code -- )
+    ?DUP  IF
+       <set return stack pointer to contents of HANDLER>
+       <pop return stack into HANDLER>
+       <pop saved parameter stack pointer from return stack into parameter
+        stack pointer>
+       <return error-code>
+    THEN
+ ;
+
+ The description as written implies the existence of a parameter stack
+ pointer and a return stack pointer.  That is actually an implementation
+ detail.  The parameter stack pointer need not actually exist; all that
+ is necessary is the ability to restore the parameter stack to a known
+ depth, and that can be done in a completely standard way, using DEPTH ,
+ DROP , and DUP .  Likewise, the return stack pointer need not explicitly
+ exist; all that is necessary is the ability to remove things from the
+ top of the return stack until its depth is the same as a previously-
+ remembered depth.  This can't be portably implemented in high level,
+ but I neither know of nor can I conceive of a system without some
+ straightforward way of doing so.
+
+ In F83, and indeed in most Forth systems, the following code will work:
+
+ VARIABLE HANDLER   \ Most recent exception handler
+
+ : CATCH  ( execution-token -- error# | 0 )
+                         ( token )  \ Return address is already on the stack
+    SP@ >R               ( token )  \ Save data stack pointer
+    HANDLER @ >R         ( token )  \ Previous handler
+    RP@ HANDLER !        ( token )  \ Set current handler to this one
+    EXECUTE              ( )        \ Execute the word passed in on the stack
+    R> HANDLER !         ( )        \ Restore previous handler
+    R> DROP              ( )        \ Discard saved stack pointer
+    0                    ( 0 )      \ Signify normal completion
+ ;
+
+ : THROW  ( ??? error#|0 -- ??? error# )  \ Returns in saved context
+    ?DUP IF
+       HANDLER @ RP!     ( err# )       \ Return to saved return stack context
+       R> HANDLER !      ( err# )       \ Restore previous handler
+                         ( err# )       \ Remember error# on return stack
+                         ( err# )       \ before changing data stack pointer
+       R> SWAP >R        ( saved-sp )   \ err# is on return stack
+       SP! DROP R>       ( err# )       \ Change stack pointer
+    THEN
+    \ This return will return to the caller of catch, because the return
+    \ stack has been restored to the state that existed when CATCH began
+    \ execution .
+ ;
+
+ Note the following features:
+    1) CATCH and THROW do not restrict the use of the return stack
+    2) They are neither IMMEDIATE nor "state-smart"; they can be used
+       interactively, compiled into colon definitions, or POSTPONED
+       without strangeness.
+    3) They do not introduce any new syntactic control structures
+       (i.e. words that must be lexically "paired" like IF and THEN)
+
+ To handle the case where there is no CATCH to handle a THROW , it is
+ wise to CATCH the INTERPRET inside QUIT .  In fact, in my system, I
+ have implemented ABORT in terms of THROW , and the total size of my
+ system GOT SMALLER .  This is because the newfound ability to CATCH
+ aborts greatly simplified the code in QUIT that takes care of cleaning
+ up resources (e.g. file control blocks) that could be left "dangling"
+ by an ABORT .
+
+ A different solution, if you don't want to modify QUIT and ABORT , is
+ to add this line to THROW:
+
+  HANDLER @ 0= ABORT" Uncaught THROW"
+
+
+     Stack rules for CATCH and THROW :
+
+ Let's suppose that we have the word FOO that we wish to "guard" with
+ CATCH .  FOO's stack diagram looks like:
+
+  FOO  ( a b c -- d )
+
+ Here's how to CATCH it:
+
+         <prepare argument for FOO>    ( a b c )
+  ['] FOO  CATCH  IF            ( x1 x2 x3 )
+      <some code to execute if FOO caused a THROW>
+  ELSE                          ( d )
+             <some code to execute if FOO completed normally>
+         THEN
+
+ Note that, in the case where CATCH returns non-zero (i.e. a THROW
+ occurred), the stack *depth* (denoted by the presence of x1,x2,x3)
+ is the same as before FOO executed, but the actual contents of those
+ 3 stack items is undefined.  N.B. items on the stack UNDERNEATH
+ those 3 items should not be affected, unless the stack diagram for
+ FOO, showing 3 inputs, does not truly represent the number of stack
+ items potentially modified by FOO .
+
+ In practice, about the only thing that you can do with those "dummy"
+ stack items x1,x2,x3 is to DROP them.  It is important, however, that
+ their number be accurately know, so that you can know how many items
+ to DROP .  CATCH and THROW are completely predicatable in this regard;
+ THROW restores the stack depth to the same depth that existed just
+ prior to the execution of FOO , and the number of stack items that
+ are potentially garbage is the number of inputs to FOO .
+
+     Some more features:
+
+ THROW can return any non-zero number to the CATCH point.
+ This allows for selective error handling.  A good way to create
+ unique named error codes is with VARIABLE , i.e. VARIABLE ERROR1
+ VARIABLE ERROR2 creates 2 words, each of which returns a different
+ unique number  (you might think of using CREATE instead of VARIABLE ,
+ but there is no guarantee that headers and code fields are allocated
+ from the same space as parameter fields, thus CREATE ERROR1 and
+ CREATE ERROR2 could result in ERROR1 and ERROR2 returning the same
+ address, if there were no ALLOTs between the two CREATEs)
+
+ For selective error handling, it is convenient to follow CATCH with
+ Eaker's CASE instead of with IF . Here's a complicated example:
+
+      BEGIN
+  ['] FOO  CATCH  CASE
+            0       OF  ." Success; continuing"   TRUE   ENDOF
+     ERROR1  OF  ." Error #1; continuing"  TRUE   ENDOF
+     ERROR2  OF  ." Error #2; retrying"    FALSE  ENDOF
+            ( default ) ." Propagating error to another level"  THROW
+         ENDCASE                   ( retry? )
+      UNTIL
+
+ Note the use of THROW in the default branch.  After CATCH has returned,
+ with either success or failure, the error handler context that it
+ created on the return stack has been removed, so any successive THROWs
+ will transfer control to a CATCH handler at a higher level.
+
+
+ DP> the scheme you describe must have had some "common practice"
+ DP> to be adopted, or is this not true?
+
+ The "common practice" criterion was satisfied by the fact that countless
+ "nonlocal exit" schemes have been described in the Forth literature,
+ and exist in many systems, thus justifying the need for such a facility.
+ So far as I know, no two such schemes are identical.  CATCH and THROW
+ appealed to people because it is simpler than most other schemes, as powerful
+ as any (and more powerful than most), is easy to implement, introduces no new
+ syntax, has no separate compiling behavior, and uses the minimum possible
+ number of words (2).
+
+
+ Mitch Bradley
+----------
+Forth Interest Group
+Category 18,  Topic 85
+Message 15        Tue Jul 03, 1990
+GARY-S                       at 06:40 EDT
+ 
+             
+  PORTED FROM UseNet =>
+              ------
+
+ From: wmb@MITCH.ENG.SUN.COM
+ Newsgroups: comp.lang.forth
+ Subject: NUMBER and block files and ANS Forth
+ Message-ID: <9007020308.AA02478@ucbvax.Berkeley.EDU>
+ Date: 30 Jun 90 01:53:50 GMT
+ Sender: daemon@ucbvax.BERKELEY.EDU
+ Reply-To: wmb%MITCH.ENG.SUN.COM@SCFVM.GSFC.NASA.GOV
+ Organization: The Internet
+
+ FS> (It was more amusing, though, when I thought you  objected to it being
+ FS> one giant file at the same time Robert objected to  it NOT being one
+ FS> giant file.)
+
+ This is the kind of problem that the ANS Forth committee has to deal with
+ every issue.
+
+ In this particular case, ANS Forth gives you both choices, in a particularly
+ nifty way:
+
+  BLK SOURCE-FILE Input source
+  ------------------------------------
+       nonzero       0  Block from "global block space", i.e.
+     entire disk farm is one giant array of blocks
+
+       nonzero  nonzero Block from file whose descriptor is
+           contained in SOURCE-FILE
+
+          0     0  Keyboard
+
+   0  nonzero Text file whose descriptor is contained
+      in SOURCE-FILE
+
+
+ FS> ... discussion about how to implement NUMBER? so a program can parse
+ FS> without risking an ABORT ...
+
+ If you have CATCH and THROW , the obvious implementation of ABORT is
+ "-1 THROW".  This turns out to be an excellently useful thing, because
+ then a program has the option of handling any ABORT condition that arises.
+
+ In this case, NUMBER? is trivially defined as:
+
+  : NUMBER?  ( a -- d flag )
+     ['] NUMBER  CATCH  IF   ( x )
+        DROP 0 0  FALSE      ( 0 0 false )
+     ELSE      ( d )
+        TRUE     ( d true )
+     THEN      ( d flag )
+  ;
+
+ An even better approach is to let the application take care of
+ CATCH'ing the call to NUMBER, because that gives the application
+ the flexibility of choosing the level at which to handle the error
+ (which might be several levels up from the actual call to NUMBER ).
+ This can eliminate several levels of "passing flags back up".
+
+ CATCH and THROW: Try it, you'll like it.
+
+ Use it in your kernel, and your kernel may get smaller (mine did).
+
+ One other observation:  Implementing ABORT with CATCH and THROW
+ eliminates the one "unavoidable" forward reference in the Forth kernel
+ (the ABORT - QUIT - INTERPRET - NUMBER - ABORT cycle).  A kernel with
+ CATCH and THROW can be compiled entirely incrementally.
+
+ Mitch
+----------
+Forth Interest Group
+Category 18,  Topic 85
+Message 31        Tue Aug 07, 1990
+GARY-S                       at 06:15 EDT
+ 
+             
+  PORTED FROM UseNet =>
+              ------
+
+ From: wmb@MITCH.ENG.SUN.COM (Mitch Bradley)
+ Subject: CATCH/THROW, and counting applications
+ Message-ID: <9008051728.AA09815@ucbvax.Berkeley.EDU>
+ Lines: 123
+       ^^^^^   split for ForthNet port - part b
+
+ Now, back to the real issue of CATCH/THROW.  If you intend to put it in
+ your kernel (which is an excellent thing to do), the best way is to
+ hook it into ABORT and QUIT .
+
+ For example:
+
+ : ABORT  ( -- )  1 THROW  ;
+ : (ABORT")  ( flag -- )
+    IF
+       <print in-line string>  ABORT
+    ELSE
+       <skip in-line string>
+    THEN
+ ;
+ \ In F-PC, ABORT and ABORT" are factored differently.  F-PC implements
+ \ (ABORT") in terms of a deferred word ERROR? .  The default implementation
+ \ of ERROR? , named (?ERROR) , could be modified to use THROW instead of
+ \ QUIT as follows:
+
+ : (?ERROR)  ( addr len f -- )
+    IF
+       PRINTING OFF
+       SPACE TYPE SPACE
+       1 THROW
+    ELSE
+       2DROP
+    THEN
+ ;
+ ...
+
+ \ The following implementation of QUIT will probably work for F-PC;
+ \it was written by looking at the F-PC source code for QUIT, but has
+ \ not been tested (however, similar code is known to work on other systems).
+
+ : INTERACT  ( -- )
+    BEGIN   STATUS  QUERY  RUN  STATE @ NOT  UNTIL
+ ;
+
+ : QUIT  ( -- )    \ Derived from the F-PC version
+    SP0 @ 'TIB !
+    BEGIN
+       [COMPILE] [
+       ['] INTERACT CATCH  IF  ." Aborted"  ELSE  ." ok"  THEN
+       CR
+    AGAIN
+ ;
+
+ Several things to note:
+
+ 1) The use of CATCH/THROW eliminates the need to clear the data
+    stack in ABORT" ; CATCH/THROW automatically restores the data
+    stack depth to its original state, which presumably is "empty"
+    when QUIT is first called.
+
+ 2) This simplifies the implementation of (?ERROR) by eliminating
+    the following code:   2>R  SP0 @ SP!  2R>
+
+ 3) The use of CATCH/THROW eliminates the need to clear the return
+    stack in QUIT ; CATCH/THROW automatically restores the return
+    stack to the correct value.
+
+ 4) With ABORT implemented in terms of THROW instead of calling QUIT ,
+    the one previously-unavoidable forward reference in the kernel
+    source code is eliminated.
+
+ 5) All this goes a long way toward making it possible to recursively
+    call the text interpreter!  Left to do: save and restore the
+    contents of TIB and >IN , add a controlled exit from the
+    BEGIN .. AGAIN loop in QUIT .  The controlled exit could even
+    be done using CATCH/THROW , e.g.
+
+    CREATE DONE-SIGNAL
+    : DONE  DONE-SIGNAL THROW  ;
+    : QUIT  ( -- )
+       SAVE-OLD-TIB
+       BEGIN
+          [COMPILE] [
+          ['] INTERACT CATCH   ( 0 or error-code)
+   CASE
+             0            OF  ." ok"       FALSE       ENDOF
+      DONE-SIGNAL  OF  ." Exiting"  TRUE        ENDOF
+      ( error# )       ." Aborted." FALSE SWAP
+          ENDCASE
+         CR
+       UNTIL
+       RESTORE-TIB
+    ;
+ Mitch Bradley
+----------
+Forth Interest Group
+Category 18,  Topic 85
+Message 36        Sat Sep 15, 1990
+GARY-S                       at 08:25 EDT
+ 
+             
+  PORTED FROM UseNet =>
+              ------
+
+ From: guest@willett.pgh.pa.us (Guest Account)
+ Newsgroups: comp.lang.forth
+ Subject: Catch/Throw
+ Message-ID: <1736.UUL1.3#5129@willett.pgh.pa.us>
+ Date: Fri, 14 Sep 90 20:44:51 EDT
+ Organization: String, Scotch tape, and Paperclips.  (in Pgh, PA)
+
+ [I am posting this with the author's permission.  I will forward any
+ *posted* replies back to the author.  -dwp]
+
+ Message-Id: <4660872@AppleLink.Apple.COM>
+ Subject: FORTH CATCH/THROW
+ To: WILLETT!DWP@goofy.apple.com
+ From: D2044@AppleLink.Apple.COM (Flavors Tech, Doug Currie,PRT)
+ Date: 12 Sep 90 18:31 GMT
+
+ 12Sep90
+
+ Doug Phillips...
+
+ I saw your note in Best of GENIE, FORTH Dimensions XII#3, re: CATCH/THROW.
+ I had no idea that CATCH/THROW had caught on since I recommended the
+ mechanism to George Shaw last year.  Your "for free" analysis of the
+ requirements for CATCH/THROW implementation is not quite complete.  There
+ is a middle ground between your two approaches.  I have used this technique
+ for years in my FORTH systems, and the mechanism is free if your program
+ doesn't use it, and quite cheap if it does.
+
+ The idea is to have a pointer to the top most catch frame on the return
+ stack, and links from catch frame to catch frame.  So far, this is just
+ like your first choice.  Now when CATCH is executed, it builds the catch
+ frame, and _calls_ the remainder of its containing routine (instead of
+ returning).  When the containing routine returns to the CATCH via NEXT,
+ CATCH simply removes the catch frame and falls into NEXT, too, returning
+ from the containing routine.  NEXT itself is not changed in the least!
+ The return stack can have anything at all on it (in fact I use it for my
+ LOCAL mechanism).
+
+ Now THROW is implemented as a return from the outermost CATCH (which
+ hasn't returned yet... it called its return point) after restoring the
+ catch frame pointer.  I also have a routine called PUNT-CATCH which
+ removes the top most catch frame from the return stack.
+
+ Reproduced below are the CATCH, THROW, and PUNT-CATCH routines in M68000
+ assembly code (this is a native code FORTH, i.e., NEXT = RTS).  The
+ references to the frame pointer (A2) are for local variables.
+
+    EXPORT  catch
+  catch  ; ( - n T or F )  catch
+    MOVE.W   #0, -(A4)           ; rtn val
+    MOVEA.L (SP), A0                ; rtn addr, leave it for throw
+    MOVE.L   A2, -(SP)            ; save frame ptr
+    MOVE.L   _catches_(A6), -(SP)   ; setup catch frame
+    MOVE.L   SP, _catches_(A6)         ; link it in
+    JSR    (A0)                 ; return first time
+    ; colon word RTS comes here
+    MOVE.L   (SP)+, _catches_(A6)    ; unlink
+    ADDQ.L   #8, SP                 ; remove catch frame
+    RTS                        ; return from colon word
+
+    EXPORT throw
+ throw  ; ( n - n T )  throw - doesn't return to caller but to catch
+    MOVE.W   #-1, -(A4)          ; rtn val T
+    MOVE.L   _catches_(A6), SP      ; get catch frame
+    MOVE.L   (SP)+, _catches_(A6)     ; unlink it
+    MOVE.L   (SP)+, A2              ; restore frame ptr
+    RTS                         ; return from catch again
+
+    EXPORT punt_catch
+ punt_catch ; ( - ) removes catch frame
+    MOVEA.L (SP)+, A0               ; rtn addr
+    ADDQ.L   #4, SP            ; remove catch's rtn addr
+    MOVE.L   (SP)+, _catches_(A6)     ; unlink
+    ADDQ.L   #8, SP             ; remove catch frame
+    JMP     (A0)                   ; return
+
+ As a further optimization, I have two mechanisms to set up local variables.
+ One allows CATCHes in the routine with locals, the other doen't and is very
+ cheap.  The two mechanisms may be mixed in one program.  This is just one
+ more way to make CATCH/THROW inexpensive when not used.
+
+ Regards,
+
+  (Doug Currie, Flavors Technology, Inc., 3 Northern Blvd., Amherst NH 03031)
+
+ cc: FORTH Dimensions
+     FORTH Interest Group
+     1330 S. Bascom Ave., Suite D
+     San Jose CA 95155
+
+     SIGFORTH, ANS FORTH Project
+     c/o George Shaw
+     POBox 3471
+     Hayward CA 94540-3471
+
+ P.S. Have you guys (FORTH Dimensions, SIGFORTH, ANS FORTH Project) got
+ INTERNET addresses?  I'm not on GENIE!
+----------
+
+

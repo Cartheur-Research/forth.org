@@ -1,0 +1,232 @@
+
+                                  UNTIL V2.2
+
+FILE: 00READ.ME
+DATE: 02/05/95
+
+                >>> BACK UP THIS DISK BEFORE USING!!! <<<
+
+Welcome to UNTIL, the UNconventional Threaded Interpretative Language. 
+It is a Forth-like language written in C for extreme portability. 
+Versions of Until run on at least four operating systems, compiled with
+five different C compilers. Until has about 95% of the functionality of
+a full Forth system; plus some features available in few if any other
+Forth's. It was designed from the ground up to be embedded in other
+programs and used as a 'macro' language. Both calling other C functions
+and being called by other C functions is extremely easy with Until. 
+
+This disk comprises the UNTIL Language Materials and is Copyrighted. 
+See the file LICENSE.TXT or the documentation (DOC.LIS) for details. 
+The distribution requirements are very liberal. 
+
+Files included in this package are:
+
+FILE           	DESCRIPTION
+----            -----------
+00READ.ME    	This file.
+APPLIC.APP   	A simple default application file.
+CALL.C       	The Compiler module source code.
+COMPILE.COM	VMS command file to compile Until.
+COMPILER.H   	Header file for selecting the compiler being used.
+DOC.LIS      	Until Reference Manual in plain ASCII form.
+FILEXAMP.APP 	The File Word example code from the Ref Manual.
+FILTER.APP	A skeleton file filter program. It reads a file, and
+		executes a user specified word on each line. When used
+		with the search and replace words, FILTER provides a
+		very convenient text filter.
+FILTEREX.APP	A file filter example that floads FILTER.APP.
+FUNCTS.H     	Function prototypes.
+HELP.APP     	The help file used inside Until.
+HELP.C       	Source for the help file module.
+IO.C         	File IO module source code.
+LICENSE.TXT  	Until License.
+LINK.COM	VMS command file to link Until.
+MAKEFILE	Unix makefile. Works with Sun Sparc ANS C, GCC on a Sparc,
+		and Silicon Graphics ANS C. 
+MATH.C       	Math module source code.
+OUTER.C      	The Outer Interpreter source code.
+PCOLON.APP   	Sample Until program to print all colon definitions
+		in a source file.
+PRIM.C       	Until primitive words source code.
+SEAL.C       	Seal module source code.
+SEARCH.C	An experimental module that contains simple, brute
+		force search and replace code. Note that while this code
+		has had good results from initial testing, it is not
+		documented. Use the words defined in it at your own risk!
+SPLITHTM.APP 	Sample Until program that splits up large HTML files.
+STOIC.APP    	The Stoic String package.
+STREXAMP.APP 	C String example from the documentation.
+STRING.C     	String module source code.
+UNTIL.APP    	Default, minimal startup code. It is sealed 
+		into UNTIL.
+UNTIL.BIN    	Sealed version of UNTIL.APP.
+UNTIL.C      	Main program source code.
+UNTIL.EXE    	Executable Until.
+UNTIL.H      	Until data structures and global variables.
+USER.C       	Primitive C words interfaced here.
+VOCAB.C      	Vocabulary module source code.
+
+
+The absolute minimum you need to run with is UNTIL.EXE. It's a good
+idea to have an UNTIL.BIN for words you always use or for a
+complete application if you distribute one. The file APPLIC.APP
+is always loaded if it exists. This is a convenient place to put
+code in development. Other source files may be specified on the
+command line via the -f option:
+
+	UNTIL -fpcolon.app
+
+will run Until and compile pcolon.app. 
+
+The default editor from within Until is EMACS. I use MicroEMACS
+quite nicely. The editor name can be changed in UNTIL.H, then
+recompile Until or rename your normal editor to EMACS.EXE.
+
+
+DOCUMENTATION 
+------------- 
+A plain ASCII version of the Until Reference Manual is contained on this
+disk. Typeset manual and electronic HTML document versions are
+available. A minimal version of Until is also described in "Write Your
+Own Programming Language Using C++", ISBN # 1-55622-264-5. Examples of
+using Until as embedded macro languages can be found in "Programming
+Output Drivers Using Borland C++", ISBN # 1-55622-309-9 and in "Getting
+the Most From Your HP LaserJet Printer", scheduled to be published in
+January 1995. The books are published by Wordware Publishing
+(214-423-0090) and can be ordered from FIG or any bookstore. 
+
+The ASCII manual has been revised. It is now up to date. A new section
+on the string was added along with an updated word glossary. HELP.APP
+has also been regenerated and includes all of the words in the glossary. 
+
+A browsable HTML version of the Reference Manual with numerous
+hyperlinks is available on the World Wide Web at
+http://taygeta.oc.nps.navy.mil/until.html. A link to it is included on
+the Forth Page on Taygeta. 
+
+
+RELEASE NOTES
+-------------
+V2.2	Reworked UNTIL.C to make Until easier to embed and wrote
+	instructions. Replaced help() with code contributed by Michael
+	Mundrane. Modified get_stdin() to call fgets() instead of gets() and
+	make EOF from the keyboard exit Until instead of generating an
+	error per a suggestion by Michael Mundrane. Moved file 
+	descriptor stack from UNTIL.H to IO.H. 
+
+	Cleaned up code by removing unreferenced variables per
+	suggestions by Akira Kida. This eleminates most of the warning
+	messages generated while compiling Until. Akira also
+	contributed a working version of shell() for Unix systems. 
+
+	Corrected bug in SEAL.C. The code to leave blanks embedded
+	blanks in ." and " had not been written previously. 
+
+	Corrected coding errors in SEARCH.C. The string search and
+	replace words are now functional. Michael Mundrane supplied
+	me with a revised SEARCH.C as part of beta testing, which
+	will probably be included in a future release. The words
+	have also been included in the word glossary.
+
+	Compiled Until under VAX/VMS. There are several compile errors
+	that should be fixed. Until seems to run OK, but has not
+	been extensively tested yet. The DCL command files to compile
+	and link Until are now included in the distribution.
+
+
+V2.1	There are one major enhancement in V2.1 and several lesser
+	ones. The big one is that the port to 'Unix' is now done. The 
+	supplied makefile works with Sun Sparc ANS C and SGI ANS C 
+	unchanged. Simply change the 'cc' to 'gcc' and the makefile 
+	works on GCC on the Sparc as well. Hopefully, it is generic 
+	enough to work on any Unix system. Of course TC++ and BC++ 
+	still compile Until via the project file. 
+
+	I discovered that \ does not work properly with the new version 
+	of word() from V2.0.4. I have reverted back to the original
+	word() for the time being. 
+
+	A new module, SEARCH.C, and associated words, sub and gsub, were
+	added. I use AWK a fair amount at work to clean up HTML files
+	during document conversion. About 90% of the AWK programs are
+	searching for one string and replacing it with another. sub
+	and gsub words are equivalent to the AWK functions of the same
+	name. These along with FILTER.APP, which contains a skeleton
+	file filter program, make writing these same sorts of programs
+	very convenient with Until. I have not documented the words in
+	SEARCH.C yet because I want to use the code some more to be
+	sure it 'feels right' in actual use. So, expect the final version
+	of SEARCH.C, including documentation, in the next Until release.
+
+	I cleaned up the internal source file handling a little so
+	warning messages display when UNTIL.BIN is missing or when
+	a non-existent file is specified with fload or include.
+
+
+V2.0.4  Second public release. It contains a couple of minor bug fixes,
+	a new word called UNSEAL, and I re-wrote word() to call
+	the C system function strtok() instead of parsing the
+	input stream a character at a time. The new word() should
+	be faster, although I never got around to doing any timings.
+
+	The port to Unix still has not been done. That should be in
+	V2.1. The documentation has had a major overhaul and reflects
+	the state of the system. The documentation is a primary reason
+	for releasing this version.
+
+
+V2.0.1	Until for the PC. This is the first publicly available
+	version of the "full" Until. As far as I know, there are
+	no bugs. Until has been in frequent use writing text file 
+	for the past couple of months with only a couple of minor
+	problems, which have been fixed. 
+
+	Code is in Until to be compiled on several other platforms.
+	Be forewarned that while Until compiles on other systems,
+	IT DOES NOT RUN. Porting to other platforms is my next
+	priority after finishing the documentation update. An earlier
+	version of Until did compile under several operating systems
+	so, it should be a matter of simply finding the time.
+
+
+----------------------------------------------------------------
+
+	Norman E. Smith
+	114 Claremont Road
+	Oak Ridge, TN. 37830
+
+	CompuServe:	72745,1566
+	Internet:	72745.1566@compuserve.com
+
+----------------------------------------------------------------------
+
+                                 ORDER FORM
+
+                                                      Quantity     Total
+                                                      --------     -----
+
+Until Reference Manual                          $25 X   ____     _______
+  includes printed and HTML versions and
+  latest disk.
+
+Latest Until disk alone.                        $ 5 X   ____     _______
+
+Write Your Own Programming Language Using C++   $15 X   ____     _______
+
+Programming Output Drivers Using Borland C++    $15 X   ____     _______
+
+Getting the Most From Your HP LaserJet Printer
+  When available.
+
+                                   Sales Tax TN only (8%)         ______
+
+                                    Shipping and Handling           4.00
+
+                                              Total Order     __________
+
+Send check or money order to:
+
+   Norman Smith
+   114 Claremont Rd.
+   Oak Ridge, TN. 37830
+

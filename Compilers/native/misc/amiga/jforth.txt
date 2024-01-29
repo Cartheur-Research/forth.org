@@ -1,0 +1,141 @@
+
+The following is from BITNET:
+-----------------------------
+Date: 17 Oct 86 22:25:58 GMT
+From: oliveb!amdahl!kim@titan.arc.nasa.gov  (Kim DeVaughn)
+Organization: Amdahl Corporation,  Sunnyvale, CA 94086
+ Subject: Re: FORTH for the Amiga  (on JForth ... somewhat commercial)
+Sender: umforth%weizmann.bitnet@ucbvax.Berkeley.Edu
+     
+[ "Send lawyers, guns, and money ..." ]
+     
+Warning:  If you don't like seeing Product Announcements on the
+          net, hit your 'n' key now ... flames to /dev/null!
+      
+The Delta Research people were at the BADGE meeting last night (10/16),
+and were demonstrating their "JForth" product.
+     
+I'm not a "Forth person", so I can't really evaluate their product, but
+since there has been some discussion on the availability, etc. of various
+Forth's for the Amiga, I thought I'd go ahead and pass this along.
+     
+The following is extracted from Delta Research's flyer on their JForth
+product.  I've edited out most of the superlative adjectives that are
+typical in product flyers, and tried to extract the facts (as stated
+by Delta).  Please do not consider this to be an endorsement of their
+product by me, or my employer.  (Whew!)
+     
+With that said ...
+     
+vvvvvvvvvvvvvvvvvvvvvvvvvvvvv JForth vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+     
+                      developed for the Amiga
+     
+     
+Completely interactive programming environment.
+     
+JForth contains both an interpreter and a compiler in one language,
+providing an interactive environment.  You may compile programs
+directly from the keyboard.
+     
+Programs are interactively debugged immediately following compilation.
+     
+Whereas Manx 'C' requires about 3.5 minutes to compile the Sieve of
+Erastothenes, JForth completely compiles the standard Forth version
+in less than 2 seconds.
+     
+     
+JForth utilizes a technique known as "JSR-Threading" to tie together
+compiled programs.  This essentially means that all code produced by
+the compiler is directly executable.
+     
+The following chart compares JForth with 2 other Forth's, one of which
+is similarly JSR-Threaded.  The operations are common Forth primatives
+used in virtually all Forth programs.  The sieve mentioned is the
+"Standard Unmodified" Sieve of Erastothenes benchmark.
+     
+     
+                 Creative-Solutions | Palo Alto Shipping | Delta Research
+                     Multi-Forth    |       Mach2        |     JForth
+                   (Amiga 7.16MHz)  |   (Mac-Plus 8MHz)  | (Amiga 7.16MHz)
+                 Indirect-Threading |    JSR-Threading   |  JSR-Threading
+                                    |                    |
+---Sequence-----------Time (in sec.) for 1,000,000 sequences-----------
+                                    |                    |
+Empty DO LOOP          14.14        |         3.75       |      2.86
+    SWAP               11.22        |         9.68       |      4.64
+  DUP DROP             11.14        |         5.15       |      3.54
+ OVER DROP             11.72        |         5.98       |      5.96
+23 45 + DROP           26.06        |        15.66       |      8.62
+   >R R>               12.84        |        11.61       |      7.16
+    ROT                15.44        |        23.61       |      9.92
+ 23 2* DROP            19.38        |        11.60       |      5.34
+Sieve (10 iterations)  21.48        |        11.61       |      8.82
+     
+     
+     
+     
+Much more besides speed:
+     
++ Object-Oriented dialect (similar to NEON)
++ ASCII or 'SCREEN files (SCR editor provided)
++ 1983 Standard (1979 and FIG loadable)
++ Complete DEBUG package
++ Complete Floating Point package   [sorry, I didn't ask if it is IEEE]
++ JForth newsletter (free)
++ Local Stack variables
++ Assembler and Disassembler
++ Complete 32-bit implementation
++ Call ANY Amiga function by NAME
++ Optimizing target compiler ... no royalties
++ Many utilities provided
++ Updates available for postage, handling, and media
++ Elegant Amiga STRUCTURE interface
+     
+     
+     
+Price:  $99.95 (CA residents add 7% sales tax)
+     
+     
+Contact:  Delta Research
+          4054 Wilkie Way
+          Palo Alto, CA 94306
+     
+          415-856-3669
+     
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     
+I did ask a few of the more obvious questions:
+     
+Q:  What's the availability of JForth?
+A:  We're shipping it this month (October).
+     
+Q:  Is it copy protected?
+A:  No!   [ Much applause from the onlookers! ]
+     
+Q:  Does it support ALL the Amiga functions?
+A:  Yes.  (Everything that's in any Amiga Library.)
+     
+Q:  Does it work with 1.1 and 1.2?
+A:  Yes, it was developed under 1.2.
+     
+Q:  Does it support extended (Fast) memory?
+A:  We're running it with Pacific Cypress's memory board/expansion box
+    right now.
+     
+     
+     
+My own impressions are that it is indeed a fast programming system, and
+the product looked stable.  The person giving the demo had 6 or 7
+JForth windows open at once, showing code, debug screens, program
+execution that was using graphics calls, etc.
+     
+Hmmmm ... I've always wanted to learn about Forth ... maybe now is
+the time.  (Time ... who has enough of it :-) )
+     
+Just for the record:  I'm not associated with Delta Research in any
+                      way ... just passing along the information.
+     
+/kim
+
+

@@ -1,0 +1,2150 @@
+This file was extracted from "blazinforth.arc" and then
+converted to pure/true ascii so that it could be read  
+immediatetly after FTPing into your system. 
+It appears that the original documentation was produced
+with a wordprocessor/editor that was unfamilar to us.
+The orginal document contained formating commands and
+printing commands along the text. We try to takeout all these
+commands as much as possible so as to not to confuse     
+the reading of the text. However there still may be some
+left.
+ 
+************************************************************        
+************************************************************        
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+** * * * * * * * * * * * * **
+*                           *
+* Blazin' Forth for CBM-64  *
+*                           *
+*   System Documentation    *
+*                           *
+** * * * * * * * * * * * * **
+ 
+This documentation and the software it describes are
+Copyright (C) 1985 by Scott Ballantyne
+ 
+Distribution on a not for profit basis is encouraged.
+Sale or Resale of this manual or software is not allowed.
+ 
+ 
+I would like to acknowledge the following people, who
+contributed time, support or knowledge to this effort:
+ 
+Glen Haydon, author of MVP-FORTH, whose book ALL ABOUT FORTH
+was my constant companion during the early stages of this
+project.
+ 
+Henry Laxen, Forth Wizard and writer. Many of the best
+features of this compiler are due to his ideas, and his
+columns in Forth Dimensions are among the best and most
+creative writing on Forth I have ever seen. In particular,
+Laxen is the creator of the DEFER IS concept.
+ 
+To RMS and WRG, wherever you are, thanks for everything you
+taught me.
+ 
+Thanks to Chris M. A friend indeed.
+ 
+Special thanks to BJ, who knows what she did.
+ 
+Thanks to all those who put up with various versions of this
+compiler, and suffered almost as much as I did while
+debugging it.
+ 
+CBM C64 C128 and Commodore-64 are trademarks of Commodore
+Business Machines.
+ 
+This software is dedicated to the memory of Leonard Rose.
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Introduction
+ 
+ 
+    This manual describes the special features of the
+Blazin' Forth compiler. It is not necessary to read the
+entire document before using the compiler.
+    I would strongly urge you to at least glance through the
+first part paying special attention to the sections
+describing MOUNT and the EDITOR.
+    Once this has been taken care of, you may proceed
+immediately to the portion you are most interested in.
+Blazin' Forth supports the sound chip, Turtle Graphics, and
+Sprites, as well as containing a complete string handling
+package. Please feel free to start with the sections which
+interest you the most.
+ 
+ 
+ 
+ 
+Blazin' Forth Documentation,System Information, Description
+ 
+ 
+     Blazin' Forth is a complete Forth-83 system for the
+Commodore-64 computer. It includes all the words from the
+Required Word Set, the Double Number Extension Word Set, and
+the Assembler Extension Word set. It also includes almost
+all of the Controlled Reference Word set, and applicable
+words from the Uncontrolled Reference Word Set. The words
+omitted from the Controlled Word Set are --> , K , and Octal
+, all others are included. This system also contains its own
+versions of the System Extension Word Set, which include
+various compiler security features.
+     In short, this is a complete implementation of the
+Forth-83 standard, suitable for developing programs which
+may be ported to other systems, or running programs
+developed on other systems.
+     There are also various extensions to the standard
+system, which include additional boolean operators, words
+like ?KEY , ?DO, and ?LEAVE , which are very useful, but not
+yet part of the standard Forth language.
+     When I first started writing this compiler, I had two
+main goals in mind. The first was to have a fast Forth-83
+compiler on the C64. The other was to provide access to all
+of the nifty hardware features of this computer. Blazin'
+Forth includes words which make it simple to access the
+sound chip, and graphics chips of the 64. In particular, it
+includes a Turtle Graphics extension, which is by far the
+fastest implementation on the C64 I have ever seen.
+     This document describes all of the features specific to
+Blazin' Forth. For information on Forth, I would suggest you
+obtain a copy of the Forth-83 standard, which is available
+from the Forth Interest Group (FIG) for a few dollars. If
+you are new to Forth, the book Starting Forth, by Leo
+Brodie, contains a very complete tutorial on the Forth
+Language. There is a file available, Start Blazin' Forth,
+which is intended to help you over the hurdles caused by the
+differences between the Starting Forth dialect of Forth
+(which is an earlier implementation of Forth) and Forth-83.
+Note that there are not many differences between the two.
+     This system, its documentation and source code are
+Copyright (C) 1985 by Scott Ballantyne. Free distribution of
+this compiler is encouraged, distribution for profit is not
+allowed. (Users Groups and SYSOP's of bulletin boards may
+charge a small fee to cover their operating expenses. If in
+doubt, please ask.) Note that this system is not public
+domain, nor is it freeware. I don't want your money. If you
+like this system, why not contribute some software of your
+own? On the other hand, if you don't like it, why don't you
+contribute some software of your own? We all badly need good
+software.
+     Blazin' Forth has been very carefully tested by a group
+of several people, some old Forthers, and some new ones. I
+believe this system is free of bugs, but suggestions for
+improvement are welcome, as are bug reports, should any new
+ones be discovered. A version for the C128 is planned which
+will include more features, such as Multi-tasking, a hashed
+dictionary structure (for super fast compiles) and other
+stuff. Dynamic vocabulary chaining is also being examined.
+Comments on any of these topics, or any other suggestions
+for improvements are very welcome. If you do communicate
+with me, please include the version number of your Forth
+system, (obtainable by typing .VERSION). I may be reached
+through Electronic mail:
+ 
+Compuserve: 70066,603
+Sourcemail: BDE712
+ 
+Enjoy - and may the Forth be with you!
+ 
+SDB
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+System Configuration, SAVE-FORTH
+ 
+ 
+     Forth differs from other languages in many ways - one
+of the nicer ones is that it gives you a choice of the final
+configuration of your own system. When you first run Blazin'
+Forth, everything will be present in the dictionary - the
+string extensions, the Turtle Graphics words, the Sound
+Words, all utilities, everything. Since source code is
+provided for all system extensions starting with THRU , you
+may FORGET up to that point, and selectively compile the
+words you need. It is even possible to have many different
+Forth versions available. You may choose to compile only the
+editor, and the sound extensions, for example, to give more
+room for music applications. You may then save the new
+system by using the word SAVE-FORTH . You will be prompted
+for a filename, and the new system will then be saved to
+disk. Note that the modules are relatively independent (the
+sound extensions, string extensions, and graphics extensions
+are completely independent), but all require that the
+assembler be loaded, and may also use a few, but by no means
+all, of the Utility words.
+ 
+If you FORGET THRU , you will have 41167 bytes of available
+memory, which you can use in any way you wish. (Warning: You
+will also remove the Assembler, and the Editor from memory
+if you do this!) This is a *lot* of memory, since Forth code
+is extremely compact.
+ 
+Note that this also gives you the freedom to define your own
+system extensions - if you want more or different utilities,
+you can add them. If you don't like the way the string
+functions work, you can change them. There is no need to
+work around a system word that doesn't do exactly what you
+want - you can customize this Forth to your liking. (
+Warning: Do *not* save a new Forth system to a disk which
+contains Forth source screens. See the EDITOR section for
+more info.)
+ 
+ 
+ 
+CONFIGURE
+ 
+Using CONFIGURE, you may alter the actual memory
+configuration of the system. At power up, Blazin' Forth has
+4 virtual disk buffers, located from $C000 to $D000 . Should
+you want more or less ( adding buffers subtracts from the
+dictionary space, and cuts down on disk accesses, removing
+buffers increases dictionary space) you can do this as by
+using CONFIGURE .
+ 
+Example: Configure to use 1 disk buffer:
+1 IS #BUF  ( tell Forth how many buffers)
+CONFIGURE  ( reconfigure)
+ 
+You can also lower the top of memory. This could be useful
+to reserve memory for an RS-232 buffer, sprite data, or
+machine language programs.
+ 
+Example: Lower top of memory to $C000
+ 
+HEX ( use Hexidecimal base)
+$C000 IS LIMIT ( tell Forth how high it can go)
+CONFIGURE ( reconfigure the system)
+ 
+ 
+STARTUP
+ 
+You can have FORTH come up running a resident application.
+STARTUP is a system variable that holds the code field
+address of the first word to execute when first run, on an
+error, or on a RESTART. Your word must take over the
+functions of the FORTH word QUIT . For example, to have
+FORTH run a word processing application when first run, we
+define a word FOO , that will execute this program:
+ 
+: FOO    BLK OFF SP! BEGIN RP! ( take on functions of QUIT)
+         PROCESS-WORDS ( execute the program )  AGAIN ; (
+forever)
+ 
+Now that this is done, we change STARTUP :
+ 
+' FOO STARTUP ! ( store code-field of FOO in STARTUP )
+ 
+And then save this as a new system file. Warning: Be careful
+not to cause an error at this point, or the system will dump
+you into your word processing program!
+ 
+ 
+MISC:
+ 
+This Forth ignores case, unless you are entering literal
+strings between quotes. So, for example, whether you type
+EMIT emit Emit or EmIt , the result will be the same - EMIT
+will be executed. This allows you to program in a mixture of
+upper and lower case.
+Hitting RUN/STOP RESTORE will cause the FORTH system to
+warmstart. Default screen colors will be restored, the stack
+will be cleared, and decimal will become the current numeric
+base. Channels to the disk are unaffected, as are user
+programs and source screens in memory.
+Typing RESTART will cause a cold start of the Forth system.
+This will return the system to the same configuration it had
+when first powered up.
+Typing BYE will exit FORTH, and return to BASIC.
+THRU is the best way to compile a sequential range of
+screens. It is far better than filling a screen with a
+series of LOAD commands. Example: 5 25 THRU will load
+screens from 5 to 25 inclusive.
+ 
+ 
+EDITOR
+ 
+The EDITOR included with the system is the same as the one
+included in the book STARTING FORTH. All the editor commands
+described there are included in Blazin' Forth.
+ 
+VERY IMPORTANT !!
+Before accessing the disk drive, you must first type MOUNT,
+to initialize Forth's virtual memory system, and the disk
+drive. (Make sure a disk is in the drive before using this
+command.) This command must be used before LIST , INDEX ,
+TRIAD , LOAD or THRU . MOUNT should also be used after
+changing disks. You only need to execute MOUNT once, at the
+start of an editing session, or before compiling (unless you
+RESTART , or change disks), but you can't get to the disk
+without it.
+   Forth uses random access files. Random access files don't
+show up in the directory. A disk can be filled with Forth
+screens and a directory listing will still show an empty
+disk. Therefore, it is very important not to mix Forth
+source screens with standard CBM files. (Note: You can use
+standard CBM file types from forth - you just shouldn't mix
+them with your source code!)
+     The disk drive light will remain lit while the system
+is enabled. This is normal, and should not cause you any
+concern.
+     The word DCLOSE will close all of the channels to the
+disk drive, and turn off the light on the drive.
+ 
+ 
+PROGRAM DOCUMENTATION 
+ 
+The following words are included to aid in program
+documentation:
+ 
+xx LIST  Lists screen# XX to the current output device.
+Enters the Editor.
+ 
+xx TRIAD Lists the three screens including XX as a member to
+the current output device. The screens are formatted to fit
+on one normal sized sheet of printer paper. Example: 7 TRIAD
+will list screens 6, 7, and 8 to the screen. Includes PAUSE.
+ 
+XX YY TRIADS list all triads from XX to YY . Note that this
+word assumes your printer has automatic paging. Includes
+PAUSE.
+ 
+XX YY INDEX  Lists all first lines of all the screens
+starting with XX through and including YY. If you follow the
+FORTH editing convention of starting each screen with a
+comment, you can use this word to quickly locate words.
+Includes pause.
+ 
+WORDS Lists all the words in the current search order. Note
+that WORDS includes PAUSE. See PAUSE for more
+information.Same as the older VLIST.
+ 
+ 
+ 
+PROGRAM DEVELOPMENT AIDS 
+ 
+LOCATE
+Forth Screens are great, allowing you to break up your
+programs into small modules, and even form interchangable
+libraries. One drawback, particularly in debugging, is the
+need to remember what screen number a particular word is
+located on. LOCATE removes this problem. For example, if you
+have a word, FOOBAR, which is in an application which you
+are currently testing, all you have to do is type LOCATE
+FOOBAR - and the system will list the screen which includes
+FOOBAR on the screen, and enter the editor. LOCATE will even
+access the disk if necessary! This is an extremely handy
+word. Try it, you'll soon wonder how you got along without
+it. Note that words in the pre-compiled portion cannot be
+LOCATEd.
+ 
+DEBUGGING
+     Blazin' Forth contains several aids to assist in
+debugging and developing programs. Perhaps the most powerful
+word is TRACE. TRACE allows you to single-step through a
+Forth word, and observe it's execution step by step. For
+example, to trace a word called XYZZY , all you have to do
+is type TRACE XYZZY . Nothing will appear to happen, but the
+next time XYZZY is executed, Forth will enter single step
+mode. The word about to be executed will be displayed, along
+with the current stack contents. You have two options here.
+You can hit the RUN/STOP key, which will halt the program,
+and turn off the trace, or you can type CONTROL-P, which
+will enter PAUSE mode. Forth will display a P? prompt, and
+wait for you to do something. At this point, you can do
+anything you want. Alter the stack contents, LIST a screen,
+define a new word. You can also decide to trace a new word.
+This can be useful in tracing through levels of execution.
+To continue where you left off, type CONT . When the word
+has finished executing, normal program execution will
+resume. Once tracing has been enabled, there are only two
+ways to turn it off. Hitting the run/stop key during a
+trace, as described above. Or typing NOTRACE, either during
+a pause, or after the program has executed. Note: If you
+cause an error while in PAUSE mode, you will be dumped out
+of the current trace, but the trace is still enabled.
+ 
+WATCH
+Another kind of debugging aid, very useful in some
+situations, is WATCH. WATCH will keep an eye on a memory
+location, and halt program execution when it changes,
+printing out all the words executed in that line of
+execution. This can be handy when trying to locate a word
+that is altering the value of a variable, or even destroying
+the dictionary! For example, if you have a variable
+PROBLEM.VAR , which is getting changed to a bad value at
+some point, and you can't find out where, first initialize
+the variable to the value you want it too have, and then
+type: PROBLEM.VAR WATCH . When the value of PROBLEM.VAR
+changes from what it was when you executed WATCH, the system
+will stop program execution, and execute UNRAVEL , which
+displays the higher level nesting of Forth words which
+occurred up to that point.
+ 
+UNRAVEL
+Essentially, UNRAVEL displays all words executed by Forth up
+to the point that UNRAVEL was executed. It does this by
+decoding the contents of the return stack. (For more
+information on this, see Starting Forth.) This allows you to
+see what words preceeded a given words execution. For
+example:
+ 
+: FOO     BAR ;
+: BAR     FOO2 ;
+: FOO2    FOO3 ;
+: FOO3    UNRAVEL ;
+ 
+When FOO is executed, it will ultimately arrive at FOO3 ,
+which will execute UNRAVEL. This will cause the following
+display at your terminal:
+ 
+FOO  FOO3 FOO2 BAR 7106 INTERPRET RUN
+ 
+(the words 7106 etc, are system words which are responsible
+for executing your input. They will always appear, and can
+just be ignored.)
+ 
+This can be handy in determining what words lie in a certain
+execution path. Note that if you store values on the return
+stack, or if you use a DO LOOP, the return stack will
+contain stuff that is not relevant. UNRAVEL will just print
+these out as numbers, but this in itself, can be a very
+useful clue to debugging an application.
+ 
+?PARAMS
+ 
+This word will give an UNRAVEL trace if there are not enough
+parameters on the return stack. One use of ?PARAMS is to add
+run time error checking to the system. No run time error
+checking is performed by Forth. This allows applications to
+run faster, but can make life harder when you are developing
+an application. Forth does allow you to add this, if you
+want. When the program is finished, you can remove it, and
+the application will then run at full speed. For example,
+you can redefine the following:
+ 
+: DROP   1 ?PARAMS DROP ;
+: 2DROP  2 ?PARAMS 2DROP ;
+etc.
+ 
+DROP and 2DROP will now check the stack for the proper
+number of arguments, and give an error message, and an
+UNRAVEL dump if there are not enough arguments. One very
+nice thing about this way of doing things is that you don't
+have to re-edit your application once it's finished. You can
+redefine all of FORTH's stack operators in this way, load
+them in, and then load your application. When it's debugged,
+simply loading your application without loading the
+redefined stack operators will remove the run-time error
+checking, and allow your application to run at full speed.
+ 
+This is only one example - such runtime error checks can be
+very useful, and are limited only by your imagination and
+debugging skills.
+ 
+.S
+.S is a common and highly useful word. It non-destructively
+prints out the contents of the stack, or the message STACK
+EMPTY, if there is nothing on the stack. Note that this
+version of .S displays unsigned numbers, so, for example, a
+value of -1 will display as 65535.
+ 
+DUMP
+DUMP takes two arguments, a starting address, and a count.
+It will then dump the contents of the memory locations to
+the current output device (in hex) and also the symbolic
+ASCII contents of those addresses. A period will be
+displayed if there is no corresponding ASCII character. This
+can be extremely useful for monitoring memory arrays, or
+simply trying too figure out why a CODE defintion doesn't
+work. Note that DUMP includes PAUSE. See PAUSE for more
+information.
+EXAMPLE:
+2000 64 DUMP  will display 64 memory locations starting with
+2000.
+DEFER and IS
+These two words form a remarkably useful combination. DEFER
+is similar to the FORWARD declarations of other compilers.
+Ordinarily, you must compile a word before using it in
+another definition. DEFER lets you out of this obligation.
+EXAMPLE:
+DEFER FOO ( postpone working on FOO)
+: BAR   FOO ;
+ 
+Later in the application, you may define:
+ 
+: (FOO)   ." This is foo. " ;
+ 
+At this point, FOO will simply give an error message,
+"UNSPECIFIED VECTOR". You must tell FOO what to do, like
+this:
+ 
+' (FOO) IS  FOO  // make FOO do (FOO)
+ 
+Note the tick (') - it's important! Now, typing FOO will
+result in the execution of (FOO).
+ 
+Note that if you dislike the way a DEFERed word is
+performing, you can redefine it without recompiling the
+entire application. For example:
+ 
+: NEWFOO  ." This is new foo." ;
+' NEWFOO IS FOO
+ 
+FOO will now execute NEWFOO, instead of (FOO). This allows
+you the incredible freedom of altering an already compiled
+word's behaviour - this is, so far as I know, unique to
+Forth!
+ 
+Note that the usefulness of DEFER IS isn't limited to
+development. IS may be used inside a definition, and it's a
+convenient way to handle vectored execution. (See Starting
+Forth for more on vectored execution.) For example:
+ 
+DEFER MESSAGE
+: HI  ." Hi there." ;
+: BYE ." See you later " ;
+: SOLONG  ['] BYE  IS MESSAGE ;
+: HELLO   ['] HI   IS MESSAGE ;
+ 
+Executing SOLONG will cause MESSAGE to print "See you later"
+while executing HELLO will cause MESSAGE to print "Hi
+there". Note that when used inside a colon definition, you
+need to use ['] instead of ' .
+ *lk:blazin.doc2
+                               Input and Output
+ 
+ Blazin' Forth supports all the necessary words to handle
+any peripheral device on the serial bus, or on the IEEE bus,
+if you have an extension card like the BUSCARD II. I left
+certain definitions out deliberately, so that users who
+require them can define them as they like.
+ 
+ Higher Level Words.
+ 
+ The system supports I/O redirection of output to a printer.
+The words PRINTER and NOPRINTER will open a channel to a
+1526 printer, connected as device # 4. After executing
+PRINTER , all output will be directed to the printer.
+NOPRINTER will redirect output to the screen. Both PRINTER
+and NOPRINTER are DEFERed (see DEFER for more information),
+to make it easy for you to alter them, if you need to,
+without having to recompile the system. #LP is a constant
+which contains the current device number of the systems line
+printer. As currently configured, PRINTER sends a control
+code to the printer which turns on paging, and NOPRINTER
+sends a control code which turns paging off (these codes are
+for the 1526 printer). If your printer uses different
+control codes, or doesn't require them, you will probably
+want to revector these words. I would suggest you examine
+the definitions of LP and NLP for an example of how to write
+such words in Forth. In particular, it is important to have
+PRINTER set the user variable PRINTING? to TRUE, and
+NOPRINTER should reset PRINTING? to false.
+ 
+ The word DOS" has been provided to allow you to send
+commands to the disk drive from Forth. Any command which is
+recognized by the 1541 or a compatible drive may be sent
+using this word. As an example:
+ DOS" N0:DISKNAME,ID"
+ will format a disk in drive 0. Note that there must be a
+space between the " and the command.
+ 
+ To read the disks error channel, you can use the word ?DISC
+. Note that ?DISC will only display the message if there is
+an error.
+ 
+ MOUNT
+ MOUNT initializes the virtual disk operating system of
+Forth. It *must* be used before any word which accesses the
+disk. Note that you only need to use this word once, at the
+start of a session, and not before every LIST or LOAD
+command. (You must reissue it if you use RESTART, or if you
+change disks during a session.) Note that the disk light
+will remain on while the system is in operation. This is
+normal, and should not cause you a second thought.
+ 
+ If you require information on accessing standard CBM disk
+files, please see the appendix. These are the only words
+required in normal usage of the system.
+ 
+ 
+                       Extensions to the 83 Standard
+ 
+ BOOLEANS:
+ 
+ Blazin' Forth contains the following boolean tests which
+are not part of the 83 standard:
+ 
+ 0<>  Leaves a true flag if top of stack is non-zero.
+ 
+ 0>   Leaves a true flag if top of stack is positive.
+ 
+ <>   Leaves a true flag if top of stack is not equal to
+second element of stack.
+ D>   Leaves a true flag if the second double number is
+greater than the doublenumber on the top of the stack.
+ 
+ CONDITIONAL EXECUTION
+ 
+ BEGIN...AGAIN is included. It is the same as
+ 
+ BEGIN .... FALSE UNTIL
+ 
+ Or, in other words, an infinite loop.
+ 
+ Multiple WHILEs are supported by Blazin' Forth. For
+example:
+ 
+ BEGIN <action> <condition> WHILE <action> <condition> WHILE
+<action> REPEAT
+ 
+ Note that you are not limited to only two whiles, this is
+simply an example.
+ 
+ LOOPING
+ 
+ Forth-83 loops are very fast, make the older /LOOP
+unnecessary, and are generally much improved over the
+earlier Forth Loops. However, when the loop index is equal
+to the loop limit, the loop will not execute once, but 64k
+times. For occasions when this is not wanted, Blazin' Forth
+provides ?DO . ?DO will not allow the loop to be executed if
+the limit and index are equal. For example:
+ 
+ : LOOP1   ?DO I . LOOP ;
+ 
+ Does the same thing as:
+ 
+ : LOOP2  2DUP <> IF DO I . LOOP ELSE 2DROP THEN ;
+ 
+ Note that the first is much shorter, and also much faster.
+Of course, ?DO will also work with +LOOP, just like DO does.
+ Forth-83's LEAVE is also changed from earlier LEAVEs.
+Forth-83's LEAVE jumps immediately to the word after LOOP or
++LOOP, while the older LEAVE would continue through the
+remainder of the loop, exiting at the LOOP or +LOOP. Blazin'
+Forth contains a word, ?LEAVE which can be quicker and a
+real code saver when all you need to do is scram. For
+example:
+ 
+ : EXIT1 10 0 DO  I . 5 = ?LEAVE LOOP ;
+ 
+ Will cause the same effect as:
+ 
+ : EXIT2 10 0 DO  I . 5 = IF LEAVE THEN LOOP ;
+ 
+ Note that ?LEAVE takes less room, and is also quicker, than
+the second alternative.
+ 
+ Interactive Extensions
+ 
+ ?KEY ( -- char )
+ This word works just like the standard KEY , but while KEY
+will wait for a keypress, ?KEY reads the keyboard, and
+returns the ASCII value of the key pressed, or a null (0) if
+no key was pressed.
+ 
+ PAUSE ( -- flag)
+ This word is basically a souped up ?TERMINAL. ?TERMINAL
+will return a TRUE flag if the stop key is pressed, and
+false otherwise. PAUSE will do the same thing, but,
+additionally, if any key other than the stop key has been
+pressed, it will halt execution and wait for the next key.
+Note that although PAUSE handles the waiting, it is up to
+the calling word to process the flag.
+ 
+ JOYSTICK ( port# -- direction )
+ Requires a value on the stack, which should be either 0 or
+1. If 0, joystick port 1 will be read, If 1, joystick port 2
+will be read. Joystick leaves a value on the top of the
+stack which indicates the direction of the joystick. -1
+means the stick is centered, 0 is up, with values increasing
+to the right, so 1 is forward and up, 2 is to the right,
+etc. Note that if these values are multiplied by 45 the
+result is suitable for SETH (see graphics extensions).
+ 
+ JOYBUTTON ( port# -- flag )
+ Leaves true on the stack if the joy stick button at the
+appropriate port is depressed, otherwise leaves false.
+Requires the same values on the stack as JOYSTICK.
+ 
+ PADDLE ( paddle# -- value )
+ Requires a number from 0 to 3 on the stack which specifies
+the paddle. Leaves a value between 0 and 255 on the stack,
+depending on the setting of the appropriate paddle. Note
+that these words may also be used to read other devices,
+such as a Koala Pad.
+ 
+ PADDLEBUTTON ( paddle# -- flag)
+ Leaves a true or a false on the stack, depending on whether
+or not the addressed button has been depressed. Requires the
+same values as PADDLE.
+ 
+ JIFFY! ( doublenumber -- )
+ Used to set the 64's Jiffy Clock. Requires a double number
+on the stack.
+ 
+ JIFFY@ ( -- doublenumber )
+ Used to read the 64's Jiffy Clock. Leaves a double number
+on the stack. Note that 1 Jiffy = 1/60 of a second.
+ 
+ JIFFIES ( n -- )
+ Requires a single number on the stack. JIFFIES will cause a
+wait of n jiffies before continuing.
+ 
+ CURSOR ( x y -- )
+ Positions the cursor at the x y coordinates on the top of
+the stack.
+ 
+ CURSORPOS ( -- x y )
+ Leaves the current position of the cursor ( x and y ) on
+the top of the stack.
+ 
+ 
+ CONSTANTS
+ Blazin' Forth has precompiled the following constants.
+ 
+ 0 1 2 3
+ These simply leave their value on the stack.
+ 
+ TRUE
+ Leaves the value for TRUE (-1) on the stack.
+ FALSE
+ Leaves the value for FALSE (0) on the stack.
+ 
+ VARIABLES
+ Blazin' Forth has the following variables which may be of
+use to you:
+ 
+ #LINE
+ A user variable which contains the number of times the word
+CR has been executed. May be examined to control output
+formatting. Note that this word is reset by PAGE to 0.
+ 
+ #OUT
+ A user variable which contains the number of characters
+TYPEd or EMITted since the last CR. Note that words such as
+SPACE or SPACES, which use EMIT, will also bump this
+variable. May be examined by the user to control output
+formatting. CR resets to 0.
+ 
+ DPL
+ A user variable which contains the number of places after
+the decimal point for input conversion.
+ 
+ FENCE
+ A user variable which contains the address below which
+FORGET will not operate. This may be changed by the user,
+but caution must be observed.
+ 
+ VIEW?
+ A user variable which controls whether or not a view field
+will be compiled by CREATE. The view field is the field used
+by LOCATE to find the source code for definitions in the
+dictionary. If VIEW? is 0 , then no view field will be
+compiled. To compile view fields, VIEW? must contain a 2.
+Any other value will cause the system to behave oddly. Note
+that turning VIEW? off will save memory, but it does not
+affect execution speed. You should also be aware that
+executing SAVE-FORTH will save the current values of certain
+system variables, such as FENCE, VIEW?, WIDTH and WARNING.
+ 
+ WARNING
+ A variable which controls the printing of non-fatal error
+messages (such as NAME ALREADY EXISTS). If warning is false,
+no messages will be printed.
+ 
+ WIDTH
+ Controls the number of characters actually stored in the
+dictionary. The default is 31, which is specified by the
+Forth-83 standard. This may be changed by the user. Note
+that using fewer characters will save memory.
+ 
+ Although not variables, the following are used so often,
+this is probably a good place to tell you about them:
+ 
+ OFF
+ Stores a false (0) in a variable. VARIABLENAME OFF is the
+same as FALSE VARIABLENAME ! , but much quicker.
+ 
+ ON
+ Stores a true (-1) in a variable. VARIABLENAME ON is the
+same as TRUE VARIABLENAME ! , but much quicker.
+ 
+ MATH
+ 
+ (Note: The stack notation below uses n as an abbreviation
+for single numbers, and d to represent double numbers. Also
+note that floored division is used, to be consistant with
+the rest of the standard)
+ 
+ 2* ( n -- 2*n)
+ Performs an arithmetic left shift of n, leaving the result
+on the top of the stack.
+ 
+ D2* ( d -- d*2)
+ Same as 2* , but for double numbers.
+ 
+ M* ( n1 n2 -- d )
+ D is the doublenumber product of the single numbers n1 n2.
+ 
+ M*/ ( d1 n1 n2 -- d2 )
+ d2 is the result of multiplying d1 by n1 and dividing the
+resulting product by n2. An triple-precision intermediate
+product is used, and all values are signed.
+ M+ ( d1 n -- d2 )
+ d2 is the sum of d1 and n. All values are signed.
+ 
+ M/ ( d1 n -- n2 n3)
+ n3 is the remainder and n2 is the quotient of the division
+of d by n1. All values are signed.
+ 
+ M/MOD ( ud1 u1 -- u2 ud2 )
+ ud2 is the quotient and u2 is the remainder of the division
+of ud1 by u1.
+ 
+ S>D ( n -- d )
+ n is sign extended to form the double number d.
+ 
+ MISC:
+ 
+ ASCII
+ A handy word. Used in the form
+ ASCII *
+ to either leave the ascii code for the following character
+on the top of the stack, or compile it as a literal for
+later execution. ASCII makes programs much more readable,
+and also saves much time spent looking up ascii codes in
+tables.
+  
+ CONTROL
+ Also handy. Used in the form
+ CONTROL "c"
+ where c is one of the 64's weird reversed control
+characters, such as a cursor left or a clear screen.
+ 
+ FREE ( -- #bytes)
+ Leaves the number of bytes free on the stack. This may be
+changed by CONFIGURE. (Note that the amount of memory
+occupied by the disk buffers is not considered FREE,
+although it may be used by user programs if no disk accesses
+are to be performed.)
+ 
+ //
+ Causes the rest of the line to be viewed as a comment.
+Corresponds to a backslash, found on some computers, but,
+regrettably, not on the C64.
+ 
+ Blazin' Forth also includes Kim Harris's experimental
+proposals for dictionary operators. See the text of the
+Forth-83 standard for more information.
+                             String Extensions
+ 
+ Overview:
+ 
+ There are two values associated with every string variable
+in Blazin' Forth. The first is the maximum allowable length
+of the string, which is set when you create a string
+variable. The second is the actual length of the string,
+which is set when you actually store the string in the
+variable. It is important to keep this in mind when using
+strings, since the string operators will truncate the string
+if you try to store more characters in the string than you
+have allotted room for. Of course, you don't have to use the
+whole space, but you can't overflow it.
+ 
+ STRING STRINGS
+ 
+ These two words are used to reserve variable space for the
+strings in memory. STRING is used to allocate a single
+string variable, while STRINGS allocates a string array. You
+must always tell Forth how long your string is going to be.
+It can be any length, within the maximum limit of 255.
+Example:
+ 
+ 10 STRING NAME$
+ 
+ Creates a string variable called NAME$ in the dictionary.
+Space is reserved for 10 characters. This variable will
+behave exactly like a regulation Forth variable, and leave
+its address on the stack. Note that the address is the
+address of the count byte, which allows you to use COUNT
+TYPE on the string to type it out.
+ STRINGS requires the number of strings you intend to store,
+as well as their maximum length. Example:
+ 
+ 5 20 STRINGS ARRAY$
+ 
+ Reserves room in the dictionary for 5 strings of 20
+characters each. To access the 3rd string in ARRAY$, you
+simply type:
+ 
+ 3 ARRAY$
+ 
+ And the address of the third 20 character string in ARRAY$
+will be left on the stack. Each string in a string array is
+stored with its own count byte, and the address left when
+you access a string in a string array will be the address of
+the length byte for that string. Note that both STRING and
+STRINGS initialize the string length to zero.
+ 
+ 
+ "
+ " is used to compile string literals. When it is executed,
+it leaves the address of the count byte of the string on the
+stack. For example:
+ 
+ : JOHN$  " JOHN" COUNT TYPE ;
+ 
+ When executed, JOHN$ will print JOHN on the terminal. Note
+that " may also be used outside a definition. In this case,
+the string will be stored at PAD, and the current address of
+PAD will be left on the stack.
+ 
+ $SIZE $LENGTH
+ These two words are used to determine the length of strings
+or their maximum allowable size. $SIZE will leave the
+maximum allowable length of the string on the stack, while
+$LENGTH will leave the length of the string currently stored
+in the variable. Example:
+ 
+ NAME$ $SIZE ( leaves the maximum number of characters
+allowable in NAME$)
+ 
+ NAME$ $LENGTH ( leaves the length of the string currently
+stored in NAME$)
+ 
+ $!
+ 
+ This word is used to store a string in a variable. You can
+use it to initialize a string variable from a string
+literal. Example:
+ 
+ " This is a string" NAME$ $! ( store string literal in
+NAME$)
+ 
+ Note that strings will be truncated to the max length
+allowable for the string variable you are moving the string
+too. So for example, if NAME$ was created with a maximum
+size of 5, the only characters actually stored in NAME$
+would be "THIS ".
+ 
+ You can also move strings from one variable to another with
+this word:
+ 
+ TRASH$ NAME$ $! ( move the string in TRASH$ to NAME$ )
+ 
+ Note that this word only operates on string variables - you
+can't use it, for example, to move a string to the PAD (see
+COPY$ for a way to do this.)
+ 
+ $+
+ This performs the concatenation operation. Once again, if
+the total length of the concatenated string exceeds the
+length of the variable, then the string will be truncated.
+Example:
+ 
+ FOO$ BAR$ $+ ( the concatenated string is left in FOO$ )
+ 
+ Strings may be added (concatenated) to themselves:
+ 
+ FOO$ FOO$ $+  or  FOO$ DUP $+
+ 
+ $?
+ This simply types out the string. Example:
+ 
+ NAME$ $? ( type current string in NAME$)
+ 
+ COPY$
+ This word will extract a portion of a string, and move it
+to another string. It takes four arguments. The string
+address from which the string is going to be copied, the
+starting character of the substring, then ending character
+of the substring, and the destination. Example:
+ 
+ NAME$ 2 4 LIST$ COPY$ ( move characters 2 thru 4 of NAME$
+to the start of LIST$)
+ You can also move a string to the pad with this word:
+ 
+ NAME$ 2 10 PAD  COPY$ ( move characters 2-10 of NAME$ to
+the PAD)
+ 
+ Note that you can move the entire string by simply giving
+indexes of 1 and 255:
+ NAME$ 1 255 PAD COPY$ ( move the whole string to the PAD)
+ 
+ 
+ +$!
+ This word is used to store a string in the middle of
+another string. For example:
+ 
+ NAME$ JUNK$   4  +$!
+ 
+ Will store NAME$ starting at the 4th character in JUNK$.
+This is a very useful string operation, particularly in
+conjuntion with COPY$ :
+ 
+ NAME$ 2 4 PAD COPY$    PAD JUNK$ 4 +$!
+ Will move the 2 thru the 4th characters of NAME$ to JUNK$,
+starting at the 4th character of JUNK$ ( try this one in
+BASIC!).
+ 
+ Note that +$! will only modify an already initialized
+string. For example, if JUNK$ contains a 10 character
+string, then:
+ NAME$ 2 4 PAD COPY$ PAD JUNK$ 11 +$!
+ 
+ will be a null operation. There are often cases when you
+want to build up an unitialized string from smaller pieces,
+or to use a single string variable as a one dimensional
+string array. To do this, you must first initialize the
+string to all spaces. The word $BLANK has been provided for
+this purpose. $BLANK will set the entire string to spaces,
+and then set the length of the string equal to the maximum
+size for that string. Example:
+ 
+ LIST$ $BLANK ( blank LIST$)
+ 
+ IN$
+ 
+ This word will find the first occurence of a string in
+another string, and return the index of the first character.
+If nothing is found, a 0 is returned. Example:
+ 
+ NAME$ LIST$ IN$ ( return the first occurence of NAME$ in
+LIST$)
+ 
+ 
+ $=  $<  $>   $<>  $<=   $>=
+ 
+ These are the string boolean operators. Note that,
+everything else being equal, the longer string is considered
+the greater, and also that lower case is not the same as
+upper case.
+ 
+ >LOWER
+ 
+ This word is principly useful for carrying out string
+comparisons when you want to ignore case. It takes a
+starting address, and a count, and converts the entire thing
+to lower case. (Lower case being the same as upper case when
+the computer is in uppercase/graphics mode). Note that the
+string is converted where it stands, so if you want to
+preserve the original form, move it somewhere else before
+using this word.
+ 
+ Example: Check if two strings are equal:
+ NAME$ TEST$ $=
+ 
+ Example: Check if two strings are equal, but ignore case:
+ 
+ NAME$ DUP COUNT >LOWER TEST$ DUP COUNT >LOWER $=
+ 
+ Example: Check if two strings are equal, ignore case, but
+preserve the original form of the strings:
+ 
+ NAME$ 1 255 PAD COPY$ ( move to pad)
+ PAD COUNT >LOWER      ( convert to lower case)
+ TEST$ TRASH$ $!       ( move TEST$ to a temporary variable)
+ TRASH$ COUNT >LOWER   ( convert to lower case)
+ PAD TRASH$ $=         ( compare)
+ 
+ 
+ INPUT$
+ This accepts input from the keyboard, and moves the string
+to the variable whose address is on the stack. Note that the
+PAD is used for temporary storage, and a copy will remain
+there immediately after using this word. Note also that the
+full length of the input will be in pad, but it will be
+truncated if moved to a variable which is not large enough.
+ 
+ Example:
+ 
+ : GETNAME ." Please type your name " NAME$ INPUT$ ;
+ 
+ This example will prompt the user, and store his response
+in NAME$.
+ 
+ VALUE$
+ This word will convert a string stored at an address to a
+double number on the stack. Example:
+ 
+ NUMBER$ VALUE$  ( convert the string in NUMBER$ to a double
+number on the stack.)
+ 
+  Using these basic string operations, all necessary string
+handling operations may be carried out. You can also easily
+define your own custom string handling words. For example,
+if you are particularly fond of BASIC's string handling
+procedures, it is easy to define Forth equivalents using
+these operators. For example:
+ 
+ : LEFT$   ( addr1 n addr2 --)
+ >R 1 SWAP R> COPY$ ( move n leftmost  characters of addr1
+to addr2) ;
+ 
+ Which you would use as follows:
+ 
+ NAME$ 4 TEMP$ LEFT$  ( the 4 leftmost characters in NAME$
+are left in TEMP$)
+ 
+ : RIGHT$  ( Move n right most characters of addr1 to addr2.
+             Stack:  addr1 n addr2 -- )
+ >R OVER $LENGTH 1+ SWAP -  OVER $LENGTH R> COPY$ ;
+ 
+ You would use RIGHT$ as follows:
+ 
+ NAME$ 4 TEMP$ RIGHT$ ( the 4 rightmost characters of NAME$
+are left in TEMP$.)
+ 
+ You can use definitions like these to easily convert BASIC
+programs to FORTH. Personally, I think you will find it more
+flexible in the long run to use indexes into the strings,
+rather than the less flexible BASIC type of command. That's
+only an opinion - many people have lived long and productive
+lives, and never once indexed into a string.
+                                SID Chip Support
+ 
+ Blazin' Forth Contains all the words necessary to access
+the SID (Sound Interface Device) of the C64. Forths speed
+and flexibility make it ideal for this kind of real time
+control. Included with the source code is an extensive
+example of using Blazin' Forth to program music. This is
+loaded by typing: 105 124 THRU . (Remember, you must type
+MOUNT before using THRU or LOAD. You need only issue MOUNT
+once, of course. See MOUNT for more information.)
+ 
+ MUSIC.ON
+ 
+ This word *must* be executed before executing any of the
+note words. It clears the sound chip, initializes important
+variables and then starts up a interrupt driven routine that
+is responsible for timing the voices, and gating off the
+sounds at the proper time.
+ 
+ MUSIC.OFF
+ 
+ This word should be at the end of the music program. It
+restores the 64's normal interrupt system, and shuts off
+SID. Note that peculiar results will occur if these two
+words are not used in their proper order. (Note: Typing
+RUN/STOP RESTORE will have the same effect as MUSIC.OFF)
+ 
+ V1 V2 V3
+ These words set the current voice. For example, typing V1
+will cause all of the following commands to affect only
+voice 1.
+ 
+ ATTACK DECAY SUSTAIN RELEASE
+ These set the envelope parameters for the sid chip. Each
+one takes a parameter between 0 and 15. Example:
+ 
+ V1 0 ATTACK 15 DECAY 0 SUSTAIN 0 RELEASE ( setparams for
+voice 1)
+ V2 15 ATTACK 0 DECAY 15 SUSTAIN 15 RELEASE ( setparameters
+for voice 2)
+ 
+ 
+ VOLUME
+ Takes a value between 0 and 15. Note that this command sets
+the volume for all voices.
+ 
+ 15 VOLUME ( set volume for all voices to max)
+ 
+ C D E F G A B C# D# F# G# A# D< E< F< E# G< A< B< R
+ These words do the actual playing of the notes. Note that
+the sign "<" by some of the notes is actually the left arrow
+sign, but EZ-script won't allow that to be entered into a
+document. It means the notes are flatted. There is also a
+word R , which acts like a REST. (TIP: You may find music
+which has long passages of rests for one voice, while the
+others continue. It is not necessary to code all of these
+rests. Once R has been executed, the voice will remain off
+until it is reactivated with one of the note words. This is
+a great memory and patience saver. The only thing you must
+be careful of when coding this way is to make sure the rest
+specified isn't *longer* than the actual rest, since Blazin'
+Forth will not play any note before its time.)
+ 
+ 1/32 .1/32 1/16 .1/16 1/8 .1/8 1/4 .1/4 1/2 .1/2  WHOLE
+TRIPLET TIE
+ These words set the rythmic duration of the note values.
+Note that you need to set a rythmic value for a particular
+voice only once - setting other rythmic values for other
+voices will not affect each other.
+ 
+ OC0 OC1 OC2 OC3 OC4 OC5 OC6 OC7
+ These words set the octaves for each voice. Note that, as
+for the note length values, once an octave has been set for
+a voice, it remains set for that voice until you
+specifically change it - specifying a new octave for a
+different voice will affect only the new voice, not any of
+the others. A C64 octave extends from C to B, with OC4 C
+playing a middle C.
+ 
+ TEMPO
+ This word sets the tempo and the release time (which is a
+fraction of the tempo) for each note. The tempo value is
+stored in MAAZEL, while the amount of time the note spends
+in its release cycle is stored in REL.TIME. (Note for music
+hackers: You may tweek the value in REL.TIME after you have
+set it with TEMPO. For example, if you don't wish the note
+to be gated off at all, you can store a 0 in REL.TIME, while
+if you would like the notes in the piece to spend more time
+in the release cycle, you can increase the value stored here
+by the system.)
+ 
+ TRIANGLE SAWTOOTH PULSE NOISE SYNCH RING
+ These words set the waveform for the current voice.
+Example:
+ 
+ V1 TRIANGLE ( set voice 1 to a triangle wave)
+  
+ PULSE.WIDTH
+ This word takes a value on the stack, which sets the pulse
+width for the current voice. (Note that you must have
+selected the PULSE waveform for this command to have any
+effect.) This is a number between 0 and 4095. Typing 2048
+PULSE.WIDTH will make a square wave.
+ 
+ Now that we have covered the basics, here are some
+examples:
+ 
+ MUSIC.ON ( initialize SID and timing routine)
+ 100 TEMPO   15 VOLUME ( set tempo and volume)
+ V1 TRIANGLE  0 ATTACK 9 DECAY ( set waveform and envelope
+for voice 1 )
+ 1/4 OC4 ( set quarter notes and octave)
+y a chromatic scale)
+ MUSIC.OFF ( turn everything off)
+ 
+ This is the basic form of all music programs in Blazin'
+Forth. Note that MUSIC.ON is executed before any paramaters
+are set, and that the tempo, volume, and note lengths are
+set before any notes are played.
+ 
+ Here is a slightly more complex example. You may enter this
+interactively, or edit it onto a screen.
+ 
+ : SETTINGS ( setup to play some Bach)
+ 100 TEMPO  15 VOLUME
+ V1  9 SUSTAIN SAWTOOTH ( voice 1 params)
+ V2  9 SUSTAIN SAWTOOTH ( voice 2 params) ;
+ 
+ : BACH1 ( two part invention# 1, first measure)
+ 
+ V1  1/16  OC4  ( voice, duration, octave for voice 1)
+ R C D E F D E C  1/8  G
+ V2 1/16 OC3 R C  V1 OC5 C  V2 D E ( play 1/8 notes in V1
+against 1/16 in V2)
+ V1 OC4 B  V2 F D  V1 OC5 C  V2  E C
+ V1 1/16 D  V2 G  ;
+ 
+ Note that it was only necessary to set the octave and
+duration for each voice once. The system keeps track of the
+settings for each voice for you, so you only need to change
+them when the music demands it.
+ You probably also noticed that I left out the MUSIC.ON
+MUSIC.OFF words. That's because we are going to use BACH1 in
+another word, in just a moment. You can hear the BACH1 word
+by typing:
+ 
+ MUSIC.ON SETTINGS BACH1 MUSIC.OFF
+ 
+ or you can make another word:
+ 
+ : PLAY-BACH1  MUSIC.ON  SETTINGS BACH1 MUSIC.OFF ;
+ 
+ to do the work for you. You can use BACH1 to get almost two
+measures of this Invention (with slight apologies to JSB)
+like this:
+ 
+ : BACH2   MUSIC.ON  SETTINGS  BACH1 7 TRANSPOSE  BACH1
+MUSIC.OFF ;
+ 
+ BACH2 will play BACH1 and then repeat it again, a fifth (7
+half-steps) higher, which is all Bach really did. Note that
+we could have easily changed the waveform or the envelope
+settings for the second measure if we wanted to. The
+possibilities for programming musical Forth words is limited
+only by your imagination.
+ 
+ Accessing SID's advanced features:
+ 
+ Blazin' Forth contains words that make it easy to access
+the special features of the SID chip, such as the filters.
+ 
+ HIPASS LOWPASS BANDPASS NOTCH
+ These filters specify the type of filter to be used. Note
+that SID will only allow one type of filter to be selected
+at once, but this filter will only affect the voices which
+are routed through it. You may elect to filter all the
+voices, or only one or two.
+ 
+ FILTER
+ This word routes the current voice through the filter. For
+example:
+ V1 LOWPASS FILTER
+ Will turn on the lowpass filter and route only voice 1
+through it. The other voices are un-affected.
+ 
+ NOFILTER
+ This word stops the filtering for the current voice. For
+example:
+ V1 NOFILTER
+ Will restore voice 1 to its un-filtered state. Note that
+the actual filter setting is unaffected by this command.
+ 
+ RESONANCE
+ This word takes a number between 0 and 15 on the stack, and
+sets the resonance of the filter, with 15 being maximum
+resonance. Example:
+ 
+ 15 RESONANCE ( set resonance to maximum)
+ CUTOFF
+ This word takes a number between 0 and 2047 which sets the
+cutoff frequency for the current filter.
+ 
+ Example:
+ 
+ Using our BACH1 example from above, we can play around a
+little with the filters, to see how they change the sounds
+that come out:
+ 
+ MUSIC.ON  SETTINGS  ( set it up)
+ 
+ V1 HIPASS FILTER   2000 CUTOFF 15 RESONANCE ( set up a
+highpass filter for v1)
+ BACH1 ( play it)
+ V2 FILTER  ( filter both voices)
+ BACH1 ( play it with both filtered voices)
+ V1 NOFILTER ( don't filter voice 1)
+ BACH1
+ V1 LOWPASS FILTER
+ ( setup a lowpass filter with the same settings, and send
+v1 thru it)
+ BACH1 ( play it - note that V2 is still filtered)
+ V1 NOFILTER V2 NOFILTER BACH1 ( play without filters)
+ MUSIC.OFF ( shut down everything)
+ 
+ As you can see, it is quite easy to access the SID chip
+using the words provided with the system.
+ 
+ MISC.
+ 
+ V3OFF
+ This word will disconnect the audio output of voice 3. It
+is usually advisable to do this when using the output of
+voice 3 to modulate the other voices.
+ 
+ OSC3@
+ This word allows you to read the output of the voice 3's
+oscillator. This can be used to modulate one of the other
+voices. Note that a waveform must be selected for voice
+three in order for this register to output anything other
+than 0.
+ 
+ ENV3@
+ Same as OSC3@ , but allows you to read the value of voice
+3's envelope generator. Note that envelope parameters must
+be set, and voice 3 gated in order for this register to
+return anything other than 0.
+ 
+ TRANSPOSE
+ Takes a number on the stack, which determines the number of
+half-steps the following notes will be moved up. Note that
+only positive values will have any effect. Using TRANSPOSE
+can save memory (and typing!), since sections which are
+repeated in a musical work may be replayed in a different
+key with this word. 0 TRANSPOSE will restore the notes to
+their normal values.
+ 
+ Voice Modulation:
+ One of the most fascinating areas to explore with SID is
+the area of voice modulation. In order to modulate voices,
+it is necessary to modify the source code to some of the
+sound words in Blazin' Forth. The heart of the music words
+is a procedure called PLAY. By modifying this word, it is
+possible to dynamically change the quality of a note while
+it is actually being sounded, by modulating it or otherwise
+tampering. There are several examples of how to do this
+located on the source disk. Note that these screens should
+be loaded in the order presented below.
+ 
+ Screens 125-126 contain a demonstration of how to add
+vibrato effects. It is possible to vary the width and speed
+of the vibrato, to get many different types. To access this
+demo, make sure the disk is available (see MOUNT) and then
+type: 125 126 THRU . When the screens are compiled, the demo
+is executed by typing PLAY-LIKE-LYNN .
+ 
+ The next 3 screens contain sound effects demonstrations.
+Screen 127 has the words SIREN and CLAPS. To access these
+words, type 127 LOAD , and then SIREN or CLAPS .
+ Screen 128 contains an example of RING MODULATION. Type 128
+LOAD and then BELL-SOUNDS.
+ Screen 129 contains an example of voice synchronization.
+Type 129 LOAD , and then SYNCH-DEMO.
+ 
+ The SID chip is a fascinating device, and the brief
+discussion here hardly does it credit. It is possible to
+generate really remarkable music and  sound effects using
+these words with SID. If you need basic information on
+things like envelopes, waveforms, and filtering, I would
+strongly urge you to obtain a copy of the programmers
+reference quide.
+                                VIC chip Support
+ 
+ Blazin' Forth contains an extensive implementation of
+Turtle Graphics which supports all of the graphics modes of
+the 64, and is also by far the fastest turtle graphics
+implementation I have ever seen on this computer. I am
+particularly proud of this aspect of Blazin' Forth, and I
+hope you get a lot of pleasure out of it.
+ 
+ Turtle Graphics was developed by Seymour Papert of MIT as
+part of his Logo language, and it is an excellent way to
+explore computer graphics. The Turtle in Turtle Graphics is
+a graphics cursor, generally shaped like a triangle (shaped
+like an arrow-head in Blazin' Forth). You control the turtle
+by telling it to move FORWARD, or BACK , and as it moves, it
+draws a line. You control the turtles direction by giving it
+commands like RIGHT or LEFT. You can also use coordinates,
+through the SETXY command.
+ 
+ The graphics screen in Blazin' Forth is 240 turtle steps
+high ( screen coordinates 0 to 239) and 320 turtle steps
+wide ( screen coordinates 0 to 319). Wraparound, which is
+usually part of Turtle Graphics systems, is not implemented,
+since I think it's preferable to see part of a figure
+instead of a mess. The lines drawn by the turtle are
+therefore clipped. It should also be mentioned that the
+graphics screen does not take any of the memory normally
+available to Forth due to the intensive use made of the
+C64's powerful bank switching feature.
+ 
+ DRAW
+ Sets up the graphics screen, with the turtle in the center
+of the screen, pointing straight up. Defaults to SCOLOR and
+SPLITSCREEN , but these may be changed. It is extremely
+important that this word (or SCOLOR or DCOLOR) be used at
+least once before typing any of the other graphics words!
+ 
+ FD or FORWARD
+ Takes a number on the stack and moves the turtle forward
+that distance. Draws a line if the turtles pen is down.
+Example:
+ 20 FD ( move the turtle 20 turtle steps forward)
+ 
+ BK or BACK
+ Takes a number on the stack and moves the turtle back that
+distance. Draws a line if the pen is down. Example:
+ 20 BK ( move the turtle 20 turtle steps back)
+ 
+ RT or RIGHT
+ Takes a number on the stack, and rotates the turtle right
+that number of degrees. Example:
+ 90 RIGHT ( rotate the turtle 90 degrees to the right)
+ 
+ LT or LEFT
+ Takes a number on the stack, and rotates the turtle left
+that number of degrees. Example:
+ 90 LT ( rotate the turtle 90 degrees to the left)
+ 
+ SP or SPLITSCREEN
+ Enters SPLITSCREEN mode, with 5 lines of text on the bottom
+of the screen, and the rest of the screen in graphics mode.
+This is the default condition. Due to the location of the
+hires screen, a small amount of flicker may be observed,
+particularly when the turtle is in the region of the split.
+This is a hardware limitation over which I have no control.
+Sorry.
+ 
+ FS or FULLSCREEN
+ Exits SPLITSCREEN mode. The entire graphics screen is
+displayed. Note that if you want to mix music and graphics,
+you must be in FULLSCREEN mode. This is because both
+splitscreen mode and the music words are interrupt driven.
+ 
+ NOSPLIT
+ This will cause DRAW to default to FULLSCREEN mode.
+Executing SPLITSCREEN will restore SPLITSCREEN as the
+default condition.
+ 
+ BG or BACKGROUND
+ Takes a number on the stack, and sets the background color
+of the hires screen to that color. When in splitscreen mode,
+the border color will also be affected by this command. The
+number should be between 0 and 15, as described in the
+programmers reference guide. Example:
+ 
+ 1 BG ( sets background to white)
+ 
+ PC or PENCOLOR
+ Takes a number on the stack, and sets the pencolor of the
+turtle to that color. Note that a pencolor of -1 is allowed,
+and will cause the turtle to erase, instead of draw.
+Example:
+ 
+ 2 PC ( draw in red)
+ 
+ PE or PENERASE
+ Causes the turtle to erase instead of draw as it moves.
+Note that the pen must be down in order to erase. (Or the
+eraser must be down, in this case.)
+ 
+ PU or PENUP
+ Lifts the turtles pen. The turtle may be moved without
+drawing or eraseing a line.
+ 
+ PD or PENDOWN
+ Sets the turtles pen down. The turtle will once again draw
+a line as it moves.
+ 
+ HT or HIDETURTLE
+ Makes the turtle invisible. Note that a pleasant side
+effect of this is that drawing will become even faster.
+ 
+ ST or SHOWTURTLE
+ Makes the turtle visible.
+ 
+ SCOLOR
+ Enters single color or HIRES mode. In this mode, all colors
+are available, but drawing over lines drawn in one color
+with a line in another color will change a small portion of
+the previous line to the new color. Lines have a finer,
+sharper appearance in this mode. Note that executing either
+SCOLOR or DCOLOR will have the same effect as DRAW - the
+screen will be cleared, and the turtle moved to its home
+position.
+ 
+ DCOLOR
+ Enters double color mode. In this mode, up to three lines
+of different colors may share the same area without
+conflict. Lines are thicker, but the colors are easier to
+see. Note that when in DCOLOR mode, scrolling of the text
+screen underneath the draw screen may affect certain of the
+colors. Since splitscreen mode is usually used only when
+debugging, this should not be a serious problem. (It's due
+to the sharing of color memory between the text screen and
+the hires screen.) Once DCOLOR has been selected, draw will
+default to this mode until SCOLOR is once again executed.
+ 
+ HOME
+ Sends the turtle to its home - center screen, pointing
+straight up. Note that the turtle will draw a line if the
+pen is down. (see: WINDOW)
+ 
+ SETXY
+ Takes two values from the stack - the X and Y coordinates
+of a point, and moves the turtle to that location, drawing a
+line if the pen is down. Example:
+ 
+ 100 100 SETXY ( move the turtle to 100 100 )
+ 
+ SETH or SETHEADING
+ Takes a number on the stack which sets the current heading
+of the turtle. 0 degrees is pointing straight up, with
+degrees increasing to the right. Example:
+ 
+ 90 SETH ( aim turtle at the right of the screen)
+ 
+ G$
+ Takes the address of a text string, and  two coordinates.
+G$ then types the textstring on the graphics screen. The
+characters are not drawn by the turtle, and so the turtles
+position and heading are not affected. The only commands
+which affect both the turtle and G$ are PC ( except -1 PC ,
+which has no effect on G$) and WINDOW. Characters drawn in
+DCOLOR mode are not very legible, incidentally. Example:
+ 
+ " THIS IS A STRING" 100 100 G$ ( type string starting at
+100 100)
+ 
+ WINDOW ( x1 y1 x2 y2 -- )
+ Sets up a drawing window for the turtle. Takes four entries
+from the stack. x1 and y1 are the coordinates of the lower
+left corner of the drawing window, while x2 and y2 are the
+coordinates of the upper right hand corner of the drawing
+window. Executing this command will cause the turtle to
+center itself inside the window, and, although the turtle
+can move outside of the window, lines will be drawn only
+within the window boundary. Note that G$ is also affected by
+this command. HOME will center the turtle at its new home,
+but DRAW will reset the window to its maximum. Note that an
+error occurs if the coordinates passed to WINDOW are outside
+of the current window. An example of windowing is provided
+on the source disk. Make sure the disk is mounted, and then
+type 130 LOAD .
+ 
+ RESWIND
+ Calling this word will reset the turtle window to its
+default condition. This word must be used if you intend to
+set up multiple windows, since the new window will likely be
+outside of the old one, and therefore cause an error.
+Example:
+ 
+ : WINDOW1 RESWIND 0 0 50 50 WINDOW ;
+ : WINDOW2 RESWIND 100 100 150 150 WINDOW ;
+ 
+ 
+ The following are variables which may be accessed to
+determine the state of the turtle.
+ 
+ XCOR YCOR  These are system variables which contain the
+current X coordinate andd Y coordinate of the turtle. Note
+that these variables should only be used to determine the
+coordinates of the turtle. Storing values in these variables
+will have strange effects. If you want to change the turtles
+position, you should use SETXY . Example:
+ 
+ XCOR @ YCOR @ . . ( display the current xy coordinates of
+the turtle.)
+ 
+ HEADING  This contains the current heading of the turtle,
+in degrees. 0 is straight up, increasing to the right. The
+same caution applies as for XCOR YCOR . If you want to
+change the turtles heading, use SETH or SETHEADING. Example:
+ 
+ HEADING @ .  ( print the turtles heading on the screen)
+ 
+ PENSTATE  True if pen is down.
+ 
+ TURTLESTATE True if turtle is visible.
+ 
+ Don't be misled by the apparent simplicity of turtle
+graphics. It is extremely powerful, and allows many
+remarkable pictures to be drawn, as well as many interesting
+mathematical explorations to be carried out. It's also a
+*lot* of fun. As a simple example, here is a word that takes
+one value from the stack, and draws a square with sides of
+that length:
+ 
+ : SQUARE  ( SIDE -- )
+     4 0 DO DUP FD 90 RT LOOP DROP ;
+ 
+ To try out this word, type DRAW and then 100 SQUARE. A
+square of 100 turtle units per side will be drawn.
+ 
+ This is obviously a simple example, but the power of turtle
+graphics, combined with the speed and power of Forth, allow
+amazingly rich and complex graphics displays to be drawn
+with words that are barely more complex than our SQUARE
+definition. As another example, here is a word that trues a
+truly remarkable curve:
+ 
+ : C-CURVE ( SIDE LEVEL )
+      ?DUP 0= IF FD EXIT THEN
+      2DUP 1- RECURSE
+      90 RT
+      2DUP 1- RECURSE
+      90 LT 2DROP ;
+ 
+ This innocent looking definition draws a real whopper of a
+curve. To try it out, type DRAW, and then issue the
+following sequence of commands to orient the turtle:
+ 
+ 70 BACK CLEARSCREEN FULLSCREEN 90 LEFT 3 10 C-CURVE
+ 
+ This type of curve is known as a fractal, which have
+received a lot of attention recently in the popular press.
+They have the reputation of being *very* hairy. Note the
+simplicity of the definition, and note also that Turtle
+Graphics and recursion are naturals when used together. I
+hope this brief introduction will encourage you to explore
+turtle graphics further on your own. There are some other
+programing examples included on the source disk. Aside from
+the windowing demo mentioned earlier, there are:
+ 
+ Another fractal, the DRAGON curve. This program draws a
+whole family of Dragons. Access this by typing 137 LOAD.
+ 
+ Space-filling curves. The famous HILBERT curve is here, as
+is the less well know but very pretty and interesting
+SIERPINKSI curve. To view these curves, type 135 136 THRU.
+The dragon curve, and both of these curves, are further
+examples of recursive programming in Forth.
+ 
+ There is a simple example of the use of DCOLOR mode. Access
+this by typing 131 133 THRU.
+ 
+ All of the above will run when they are loaded. In
+addition, there are some examples included which you may
+play around with interactively. Block 131 contains some
+words which draw circles. Screen 134 contains some words
+which use these words to build up more complex designs.
+First type 131 LOAD, and then 134 LOAD. The words available
+are:
+ 
+ SPINSHRINK Type DRAW SPINSHRINK to see this design.
+ 
+ The next two words require you to place a parameter on the
+stack.
+ 
+ SLINKY requires a value on the stack, which determines the
+radius of the circles drawn.
+ 
+ SPINSLINKY requires the same value. (This is a particularly
+pretty display.)
+ 
+ Finally, screen 138 contains three examples which deal with
+polygons. These are quite famous among turtle graphics
+users, and they are presented here to show you one way to
+implement them in Forth, or to introduce you to them, if you
+haven't met them before. Typing 138 LOAD will compile the
+following words:
+ 
+ POLY This word requires two values on the stack, which
+specify a side length and an angle. POLY draws closed
+polygons, and any polygon may be drawn by POLY. For example
+DRAW 100 90 POLY will draw a square of 100 turtle units.
+ 
+ POLYSPI This word requires the same two parameters on the
+stack as POLY, but POLYSPI draws spiraling polygons. This is
+easier to see than it is to describe. For example, DRAW 1 90
+POLYSPI will draw a spiraling square (or SQUIRAL).
+ 
+ INSPI This word also requires two values on the stack, but
+where POLYSPI increased the side each time, INSPI increases
+the angle. An incredible variety of shapes can be drawn with
+both INSPI and POLYSPI. One of my favorite INSPI designs is
+DRAW 10 1 INSPI . You will no doubt discover others you
+like, as you try out the effects of different stack values
+on each of these words.
+ 
+ Blazin' Forth also contains words that allow you to
+manipulate sprites. Blazin' Forth will take care of most of
+the hardware details for you, but some caution must be
+exercised. Since you must setup your own sprite data areas,
+it is possible to garbage the disk buffers with your sprite
+data. However, with a small amount of care, this should not
+occur, since there is enough room for 45 sprites without
+stealing any room from Forth. (A total of 109 sprite images
+are available.)
+ You should first enter a sprite definition into the Forth
+dictionary. The method you use to do this is up to you. One
+possibility is to use C, as follows:
+ 
+ CREATE SPRITE1 0 C, 2 C, etc.
+ 
+ Or you can use the " word, if the string handlers are
+loaded into the system:
+ 
+ : SPRITE1 "ANCND" etc. ;
+ 
+ Note that if you use this second way, then you must add 1
+to the address left by " , since the address left by " is
+the address of the strings count byte, and SETSHAPE , which
+is the word used to transfer the data to the sprite areas,
+expects the address of the start of the data on the stack.
+ However you decide to do it, your sprite definitions must
+be 64 bytes long. There are 63 bytes of spirte display data,
+while the last byte is used by the system to set the sprites
+color mode. If the last byte is 0 , then the sprite will be
+a hires (single color) sprite. If the last byte is anything
+else, then the sprite will be a multicolored one.
+ 
+ Each sprite-shape is assigned a sprite number by the
+hardware. You must use a slight amount of care in setting
+your shapes, since it is possible to garbage your disk
+buffers, or to select an area which the system is already
+using for something else, such as the color storage for the
+graphics screen.
+ 
+ There are 45 shape numbers which are available to you and
+won't cause any conflicts anywhere. Shape-numbers from 64 to
+94 or perfectly safe, as are shape numbers from 112 to 126.
+Sprite numbers greater than 126, or between 95 and 111 are
+not available at anytime.
+ 
+ In addition, the sprite shapes from 0 to 64 may be used,
+but this will cause garbage to be written to the disk
+buffers. There are two solutions to this problem. One is to
+make sure you always type EMPTY-BUFFERS after using the
+sprite words. The other way (and it's probably the easiest
+in the long run) is to lower the top of memory to hex $C000.
+(For information on how to do this, please see CONFIGURE.)
+Note that you may have to pair down the dictionary if you
+take this second route. In any case, I find it hardly likely
+you will need more than the 45 sprites already available to
+you - but if you do need the full 109 shapes, they are
+available to you for very little extra work.
+ 
+ Once you have your shape data safely installed in the
+dictionary, you are ready to go:
+ 
+ SETSHAPE ( addr shape# -- )
+ SETSHAPE takes the address of a sprite image, and a shape#
+and moves the sprite data to the proper area for the display
+of that sprite. Note that DRAW must have been executed at
+least once prior to using this word!
+ 
+ S1 S2 S3 S4 S5 S6 S7 S8
+ These words set the current sprite. Executing these words
+will determine which sprite is affected by other sprite
+words.
+ 
+ SPRITEON ( SHAPE# -- )
+ Takes a shape number from the stack, and sets the current
+sprite to that shape. It then turns on the sprite. Note that
+the sprite must be on screen to be seen.Example:
+ 
+ S1 65 SPRITEON ( set sprite1 to shape# 65, and turn it on.)
+ 
+ One way of using this word for effective animation effects
+is to use it to shift between sprite images for the same
+sprite:
+ 
+ : SWITCH  S1 40 0 DO 65 SPRITE ON 70 SPRITEON LOOP ;
+ 
+ (Note that the above example will probably go much to fast
+for effective animation. It's just an illustration.)
+ 
+ SPR-DCOLOR ( c1 c2 -- )
+ Takes two color codes from the stack, and sets the multi-
+color sprite color registers to these values. Note that all
+multi colored sprites will share these colors. Sprites not
+in multicolor mode are unaffected by this command.
+ 
+ SPRITECOLOR ( c -- )
+ Takes a color code from the stack, and sets the the current
+sprite to that color. Example:
+ 
+ S2 0 SPRITECOLOR ( set sprite 2 to black)
+ 
+ HIDESPRITE
+ Hides the current sprite. Example:
+ S1 HIDESPRITE ( hide sprite 1)
+ 
+ SHOWSPRITE
+ Shows the current sprite, if it is on screen. Example:
+ S1 SHOWSPRITE
+ 
+ SPRITEXY ( X Y -- )
+ Sets x y position of current sprite. Coordinate values are
+the same as for the turtle. Note that negative values are
+legal, and will cause the sprite to move offscreen at the
+left or bottom. Example:
+ S1 -1 100 SPRITEXY ( move the current sprite one pixel off
+of the screen.)
+ 
+ WIDE-SPRITE ( flag -- )
+ If flag is true, the current sprite will be made wider.
+Example:
+ S1 TRUE WIDE-SPRITE ( make sprite 1 wider)
+ S2 FALSE WIDE-SPRITE ( make sprite 2 narrow)
+ 
+ HIGH-SPRITE ( flag -- )
+ Same as wide-sprite, but makes the current sprite taller or
+shorter. Example:
+ S3 TRUE HIGH-SPRITE ( make sprite 3 taller)
+ 
+ SPRITECOVER ( flag -- )
+ If flag is true, the current sprite will cover the
+background. If flag is false, the current sprite will be
+transparent. Example:
+ S1 TRUE SPRITECOVER ( have sprite #1 cover its background.)
+ 
+ SPRITEBANG ( -- flag)
+ Leaves a true flag if the current sprite has banged into
+another sprite, and a false otherwise. Note that sprites can
+bang into each other even when off screen. Example:
+ 
+ : MOVEIT S1 319 0 DO I 150 SPRITEXY SPRITEBANG IF " BOOM! "
+I 150 G$ LEAVE THEN
+ 
+ DATABANG ( -- flag)
+ Same as SPRITEBANG, but leaves true if the current sprite
+has banged into non-sprite data on the screen. Note that
+sprites can bang into data even when off screen.
+ 
+ For more information on defining sprites, as well as more
+details on multi-colored sprites, please see the programmers
+reference guide.
+ 
+Accessing CBM disk files.
+ 
+ 
+Since Forth uses a virtual memory arrangement and the screen
+concept to manage the disk, I felt that providing words to
+access CBM disk files would be a waste of memory space.
+Blazin' Forth contains all the primitives necessary to write
+words to access CBM disk files, or other serial devices.
+This appendix describes how to do this from Forth, for users
+whose applications require such access.
+ 
+(OPEN)  ( file# device# sa address-of-filename filename-
+length -- error code)
+This word requires 5 parameters, as described above. This is
+the same as from BASIC, with the exception of the address of
+filename, and the length of the filename. The address can be
+any memory location which stores a legal filename. Using
+Blazin' Forths string handling words, an open statement
+would look like this:
+ 
+8 8 8 " LETTERS,S,R" COUNT (OPEN)
+ 
+Which opens a sequential file called "LETTERS" for a read,
+with logical file# 8, on device 8, with a secondary address
+of 8. Note that (OPEN) returns an error code, which is 0
+(false) if everything was ok, and otherwise is one of the
+error codes as described in the Programmers Reference Guide.
+This error code may be processed by your program, ignored,
+or you may use the Blazin' Forth word IOERR. (see IOERR for
+more info on this.)
+ 
+If you intend to use (OPEN) a lot, you will probably want to
+define a different version:
+ 
+: OPEN   COUNT (OPEN) IOERR ;
+ 
+With this new word, the OPEN statement becomes:
+ 
+8 8 8 " LETTERS,S,R" OPEN
+ 
+If you need to open a file to a device which doesn't require
+a filename, such as a printer or plotter, just use a zero as
+the filename and length:
+ 
+4 4 0  0 0 (OPEN) IOERR
+ 
+The above will open a channel to a printer connected as
+device #4.
+ 
+ 
+CLOSE ( File# -- )
+This will close an already open file. Example:
+8 CLOSE  ( closes file# 8 )
+ 
+To send or receive data from the device, you will need the
+following words:
+ 
+(CMDOUT) ( File# -- errorcode)
+This is an I/O redirection word. Executing this word will
+cause all system output to be directed to the logical file
+whose number is on the stack. All system output words: EMIT
+, SPACES , TYPE , ." .( etc. will direct data to this
+device. Note that you must have opened a channel to the file
+before using this word. The error code is suitable for being
+read by IOERR . Example:
+ 
+8 (CMDOUT) IOERR  ( send all output to file# 8 )
+ 
+(CMDIN)  ( File# -- errorcode)
+Another I/O redirection word. Executing this word will cause
+all system input to be obtained from the file whose number
+is on the stack. All system input words, EXPECT KEY ?KEY
+etc. will recieve data from this file. Note that you must
+have previously opened a channel to the file before using
+this word. The error code is suitable for being read by
+IOERR. Example:
+ 
+8 (CMDIN) IOERR  ( get all input from file# 8)
+ 
+CMDOUT  ( -- )
+Executing this word will restore the default input and
+output channels. All input will now come from the keyboard,
+and all output will be sent to the screen. Note that all
+files remain open.
+ 
+IOERR ( errorcode -- )
+This word will execute an error abort if the value on the
+top of the stack is non-zero. It will decode the error# and
+type the appropriate message. Note that if you do not want
+your application to halt on an error, you should not use
+this word.
+ 
+Using the above words, it is a simple matter to send or
+receive data from a disk. For example:
+ 
+: GET#   ( FILE# -- character )
+   (CMDIN) IOERR ?KEY   CMDOFF ;
+ 
+This defines a word which works exactly like GET# in BASIC.
+Note the use of CMDOFF at the end of the word to restore
+default devices. This is generally the best practice to
+follow, since the serial bus does not handle multiple
+channels being connected all that well.
+ 
+The following word is an example of how to implement PRINT#
+in Forth:
+ 
+: PRINT# ( address file# -- )
+    (CMDOUT) IOERR COUNT TYPE ( send text at address to
+disk)
+    CMDOFF ( restore default devices) ;
+ 
+If you require more exotic file handling words, they are
+also easy to define. Just follow the examples given above.
+The following are also useful in handling disk serial bus
+access:
+ 
+(?DISC) ( --- flag )
+ 
+This word reads the disk error channel, leaving a true flag
+if a disk error has occurred. This is useful if you want
+your program to handle errors, since the higher level ?DISC
+will abort on an error. Note that the command channel must
+be opened before using this word. Example:
+ 
+: RECEIVE   8 GET#  (?DISC) IF .DERR ABORT THEN ;
+ 
+This word will print the disk error message, and halt
+execution if there is an error.
+ 
+.DERR ( -- )
+Prints the disk error message stored in the error message
+buffer. Note that this is only valid after (?DISC) or (R/W).
+ 
+STATUS ( -- status )
+Pushes the serial bus status byte on the stack. Same as ST
+in BASIC.
+ 
+ 
+                             System DEFERed words
+ 
+The system contains several DEFERed words for your
+convenience. These allow changes to be made in the actual
+Forth system itself:
+ 
+PRINTER  NOPRINTER
+These words are described in the section on I/O.
+ 
+PUNCT? ( char -- flag)
+This word controls the characters accepted by NUMBER. In
+order to conform to the 83 standard, Blazin' Forth will only
+accept a period when entering double numbers. All other
+characters will result in an error. In order to change this
+behaviour, code a new word, which accepts the characters you
+wish, and then execute:
+ 
+' NEW.PUNCT  IS  PUNCT?
+ 
+Of course, NEW.PUNCT must accept the same inputs, and
+provide the same outputs, as the older version.
+ 
+R/W  ( addr blk#  flag -- )
+This word is the virtual memory interface primitive. It may
+be altered to add new disk handling operations to FORTH,
+such as a file system.
+ 
+ 
+                             Vocabulary Structure
+ 
+Blazin' Forth uses the same tree structured vocabulary
+linkages as FIG forth. Some of the newer dynamic vocabulary
+structures were examined, but found unsatisfactory. Most
+people seem to prefer FIG to forth-79, but all reports are
+not in as far as the newer efforts are concerned. Comments
+on these newer vocabulary structures are welcomed.
+ 
+In Blazin' Forth, a new vocabulary is chained to the
+vocabulary within which it is created. For example:
+ 
+FORTH DEFINITIONS  ( Put all definitions in FORTH
+vocabulary)
+VOCABULARY  CARTON  ( chain CARTON to FORTH )
+CARTON DEFINITIONS  ( Put all definitions in CARTON
+vocabulary)
+VOCABULARY EGGS     ( Chain EGGS to CARTON, which chains to
+FORTH )
+ 
+FORTH DEFINITIONS   ( restore Forth )
+ 
+                              Misc. Information
+ 
+You may change the screen color defaults of Blazin' Forth to
+ones more suitable to your monitor or tv. Example:
+ 
+0   0 +ORIGIN  C!  ( border color)
+4   1 +ORIGIN  C!  ( Screen color)
+6   2 +ORIGIN  C!  ( character color)
+ 
+Once this is done, RESTART, or RUN/STOP RESTORE will default
+to the new colors, as will NODRAW etc. Once you find an
+acceptable combination, you can save the system using SAVE-
+FORTH. Note that some early model 64's have a screen editing
+bug which appears when trying to delete across a screen
+boundary. The words LOAD RUN will appear, and although the
+cursor will continue to flash, the computer will not respond
+to any input. The only solution, (aside from obtaining a ROM
+upgrade from CBM) is to select a color with a low number,
+such as 0 or 1. Note that if this problem occurs, it is NOT
+a Blazin' Forth bug.
+ 
+You may desire to convert the present editor to a fullscreen
+editor. This is easily accomplished. Probably the easiest
+way is to define 16 words, for example, 0: 1: 2: etc., or P1
+P2 or whatever you like. These words should accept 64
+characters from the input stream, and then move them to the
+appropriate postion in the buffer for that screen. (In other
+words, they combine the functions of T , in selecting the
+line, and P in placing the line in the buffer.) You can then
+modify LIST so that instead of line numbers, it lists out
+with your words 0: 1: 2: or whatever you used. Once this has
+been done, you may use the resident features of the 64's
+screen editor to their full extent. I didn't provide such an
+editor with the system since it was desired to make this
+system as compatible with the book Starting Forth as
+possible.
+ 
+You may define additional USER variables. User offsets from
+58 to 198 are available to you for new user variables.
+Offsets less than 58 are used by the system. Blazin' Forth
+will initialize the entire user area to zero's on a RESTART
+or on POWERUP. Note that this is not a Standard Feature.
+ 
+The system is configured for use with one 4040 compatible
+dual drive. Single drives are usable with Blazin' Forth, but
+the highest screen accessable is 166. Note that it is be
+possible to interface additional drives, or non-standard
+drives to Blazin' Forth by vectoring R/W. (see: DEFERed
+words.) Note that users of single disk drives will not
+receive an ILLEGAL SCREEN error if they attempt to access
+screens greater than 166. (R/W) may bepatched, or modified
+to do this if so desired. (See: Defered words)
+ 
+Membership in the Forth Interest Group (FIG) is encouraged.
+They provide a magazine, FORTH DIMENSIONS, which presents a
+variaty of interesting articles and applications. They also
+supply books, reprints, and sponsor Forth seminars. Of
+particular interest to those using Blazin' Forth is that
+they supply copies of the FORTH-83 standard ( $15.00 at this
+writing). Membership at this writing is $15.00 per year,
+which includes a free subscription to Forth Dimensions, and
+may obtained by writing to:
+ 
+The Forth Interest Group
+P.O. Box 8231
+San Jose
+CA 95155
+USA
+ 
+The Forth Standards Team is responsible for the development
+of new Forth standards. The welcome comments and proposals.
+The may reached at:
+ 
+Forth Standards Team
+P.O. BOX 4545
+Mountain View
+CA 94040
+USA

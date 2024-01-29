@@ -1,0 +1,84 @@
+
+\ ju:parsecli     ( compatible with JForth 2.0 and 1.2 also )
+\ July 3, 1988
+\ Bob Dickow, Lionel Hampton School of Music
+\             Moscow, ID  83843
+\             (...egg-id!ui3!dickow)
+\             (rdickow@groucho.mrc.uidaho.edu)
+\             (208-882-9117 for voice contact)
+\
+\ A lexicon of words to parse the command line arguments a la 'C'; handy
+\ to keep in your ju: directory for including in applications.
+\
+\ User Words include    NCARG  ...returns number of arguments, not
+\                                 counting the program name.
+\                       CARG   ...returns, given an index(1-ncarg), the addr
+\                             & cnt of the string that would be that cli
+\                                 argument. 0 is the program or command
+\                                 name, 1 is the 1st argument, etc.
+\                                 N.B. In Jforth, if the system is called
+\                                 from the WB, NCarg = -1.
+\
+\ Special Note: JForth 2.0 has a 'built-in' feature to run you CLI arg
+\ as a word upon bootup!!! This is not compatible with the usual CLI
+\ argument usage, where you might want to use switches, etc. To use this
+\ lexicon, you will need to recompile your JForth image with one small
+\ modification: Stub out the last AUTO.INIT definition in ju:auto. That
+\ won't hurt anything at all.
+
+\ ANEW TASK-parsecli
+
+: _Cargspan  ( Addr Count -- Add' Count' ) \ Find end of next carg
+     Swap
+     Dup
+     C@
+     ASCII "
+     = If
+       1+ Swap 1-
+       Ascii " Scan
+       1- Swap 1+ Swap
+     Else
+       Swap
+       BL
+       Scan
+     Then
+; \ End of _Cargspan
+
+: NCARG  ( -- n )    \  Number of command line arguments less prg name.
+     0 >R
+     Clicommand  Count
+     Begin
+       BL  Skip Dup
+     While
+       R> 1+ >R
+       _Cargspan
+     Repeat
+     2Drop  R>
+     1-
+; \ End of NCARG
+
+: CARG  ( n -- Addr Count )  \ Return addr & count of CLI argument string.
+     0 Clicommand Count
+     Begin
+       BL Skip
+       Dswap
+       Ddup
+       = Not
+     While
+       1+ Dswap
+       _Cargspan
+     Repeat
+     2Drop
+     Ddup
+     _Cargspan
+     Drop
+     -Rot
+     Drop
+     Dup
+     -Rot -
+;  \ End of CARG
+
+\ End of ParseCLI.s  lexicon.
+
+
+

@@ -1,0 +1,31 @@
+
+
+QForth 2.1 for the Apple IIe (enhanced), IIc, IIc+, and IIgs.
+-------------------------------------------------------------
+
+Original by Toshiyasu Morita, enhancements and bug fixes by
+Ronald T. Kneusel, rkneusel@post.its.mcw.edu.
+
+
+A simple 16-bit integer Forth for ProDOS.  Uses normal ProDOS
+text files for source and can create standalone SYS files.
+
+qforth1.shk  -  Application, glossary, and examples.
+qforth2.shk  -  Merlin assembler source code.
+
+(ShrinkIt archives each.)
+
+
+N.B. Nothing is perfect... 
+
+* The first line of a text file is not loaded.  Leave it blank or make it a comment. 
+
+* if .. then  doesn't compile correctly.  Instead, use the less visually appealing 
+  if .. else then 
+
+* The QForth kernal is limited to 128 words in the dictionary.  The are presently 127 so double 
+  precision arithmetic is going to be added as an extension.
+
+* QForth occupies both hires graphics pages.  A version that preserves hires page 2 is 
+  coming shortly.
+	 

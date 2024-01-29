@@ -1,0 +1,84 @@
+
+\ Resource/Dialog support words
+\ by Chris White
+
+anew GEMOBJ
+HEX
+
+: Check_RSRC  ( flg -- )   \ panic on '0' flag, won't return.
+  0=  ABORT" Failed Resource Load or GADDR!!" ;
+
+: Load_RSRC  ( file0$ -- )   \ Load resource and check success.
+  RSRC_LOAD  Check_RSRC ;
+
+8 constant RECT
+Create Sm.Rect    RECT Allot   \ for expanding and diminishing rectangles.
+Create Dial.Rect  RECT Allot   \ for ^above^ and clipping rectangle.
+
+Variable Dialog
+
+: DialogInit  ( tree# -- )  \ initialize dialog variables and display it.
+  0 swap  RSRC_GADDR        \ figure tree address
+    Check_RSRC              \ failed == no return..
+  0 AddrOut @ DUP Dialog !  \ else, get address and store it, w/ copy to..
+
+  FORM_CENTER   drop               \ ..FORM_CENTER to center dialog.
+  1 IntOut XYWH@  Dial.Rect XYWH!  \ get new dialog coord.'s and store..
+  0 0 0 0   Sm.Rect  XYWH!         \ dummys for now..
+
+ 0  0 0 0 0                 \ FORM_DIAL(0)=Resrv Mem. (w/4 placeholders)
+    Dial.Rect XYWH@         \ Rectangle to reserve.
+  FORM_DIAL  drop           \ Do it!  result is screwed!
+
+ 1 Sm.Rect XYWH@     \ FORM_DIAL(1)=Exp. rectangles come from here..
+    Dial.Rect XYWH@  \ ..and go to here.
+  FORM_DIAL   drop   \ result is screwed!!
+
+0 3  Dial.Rect XYWH@  Dialog @   OBJC_DRAW   \ Draw the dialog.
+  0= IF ." OBJC_DRAW failed!!" THEN  ;
+
+\ to get expanding rectangles, remove the braces and put your from/to
+\ coordinates in Sm.Rect (replace the zeroes!)  Sm.Rect will be used for
+\ diminishing rectangles, also, IF you remove the braces in Dial_Cleanup.
+
+: DialogCleanup  ( -- )  \ Cleans up the screen.
+ 2  Sm.Rect XYWH@  Dial.Rect XYWH@   \ FORM_DIAL(2)=Dim Rect's
+  FORM_DIAL  drop                    \ Do it, Result screwed!
+
+ 3  0 0 0 0  Dial.Rect XYWH@   \ FORM_DIAL(3)=Release Memory
+  FORM_DIAL  drop  ;           \ Do it, result screwed!
+
+: DoDialog  ( Tree# -- ExitObjIndx )  \ put it all together...
+  DialogInit             \ initialize everything and display dialog.
+  0  Dialog @  FORM_DO   \ handle user interaction.
+  DialogCleanup  ;       \ fix it all!
+
+\ To handle dialog input on the run, put the FORM_DO line in a loop, with
+\ ALL selectable objects EXIT or TOUCHEXIT mode.
+
+
+\ Use these words to help in searching trees for selected objects,
+\ selecting/deselecting objects, and enabling/disabling objects.
+
+: OBJC_GADDR  ( RSRCAddr\ObjIndx -- ObjAddr ) \ get address of an object.
+  \ RSRCAddr is from RSRC_GADDR, ObjIndx is the index of the object you want
+  18 *  + ;  \ each object has 24 (18 hex) bytes in the table.
+
+: SelectObject  ( Addr\Flg -- )  \ (De)Select an object, given address.
+  swap  10+ DUP  W@  rot      \ Add offset to get Obj. Status word, & fetch it!
+  IF   1 or                   \ If flag=TRUE, set 'selected' bit, else..
+  ELSE   fffe AND  THEN       \ ..clear bit 1.
+  swap W!   ;                 \ Store new status
+
+: EnableObject  ( Addr\Flg -- )  \ En(Dis-)able object, given address.
+  Swap  10+ DUP  W@  rot      \ Add offset, get word, flag to top.
+  IF  fff7 and                \ If flag=TRUE, Clear 'disabled' bit, else..
+  ELSE  8 or  THEN swap W!  ; \ ..set bit 3.  Put back new value.
+
+: Selected?  ( Addr -- Flg )  \ Given addr of object,
+  10+  W@  1 AND  ;           \ return state of 'Selected' flag.
+
+: Enabled?  ( Addr -- Flg )   \ Given addr of object,
+  10+ W@  8 AND  not ;        \ return inverted state of 'Disabled' flag.
+
+

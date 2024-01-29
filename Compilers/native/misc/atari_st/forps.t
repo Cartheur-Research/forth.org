@@ -1,0 +1,220 @@
+
+\ File "FORPS.t"
+
+\ FORPS: A Forth-based Production System
+\  A "production" is a rule (antecedent) and action (consequent).
+\  Rules are defined to produce a system.
+
+\ Heavily modified from the public-domain source presented in:
+\	The Journal of FORTH Application and Research
+\	  Volume 4  Number 1  Page 7
+\	"The Internals of FORPS: A FORth-based Production System"
+\	by Christopher J. Matheus
+\ See this article for explanation and use.
+\
+\ The original source code for FORPS presented in the above article 
+\ has the following restriction:
+\	"FORPS is under the copyright of Martin Marrieta Energy Systems.
+\	 It is placed in the public domain and may be used freely, as
+\	 long as no false claims are made to its authorship."
+\
+\ Since this code was derived from the original FORPS, it is under a
+\ similar restriction.
+
+\    This version for Atari ST Multi-FORTH by Greg Guerin.
+
+\ Be sure to see the "Towers of Hanoi" for this version...
+
+\ -- Revision history --
+\ 28Dec86 GLG  first MacFORTH+ version
+\ 29Dec86 GLG  My public domain version: no "fired" cells used
+\  4Jan87 GLG  Ported to ST Multi-FORTH
+
+anew FORPS-Marker
+  decimal
+  900 minimum.object
+  600 minimum.vocab
+
+
+find lock.handle  not iftrue	\ for ST, no locking needed
+	: Lock.Handle  ( handle -- )
+		drop  ;
+
+	: Unlock.Handle  ( handle -- )
+		drop  ;
+ifend
+
+
+\ *****  The rule-table and words to access it
+
+Structure ARule		\ each rule in the rule-table is...
+   short: ^Rule.condition	\ token of condition (antecedent)
+   short: ^Rule.action		\ token of action for true (consequent)
+    long: ^Rule.priority	\ relative priority of this rule
+Structure.End
+
+
+ARule NewHandle RuleTable	\ initially holds one rule
+VARIABLE ThisRule		\ number of current rule to compile
+   ThisRule OFF			\ start: first rule is rule 0
+
+: Rules  ( n -- )	\ resizes RuleTable to allow for n rules
+	1 needed
+	ARule *
+	 RuleTable swap Resize.Handle
+	  ResizeCheck  ;	\ make sure it worked
+
+: thRule  ( n -- addr )		\ give address of n'th rule; n=[0..]
+	\ the address may become invalidated if the heap is re-organized.
+	\ doesn't check for too large of n
+	8*			\ faster equivalent to: ARule *
+	RuleTable @ +  ;	\ dereference handle
+
+: CurrentRule  ( -- addr )	\ pointer to rule being compiled
+	ThisRule @ thRule  ;
+
+: Rules?  ( -- n )	\ n is how many rules can be compiled
+	RuleTable handle.size  ARule /  ;
+
+
+: NoRules  ( -- )	\ default condition for no rules
+	1 abort" No rules loaded"  ;
+
+: *Reset-FORPS*  ( -- )  \ erase all rules; reset all indicators
+	0 thRule
+	 RuleTable handle.size erase	\ erase all the rules
+
+	ThisRule OFF		\ start from first position
+
+	token.for NoRules	\ install NoRules as first antecedent
+	 CurrentRule ^Rule.condition w!  ;
+
+1 Rules
+*Reset-FORPS*	\ erase the handle
+
+
+\ ***** Words used to define rules
+
+' NoRules 4- @  CONSTANT Colon-CFA	\ what starts a : def'n
+
+: Rule: ( name ( -- )  \ create a new named rule
+	ThisRule @  Rules?  < not abort" No rule space"
+
+	\ Enough space in RuleTable for new rule, begin object-area stuff
+	[compile] :			\ acts like ordinary : def'n
+
+	\ Erase any previous rule's flotsam
+	CurrentRule  ARule erase	\ sets all fields to 0's
+
+	\ the new token evaluates condition (antecedent)
+	latest 2- >w@<			\ get token from vocabulary
+	 CurrentRule ^Rule.condition w!  ;	\ save in current rule
+
+: Priority: ( word ( -- )	\ set the new rule's priority
+	\ evaluate the following word: a number, a constant, or other value
+	find				\ is it a defined word?
+	?dup if		execute		\ found: evaluate it
+	else		pocket number	\ not found: assume it's a number
+	then
+	 CurrentRule ^Rule.priority !  ;
+immediate		\ executes during rule definition
+
+
+\ ****  Words used to define conditions and actions 
+\		(antecedents and consequents)
+
+VARIABLE StackDepth	\ used by <*if* and <*then*
+
+: <*if*  ( rule# -- rule#\true )  \ begin condition (antecedent)
+	true			\ also leave a default flag
+	depth StackDepth !  ;	\ will always be >= 2
+
+: *IF*  ( -- )	\ begin compilation of condition (antecedent)
+	!CSP				\ mark stack for error check
+	ThisRule @  [compile] literal	\ compile rule# as literal
+	compile <*if*  ;		\ followed by *IF* primitive
+immediate
+
+VARIABLE HighestPriority	\ highest-priority so far
+VARIABLE BestRuleAction		\ holds best action
+
+: <*then*  ( rule#\true\[..flags..] -- )  \ end of condition (antecedent)
+	true
+	depth  StackDepth @  do		\ AND all flags together
+		and
+	loop
+	\ In Matheus' FORPS, at this point he stores the computed flag
+	\ into the rule's "fired" cell.  Instead of this, I decide now
+	\ whether the rule fired or not, and if the priority is high
+	\ enough, remember the action (consequent) for later invocation.
+
+	\ If rule fired, does its priority warrant remembering?
+	if
+		thRule				\ point to this rule
+		dup ^Rule.priority @		\ get this rule's priority
+		 dup HighestPriority @ > if
+			\ this rule has higher priority
+			HighestPriority !	\ keep new priority
+			^Rule.action w@
+			 BestRuleAction !	\ keep new action, too
+		else
+			2drop
+		then
+	else
+		drop
+	then  ;
+	 
+: *THEN*  ( -- )  \ end compilation of condition, begin compiling action
+	?CSP			\ is stack balanced?
+	compile <*then*		\ *THEN* primitive
+	[compile] ;		\ end of condition (antecedent)
+
+	here make.token		\ token does following action
+	 CurrentRule ^Rule.action w!	\ put action-token in rule-table
+	Colon-CFA ,			\ action phrase is a colon-def'n
+
+	smudge				\ to be unsmudged by *END*
+	state on  ;			\ now compile the action (consequent)
+immediate
+
+: *END*  ( -- )  \ end of action (consequent); end of rule
+	1 ThisRule +!		\ point to next free rule in RuleTable
+	[compile] ;  ;
+immediate
+
+
+\ ***** THE INFERENCE ENGINE
+
+VARIABLE LastRule			\ limit of rules to evaluate
+
+: RuleLimits  ( -- n\0 )  \ limits for DO..LOOP over every rule
+	LastRule @  0  ;
+
+: SetDefault  ( -- )
+	HighestPriority ON	\ -1 is default priority
+	BestRuleAction OFF  ;	\ 0-token is best (no-op)
+
+: TestRules  ( -- )  \ run all conditions (antecedents)
+	RuleLimits do
+		I thRule ^Rule.condition w@execute
+	loop  ;
+
+: DoBestRule  ( -- flag )  \ execute best rule's action
+	\ return 0 flag to continue the inference loop
+	BestRuleAction @execute
+	BestRuleAction @ 0=  ;	\ use rule # as flag: 0 = go again
+
+
+VARIABLE Cycle		\ counts number of times through the rules
+
+: FORPS  ( -- )  \ evaluate conditions & actions until none fire
+	ThisRule @  LastRule !
+	Cycle OFF		\ counts number of times through the rules
+	begin
+		1 Cycle +!
+		SetDefault
+		TestRules	\ run all conditions (antecedents)
+		DoBestRule	\ execute best action (consequent)
+	until  ;	\ until no activity
+
+

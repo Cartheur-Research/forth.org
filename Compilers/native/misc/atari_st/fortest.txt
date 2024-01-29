@@ -1,0 +1,133 @@
+
+21Jan91
+
+I have finally been able to spend a little time with ForST, John
+Redmond's 68000 subroutine-threaded Forth (Forth Dimensions XII #2 et
+seq.).  I found some peculiarities (one of the oddest is that DEPTH
+returns negative values!) and some "surprise features" (I hesitate to
+say "bugs" without documentation of the author's intent).  My primary
+interest was to get some sense of the effectiveness of the "native code"
+compiler and optimizer. 
+
+Redmond offers a benchmark, the familiar sieve algorithm, so as a
+comparison I fed the source into two conventional 68000 Forth
+implementations that I use frequently and got the following results on
+ten iterations:
+    F32:                36.28 sec. 
+    STP_F83:            23.72 sec.
+    ForST with CALLS:   17.86 sec.
+    ForST with MACROS:   5.74 sec.
+(F32 is a conventional, absolute-address 32-bit ITC implementation, and
+STP_F83 is a position-independent 16-bit ITC implementation.  Both are
+based on the Laxen & Perry F83 model, and both use byte-wise "fetch" and
+"store" to avoid the need for address alignment of data.  Times were
+measured using the Atari's 200 Hz system clock.)
+
+This is impressive, but one aspect of the sieve benchmark annoys me: it
+is essentially a single colon definition built almost totally from Forth
+"primitives" -- that is, words which are code definitions in most
+Forths -- and arguably a "best case" test for ForST.
+
+Casting about for a "better" benchmark, I chanced on the "Eight Queens"
+(see LeVan, Forth Dimensions II #1 p.6, and my adaptation below).  This
+looks more like the Forth code I usually read and write -- several colon
+definitions, a little bit of CREATE-DOES, and a moderate level of
+nesting.  The results (with output off):
+    F32:                10.00 sec.
+    STP_F83:            11.35 sec.
+    ForST with CALLS:   12.38 sec.
+    ForST with MACROS:  10.04 sec.
+
+As the people in that annoying commercial scream, "Where's my big savings?"
+
+Obviously, something is wrong here, and fortunately it is so obviously
+wrong that I didn't just accept the results and throw my ForST disk
+away.  A little investigation showed that ForST is wasting a lot of time
+in the array accesses, and digging deeper revealed that all of the waste
+can be blamed on the multiplication in SWAP CELLSIZE * +
+
+It turns out that ForST's signed multiply operator does a massive amount
+of quite unnecessary work (read the ForST source for details) while F32
+has a nice, compact code definition.  That determined, I evened the
+score by replacing CELLSIZE * with two repetitions of 2* (concisely
+coded in all implementations).  The results:
+
+    F32:                8.90 sec.
+    STP_F83:            (omitted)
+    ForST with CALLS:   7.23 sec.
+    ForST with MACROS:  3.77 sec.
+
+Not quite as dramatic as the sieve results, but a very useful degree of
+improvement, and, I submit, a plausible estimate of what can be expected
+in practice.  (I'll discount the malign multiplication as the sort of
+thing that falls out in beta test.)
+
+If ForST were a full-featured system (with vocabularies, block support,
+a multitasker, and a metacompiler), I'd switch now.  Thanks, John. 
+
+Wilson M. Federici
+GEnie W.FEDERICI
+Compuserve 74756,2716
+
+------------------------------------------------------------
+(Eight Queens benchmark, "slow" version)
+
+( queens32  19Jan91 wmf )
+( Eight-queens problem, based on LeVan - F.D. II #1 p.6 )
+( Modified for benchmarking portability. )
+
+decimal
+
+ 4 constant cellsize  \ change to 2 for 16-bit system!
+ 0 constant falseflag
+-1 constant trueflag
+ 8 constant boardsize
+
+: iarray ( n -- )  create  cellsize * allot
+  does> ( n -- adr )  swap cellsize * + ;
+
+boardsize iarray ax
+boardsize 2 * iarray bx
+boardsize 2 * iarray cx
+boardsize  iarray xx
+
+: safe? ( n1 n2 -- f )
+  dup ax @ rot rot ( -- ax[n2] n1 n2 )
+  over over + bx @ rot rot ( -- ax[n2] bx[n1+n2] n1 n2 )
+  swap - boardsize 1- + cx @ ( -- ax[n2] bx[n1+n2] cx[n2-n1+7] )
+  and and ( -- f ) ;
+
+: mark ( n1 n2 -- )
+  dup ax  falseflag swap ! ( -- n1 n2 )
+  over over + bx  falseflag swap ! ( -- n1 n2 )
+  swap - boardsize 1- + cx  falseflag swap ! ( -- ) ;
+
+: unmark ( n1 n2 -- )
+  dup ax  trueflag swap ! ( -- n1 n2 )
+  over over + bx  trueflag swap ! ( -- n1 n2 )
+  swap - boardsize 1- + cx  trueflag swap ! ( -- ) ;
+
+variable printsol?    falseflag printsol? !
+variable tries
+
+: printsol ( -- )  printsol? @
+  if  ." Found on try " tries @ 6 .r cr
+      boardsize 0 do  i xx @ 1+ 5 .r  loop cr  then ;
+
+: try ( 0 -- )   ( -- recursion count ) boardsize 0 do
+  1 tries +!  ( key? if quit then )
+  dup i safe? if  dup i mark dup i swap xx !
+                  dup boardsize 1- < if dup 1+ recurse
+                                     else printsol then
+                  dup i unmark then
+  loop drop ;
+
+: unmark-all ( -- )
+  boardsize 0 do  trueflag i ax !  trueflag i xx ! loop
+  boardsize 2 * 0 do  trueflag i bx !  trueflag i cx ! loop ;
+
+: do-it ( -- )  0 tries !  unmark-all  0 ( counter ) try ;
+
+------------------------------------------------------------
+
+

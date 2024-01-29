@@ -1,0 +1,350 @@
+
+                                                                9/10/97
+                                                                v.1a
+--------------------------------------------------------------------------
+                        Introduction
+--------------------------------------------------------------------------
+
+        !!!FORTH Purists Beware!!!
+
+
+        44 is a small, rather loosely characterized version of forth.
+It has a number of standard words, such as @, !, emit, key, etc., but
+does not even come close to implementing the core wordset for an
+ANS-type forth.  As such, I expect it will be roundly ignored by those
+who consider the ANS standard to be a holy grail of sorts.  It includes
+a small extension to the language that I consider quite nice, but will
+again, doubtlessly annoy savants at large.
+
+        I wrote 44 because there wasn't a single forth I could find
+which was written for the PowerPC (tm) in an embedded environment.
+Every forth out was for a different processor, or was simply enormous in
+complexity and size (C-based forths in particular).  44 currently
+occupies a little over 8.4K, and has all the functions I have felt
+necessary to effectively code small utilities, although I am sure people
+will remind me of things I have forgotten.
+
+        Perhaps the most useful part of 44 is its ability to act as a
+small monitor-type program ;-)  It will accept S-records directly from
+the command line, dump blocks of memory, jump to an absolute address,
+and is fully ROM-able.  It keeps a rom-based portion of its dictionary
+in one location, and you tell it where to keep all words and data
+defined thereafter.  You will need to edit the source to adjust the
+I/O-dependent words (if you're not using a PPC403), as well as pointing
+it to the right place in memory.  I currently use 0x70000000 as my base
+for the system and 0x70020000 for the second dictionary/data.  My sytem
+stack is positioned at 7007fffc (contained in r1).  Check out the source
+for more specific info on which registers are used for what.  There is a
+large block comment at the top explaining some of the nuances of the
+system.
+
+        There are two entry points for the system, based on whether you
+are doing a warm or cold entry.  A cold entry initializes everything,
+while a warm entry preserves the contents of the RAM-based second
+dictionary.  To get a cold start, jump to the first address; to get a
+warm start, jump to the first address+4.  
+
+        The source for 44 is written in a dialect understood by the
+inimitable AS by Alfred Arnold (a.arnold@kfa-juelich.de).  This
+assembler will compile code for virtually every processor known to man
+(and then a few), simply by telling it within the source file which one
+you want.  It even allows you to switch processor types within a
+single file (although that may not be really useful).  I make heavy use
+of macros, so please do yourself a favor and get this assembler-- it
+really is nice.  It runs on Ms-dog (including Windoze 95/nt), OS2, and
+Linux.  The Ms-dog version also has a variant which runs under a DOS
+extender for DPMI.  I am not a fan of Micro$oft, by the way :)
+
+        The small extension to FORTH I mentioned earlier simply is an
+attempt to make the raw language a little more palatable to read.  In my
+opinion, looking at the source for a FORTH program always reminds me of
+what you might see if you attempted to read a document off a disk with
+errors (abort, retry, fail!).  The extension consists simply of the
+ability to defer execution of word(s), based on parentheses.  This makes
+it a little clearer what a word needs to have sitting on the stack when
+it is called.  An example may make things clearer:
+
+        : myword
+                emit(12)        \ clear screen
+                if(key?) ." A key was waiting" cr then
+                .(1)            \ print 1,2,3
+                .(2)
+                .(3)
+                do(10 0) .(i) cr loop
+        ;
+
+
+        I hope this will appeal to people as much as it does to me.  It
+tends to add some badly-needed structure.  You can also nest things
+indefinitely as in:
+
+        : test
+
+        puts(
+                if(0=)
+                        s" Zero"
+                else
+                        s" Non-zero"
+                then
+            )
+        ;
+
+
+        Yes, I have include a puts function, not a TYPE.  And s" only
+returns an address.  Likewise for gets.  It tickles me pink to be able
+to declare a variable like my_str, and then do: 'puts(my_str)', or 
+something like if(key?), or even until(0=). 
+
+
+
+--------------------------------------------------------------------------
+		Details, details....
+--------------------------------------------------------------------------
+
+	
+	To be able to make use of 44, you will need some type of PowerPC
+processor.  If you're lucky, you already have one, and you're REALLY lucky
+you're using what I have (a 403GCX).  That way all you have to do is fix
+the org statement and the b_of_ram constant.  If you just have a PowerPC
+of some other flavor, you will need to rewrite the I/O portions of the code
+as well as adjusting the memory addresses.  This is not really hard at all,
+as there are only a few functions to implement (mostly just getting a 
+character and printing a character).  If you don't have a PowerPC at ALL,
+you are not completely out in the cold.  I can sell the blank boards to
+build your own, as well as a bill of materials and schematic.  Initially
+I had made these available to the public previously, but received a very 
+luke-warm response, and so am hoping 44 may stimulate a little more 
+interest in both the boards and in the PowerPC in general.  PowerPCs are 
+_cool_.  I initially started off doing work with 680x0 chips and enjoyed
+that quite a bit, but the PowerPC chips are better supported in terms of
+new members of the family being developed, as well as consuming less 
+power (and being faster).  And the assembly mnemonics are quite elegant,
+in my opinion.
+
+ 
+
+
+
+
+
+
+
+--------------------------------------------------------------------------
+                Wordlist and Explanations
+--------------------------------------------------------------------------
+
+
+All numbers are 32 bit integers, addresses must be aligned on a 4-byte
+boundary!  Only data addresses are relative-- code is absolute.
+
+
+emit	:  prints a single character of stack
+           <char> emit
+
+key	:  accepts a single character, placing the value on stack
+           key <char>
+
+key?	:  returns a boolean value based on whether or not a key is
+           available (-1 for true, 0 for false)
+           key? <flag>
+
+puts	:  prints a null-terminated relative string to the console
+           <string addr> puts
+
+gets	:  gets a null-terminated relative string from the console
+           <string addr> gets
+
++ - * /	:  aritmetic functions
+
+and, or, nor, not: logic functions
+
+c@      :  retrieves a byte from an relative address in memory (doesn't
+           need to be 4-byte aligned)
+           <addr> c@ <byte>
+
+c!      :  stores a byte at the address specified
+           <byte> <addr> c!
+
+@	:  retrieves a 32-bit word from an relative address in memory (must
+           be 4-byte aligned)
+           <addr> c@ <byte>
+
+!       :  stores a 32-bit word at an relative address in memory (must
+           be 4-byte aligned)
+           <val32> <addr> c@ <byte>
+
+a@ a!	:  identical to @ and ! except they use absolute addresses
+
+>abs    :  returns the absolute address of an address relative to the
+           base of the forth system
+           <rel_addr> >abs <abs_addr>
+
+<abs    :  returns the relative form of an absolute address
+           <abs_addr> <abs <rel_addr>
+
+swap    :  swaps top two items on stack
+           <val1> <val2> swap <val2> <val1>
+
+1- 2- 4- 1+ 2+ 4+: abrieviated add/subtract functions
+           <val> 2+ <val+2>
+
+>       :  greater than test
+           <val1> <val2>  >  {-1 if val1 is greater than val2; 0
+           otherwise}
+
+< = 0=  :  other comparision tests
+
+cr      :  prints a CR/LF
+
+dup     :  duplicates top item on stack
+           <val> dup <val> <val>
+
+drop    :  drops top item on stack
+           <val> drop
+
+.       :  prints and removes top item on stack in hex
+           <123f> . 123f {printed}
+
+,       :  used during compilation to directly enter data into dictionary
+           <5223> , {places 5223 as a 32-bit value into dictionary}
+
+exec	:  executes the dictionary entry indicated; note that the address  
+	   is the absolute address of the dictionary entry, not the code field
+	   address.
+	   <entry_addr> exec
+
+create	:  creates a dictionary entry of the specified name.  After doing this 
+	   you may ALLOT space or COMMA (,) in values directly.  This word takes
+	   a string following the word, unlike other words which all have values
+	   preceding them.
+	   create <name>
+
+
+:	:  (colon) begins the definition of a new word and turns on compilation.
+	   All words/constants following this are compiled in, not executed
+	   immediately. Semi-colon is used end a new word.
+	   : <new_word> 
+
+;	:  (semi-colon) ends the definition of a new word.
+	   : <new_word>  {words}  ;
+
+dolit	:  compiles in the code to push a number on the stack.
+	   <number> dolit
+
+abort	:  called whenever there is an error.  It resets all stacks and jumps
+	   back to the main loop (effectively a warm start).
+	   abort
+
+if else then: conditional code exexcution controls.  Takes standard FORTH
+	   structure of <flag> if {code} else {code} then
+
+i j	:  meta-variables which are set by the entry into a begin-until loop;
+	   they only return their current value, not an address.  I is the
+ 	   base, which will count up to the upper limit (J).
+
+do loop :  looping construct.  Loops a set number of times, set by two numbers 
+	   placed on the stack before entering the loop (upper limit and base).
+	   The meta-variables I and J contain the values passed to the do-loop
+	   and I (the base) will follow the count up to the upper limit.
+	   <upper_limit> <base> do {code} loop 
+
+begin until: Conditional loop construct.  Loops until a boolean flag of true 
+	   is passed to UNTIL.  
+	   begin {code} <flag> until
+
+leave	:  this word will immediately exit a loop (either a do-loop or 
+	   begin-until).  If loops are nested, it will exit only the inner-
+	   most loop level that it is placed at.
+	   Example:  
+	   10 0 do i . cr 
+	           if(key?) leave then
+		loop
+
+ping1	:  simply prints an ASCII 1 (for debugging).
+
+ping2   :  simply prints an ASCII 2 (for debugging).
+
+words	:  prints a list of all the words in the dictionary.  No CR/LFs are
+	   printed, so hopefully your term program will wrap to the next line
+	   instead of printing only the first line of words.
+
+.s	:  prints contents of the stack.  This can be used to check for 
+	   under or overflows of the stack (other words never check for an
+	   empty stack before pulling off a word).
+
+depth	:  returns the number of items on the stack (not including the number
+	   pushed on indicating count of items on stack).
+
+'	:  (tick) returns the dictionary entry address for a word.  Can be
+	   passed directly to EXEC.  Note that the name of the word is passed
+	   after the tick, not before it.
+	   ' <name_of_word>   <address_of_word>
+	
+variable : creates an entry in the dictionary of the specified name and 
+	   allocates a single 32-bit word.  The PFA (parameter-field-address)
+	   is given the type of variable as well, indicating that instead
+	   of executing the definition, its code field address should be 
+	   returned.  
+	   variable <name_of_variable>
+
+allot	:  allocates N words of space to a recently created word or variable.
+	   Please remember that we are allocating 32-bit words, NOT bytes.
+	   This word does not perform a sanity check to see if there is a 
+	   currently "open" entry that can have space allocated, so be care-
+	   ful! 
+
+string	:  this word copies in a string, terminated by a quote (") to the 
+	   word being compiled currently.  It will then put code in place to
+	   return the address of the string on the stack when the word being
+	   compiled is executed.  Not used directly in programs usually.  The
+	   address returned is relative.
+	   string <string>"   <address of string>
+
+s"	:  this word is an alias for the above word (string) and so functions
+	   identicly.  Use this word instead of string.  Note that there must
+	   be a space between the s" and the string, although the terminating
+	   quote needs no space.  This word can only be used during 
+	   compilation of a new word.
+	   s" <string>"  <addr>
+
+."	:  this word prints a string, terminated by a quote.  Simply a
+	   combination of s", followed by puts.  Only usable during 
+	   compilation.
+	   ." <string>"    {prints the string}
+
+c_colon	:  meta-variable which returns the address of the next point in
+	   memory that data/code may be placed during compilation.
+
+t_colon :  meta-variable which returns the address of the top of the current
+	   colon definition being compiled.
+
+[ ]	:  these words toggle compilation off and back on, allowing code to
+	   be executed during compilation.
+	   Example:  : myword [ 1 1 + . ] {code} ;
+	   This will print the number two and then continue compiling.
+
+forget	:  this word will eliminate the indicated dictionary entry and all
+	   entries AFTER it.  
+	   forget <name_of_word>
+
+dump	:  prints a hex and ASCII listing of a section of memory.  Uses an
+	   absolute address.  To view a dump of word, you might do the
+	   following:
+	   ' <word> \ get the address
+	   >abs     \ change it to an absolute address
+	   dump	    \ print dump of word
+
+jump	:  executes a routine, stored at the indicated absolute address.  
+	   Note that this differs from EXEC in taking the actual address of
+	   the code to execute (doesn't need a dictionary entry), as opposed
+	   to the address of a dictionary entry (word).  If the code jumped
+	   to has a blr opcode (powerpc mnemonic) at its end, execution will
+	   be returned to the FORTH system, provided the LR (link register)
+	   has not been altered.
+	   <addr_to_jump_to> jump
+
+<S Record>: Any time an s-record is entered, it will place that data in
+	   memory immediately.  Currently only 32-bit address records are
+	   handled properly (S3 type), as well as the S0 (header) and S7
+	   (end of record) types.
+

@@ -1,0 +1,72 @@
+*** latest release *** latest release *** latest release ***
+
+october95:
+
+- significant speedup of control structures, VARIABLEs, CONSTANTs
+    and >R R> R@
+- added OS9-support provided by Ed Gow
+- enhanced Atari loader 
+- added a tool for 'revocabularization'. With this tool I remove
+    a lot of internal words from the search order, leaving a 
+    faster compiling system. Handle with care! 
+
+
+october94:
+
+- more correctness concerning ANSI: bugs removed
+- beta-release of a pure ANSI debugger
+- bugs in Atari loader fixed. Now runs fine together with the
+    multitasker.
+(I have seen a preliminary Mac version running!!) 
+
+
+august94:
+
+Some minor changes have been made:
+
+- more correctness concerning ANSI: bugs removed
+- more completeness concerning ANSI: conditional compilation, 
+         SEARCH and SEARCH-EXT, minor stuff
+- some non-ANSI extensions: a little multitasker
+- some tools from the internet: Anton Ertl's Gray4, source from the news.
+
+Have fun,
+
+- Joerg
+
+Free support: jps@Forth-eV.de
+
+
+
+january94:
+
+This is the latest release of the F68KANS Forth development system
+for 680x0 computers.
+
+F68KANS is the system following F68K. It is the first high-speed
+ANSI (dpANS6) implementation build from scratch.
+
+F68KANS should run on any machine using the 680x0 CPU without 
+changing the binary image of the code. Simply write a loader 
+program for your machine and F68KANS will run.
+Loader for Atari computers is included as an example.
+
+Changes in the newest release:
+
+* bugs concerning dpANS removed
+* kernel smaller again
+* improved Atari loader for GEM
+	- comfortable environment
+	- graphics in windows
+	- graphics using BGI
+	- graphics using VDI
+	- hardware or software float
+	- wide parts of standard C library accessible
+* more examples
+* porting doc in German and English
+
+
+Questions?
+
+	jps@Forth-eV.de
+

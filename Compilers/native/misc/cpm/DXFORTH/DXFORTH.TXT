@@ -1,0 +1,34 @@
+DX-Forth 1.0  97-12-28
+----------------------
+
+DX-Forth is a Forth language compiler/development system for all
+CP/M-80 and compatible disk operating systems including Z-System.
+
+DX-Forth is intended to be a complete, easy to use, programming
+tool for the creation of CP/M applications - comparable in
+quality and facility to other popular CP/M programming languages
+such as MBASIC, Turbo Pascal and BDS C.
+
+DX-Forth's features include:
+
+- Forth-83 Standard
+- Fast direct-threaded code
+- Generate turnkey applications without compiler overhead
+- Video terminal functions, installable for most terminals
+- Fast floating point and trigonometric functions
+- Many extensions including ANS FORTH functions
+- Flexible disk I/O using bytes, sectors or lines of text
+- DU: style filenames for access to all CP/M user areas
+- Z-System (ZCPR) support through ZENV function
+- Program error return code for CP/M-3 and Z-System
+- Multitasking
+- Overlays for large applications
+- 8080/Z80 Forth assembler for CODE words
+- Full source code included
+
+
+Please forward any comments, bug reports to:
+
+edsa@alphalink.com.au
+
+

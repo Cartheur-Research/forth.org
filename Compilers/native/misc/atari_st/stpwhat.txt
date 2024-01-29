@@ -1,0 +1,30 @@
+
+What's in the files:
+
+stp1.arc:
+  "Exact" port of L&P F83 to Atari ST (68000 position-independent code)
+Includes the meta-compiler, all source, executable kernel and fully
+loaded executable system, plus a brief notes on revision history and how
+to run the metacompiler. 
+
+stp2.arc:
+   Executable F83 kernel as in stp2.arc plus source for the extensions I
+prefer.  Duplicates much of the extension source in stp1.arc but adds a
+screen-oriented editor (with documentation) and an eight-blocks-per-page
+listing utility. 
+
+stp3.arc:  Miscellaneous utility files
+   - useful documentation for the F83 68000 assembler, including a
+complete list of valid addressing modes for each instruction. 
+   - utility words for accessing GEM's VDI and AES facilities (ST users
+will know what that means)
+   - complete source code for turning F83 into a GEM desk accessory
+(well-behaved but dangerous!), and the executable file
+   - buffered GEMDOS file i/o routines (i.e.  getc, putc, loading from
+text files, etc.)
+   - LDUMP, a variant of DUMP using 32-bit addressing and running in
+supervisor mode
+   - Quick&Dirty translation of Hawley'se Mandelzen program, producing
+garishly-colored Mandelbrot sets (ST 16-color display mode)
+
+

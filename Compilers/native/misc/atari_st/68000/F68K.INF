@@ -1,0 +1,38 @@
+
+This file describes both F68K.ZOO and F68K.LZH
+[Sorry, I lost the attribution for the quoted lines.  -Doug Philips]
+
+>>Is there a version of Forth available for the Amiga machines that completely
+>>takes over the machine and does not rely on the operating system?
+
+>My F68K system is really able to do that! Just spend one hour to write an
+>appropriate loader program and F68K will run with or without OS.
+
+These all are identical contributions.
+I offered it to the FIG as a users contribution, too, but received no echo!
+
+The loader program provides some kind of BIOS to the Forth. There are six
+functions, which should be implemented by the loader:
+
+	- key
+	- key?
+	- emit
+	- r/w
+	- readsys
+	- writesys
+
+The two last define an interface to the possibly surrounding system,
+e.g. to make a 'save_system' or im/export of sources. 
+Mass storage is addressed in blocks of 2kB. These may come from a file, 
+directly from the disk, the serial line, an SCSI-port, a bus, ....
+
+In the distributed implementations for Amiga, Atari, Sinclair QL and OS9
+all loaders are based on the one written by me in C.
+But I have heard of people making F68K run on a single-board-computer
+with no OS within a hour.
+
+I think, you should take the details from the documentation.
+
+>	- J"org Plewe, Germany
+
+

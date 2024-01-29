@@ -1,0 +1,17 @@
+[68000 assembler, yes.  Motorola format, not UN*X format; you'll have to change
+all "bar.l"-type opcodes to "barl" (i.e. "move.l" to "movl") to use it on a Sun
+or Plexus box.  ++bsa]
+
+	Since I'm on the warpath, here's a hand-coded 68000 forth interpreter
+which conforms to the Forth-83 standard.  As I recollect, it actually deviates
+from it in two areas: first, words are 32 bits. Second, I didn't do Forth-
+standard I/O; I just use a pushdown stack of file descriptors, and read and
+write streams.
+	I don't know what the policy is concerning machine-dependent code
+(especially a monstrosity like this :-)), but it sure isn't doing anyone any
+good sitting around here, and I'm sure you'll know what to do with it.
+
+				Thanks,
+				Andy Valencia
+				vandys@lindy.stanford.edu
+

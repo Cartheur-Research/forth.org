@@ -1,0 +1,81 @@
+** f i c l . h
+** Author: John Sadler (john_sadler@alum.mit.edu)
+** Created: 19 July 1997
+
+** Ficl (Forth-inspired command language) is an ANS Forth
+** interpreter written in C. Unlike traditional Forths, this
+** interpreter is designed to be embedded into other systems
+** as a command/macro/development prototype language. 
+**
+** Where Forths usually view themselves as the center of the system
+** and expect the rest of the system to be coded in Forth, Ficl
+** acts as a component of the system. It is easy to export 
+** code written in C or ASM to Ficl in the style of TCL, or to invoke
+** Ficl code from a compiled module. This allows you to do incremental
+** development in a way that combines the best features of threaded 
+** languages (rapid development, quick code/test/debug cycle,
+** reasonably fast) with the best features of C (everyone knows it,
+** easier to support large blocks of code, efficient, type checking).
+**
+** Ficl provides facilities for interoperating
+** with programs written in C: C functions can be exported to Ficl,
+** and Ficl commands can be executed via a C calling interface. The
+** interpreter is re-entrant, so it can be used in multiple instances
+** in a multitasking system. Unlike Forth, Ficl's outer interpreter
+** expects a text block as input, and returns to the caller after each
+** text block, so the "data pump" is somewhere in external code. This
+** is more like TCL than Forth, which usually expcets to be at the center
+** of the system, requesting input at its convenience. Each Ficl virtual 
+** machine can be bound to a different I/O channel, and is independent
+** of all others in in the same address space except that all virtual
+** machines share a common dictionary (a sort or open symbol table that
+** defines all of the elements of the language).
+**
+** Code is written in ANSI C for portability. 
+**
+** Summary of Ficl features and constraints:
+** - Standard: Implements the ANSI Forth CORE word-set
+** - Extensible: you can export code written in Forth, C, 
+**   or asm in a straightforward way. Ficl provides open
+**   facilities for extending the language in an application
+**   specific way. You can even add new control structures!
+** - Ficl and C can interact in two ways: Ficl can encapsulate
+**   C code, or C code can invoke Ficl code.
+** - Thread-safe, re-entrant: The shared system dictionary 
+**   uses a locking mechanism that you can either supply
+**   or stub out to provide exclusive access. Each Ficl
+**   virtual machine has an otherwise complete state, and
+**   each can be bound to a separate I/O channel (or none at all).
+** - Simple encapsulation into existing systems: a basic implementation
+**   requires three function calls (see the example program in testmain.c).
+** - ROMable: Ficl is designed to work in RAM-based and ROM code / RAM data
+**   environments. It does require somewhat more memory than a pure
+**   ROM implementation because it builds its system dictionary in 
+**   RAM at startup time.
+** - Written an ANSI C to be as simple as I can make it to understand,
+**   support, debug, and port. Compiles without complaint at /Az /W4 
+**   (require ANSI C, max warnings) under Microsoft VC++ 5.
+** - Does full 32 bit math (but you need to implement
+**   two mixed precision math primitives (see sysdep.c))
+** - Indirect threaded interpreter is not the fastest kind of
+**   Forth there is (see pForth 68K for a really fast subroutine
+**   threaded interpreter), but it's the cleanest match to a C 
+**   implementation.
+**
+** P O R T I N G   F i c l
+**
+** To install Ficl on your target system, you need an ANSI C compiler
+** and its runtime library. Inspect the system dependent macros and
+** functions in sysdep.h and sysdep.c and edit them to suit your
+** system. For example, INT16 is a short on some compilers and an
+** int on others. Check the default CELL alignment controlled by
+** FICL_ALIGN. If necessary, add new definitions of ficlMalloc, ficlFree,
+** ficlLockDictionary, and ficlTextOut to work with your operating system.
+** Finally, use testmain.c as a guide to installing the Ficl system and 
+** one or more virtual machines into your code. You do not need to include
+** testmain.c in your build.
+**
+** T o   D o   L i s t
+**
+** 1. Unimplemented system dependent CORE word: key
+**

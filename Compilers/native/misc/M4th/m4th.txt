@@ -1,0 +1,186 @@
+
+	M4th -- My 4th attempt to write something FORTH-like
+
+		    (C) 1994, 1997 Nils M. Holm
+
+		     fs29@rumms.uni-mannheim.de
+
+
+	What is M4th ?
+	==============
+
+	M4th is my personal  FORTH-like programming environ-
+	ment.  I have started writing it  after a look  into
+	the eForth source code (by Bill Muench and C.H. Ting,
+	1990) which has inspired me a lot.
+	Currently, M4th does only run on 80x86 machines, and
+	on the top of DOS.
+
+	M4th is *not* F79 or F83-compliant. It only complies
+	with my own conception  of a FORTH-like  programming
+	environment. But I think, it is not too different.
+
+	M4th is intended to sacrifice speed for portability.
+	Extremely time-critical parts, however,  are written
+	in assembly language.  All block manipulating  words
+	(like  CMOVE, FILL, -TEXT, etc ...)  are written  in 
+	assembly language.
+	I have  also taken  advantage  of the  MULtiply  and
+	DIVide instructions  of the  INTEL 8086,  instead of
+	implementing words like */MOD as hi-level code.
+
+
+	Requirements
+	============
+
+	To RUN M4th, you need...
+
+	- An  INTEL 8088-based  (or better) machine  running
+	  DOS 2.0 or above.
+
+	- Some disk space  (about 10K to 40K for the  kernel
+	  and some space for disk images.  A 360K-floppy  is
+	  sufficient in most cases...)
+
+	- 64K of free RAM.
+
+
+	To create a new minumum kernel from the assembly
+	language sources, you also need:
+
+	- TASM 1.01 or a later version.
+
+	- LINK (and EXE2BIN) or TLINK.
+
+
+	Portability
+	===========
+
+	The major part of M4th is written in M4th. The mini-
+	mum  kernel  is  written  in  assembly language  and
+	Pseudo-M4th (address lists in asm).  The Pseudo-code
+	does not have to be rewritten.
+	The critical part is Disk-I/O.  Disk-I/O may be dis-
+	abled, when it is not needed (by setting DISKIO to 0).
+	The Overflow Exception Handler may be left away,  if
+	you can trust the system handler.
+	The rest should be trivial.  Most routines are  VERY
+	small and not complex at all.
+
+
+	Features
+	========
+
+	* Direct Threaded Code
+	* Disk-I/O simulated in a file
+	* Full Source (Assembly and M4th)
+	* SAVE-IMAGE facility (save extended kernels)
+	* Decompiler
+	* CASE constructs
+	* Console screen manipulation (using ANSI.SYS)
+	* Definable startup code
+	* Definable arithmetic exception handler
+	* Screen Editor
+	* Hypertext Help utility
+	* Can load sequential program files
+	* Easy to port (I think)
+
+
+	HowTo Install M4th
+	==================
+
+	The M4th installation procedure is quite simple.
+
+	Creating a new minimum kernel
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	If your M4th package  does not contain an executable
+	kernel image (MINIMUM.COM), you will need TASM 1.01+
+	and TLINK (or LINK) to create one.  Maybe MASM  does
+	the job, too, but I have not tried it.
+	If you  have a  make utility  installed,  just  type
+	`make' on the DOS prompt.  If you are using TASM and
+	TLINK,  nothing unusual should happen.  If you don't
+	have `make', just enter:
+
+	C:\> tasm kernel.asm
+	C:\> tlink /x/t kernel.obj,minimum.com
+
+
+	Extending the minimum kernel
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	To complete this step, you do not need any addition-
+	al  tools.  Just  run  _EXTEND.BAT  and  follow  the
+	instructions.
+	This step is NOT optional. Although the minimum M4th
+	Kernel is  fully operational,  there are MANY  words
+	missing (like . * / = IF DO WHILE ...).  So you will
+	not have much fun with a minimum kernel...
+
+	The resulting kernel  contains most definitions  you
+	will probably  expect in a  FORTH-like  environment,
+	including  many  definition  and compilation  words,
+ 	disk-I/O  (using a file as disk image), and a simple
+	decompiler.
+
+
+	Further Extensions
+	~~~~~~~~~~~~~~~~~~
+	To load more extensions (CONSOLE I/O, SCREEN EDITOR,
+	ASSEMBLER,  HYPERHELP, ...), just customize  and run
+	_BUILD.BAT.  The extended M4th Kernel  will run  the
+	command line  passed to it  as if  it were  typed in
+	at the console.  To load  an extension,  just insert
+	a line like this:
+
+	M4TH USE WHATEVER.SCR 1 LOAD USE M4TH.SCR SAVE-IMAGE BYE
+
+	where WHATEVER.SCR is the extension to load.
+
+
+	These extensions are currently available;
+
+	CONSOLE.SCR	ANSI Console screen manipulation	0.7K
+	EDITOR.SCR	The Screen Editor 			5.9K
+	ASM86.SCR	Postfix Assembler for 8086 subset	4.7K
+	HELP.SCR	HyperHelp utlility and help pages	1.9K
+	SIO.SCR		Serial Communication tools		0.2K
+	LPR.SCR		Line Printer defintions (LPLIST, ...)	0.4K
+	DOS.SCR		DOS Interface (File-I/O, ...)		2.7K
+	SEQ.SCR		Extention to load SEQuential files	0.6K
+
+
+	Getting started
+	~~~~~~~~~~~~~~~
+	I suggest to use the extended kernel (M4TH.COM)  for
+	playing  around.  If you are  already familiar  with
+	FORTH, you will soon feel at home. There is only one
+	BIG  difference  to other  FORTH-like systems:  most
+	environments use VOCABULARIES,  while M4th uses  so-
+	called  DICTIONARIES.  The dictionary concept  is by
+	far not as powerful as FORTH-83 vocalularies, but it
+	is simple and flexible enough for me.
+	For details  about dictionaries,  load the HyperHelp
+	system and enter `help dictionary'.
+
+	In any case, I recommend taking a look at the Hyper-
+	help system. To load HyperHelp, type
+
+	-> USE HELP.SCR ok
+	-> 1 LOAD ok
+	-> USE M4TH.SCR ok
+
+	You may issue SAVE-IMAGE after this,  if you want to
+	make HyperHelp a fixed part of the kernel. In the
+	current version (1.4), the HyperHelp system already
+	is a part of the saved image.
+
+	To invoke HyperHelp, just enter `HELP'.
+
+
+	Comments
+	~~~~~~~~
+	Feel free to send me your comments, suggestions, bug
+	reports, fixes, questions, etc ...
+	Please don't tell me that M4th is not F83-compliant.
+	I KNOW. M4th is M4th.
+
