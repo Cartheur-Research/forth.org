@@ -1,0 +1,254 @@
+\ quasi fquasi quasi_init   Quasi-random number generation (up to dimension 7)
+
+\ This is an ANS Forth program requiring:
+\      1. The Double-Number word set
+\      2. The Floating-Point word set (for fquasi)
+\      3. The word '}' to dereference a one-dimensional array.
+\      4. The word d* dxor and dand
+\      5. Uses words 'Private:', 'Public:' and 'Reset_Search_Order'
+\         to control visibility of internal code
+\      6. The compilation of the test code is controlled by the VALUE TEST-CODE?
+\         and the conditional compilation words in the Programming-Tools wordset
+\      7. The test code uses the FSL FILEIO words, WRITE-TOKEN, WRITE-LONG
+
+\ algorithm from:
+\ Press & Teukolsky, 1989; Computers in Physics, V3, No. 6, pp. 76-79
+
+\     (c) Copyright 1994  Everett F. Carter.     Permission is granted
+\     by the author to use this software for any application provided
+\     the copyright notice is preserved.
+
+
+CR .( QUASI.SEQ         V1.2           17 August 1994   EFC )
+
+Private:
+
+\ DECIMAL
+
+1073741823. 2CONSTANT quasi-max
+
+
+ 7 CONSTANT maxdim
+30 CONSTANT maxbit
+
+VARIABLE dimension
+2VARIABLE quasi_index
+12 INTEGER ARRAY ip{
+12 INTEGER ARRAY mdeg{
+maxdim maxbit * DOUBLE ARRAY iv{
+
+
+Public:
+
+maxdim DOUBLE ARRAY ix{
+
+
+Private:
+
+: reduce_index ( i j -- k )
+            1- maxdim * +
+;
+
+
+: bit_shift  ( n -- d )                  \ perform 1. << n
+           >R 1. R> 0 ?DO
+                           2. D*
+                      LOOP
+;
+
+
+: iv_normalize ( k j -- )
+             maxbit OVER - ROT ROT
+             reduce_index iv{ SWAP } DUP >R >R
+             bit_shift R> 2@ D* R> 2!
+
+;
+
+
+: Gray_Code  ( k j -- d )
+        OVER OVER OVER
+        mdeg{ SWAP } @ -
+        reduce_index iv{ SWAP } DUP >R 2@
+        0. 5 PICK mdeg{ SWAP } @
+
+        bit_shift UMD/MOD 2SWAP 2DROP
+
+        R> 2@ dxor
+
+        3 PICK ip{ SWAP } @                 \ get ip[k]
+
+        \ now do the "L loop"
+        \ stack at this point:    k j xor_dbl ip[k]
+
+        4 PICK mdeg{ SWAP } @ 1-          \ get mdeg[k] - 1
+        DUP 0 > IF
+          1 SWAP DO
+                  DUP 1 AND IF
+                            >R 3 PICK 3 PICK I - reduce_index iv{ SWAP } 2@
+                            dxor R>
+                            THEN
+                  2/
+                -1 +LOOP
+        ELSE
+                DROP
+        THEN
+
+        DROP ROT DROP ROT DROP
+
+;
+
+Public:
+
+: quasi_init ( dim -- )             \ initialize for specified dimension
+
+        DUP maxdim > IF ." quasi_init: dimension " .
+                        ." must be <= " maxdim . CR ABORT THEN
+
+        dimension !
+
+        maxdim 0 DO 0. ix{ i } 2! LOOP
+        maxdim maxbit * 0 DO 0. iv{ i } 2! LOOP
+
+        \ fill ip
+        0 ip{ 0 } !   1 ip{ 1 } !   1 ip{ 2 } !   2 ip{ 3 } !   1 ip{ 4 } !
+        4 ip{ 5 } !   2 ip{ 6 } !   4 ip{ 7 } !   7 ip{ 8 } !  11 ip{ 9 } !
+       13 ip{ 10 } !  14 ip{ 11 } !
+
+        \ fill mdeg
+        1 mdeg{ 0 } !  2 mdeg{ 1 } !  3 mdeg{ 2 } !   3 mdeg{ 3 } !
+        4 mdeg{ 4 } !  4 mdeg{ 5 } !  5 mdeg{ 6 } !   5 mdeg{ 7 } !
+        5 mdeg{ 8 } !  5 mdeg{ 9 } !  5 mdeg{ 10 } !  5 mdeg{ 11 } !
+
+        maxdim 0 DO 1. iv{ i } 2! LOOP
+        \ fill in the other elements of iv
+        3. iv{  7 } 2!     1. iv{  8 } 2!   3. iv{ 9 } 2!   3. iv{ 10 } 2!
+        1. iv{ 11 } 2!     1. iv{ 12 } 2!   3. iv{ 13 } 2!
+        5. iv{ 14 } 2!     7. iv{ 15 } 2!   7. iv{ 16 } 2!   3. iv{ 17 } 2!
+        3. iv{ 18 } 2!     5. iv{ 19 } 2!   5. iv{ 20 } 2!
+       15. iv{ 21 } 2!    11. iv{ 22 } 2!   5. iv{ 23 } 2!  15. iv{ 24 } 2!
+       13. iv{ 25 } 2!     9. iv{ 26 } 2!   7. iv{ 27 } 2!
+       17. iv{ 28 } 2!    13. iv{ 29 } 2!   7. iv{ 30 } 2!   5. iv{ 31 } 2!
+       25. iv{ 32 } 2!     3. iv{ 33 } 2!  31. iv{ 34 } 2!
+
+
+         maxdim 0 DO
+                 \ normalize the set iv values
+                 mdeg{ I } @ 1+ 1 DO
+                        J I iv_normalize
+                 LOOP
+
+
+                 \ calculate the rest of the iv values
+                 maxbit 1+ mdeg{ I } @ 1+ DO
+                                \ calculate Gray code of iv
+                                J I Gray_Code
+                                iv{ J I reduce_index } 2!
+                 LOOP
+
+         LOOP
+
+
+         0. quasi_index 2!
+;
+
+: quasi ( -- )              \ values returned in ix
+
+        quasi_index 2@ 2DUP 1. D+ quasi_index 2!
+
+        maxbit 1- ROT ROT
+        maxbit 0 DO             \ find rightmost zero bit
+                 2DUP
+                 0= IF
+                     1 AND 0= IF ROT DROP I ROT ROT LEAVE THEN
+                    ELSE DROP THEN
+                 0. 2. UMD/MOD 2SWAP 2DROP
+        LOOP
+
+        2DROP
+        maxdim *
+
+        dimension @ 0 DO
+                iv{ OVER  I + } 2@
+                ix{ I } 2@
+                dxor
+                ix{ I } 2!
+        LOOP
+
+        DROP
+;
+
+: fquasi ( n -- ) ( F: -- x1 x2 ...xn )   \ form floating point values
+                                          \ in range from 0 to 1
+       quasi
+
+       0 DO
+            ix{ i } 2@ D>F quasi-max D>F F/
+         LOOP
+;
+
+Reset_Search_Order
+
+TEST-CODE? [IF]   \ test code ==============================================
+
+\ Below here is for testing purposes
+
+VARIABLE dimension
+0 VALUE fileid
+
+CREATE NEW-LINE-CHARS   2 ALLOT
+10 NEW-LINE-CHARS C!
+\ 13 NEW-LINE-CHARS 1+ C!
+
+: newline ( fileid --  )
+
+        NEW-LINE-CHARS 1 ROT write-token
+;
+
+: .ix  ( -- )                     \ print ix values
+      dimension @  0 DO ix{ I } 2@ fileid write-long
+                        S"    " fileid    write-token
+                     LOOP
+      fileid newline
+;
+
+
+: quasi_test ( n "name" -- )
+     
+      W/O CREATE-FILE ABORT" Unable to open file "
+      TO fileid
+
+      2 dimension !
+      2 quasi_init
+
+
+         0 DO quasi  .ix  LOOP
+
+
+     fileid CLOSE-FILE DROP
+;
+
+
+\ Test of Monte Carlo integration
+\ integrate 2-d function func() from 0 - 1, 0 - 1
+
+: func ( -- ) ( F: x1 x2 -- y )        \ test function x1^2 + x2^2
+
+        FDUP F* FSWAP FDUP F* F+
+
+;
+
+: mcint_test ( iters -- ) ( F: -- x )
+     2 quasi_init
+
+     0.0E0
+
+     DUP 0 DO  2 fquasi  func  F+ LOOP
+
+     S>F F/
+
+;
+
+
+[THEN]
+
+

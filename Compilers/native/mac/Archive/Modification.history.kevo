@@ -1,0 +1,41 @@
+MODIFICATION HISTORY
+
+-----------------------------------------------------------------
+September 10, 1992:
+
+A small bug in the original Kevo v0.9b0 was noticed, which caused 
+the system to crash when properties were pasted to an empty
+object. This bug is now fixed. 
+
+If you loaded the earlier version, please make sure you get the
+new version. The only file affected is the executable 'Kevo' --
+other files have not changed.
+
+-----------------------------------------------------------------
+September 12, 1992:
+
+A small bug in slot renaming was found on September 11. This bug
+prevented the objects from returning to their original clone 
+family if a modified slot name was later changed back to its 
+old name.
+
+Comments were also added to some of the demo files.
+The whole archive was built again. The current version 
+number is now v0.9b1 (beta 1).
+
+-----------------------------------------------------------------
+September 14, 1992
+
+A small alignment problem in the kernel was fixed.
+
+Lots of modifications were made to the demo files to enhance
+readability. Some error messages were also made more informative.
+
+Browser's paste function and dynamic recompiler have not yet been
+tested comprehensively, so some rare bugs may still occur. Please 
+report all bugs to 'kevo-interest@ursamajor.uvic.ca'.
+
+The version number is now v0.9b2 (beta 2).
+
+-----------------------------------------------------------------
+

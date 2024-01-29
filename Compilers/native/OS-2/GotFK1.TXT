@@ -1,0 +1,352 @@
+---[ Graphics of the First Kind ]---------------------[11/29/2006]---
+
+                       by Timothy Trussell
+
+---[ Where To Start ]------------------------------------------------
+
+I have been working on the implementation of a VGA programming suite
+for the Forth environment. In this process I have been sifting thru
+information on a variety of programming concepts and techniques.  I
+have cross coded C and C++, as well as Pascal graphics programs over
+to Forth, and have even done a bit of reverse engineering on some of
+the graphics demos of the 1990s Demo Scene, to try to gain some
+insight into *how* the things some of these people have done are
+really accomplished.
+
+And, I must acknowledge perhaps the single greatest reference source
+I have used - the articles in Dr. Dobbs Journal, and his "Graphics
+Programming Black Book" - Michael Abrash.
+
+This column (hopefully the first of a sequence) is meant to be an
+introduction to how graphics can be done on the PC, and is targetted
+at implementing VGA level graphics using a 32-bit version of Forth.
+As such, this means that the target system code will be done in the
+Protected Mode environment, which introduces some unique capabilities
+(as well as problems) of it's own.
+
+This first column will start a progression of concepts, that pretty
+much follow what I've been researching and learning about in regards
+to how to do this kind of programming in the Forth language.
+
+The initial examples and code are meant to be basics.  They are not
+specifically optimized for maximum performance.  In fact, they aren't
+meant to actually be used in a working program at all, because they
+all are based on the use of slow BIOS calls to plot the pixels.
+
+I will, as things progress, change from these slow routines to much
+faster assembly code versions that bypass the need for the switching
+from Protected Mode to Real Mode, though not totally.  There is - as
+far as what I have learned so far goes - a requirement to do SOME
+amount of this kind of switching back and forth, but the idea is to
+try to minimize it so that it doesn't affect your program speed at
+critical times.
+
+So, we shall now step onwards, into what Paul Lutus described as
+"Graphics of the First Kind."
+
+*Paul Lutus - author of the GraFORTH ][ system for the Apple ][ back
+              in the predawn of computer graphics history
+
+---[ Forth System Being Used ]---------------------------------------
+
+The implementation of Forth that I will be using here was written by
+Rick van Norman and released in the package OS2FORTH.ZIP, which is
+presently available on the Taygeta Scientific Forth Archives FTP site
+
+                        www.taygeta.com
+
+To use/run the examples in this column, I would suggest that you
+download the file and extract it to C:\OS2FORTH (or on whatever drive
+you wish) where it will contain a subdirectory named \FORTH with a
+number of additional subdirectories below that.  I am suggesting that
+you do it this way, as I expect that - since you are reading this on
+the C.L.F. newsgroup, you already probably have a version of Forth on
+your drive, and would probably not want this to be put into that
+directory (which you may already have named Forth).
+
+In the places where it is relevant in my examples, I have this
+directory structure in mind when I am INCLUDEing files that are
+present in the OS2FORTH distribution.  If you choose to put the files
+somewhere else, then feel free to change my source to reflect the
+new location.
+
+There are two versions of the Forth system included in the archive.
+One version of the system is compiled specifically for the OS/2
+environment [FORTH.EXE], and the other runs under a DOS DPMI server,
+and I run it without a problem from Windows [FORTH.COM].
+
+I am choosing to refer to this DOS version as 32Forth, to both
+differentiate it from the OS/2 version, as well as to denote that it
+is a 32-bit implementation. So when you come across the name 32Forth
+in the following text, remember it refers to the DOS DPMI version.
+
+As packaged in the archive, the 32Forth system is configured to give
+the user a 1 megabyte workspace to program in.  This size is also
+user configurable, and I have tested memory sizes up to 128 megabytes
+without any problems.  I am currently working with only a 4 megabyte
+workspace, but when I need it, the system will handle more without a
+problem.
+
+Something that must be kept in mind about the 32Forth Assembler is
+that it is a 32-bit assembler.  In my source code, you won't see the
+EAX/EBX/ECX/EDX/ESI/EDI or EBP registers so-named. However, these are
+the registers that are actually referenced and used by the CODE words
+that are being created (unless the OP: override is specifically coded
+which make the assembler code for the 16-bit register that follows it
+in the source.)
+
+The Top Of Stack (TOS) in 32Forth is kept in the EBX register.
+
+And finally, since we are working in Protected Mode, the entire 1 meg
+of allocated space is contiguous - there are no segments that we have
+to worry about to access any of the memory locations.
+
+---[ Column of the First Kind ]--------------------------------------
+
+I will post a second file with each column that will contain all the
+code that I have written for that column, so you won't have to go
+thru all the text and cut and paste everything as you go.  I have
+named the file containing the code for this column CLFCODE1.4th on
+my drive.
+
+I am considering making each successive code post cumulative - that
+is, having the code posting for each additional column include all of
+the previous code as well.
+
+---[ InitGraph/CloseGraph ]------------------------------------------
+
+The initial level of graphics programming starts with the setting of
+the graphics mode to be used.  In all the reference works I have gone
+thru, one of the basic ideas that almost everyone agrees with is that
+it is easiest to set the initial graphics mode with the BIOS INT 10h
+Function 0 call, and then to go to whatever other resolution you wish
+to implement from there.
+
+In this initial article, we will be using VGA resolution $13, which
+has the following characteristics:
+
+        1. an X Coordinate range of [0..319]
+        2. a Y Coordinate range of [0..199]
+        3. a Color range of [0..255]
+
+and is commonly referred to as Mode 320x200x256 or Mode $13.
+
+For this, we will define a word named SetMode, which will take a
+single integer value as a parameter - the mode number to be set. This
+is coded as follows:
+
+        code SetMode ( mode -- )
+                                \ mode in bx on entry as TOS
+                 ax ax  xor     \ function #0
+                 bl al  mov     \ mode to AL
+              INT10 #)  call
+                    bx  pop     \ get new TOS
+                    end-code
+                    no-expand
+
+We can add additional words to make using SetMode easier, such as:
+
+        : InitGraph ( mode# -- ) SetMode ;
+        : CloseGraph ( -- )    3 SetMode ;
+
+It's simpler to just use [<mode> SetMode] rather than adding two more
+words that pretty much do the same thing, but later in this sequence
+of talks on VGA programming I have plans to expand those two words to
+include other functions, such as the setting of some variables,
+allocating buffers, and also deallocating those buffers when shutting
+the system down.
+
+---[ Plot ]----------------------------------------------------------
+
+The next concept is to be able to draw pixels onto the graphics
+display.  There are three parameters needed for this, the color to
+plot the pixel in, the X Coordinate and the Y Coordinate.
+
+Again, using the INT 10h BIOS call is just about the easiest way to
+do this, and is coded as follows:
+
+        code Plot ( x y c -- )
+                                \ c in bx on entry as TOS
+                 bl al  mov     \ al=pixel color
+                    dx  pop     \ dx=y
+                    cx  pop     \ cx=x
+                 bx bx  xor     \ bx=page#
+               12 # ah  mov     \ ah=Plot Pixel function
+              INT10 #)  call    \ do it
+                    bx  pop     \ get new TOS
+                    end-code
+                    no-expand
+
+To test these two new words, let's use the following code:
+
+        include \os2forth\forth\apps\rnd.4
+
+        : TestPixels ( -- )
+          $13 InitGraph         \ sets VGA 320x200x256 mode
+          begin
+            key? not            \ loop until a key is pressed
+          while
+            319 rnd             \ get a random X coord [0..319]
+            199 rnd             \ get a random Y coord [0..199]
+            255 rnd             \ get a random Color   [0..255]
+            Plot
+          repeat
+          key drop              \ lose the keypress
+          CloseGraph            \ sets 80x25 Text mode
+        ;
+
+This word requires the Random wordset, which is located in the
+\os2forth\forth\apps\ directory.  If you desire a different type of
+Random Number Generator, feel free to load and implement it.
+
+Execution of TestPixels will plot random points on the screen, in a
+random color, until a key is pressed, and then exit back to text mode
+and the ok prompt.
+
+It will fill the screen, and then keep plotting random locations and
+colors.  Note the speed of execution of the pixel plotting.
+
+---[ VLine/HLine ]---------------------------------------------------
+
+The next concept after plotting individual pixels is to plot lines.
+
+Plotting horizontal and vertical lines are easy to implement, and can
+be coded as follows:
+
+        : VLine ( x y1 y2 c -- )
+          -rot                  \ x c y1 y2
+          over                  \ x c y1 y2 y1
+          - 1+                  \ x c y1 len
+          0 do                  \ x c y1
+            2 pick              \ x c y1 x
+            over                \ x c y1 x y1
+            i +                 \ x c y1 x y
+            3 pick              \ x c y1 x y c
+            Plot                \ x c y1
+          loop                  \ x c y1
+          2drop                 \ x
+          drop                  \ --
+        ;
+
+In the loop, the value of the Y Coordinate is incremented, and the
+next pixel is plotted at the (X,Y+i) location.
+
+Note that there is a 1+ following the y2-y1 line, since we want to
+plot [len] number of points, not [len-1].
+
+        : HLine ( x1 x2 y c -- )
+          -rot                  \ x1 c x2 y
+          swap                  \ x1 c y x2
+          3 pick                \ x1 c y x2 x1
+          - 1+                  \ x1 c y len
+          0 do                  \ x1 c y
+            2 pick              \ x1 c y x1
+            i +                 \ x1 c y x
+            over                \ x1 c y x y
+            3 pick              \ x1 c y x y c
+            Plot                \ x1 c y
+          loop
+          2drop                 \ x
+          drop                  \ --
+        ;
+
+In this loop, the value of the X Coordinate is incremented, and the
+next pixel is plotted at the (X+i,Y) location.
+
+And a simple line test word:
+
+        : TestLines ( -- )
+          $13 InitGraph
+          \ draw a border to the screen
+            0 319   0 15 HLine
+            0 319 199 14 HLine
+            0   0 199 13 VLine
+          319   0 199 12 VLine
+          \ draw a pair of filled rectangles
+          50 0 do
+            50 100 i 10 + 4 HLine
+            150 i + 100 150 1 VLine
+          loop
+          key drop
+          CloseGraph
+        ;
+
+A slightly more involved construct, Box, implements both the VLine
+and HLine words to draw a rectangle on the screen:
+
+        : Box ( x1 y1 x2 y2 c -- )
+          \ draw top of box
+          4 pick                \ x1 y1 x2 y2 c x1
+          3 pick                \ x1 y1 x2 y2 c x1 x2
+          5 pick                \ x1 y1 x2 y2 c x1 x2 y1
+          3 pick                \ x1 y1 x2 y2 c x1 x2 y1 c
+          HLine                 \ x1 y1 x2 y2 c
+          \ draw bottom of box
+          4 pick                \ x1 y1 x2 y2 c x1
+          3 pick                \ x1 y1 x2 y2 c x1 x2
+          3 pick                \ x1 y1 x2 y2 c x1 x2 y2
+          3 pick                \ x1 y1 x2 y2 c x1 x2 y2 c
+          HLine                 \ x1 y1 x2 y2 c
+          \ draw left side of box
+          4 pick                \ x1 y1 x2 y2 c x1
+          4 pick                \ x1 y1 x2 y2 c x1 y1
+          3 pick                \ x1 y1 x2 y2 c x1 y1 y2
+          3 pick                \ x1 y1 x2 y2 c x1 y1 y2 c
+          VLine                 \ x1 y1 x2 y2 c
+          \ draw right side of box
+          >R                    \ x1 y1 x2 y2
+          >R                    \ x1 y1 x2
+          swap                  \ x1 x2 y1
+          R>                    \ x1 x2 y1 y2
+          R>                    \ x1 x2 y1 y2 c
+          VLine                 \ x1
+          drop                  \ --
+        ;
+
+And a filled box could be coded as:
+
+        : FBox ( x1 y1 x2 y2 c -- )
+          swap                  \ x1 y1 x2 c y2
+          3 pick                \ x1 y1 x2 c y2 y1
+          - 1+                  \ x1 y1 x2 c h
+          0 do                  \ x1 y1 x2 c
+            3 pick              \ x1 y1 x2 c x1
+            2 pick              \ x1 y1 x2 c x1 x2
+            4 pick              \ x1 y1 x2 c x1 x2 y1
+            i +                 \ x1 y1 x2 c x1 x2 y
+            3 pick              \ x1 y1 x2 c x1 x2 y c
+            HLine               \ x1 y1 x2 c
+          loop                  \ x1 y1 x2 c
+          2drop                 \ x1 y1
+          2drop                 \ --
+        ;
+
+A simple test of these is:
+
+        : TestBoxes ( -- )
+          $13 InitGraph
+            0   0 319 199 14 Box
+           10 100  60 130 15 Box
+           10 150  60 190  1 Box
+           10  10  60  60 13 FBox
+          100  10 150  60 12 FBox
+          200  10 300 150 11 FBox
+          key drop
+          CloseGraph
+        ;
+
+---[ Wrapping Up ]---------------------------------------------------
+
+That's enough for this first column for now.  These are the basic
+primitives that have been used for most graphics use.
+
+Play with them a bit, and I'll expand on them in my next column, that
+will involve making these routines a bit faster.
+
+For those that want to use a different Forth system, the only words
+that need to be changed are the two CODE words SetMode and Plot. Once
+those are changed for the system you are using, all the high level
+words should work without a problem.
+
+Time to send this to the printers...
+

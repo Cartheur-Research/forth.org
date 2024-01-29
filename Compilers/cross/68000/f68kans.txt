@@ -1,0 +1,32 @@
+*** latest release *** latest release *** latest release ***
+
+This is the latest release of the F68KANS Forth development system
+for 680x0 computers.
+
+F68KANS is the system following F68K. It is the first high-speed
+ANSI (dpANS6) implementation build from scratch.
+
+F68KANS should run on any machine using the 680x0 CPU without 
+changing the binary image of the code. Simply write a loader 
+program for your machine and F68KANS will run.
+Loader for Atari computers is included as an example.
+
+Changes in the newest release:
+
+* bugs concerning dpANS removed
+* kernel smaller again
+* improved Atari loader for GEM
+	- comfortable environment
+	- graphics in windows
+	- graphics using BGI
+	- graphics using VDI
+	- hardware or software float
+	- wide parts of standard C library accessible
+* more examples
+* porting doc in German and English
+
+
+Questions?
+
+	joerg.plewe@mpi-dortmund.mpg.de
+

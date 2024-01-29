@@ -1,0 +1,69 @@
+\ box_muller          The Box-Muller Transformation (polar form)
+\ generates a pair of random numbers which have a Gaussian distribution
+\ with a zero mean and a standard deviation of one.
+\
+\ This code conforms with ANS requiring:
+\      1. The Floating-Point word set
+\      2. The immediate word '%' which takes the next token
+\         and converts it to a floating-point literal
+\      3. The word 'ranf' which generates a floating-point random
+\         number that is uniformly distributed in the range 0.0-1.0
+\      4. Uses words 'Private:', 'Public:' and 'Reset_Search_Order'
+\         to control visibility of internal code
+
+\ (c) Copyright 1994 Everett F. Carter.  Permission is granted by the
+\ author to use this software for any application provided the
+\ copyright notice is preserved.
+
+cr .( BOX_MULLER     V1.1              10 August 1994   EFC )
+
+Private:
+
+fvariable last_x
+variable  use_last     use_last off
+
+Public:
+
+: box_muller2 ( -- | f: -- x1 x2 )     \ get two Gaussian random values
+
+                begin
+                  \ get two random numbers in the range -1 to 1
+                   % 2.0  ranf f* f1.0 f-
+                   % 2.0  ranf f* f1.0 f-
+
+                   \ calculate the sum of the squares
+                   fover fdup f*
+                   fover fdup f*
+                   f+
+
+                   fdup
+
+                   f1.0 f< not             \ is sum of squares >= 1 ?
+                 while
+                    fdrop fdrop fdrop       \ if so try again
+                 repeat
+
+                 fdup fln fswap f/ % -2.0  f* fsqrt
+
+                 \ multiply the two random numbers by above factor
+
+                 fswap fover f*
+
+                 f-rot f*
+                 fswap         \ this swap makes the Forth implementation
+                               \ comparable with the Ada, C++ and C versions
+   ;
+
+: box_muller ( -- | f: -- x )            \ get one Gaussian random value
+                                         \ saving extra in scratch space
+                                         \ for later call
+          use_last @ if last_x f@ use_last off
+                     else
+                        box_muller2              \ get two random values
+                        last_x f!                \ save spare value
+                        use_last on
+                     then
+ ;
+
+Reset_Search_Order
+

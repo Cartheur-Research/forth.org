@@ -1,0 +1,51 @@
+HOLON4TH Version 4.0
+====================
+
+HOLON4TH is a new interactive integrated cross-development and 
+debugging environment (IIDE) for Forth programs. HOLON4TH runs 
+under DOS and creates DOS target programs.
+
+HOLON4TH features:
+
+1. A user interface as a browser, which offers a constant view 
+of the program under development. The program is edited, 
+restructured, loaded, tested and debugged in the browser. 
+
+2. A new way to handle the source text. HOLON4TH orders the 
+program into a hierarchical structure of modules, groups, and 
+words, which are presented in three list windows at the top of 
+the browser. The text of the current word is displayed in a 
+central window, ready for editing. The program is as readable 
+as a book, you can go directly to every word and look up 
+definitions with hypertext. An import/export mechanism allows 
+the reuse of modules and the management of program libraries.
+
+3. Interactive umbilical development on a target program that 
+is running on a separate PC, or alternatively, in a separate 
+DOS window under a multitasking operating system. 
+
+4. An instant edit-test cycle. If you change the text of a 
+program word, only this word is reloaded, and its code is 
+automatically substituted in the target program. The state of 
+the program remains intact and you can continue testing 
+immediately.
+ 
+5. Automatic code stripping. The target program only contains 
+the code that is really used.
+
+You are welcome to try out these and other new features. 
+HOLON4TH is a fully functional freeware development system. Use 
+it to build DOS applications that contain up to 1000 Forth 
+words. HOLON4TH is also well suited system for learning Forth. 
+You will enjoy the clear presentation of the source text and 
+the immediacy of action.
+
+For additional information contact
+
+Wolf Wejgaard
+Forth Engineering               Tel. +41-41-377-3774
+Neuhoflirain 10                 Fax. +41-41-377-4774
+6045 Meggen, Switzerland        wejgaard@access.ch
+
+
+

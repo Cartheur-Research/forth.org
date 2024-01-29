@@ -1,0 +1,612 @@
+
+( 
+*************************************************************************
+*			       MPU401.PCF				*
+*									*
+*	MIDI Record/Playback using Roland MPU401 MIDI Interface 	*
+*									*
+*	       Copyright Donald Swearingen, January 1985		*
+*		 For private, non-commercial use only.			*
+*************************************************************************
+
+Note: The following program segments are written in Laboratory Microsystems 
+PC/FORTH for the IBM PC. They were prepared using a standard text editor
+and compiled into the FORTH dictionary using the command:
+
+			INCLUDE MPU401.PCF
+)
+
+FORTH DEFINITIONS HEX
+
+(
+********************
+* Data Definitions *
+********************
+)
+0330	CONSTANT	MPU_DATA	( IO Port Addresses for MPU_401)
+0331	CONSTANT	MPU_STAT
+0331	CONSTANT	MPU_CMND
+
+0010	CONSTANT	PGPH_SIZE	( 8086 paragraph size )
+1000	CONSTANT	T_SIZE		( "Track" data buffer size )
+
+0008	CONSTANT	N_TK		( Number of tracks )
+
+CREATE	T_SEG		N_TK 2* ALLOT	( segment pointers for track data )
+CREATE	T_RPTR		N_TK 2* ALLOT	( Record data pointers )
+CREATE	T_PPTR		N_TK 2* ALLOT	( Play data pointers )
+CREATE	T_RST		N_TK 2* ALLOT	( Record/play running status )
+CREATE	T_NDAT		N_TK 2* ALLOT	( # data bytes for current status )
+
+VARIABLE		ACK_RCVD	( Set to 1 when command ACK received )
+2VARIABLE		PREV_IRQ2	( original IRQ2 vector contents )
+VARIABLE		REC_TRK 	( Current record track 0-7 )
+VARIABLE		MPU_VEC 	( Current MPU character handler )
+VARIABLE		MPU_VEC_RST	( Initial MPU character handler )
+
+(
+******************************
+* Auxiliary PC-DOS functions *
+******************************
+)
+
+( free up memory paragraphs not used by FORTH
+  note: FORTH uses CS:0000 thru SS:FFFF 
+)
+CODE	FREE_MEM			( --- n_avail )
+	ES		PUSH		( Preserve registers )
+	CS		PUSH
+	AX		POP
+	ES, AX		MOV
+	BX, # FFFF	MOV		( Request maximum )
+	AH, # 4A	MOV		( SETBLOCK function )
+	21		INT		( Get max. avail. in BX )
+	10$		JNC		( Got all FFFF pgphs )
+	AX, # 8 	CMP		( Insufficient memory error?)
+	5$		JE		( Yes, proceed )
+	BX, # 0 	MOV		( No pgphs available )
+	10$		JMP
+5$:	SS		PUSH
+	CX		POP
+	CX, # 1000	ADD		( CX = SS:FFFF+1 )
+	CS		PUSH
+	AX		POP		( AX = CS:0000 )
+	ES, AX		MOV
+	CX, AX		SUB		( CX = # pgphs used by FORTH )
+	BX, CX		SUB		( BX = # pgphs not used by FORTH )
+	AH, # 4A	MOV		( SETBLOCK function )
+	21		INT
+	10$		JNC
+	BX, # 0 	MOV		( error...return 0 )
+10$:	ES		POP		( restore register )
+	BX		PUSH		( return # free pgphs )
+	NEXT,
+END-CODE
+
+( get memory paragraphs 
+) 
+CODE	GET_MEM 			( n_req --- seg n_alloc error_code )
+	BX		POP		( # paragraphs requested )
+	AH, # 48	MOV		( allocate memory function )
+	21		INT		( DOS function interrupt ) 
+	10$		JC		( Error return )
+	AX		PUSH		( segment allocated )
+	BX		PUSH		( # paragraphs allocated )
+	AX, # 0 	MOV
+	AX		PUSH		( no error )
+	NEXT,
+10$:	CX, # 0 	MOV
+	CX		PUSH		( dummy segment )
+	BX		PUSH		( # paragraphs actually available )
+	AX		PUSH		( DOS error code )
+	NEXT,
+END-CODE
+(
+********************
+* Output to MPU401 *
+********************
+)
+
+( Wait until MPU401 is ready to receive data 
+)
+: MPU_TX_WAIT				( --- )
+  BEGIN MPU_STAT PC@ 40 AND NOT UNTIL
+;
+( CALLable code version 
+)
+CODE	S_MPU_TX_WAIT 
+	DX, # MPU_STAT	MOV		( MPU status port )
+1$:	AL, DX		IN		( read status )
+	AL, # 40	AND		( wait for bit 6 = 0 )
+	1$		JNZ
+	RET
+END-CODE
+
+( Send command to MPU401
+)
+: !MPU_CMND				( cmnd --- )
+  0 ACK_RCVD !				( reset MPU ack flag ) 
+  MPU_TX_WAIT MPU_CMND PC!		( send character )
+  BEGIN ACK_RCVD @ UNTIL		( wait for ACK )
+;
+( Send command in AL to MPU401. CALLable code version. 
+)
+CODE	S_!MPU_CMND 
+	AX PUSH 			( save command )
+	' S_MPU_TX_WAIT >BODY CALL      ( wait for tx ready )
+	AX, AX		XOR		( AX = 0)
+	ACK_RCVD , AX	MOV		( reset MPU ack flag )
+	DX, # MPU_CMND	MOV		( MPU command port )
+	AX		POP		( Retrieve command )
+	DX, AL		OUT		( Send command )
+1$:	AX, ACK_RCVD	MOV		( Wait for command ACK )
+	AX, # FFFF	AND
+	1$		JZ	
+	RET
+END-CODE
+
+( Send data byte to MPU401 
+)
+: !MPU_DATA				( data --- )
+  MPU_TX_WAIT MPU_DATA PC!  
+;
+( Send data byte in AL to MPU401. CALLable code version. 
+)
+CODE	S_!MPU_DATA			
+	AX		PUSH		( save character ) 
+	' S_MPU_TX_WAIT >BODY CALL      ( Wait for tx ready)
+	DX, # MPU_DATA	MOV		( MPU Data port )
+	AX		POP		( Retrieve data )
+	DX, AL		OUT		( Send data )
+	RET
+END-CODE
+
+(
+**************************
+* IRQ2 interrupt handler *
+**************************
+(
+
+( Begin interrupt: save registers and link to current character
+  handling vector 
+)
+CODE	IRQ2_INT	
+	STI				( enable interrupts )
+	AX		PUSH		( save environment )
+	BX		PUSH 
+	CX		PUSH
+	DX		PUSH 
+	DS		PUSH 
+	ES		PUSH
+	SI		PUSH
+	AX, CS		MOV		( establish data accessibility )  
+	DS, AX		MOV  
+	DX, # MPU_DATA	MOV		( read serial port)
+	AL, DX		IN
+	BX, MPU_VEC MOV
+	BX		JMP		( jump to character handler )
+END-CODE
+
+( Signal end of interrupt and return from interrupt 
+)
+CODE	IRQ2_INT_END 
+	AL, # 20	MOV		( send EOI to 8259 )
+	# 20 , AL	OUT
+	SI		POP		( restore environment ) 
+	ES		POP  
+	DS		POP  
+	DX		POP 
+	CX		POP  
+	BX		POP  
+	AX		POP
+	IRET		      
+END-CODE
+
+(
+*****************************
+* Record/Playback functions *
+*****************************
+)
+
+( Determine the number of data bytes associated with the MIDI
+  status byte in CL and store for the currently active record 
+  or playback track [SI]. Input CL destroyed.
+)
+CODE	SET_T_NDAT
+	CL, # C0	CMP
+	1$		JB
+	CL, # DF	CMP
+	1$		JA
+	CX, # 1 	MOV
+	T_NDAT [SI], CX MOV
+	RET
+1$:	CX, # 2 	MOV
+	T_NDAT [SI], CX MOV
+	RET
+END-CODE
+
+( place character in record buffer of current track
+)
+CODE	MPU_RECD_PUT 
+	CLI				( clear interrupts for)
+					( pointer manipulation)
+	BX, T_SEG [SI]	MOV		( get trk seg in ES )
+	ES, BX		MOV
+	BX, T_RPTR [SI] MOV		( track record pointer )
+	BX, # T_SIZE	CMP		( buffer full? )
+	1$		JB
+	STI				( Yes...don't store )
+	RET
+1$:	ES: [BX], AL	MOV		( place char. in track buffer )
+	BX		INC		( bump record pointer)
+15$:	T_RPTR [SI], BX MOV		( store updated ptr )
+	STI				( enable interrupts)
+	RET
+END-CODE
+
+( record data bytes of current MIDI message
+)
+CODE	MPU_RECD_3
+	SI, REC_TRK	MOV		( Get record trk in SI )
+	SI, # 1 	SHL		( Convert to word offset )
+	' MPU_RECD_PUT >BODY CALL       ( store value )
+	T_NDAT [SI]	DEC
+	10$		JNZ
+	BX, MPU_VEC_RST MOV
+	MPU_VEC , BX	MOV		( reset char vector )
+10$:	' IRQ2_INT_END >BODY JMP        ( leave )
+END-CODE
+
+( process second byte of current track event
+) 
+CODE	MPU_RECD_2
+	SI, REC_TRK	MOV		( Get record trk in SI )
+	SI, # 1 	SHL		( Convert to word offset )
+	AL, # F8	CMP		( check for MPU marks )
+	3$		JE
+	AL, # F9	CMP
+	3$		JE
+	AL, # FC	CMP
+	5$		JNE
+3$:	' MPU_RECD_PUT >BODY CALL       ( store mark )
+	BX, MPU_VEC_RST MOV
+	MPU_VEC , BX	MOV		( reset char vector )
+	' IRQ2_INT_END >BODY JMP
+5$:	BX, # ' MPU_RECD_3 >BODY MOV    ( set char vec for MIDI data bytes )
+	MPU_VEC , BX	MOV
+	CL, T_RST [SI]	MOV
+	' SET_T_NDAT >BODY CALL         ( compute # data bytes for status )
+	AL, # 80	CMP		( new status?)
+	8$		JAE
+	' MPU_RECD_3 >BODY JMP
+8$:	T_RST [SI], AL	MOV		( remember new running status)
+	' MPU_RECD_PUT >BODY CALL       ( store value in track buffer )
+	CX, AX		MOV
+	' SET_T_NDAT >BODY CALL         ( compute # data bytes for status )
+	' IRQ2_INT_END >BODY JMP
+END-CODE
+
+( record timing value for current track event
+)
+CODE	MPU_RECD	
+	SI, REC_TRK	MOV		( Get record trk in SI )
+	SI, # 1 	SHL		( Convert to word offset )
+	' MPU_RECD_PUT >BODY CALL       ( Store timing value )
+	AL, # F8	CMP		( timing overflow? )
+	1$		JE		( Yes...one byte event )
+	BX, # ' MPU_RECD_2 >BODY MOV
+	MPU_VEC , BX	MOV		( set char. vector for second byte )
+1$:	' IRQ2_INT_END >BODY JMP
+END-CODE
+
+( handle play request 
+)
+CODE	MPU_PLAY
+	AX, # 07	AND		( ensure trk 0-7)
+	AX, # 1 	SHL		( cnvt to word offset )
+	SI, AX		MOV
+	BX, T_PPTR [SI] MOV
+	CX, T_RPTR [SI] MOV
+	BX, CX		CMP		( Anything left ?)
+	1$		JB		( Yes...send next event )
+	AL, # 0 	MOV		( No...send data end FC )
+	' S_!MPU_DATA >BODY CALL
+	AL, # FC	MOV
+	' S_!MPU_DATA >BODY CALL
+	10$		JMP
+1$:	AX, T_SEG [SI]	MOV		( Get trk seg in ES )
+	ES, AX		MOV
+	ES: AL, [BX]	MOV		( Get timing value )
+	' S_!MPU_DATA >BODY CALL        ( send timing value )
+	BX		INC
+	AL, # F8	CMP		( Timing value = 240? )
+	10$		JE		( Yes, EXIT )
+	ES: AL, [BX]	MOV		( Check next character )
+	AL, # F8	CMP		( MPU mark?)
+	3$		JE
+	AL, # F9	CMP
+	3$		JE
+	AL, # FC	CMP
+	5$		JNE		( Not mark )
+3$:	BX		INC		( "read" mark )
+	' S_!MPU_DATA >BODY CALL        ( send mark )
+	10$		JMP		( EXIT )
+5$:	AL, # 80	CMP		( New status? )
+	7$		JB
+	T_RST [SI], AL	MOV		( Reset running status )
+	BX		INC		( "read" status )
+	' S_!MPU_DATA >BODY CALL        ( send status )
+7$:	CL, T_RST [SI]	MOV
+	' SET_T_NDAT >BODY CALL
+9$:	ES: AL, [BX]	MOV		( Read next data byte )
+	BX		INC
+	' S_!MPU_DATA >BODY CALL        ( send data byte )
+	T_NDAT [SI]	DEC
+	9$		JNZ
+10$:	T_PPTR [SI], BX MOV		( Reset play pointer )
+	' IRQ2_INT_END >BODY JMP
+END-CODE
+
+(
+*************************
+* Interpret MPU message *
+*************************
+)
+
+( Begin processing a new MPU message
+)
+CODE	MPU_MSG
+	AL, # FE	CMP		( command ack? )
+	1$		JNE
+	ACK_RCVD , AX	MOV		( Yes, signal ack received )
+	' IRQ2_INT_END >BODY JMP        ( leave )
+1$:	AL, # EF	CMP		( timing value? )
+	4$		JA
+	' MPU_RECD >BODY JMP            ( Yes, record data )
+4$:	AL, # F8	CMP		( timing overflow? )
+	7$		JNE
+	' MPU_RECD >BODY JMP            ( Yes, record data )    
+7$:	AL, # F7	CMP		( Play request? )
+	10$		JA
+	' MPU_PLAY >BODY JMP            ( Yes, play data )
+10$:	' IRQ2_INT_END >BODY JMP                ( Ignore F9-FF )
+END-CODE
+
+(
+***************************
+* Interrupt control words *
+***************************
+)
+
+( save previous values and initialize IRQ2 interrupt vectors
+)
+: IRQ2_TRAP				( --- )
+  ['] MPU_MSG >BODY DUP
+  MPU_VEC ! MPU_VEC_RST !
+  0 28 2@L  PREV_IRQ2 2!		( save old IRQ2 vector )
+  ?CS: 0 2A !L				( segment of handler )
+  ['] IRQ2_INT >BODY 0 28 !L            ( offset of handler )
+;
+( restore previous IRQ2 vectors
+)
+: IRQ2_REL				( --- )
+  PREV_IRQ2 2@ 0 28 2!L
+;
+( enable interrupts on IRQ2
+)
+: IRQ2_ENABLE				( --- )
+  21 PC@ 0FB AND 21 PC! 		( 8259 int mask IRQ2 )
+;		 
+( disable IRQ2 interrupts
+)
+: IRQ2_DISABLE				( --- )
+  21 PC@ 04 OR 21 PC!			( mask IRQ2 interrupt )
+;
+( enable interrupts, set up vectors 
+)
+: IRQ2_ON				( --- )
+  IRQ2_TRAP IRQ2_ENABLE 
+;
+( disable interrupts, release vectors 
+)
+: IRQ2_OFF				( --- )
+  IRQ2_DISABLE	IRQ2_REL 
+;
+(
+************************
+* MPU401 control words *
+************************
+)
+
+: RECD+ 	22 !MPU_CMND ;		( start record process )
+: RECD- 	11 !MPU_CMND ;		( stop record process )
+: PLAY+ 	0A !MPU_CMND ;		( start playback process )
+: PLAY- 	05 !MPU_CMND ;		( stop playback process )
+: OVDB+ 	2A !MPU_CMND ;		( start overdub process )
+: OVDB- 	15 !MPU_CMND ;		( stop overdub process )
+: MPU_RESET	FF !MPU_CMND ;		( system reset )
+: THRU- 	33 !MPU_CMND ;		( disable MIDI thru function )
+: RT_OUT-	32 !MPU_CMND ;		( disable MIDI real-time output ) 
+: T_BYTE+	34 !MPU_CMND ;		( enable leading timing byte in
+					  stop mode )
+: RT_TO_HOST+	39 !MPU_CMND ;		( enable real-time to host )
+: INT_CLK	80 !MPU_CMND ;		( use internal clock )
+: FSK_CLK	81 !MPU_CMND ;		( use FSK clock from tape )
+: MIDI_CLK	82 !MPU_CMND ;		( use MIDI clock )
+: MET_ON	83 !MPU_CMND ;		( metronome on )
+: MET_OFF	84 !MPU_CMND ;		( metronome off )
+: MET_ON_ACC	85 !MPU_CMND ;		( metronome on with accent )
+: BENDER-	86 !MPU_CMND ;		( allow bender data )
+: BENDER+	87 !MPU_CMND ;		( screen bender data )
+: MIDI_THRU-	88 !MPU_CMND ;		( enable MIDI thru )
+: MIDI_THRU+	89 !MPU_CMND ;		( disable MIDI thru )
+: DATA_IN_STP-	8A !MPU_CMND ;		( disable data in stop mode )
+: DATA_IN_STP+	8B !MPU_CMND ;		( enable data in stop mode )
+: MEAS_END-	8C !MPU_CMND ;		( enable meas. end to host )
+: MEAS_END+	8D !MPU_CMND ;		( disable meas. end to host )
+: COND- 	8E !MPU_CMND ;		( conductor off )
+: COND+ 	8F !MPU_CMND ;		( conductor on )
+: RT_AFF-	90 !MPU_CMND ;		( disable real time affection )
+: RT_AFF+	91 !MPU_CMND ;		( enable real time affection )
+: FSK<INT	92 !MPU_CMND ;		( sync FSK to internal clock )
+: FSK<MIDI	93 !MPU_CMND ;		( sync FSK to MIDI clock )
+: CLK-		94 !MPU_CMND ;		( disable clock to host )
+: CLK+		95 !MPU_CMND ;		( enable clock to host )
+: SYSX- 	96 !MPU_CMND ;		( disable system exclusive data )
+: SYSX+ 	97 !MPU_CMND ;		( enable system exclusive data )
+: TMPO_RST	B1 !MPU_CMND ;		( reset relative tempo )
+: CLR_PLY_CTR	B8 !MPU_CMND ;		( clear play counters )
+: CLR_PLY_TAB	B9 !MPU_CMND ;		( clear play table )
+: CLR_REC_CTR	BA !MPU_CMND ;		( clear record counter )
+
+( request to send MIDI data on specified track
+) 
+: RTS_DATA				( trk --- )
+  D0 + !MPU_CMND 
+;
+( request to send system exclusive message
+)
+: RTS_SYSX				( --- )
+  DF !MPU_CMND 
+;
+( set tempo 
+)
+: SET_TEMPO				( beats/min --- )
+  E0 !MPU_CMND !MPU_DATA 
+;
+( set relative tempo where 40H = 1/1 ratio
+)
+: REL_TEMPO				( rel --- ) 
+  E1 !MPU_CMND !MPU_DATA 
+;
+( set rate of tempo change, 0 = immediate, 1 = slowest, FF = fastest
+)
+: GRADUATION				( grad --- )
+  E2 !MPU_CMND !MPU_DATA 
+;
+( send clock to host every rate/4 internal clocks
+)
+: CLK>HST_RATE				( rate	--- )
+  E7 !MPU_CMND !MPU_DATA 
+;
+( set active playback tracks using 8 bit map
+)
+: SET_AC_TRK				( trks --- )
+  EC !MPU_CMND !MPU_DATA 
+;
+( send play counter of track when switched from playback to record mode
+)
+: SND_PLY_CTR+				( trks --- )
+  ED  !MPU_CMND !MPU_DATA 
+;
+( initialize state of MPU_401 
+)
+: MPU_INIT				( --- )
+  MPU_RESET				( reset MPU-401 )
+  THRU- MIDI_THRU-			( THRU off )
+  T_BYTE+				( enable leading timing byte)
+  BENDER-				( pitch bend data off )
+  DATA_IN_STP-				( data in STOP off )
+  MEAS_END-				( send measure end off )
+  RT_AFF-				( real-time affection off )
+  SYSX- 				( exclusive to host off )
+  CLK-					( clock to host off )
+  COND- 				( conductor off )
+  60 CLK>HST_RATE			( Set clock to host to MIDI )
+					( standard: 24 clks/beat )
+  64 SET_TEMPO				( 100 beats per minute )
+;
+( enable interrupts and initialize MPU401
+)
+: MPU_ON				( --- )
+  IRQ2_ON
+  MPU_INIT
+;
+( disable MPU401 activity
+)
+: MPU_OFF				( --- )
+  IRQ2_OFF
+;
+(
+*********************************
+* Record/playback control words *
+*********************************
+)
+
+( reset record pointer for track n
+)
+: RESET_RPTR				( n --- )
+  2* T_RPTR + 0 SWAP !
+;
+( reset play pointer for track n
+)
+: RESET_PPTR				( n --- )
+  2* T_PPTR + 0 SWAP !
+;
+( intialize state of record/playback variables and obtain memory 
+  for record/play data buffers 
+)
+: RECORD_INIT				( --- )
+  FREE_MEM DROP
+  T_SIZE PGPH_SIZE / N_TK *		( --- n_required_pgphs )
+  GET_MEM				( --- seg n_avail_pgphs err_code )
+  0<> IF
+    2DROP
+    ." Not enough memory for record/playback " CR 
+    EXIT
+  THEN
+  DROP					( --- seg )
+  T_SIZE PGPH_SIZE /			( --- seg pgphs/trk )
+  N_TK 0 DO				( set up pointers to track buffers )
+    2DUP I * +
+    T_SEG I 2 * + !
+  LOOP
+  2DROP
+  N_TK 0 DO				( reset record/playback pointers )
+    I RESET_PPTR
+    I RESET_RPTR
+  LOOP
+;
+( record MIDI data on trk n
+)
+: RECORD				( n --- )
+  7 AND REC_TRK !			( set record track )
+  REC_TRK @ RESET_RPTR			( reset record pointer)
+  RECD+ 				( Start record )
+;
+: RECORD_OFF	
+  RECD-
+;
+( overdub MIDI data on trk n while playing other tracks
+)
+: OVERDUB				( n --- )
+  7 AND REC_TRK !			( set record track )
+  1 REC_TRK @ SHIFT NOT 
+  SET_AC_TRK				( all trks active except REC_TRK )
+  CLR_PLY_CTR				( clear play counters )
+  REC_TRK @ RESET_RPTR			( reset record pointer)
+  N_TK 0 DO				( reset play pointers )
+    I RESET_PPTR
+  LOOP
+  OVDB+ 				( Start record )
+;
+: OVERDUB_OFF	
+  OVDB- 
+;
+( play midi data for all tracks
+)
+: PLAY					( --- )
+  N_TK 0 DO				( reset play pointers )
+    I RESET_PPTR
+  LOOP
+  FF SET_AC_TRK 			( all trks active )
+  CLR_PLY_CTR
+  PLAY+ 				( start play )
+;
+: PLAY_OFF
+  PLAY- 
+;
+
+DECIMAL
+
+

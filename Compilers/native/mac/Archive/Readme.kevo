@@ -1,0 +1,25 @@
+The current version of Kevo is 0.9b2 (beta 2).
+
+The first version of the user guide has now been completed,
+and it can be found in the subdirectory '/Manual'.
+
+Subdirectory '/Papers' contains some recent papers about the
+Kevo system.
+
+---------------------------------------------------------------------
+
+To open the archive (kevo0.9b2.sit.hqx), you'll need the programs 
+BinHex 4.0 and StuffIt; alternatively, you can use a program such 
+as 'Fetch' which will do the downloading, unpacking and uncompression 
+automatically. 
+
+The Kevo system should run on any Macintosh with a processor >= 68020 
+(this version won't run on 68000's!). System 7 is recommended, although 
+there should not be any problems with older Mac OS versions with multifinder.
+
+---------------------------------------------------------------------
+
+For further information, send e-mail to 
+
+	'kevo-interest@ursamajor.uvic.ca'.
+

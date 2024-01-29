@@ -1,0 +1,348 @@
+<html><head><title>
+
+</title>
+<body>
+<h1>
+Dictionary Headers and Threaded Words in "Portable Assembly"
+</h1> 
+<h1>Rick Hohensee</h1>
+<h2>
+SYNOPSIS
+</h2>
+ Assembler directives, as opposed to machine opcodes, are not CPU-specific. The GNU
+assembler has many supported CPUs, but there's only one main body of docs for its
+pseudo-ops and other machine-independant features.  The functionality of assembler
+directives meshes closely with the needs of building word headers and address
+threads for a Forth dictionary.  By using C for the code bodies of primitives, in
+conjunction with using assembly language directives to build word headers and the
+bodies of address-thread words, the advantages of both C and assembly are retained. 
+Implementation examples are presented for H3sm, "Hohensee's 3-stack machine".
+
+<h2>
+WHY?
+</h2>
+ From Forth's point of view C is rather like a fancy assembler, whereas Forth is
+more a child of "machine language monitors", in that Forth offers interactive
+control of the machine at the most direct level. C's biggest advantage, as is
+typical of what I call "monolithic compilers", is an excellent degree of
+portability, which is an advantage that should not be discounted. This portability
+comes at some cost, and part of that cost is that what C likes to do in many cases
+bears no resemblance to what building a fancy machine language monitor or a Forth
+involves. The only set of C tools I am familiar with is the GNU tools; gcc, as, ld
+and friends. In the case of the GNU tools, there is an impressive degree of
+flexibility at the low end. With enough digging, one can often find a way to do
+almost exactly what you actually want, even in somewhat un-C-like fashion, and
+retain a reasonable degree of portability.  GForth makes good use of the GNU cc's
+asm-like extensions to C. What we are looking at here is the GNU assembler's
+high-level traits, in conjunction with GNU C's asm-like traits. 
+ <p>
+ Methods used here are derived from looking a little closer at two normally
+reasonable assumptions;  that assembly language is not portable, and that cpp is a
+sufficient preprocessor for the C language it is an adjunct of. Assemblers have
+directives for putting arbitrary numeric values and strings at arbitrary memory
+locations at assembly time, and for simple computations of values based on where in
+memory the assembly process is at at the moment. These actions are completely
+independant of the machine language of the CPU in question, produce no machine code,
+and are exactly what is needed to build Forth dictionary headers. In other words, a
+complete assembly language for a particular CPU is of course not portable, but we
+can employ just the portable parts to build a dictionary in size-efficient and
+semantically efficient fashion. To automate the dictionary build code a bit the m4
+macro language is useful. There are some assumptions cpp reasonably makes about what
+the programmer wants to be able to do with double-quotes and gcc asm directives that
+happen to conflict with our un-C-like needs. gas has macro capability also, but I
+got started with m4 and don't know if gas macros could have done the job or not.
+
+
+<h2>
+HOW?
+</h2>
+
+The gcc command is a wrapper for several related tools. The C compiler proper, cc1,
+takes text and makes text. C code text is converted to assembly language text, which
+is later passed to an assembler by gcc or by hand. It is apparently a trivial matter
+to allow a C compiler to service requests for straight assembly within the C text,
+because all that's involved is turning off the C compilation for the duration of the
+assembly insert. The format to do so in the GNU tools is<b> <pre>
+
+	asm ("  [assembly code]
+
+	");
+
+</pre>
+</b><p>
+ This is the mechanism we use to interlace word headers and thread word address
+bodies into the C code for a Forth. As long as <b>[assembly code]</b> is just
+assembler directives, i.e. contains no actual machine opcodes, we lose little
+portability vis-a-vis pure GNU C.
+  <p> 
+ The threading scheme I use for my H3sm project requires a header format for
+primitives, and a one-bit modification for thread words, i.e. "colon definitions". 
+I use two header macros for primitives and two header macros for threads, due to a
+problem with building a linked list with assembler directives.  These are my m4
+macros for primitives... <b><pre>
+
+
+	define(ATOM_,
+	asm     ("
+	        0:
+	        .byte   `len($2)'
+	        .byte   0
+	        .byte   0x80
+	        .byte   0
+	        .ascii  \"`$2'\"
+	        .align  4, 0
+	        .int    1b
+	        .equ    `$1'CFA, .
+	        ");
+	`$1':)
+
+
+	define(ATOM_B,
+	asm     ("
+	        1:
+        	.byte   `len($2)'
+        	.byte   0
+        	.byte   0x80
+        	.byte   0
+        	.ascii  \"`$2'\"
+        	.align  4, 0
+        	.int    0b
+        	.equ    `$1'CFA, .
+   	     	");
+	`$1':)
+
+
+
+
+</pre></b>
+ The last line of the above macro, <b>`$1':)</b>, becomes C code for a goto label. 
+H3sm uses GNU cc computed goto and labels-as-values after the example of GForth. 
+Above that is all assembly language, and is also all assembly directives.  The 0:
+and 1: are gas "local symbols", which are supposedly more flexible than global
+symbols. I tried a variety of combinations of labels and symbols, and couldn't get
+gas to build a singly back-linked list where the back-reference is later in the
+assembly than the point it has to be updated at. Finally I interlaced ATOM_ and
+ATOM_B macros to back-reference 0: and 1: alternately, and that works. If you see a
+better method let me know. In the H3sm threading scheme the macros for threads,
+"colon definitions", differ from the above by one bit, the 0x80 is 0, and do the
+same 0:/1: interlacing.
+ <p>
+I also have one hand-written (non-macro) header for a word called "aardvark" that
+serves as the beginning of the linking process and termination flag for dictionary
+traversers. The header structure the above macros implements is...<b><pre>
+
+	Head Name Interface Cell, HNC
+        (4 bytes in this H3sm)  	count    unused    atomic bit unused
+        	    			xxxxxxxx oooooooo  Xxxxxxxx   oooooooo
+	name byte               	neck     (name field cell aligned)
+	name byte    			neck
+	   .       			neck
+	   .         			neck
+	   .
+	[up to 3 pad bytes]  		[neckneckneck]
+	4 byte LINK Cell            	neckneckneckneck (actual address)
+	4 byte CODE Cell begins code   	bodybodybodybody (code or address)
+	        i.e. actual code ?
+	[whatever]   			[body]
+	        (higher memory )  	.
+	                           	.
+
+</pre></b>
+ The link cell of a word header points at the lsB of the HNC of the previous word. 
+The lsB of the HNC is the count byte. Here's an example of an invocation of the
+primitive macro for e.g. <b>?=</b> ...<b><pre>
+
+
+	ATOM_(queryequal,?=)    /* ?=     ( a b --- flagpyte )  */
+                     /* are top two pytes equal?   flag for ifbranch/tee */
+	bite = 255;                          /* boolean accum set to true */
+	DROP
+	for ( i = dsl ; i < dsl + Size ; i++ )
+	        { if ( ds[i] != ds[i +  Size] )
+	                {  bite = 0;   /* not =, set to false and exit loop */
+	                break;
+	                }
+	        }
+	ds[dsl] = bite;               /* flagbyteTOS set to result boolean */
+	NEXT
+
+</pre></b>
+ There's some very non-Forthish C code there which you may well want to ignore, but
+the point is that the macro puts a data-only header and a C goto label above the C
+code. This also shows that the asm headers don't effect primitives' C word bodies at
+all. The macro takes a C/asm label name argument and a H3sm name argument.  The
+C/asm label names are needed to build compiled-in threads before an outer
+interpreter exists.  cpp macros in the example code are NEXT and DROP. H3sm code is
+written all in one C "function"  called _start() to please the GNU linker, so the C
+code of a primitive word is bounded by a goto label and usually NEXT. 
+ <p> 
+
+The overall format for the code of primitives in H3sm is represented by the
+following semi-code...<b><pre>
+
+	_start(){
+
+	ATOM_(dup,dup)
+	[ C statements
+	]
+	NEXT
+
+	ATOM_B(drop,drop)
+	[ C statements
+	]
+        NEXT
+	
+	ATOM_(emit,emit)
+	[ C statements  /* emit happens to use asm for the Linux 
+				write syscall in addition to C.  */
+	]	
+	NEXT
+
+	ATOM_B( 	etc. etc.
+
+</pre></b>
+ 
+ In my threading scheme xt's in a threaded word are addresses of actual (mostly
+programmed in C) machine code. A handful of simple m4 macros build all the
+compiled-in thread words. It bears mention that H3sm uses a variant of what I
+believe has been called "call threading". I call it Virtual Machine Subroutine
+Threading. Primitives are always handled differently than thread words, analagous to
+machine opcodes and subroutines. There's an extra address required in the caller
+when a thread calls a thread, the "go" word's address and it's argument address, and
+the called thread has a Return word.  The upsides are that NEXT doesn't process a W
+working variable, and that I find it easier to follow something that resembles
+regular subroutine calls than other schemes. In fact, VMST is sortof what I stumbled
+into while trying to do a real threading scheme.
+  <b><pre>
+	/* OK, m4 macros for all the standard build_a_thread stuff. */
+
+	/* contents of this int is given by  arg                */
+	define(CELL,    asm     (" .int `$1'    ");
+	)
+
+	/* this cell contains CFA of word named as argument     */
+	define(OP,      asm     (" .int `$1'CFA ");
+	)
+
+	/* VMST jsr, takes a whole cell, plus the callee's cell
+	This doesn't have the OP folded into it to keep branch offset counting
+	1:1  */
+	define(GO,    asm       (" .int goCFA  ");
+	)
+
+	/* build a relative branch offset with integer arg,
+	$1 is +/-, $2 is #   +/- needs a comma */
+	define(BRANCH,  asm     (" .int . `$1' `$2' ");
+	)
+
+	/* we are at a branch target, set label symbols for here.  */
+	define(TARGET1,  asm    ("      .equ `$1'_one, .        ");
+	)
+	define(TARGET2,  asm    ("      .equ `$1'_two, .        ");
+	)
+
+	/* back-branch address of labels. */
+	define(BACK1,  asm      ("      .int `$1'_one   ");
+	)
+	define(BACK2,  asm      ("      .int `$2'_two   ");
+	)
+
+</pre></b>
+ These macros are used as in the following compiled-in thread definition for H3sm
+"words". The TARGET1 and BACK1 macros need an argument just to keep produced label
+names globally unique. The fact that there are two versions of TARGET and BACK is
+actually redundant, but that's what I have at the moment. 
+ <b><pre>
+
+
+	/* words	( count --- ) print names of count words from last */
+	THREAD_(words,words)
+		GO()
+		   OP(latest)
+		OP(pfetch)		/* last HNC */
+	        OP(TOr)			/* down-counter to R stack */
+		TARGET1(nwords)		/* loop target, not a cell */
+	        	GO()		/* call printname thread word */
+                	   OP(printname)	
+        		GO()		/* call thread word that gets previous HNC */
+                	   OP(previous)
+        		OP(fetch)	/*  fetch contents of TOPS to TOS */
+ 		  OP(yes)		/*  conditional. End of dictionary?  */	
+   	   	    BRANCH(+,5)		/* "if no" part */
+					/* "if yes" part. closer visually, kinda. */
+        		OP(rminus1)	/* decrement downcount index at TORS */
+        		OP(queryr)	/* is TORS zero? */
+		OP(no)			/* conditional. End of count? */
+   		  BACK1(nwords)		/* yes part. loop. */
+        	OP(rdrop)		/* no part. don't loop. clean up R stack */
+	OP(Return)
+
+
+</pre></b>
+
+<h2>
+RESULTS
+</h2>
+ The above code produces a thread header and 14 ints of addresses.  Nothing that has
+to be executed at initialization time is produced, just a header and cells that the
+H3sm inner interpreter (the NEXTs of each primitive) interprets. My previous method
+of building the same word with initialization code in C was too bloated for mention
+in Forth circles. Doing it this way, in addition to the thread itself being more
+efficiently built, lots of ancillary C code became unecessary. An entire layer of
+address virtualization vanished, in fact. There's now only about a dozen machine
+instructions of "C kernel"; a couple variable initializations for things like dp and
+last, and a couple branches to skip around the code for the primitives so everything
+gets compiled. Almost all actual machine code is in the bodies of the primitives. 
+The whole thing just generally gets more Forth-like, and the overall layout somewhat
+resembles the all-asm eforth.
+ <p>
+ The nature of the assembly I had to learn to do this remained portable. I have x86
+machines, but have no great love of the architecture, and am happy to have been able
+to do this without learning any real machine opcodes. (The syscalls thing did force
+me to learn a few, however.) 
+ <p>
+ My current H3sm has 83 primitives, about 130 words total. It's a 3-stack machine,
+and the third stack has relatively complex behavior, so the code is fat for a Forth.
+I can get Rideau's 1999 Linux version of eforth down to about 13k. I have 11
+syscalls in H3sm at the moment, and it weights in at about 21k. Eforth has unix
+invocation argument and environment variable passing, and this H3sm doesn't yet, so
+figure 22k.  Neither eforth nor H3sm is linked to anything; they are self-sufficient
+beyond the need for a Linux kernel. A featureful H3sm looks like it will be 30 to 40
+kilobytes, and much of the size difference between it and eforth is in the extra,
+and code-hungry, third stack.  My impression then is that the portability and
+relative coding ease of C is available for a reasonable price, even compared to
+pure-assembler Forths. 
+ <p>
+ Perhaps more important, I'd be hard-pressed to ever get this far with H3sm in
+straight assembly. My execute equivalent is about 140 x86 instructions. Some of the
+funky data stack arithmatic in H3sm is very fat too. That I can do things like this
+in C and keep it at a Forth-like size is a very nice, looked at from the top down.
+Some things one wants to do in a Forth are harder to code in C than machine
+language. Things that need to process carry bits for example get pretty goofy in C,
+but I'll take the goofiness. C has escape-clauses for itself such as casts and
+unions that get heavy use in H3sm. Also, the resulting code from C is what a
+long-time FORTRAN user I know called "Not bad. Not bad at all." It's certainly good
+enough for an experiment like H3sm. 
+ <p>
+ 
+ As of this writing H3sm is just barely at the point where the portable-asm aspect
+of it is demonstrable. The current version is a systemic re-work of the previous
+version discussed in my first "Forth Dimensions" article, with several major new
+characteristics. This version has escaped libc entirely. Some primitives use the
+read and write syscalls, and bye uses exit.  The gross functionality is not back up
+to even the previous modest level. I haven't tried a cross-build, having no means to
+test one myself, but I see no looming fatal gotchas. Assembler directives like .int,
+0:, 1: and so on are too simple for much in the way of unforeseeable treachery. H3sm
+had a vestigial interpreter before, and as of this moment I haven't repaired the
+breakage inflicted on it in the transition to C/asm, but I do have a working
+Forth-like "words" (the above example) I can call as a compiled-in thread as the
+initial action of the program. This does demonstrate traversal of a dictionary of
+words with bodies coded in C and headers laid down entirely by asm directives, and
+address interpretation of an address-thread word created by similar means.
+ <p>
+ The latest H3sm sourcecode will be at http://linux01.gwdg.de/~rhohen/H3sm.html and
+probably ftp://linux01.gwdg.de/pub/cLIeNUX/interim . The H3sm version refered to
+here is 0.8. Thanks to Andi Kleen for a review of this article.
+
+
+

@@ -1,0 +1,211 @@
+
+{
+DOER/MAKE is a way of redefing or defering the defining of what a word
+does until later on.  It's possible to setup a word to do one thing under
+certain conditions and to do something else at other times.  I needed this
+capability while while writing non-linear curve fitting routines.  I am
+writing a general package for curve fitting and it's necessary to be able
+to define the function being fit to after the program is compiled.  DOER/MAKE
+allows me to do this.
+
+The general concept of DOER/MAKE is introduced in Leo Brodie's book THINKING
+FORTH.  You'll find some general code listed in the back of the book.  David
+Sibley has a version adapted from Brodies book on one of the DLs (I think DL10)
+His code works fine but unfortuneately you can't snapshot it.  The problem is
+the use of absolute addresses instead of relative ones.  The next time the 
+snapshotted code is loaded, if it's not at the same base address, any DOERed
+word would not work.
+
+To correct this problem I redefined the code to always work relative to the 
+NEXT.PTR.  While I was at it, I wrote one version of DOER and (MAKE) in 
+assembly code to speed things up a bit.  (I'm a speed fanatic.)
+
+I think I got all the bugs.  I had a bit of a problem with MAKE from the 
+command line because  ';' smudges the name field of the latest word defined.
+While figuring out how to correct for that I found something interesting in
+the definition of  ';'.  I've listed it at the end of this file.  Maybe 
+someone can explain this to me.
+
+-Moriel  (Compuserv ID# 71470,2557)
+
+
+DOER is used as:        DOER THIS.WORD
+Initially THIS.WORD does nothing.  To make it do something
+
+: ONE.ACTION   MAKE THIS.WORD 10 0 DO I . LOOP ;
+
+After executing ONE.ACTION, THIS.WORD will print out 0 to 9.
+MAKE can be used in a : definition as above or from the command level.
+
+MAKE THIS.WORD ." I did this outside of a colon definition" ;
+
+Note that I still had to end with a semi-colon since MAKE enters compilation
+mode.
+It's also possible to vector more than one word at a time using ;AND  
+
+DOER THAT.WORD
+
+: TWO.ACTIONS  MAKE THIS.WORD ." What goes up " CR ;AND
+               MAKE THAT.WORD ." Must come down. " ;AND
+    ." This is printed when TWO.ACTIONS is executed" ;
+
+When trying to understand MAKE, (MAKE) and ;AND the following diagram 
+may help.  It shows the tokens compiled into the object field of a word
+that MAKEs a DOER word (DWORD) execute WORDs 1,2 &3 and then goes on to
+execute words 4 & 5.
+
+
+
+
+: Setup.DOER  MAKE DWORD WORD1 WORD2 WORD3 ;AND WORD4 WORD5 ;
+
+                     /--------------->----------->--------\
+|-------|--------|------|-------|-------|-------|------|-------|-------|-----|
+| DOCOL | (MAKE) | #10  | WORD1 | WORD2 | WORD3 | EXIT | WORD4 | WORD5 | (;) |
+|-------|--------|------|-------|-------|-------|------|-------|-------|-----|
+                          ^
+DWORD's object field:     ^
+              >>>>>>>>>>>>^
+             ^  
+|-------|---------| 
+| DOES> | Pointer |
+|-------|---------|
+
+Each box represents 2 bytes except for DOCOL and DOES> which are both 4 byte 
+JSR instructions.  After executing Setup.DOER, the Parameter field of DWORD
+points to WORD1.  When Setup.DOER is executed, after setting up the pointer
+in DWORD, the # 10 will be added to the address containing the #10 and pushed
+onto the Return Stack so that the next word to be executed will be WORD4. I 
+refer to the field containing the #10 as the ;AND flag. I should also point 
+out that EXIT and (;) are actually the same thing.
+
+}
+
+
+\ ===================== Start of DOER/MAKE definitions ===================== 
+
+
+ANEW DOER/MAKE
+
+: NOOP ;
+
+VARIABLE MARKER            		\ Temporary work variable
+     
+: DOER \ <>--<> Creates a vectorable execution word.
+    CREATE ' NOOP 				\ Get PFA of NOOP which is default action
+			NEXT.PTR - ,      	\ Compile NOOPs offset from NEXT.PTR
+	DOES>  \ <PFA of DOER word>--<>
+		@ 						\ Get offset of code to execute
+		NEXT.PTR + 				\ Calculate physical address
+ 		>R ;					\ and push it onto the return stack.
+
+: (MAKE)	\ <>--<> Vectors the DOER word to the following code.
+	R> 						\ Get physical address following (MAKE)
+	DUP 2+ 					\ Address containing DOERed words token
+	DUP 2+					\ Address of words to be vectored to
+	NEXT.PTR -				\ Calculate offset 
+	SWAP W@ PFA !			\ Store it in DOERed words PFA
+	DUP W@ ?DUP 			\ Check the ;AND flag
+	  IF + >R 				\ If >0 then calculate address of continuation
+	  ELSE DROP 			\ Otherwise drop it causing execution to 
+	THEN ;					\ continue up one level.
+
+
+
+
+
+
+{ If you prefer a faster executing version, here is some assembly code 
+  you can compile instead. }
+
+{ : DOER \ <>--<> Creates a vectorable execution word.
+    CREATE ' NOOP 				\ Get PFA of NOOP which is default action
+			NEXT.PTR - ,      	\ Compile NOOPs offset from NEXT.PTR
+    ;CODE 	\ <ADDR>--<>  Functions similar to DUP @ + >R
+		IP RP -) LONG MOVE,			\ Save IP similar to DOCOL
+		A0 POP,						\ Get PFA of DOERed word
+		A0 () D0 LONG MOVE,			\ Get it's contents
+		D0 0 LONG NP @I) IP LONG LEA,	\ Set IP to point to DOERed code
+	 	NEXT						\ Jump to it thru NEXT
+	END-CODE
+
+CODE (MAKE) \ <>--<> Run time code of MAKE - Sets up vector
+	2 IP I) D0 WORD MOVE,			\ Get token to DOERed word
+	D0 2 WORD NP @I) A0 LONG MOVEA, \ Get it's CFA from token table
+	A0 4 LONG ADDQ,					\ Convert it to a PFA
+
+	4 IP I) A1 LONG LEA,			\ Get address of code to be vectored in
+	NP A1 LONG SUBA,				\ Determine offset from NEXT.PTR
+	A1 A0 () LONG MOVE,				\ Save offset in DOERed word
+
+	0 D0  MOVEQ,					\ The remaining code sets a new IP value
+	IP () D0 WORD MOVE,				\ Get ;AND flag.
+	NE IF,							\ If non zero, then add to IP to jump
+		D0 IP LONG ADDA,			\ past the ;AND
+	  ELSE,							\ If zero, do the equivalent of (;)
+		RP )+ IP LONG MOVEA,		\ by loading new IP from the Return Stack
+	  THEN,
+	NEXT							\ All done.
+END-CODE
+}
+
+: ;AND  \ <>--<> Allows a word to MAKE multiple vectors
+    COMPILE EXIT 					\ End the current vectored execution
+	MARKER @ 						\ Check if this is compile mode or
+	IF								\ Command line mode
+    	HERE MARKER @ -				\ Calculate offset to continuation
+        MARKER @ W!					\ Store it in the ;AND flag field
+	ELSE
+		[COMPILE] [ SMUDGE			\ This smudge replaces the one in ';'
+	THEN ;  IMMEDIATE				\ This is done at compile time
+
+: MAKE  \ <>--<> <word> Sets up execution code of DOERred word
+    COMPILING 
+	IF
+        COMPILE (MAKE)				\ Compile runtime code
+        HERE MARKER ! 				\ Save current location
+        0 W, 						\ 0 means no ;AND was executed
+    ELSE 
+		0 MARKER !					\ Notify ;AND that compiling was false
+		HERE NEXT.PTR -				\ Current distance from NEXT.PTR
+		[COMPILE] '	 !			    \ Store in PFA of DOER being MAKEd
+        [COMPILE] ]  				\ Start compiling.	
+		SMUDGE						\ Cancels out SMUDGE done by ;
+    THEN ; IMMEDIATE
+
+
+: UNDO  \ <>--<> <word>  Makes a DOER word a NOOP instruction
+    ' NOOP NEXT.PTR -
+	[COMPILE] ' ! ;
+
+\ Used as     UNDO THIS.WORD
+
+\ ======================== End of DOER/MAKE =============================
+
+
+
+{ Something I ran across while debugging this code.
+0 rdef ;
+
+ NFA'  Name                Token   CFA    (CFA)    (PFA)          
+ 3273A ;                   1F3C I 1D0A6  4EAE002C    E4E     36  1138
+
+$1D0AA LOCAL.VOCAB 
+$1D0AC @ 
+$1D0AE >R 
+$1D0B0 LOCAL.VOCAB 
+$1D0B2 OFF 
+$1D0B4 ?CSP 
+$1D0B6 R> 				____
+$1D0B8 0BRANCH $1D0C4   	|	Can anybody tell me what's going on here?
+$1D0BC COMPILE (;) 			|=> What are the 2 branches for anyway? 
+$1D0C0 BRANCH $1D0C8 		|   They both execute the same code!!!!
+$1D0C4 COMPILE (;) 		____|
+$1D0C8 SMUDGE 
+$1D0CA STATE 
+$1D0CC OFF 
+$1D0CE (;) 
+
+}
+
+

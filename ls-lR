@@ -1,0 +1,2966 @@
+.:
+total 308
+-rw-r--r--    1 ftp      net           882 Nov 12  1997 00Index
+drwxr-xr-x   10 ftp      net          4096 Jun  8  2012 Applications
+drwxr-xr-x   12 ftp      net          4096 Apr  7  2000 Archive
+lrwxrwxrwx    1 root     root            9 Sep 21  2005 compilers -> Compilers
+drwxr-xr-x    4 ftp      net          4096 Apr  3  2000 Compilers
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2003 FAQ
+drwxr-xr-x    7 ftp      net          4096 Apr  3  2000 FD
+drwxr-xr-x    3 ftp      net          4096 Apr  7  2000 FIG
+drwxr-xr-x    2 ftp      net          4096 Jun 18  2003 Literature
+-rw-r--r--    1 root     root       184321 Sep 25 04:44 ls-lR
+-rw-r--r--    1 ftp      net         27896 Sep 25 04:44 ls-lR.gz
+-rw-r--r--    1 ftp      net         32902 Jul 13  2000 ls-lR.Z
+drwxr-xr-x    2 ftp      net          4096 Dec 31  2006 Misc
+drwxr-xr-x    3 ftp      net          4096 Apr  7  2000 Reviewed
+drwxr-xr-x    2 ftp      net          4096 Jan 25  2008 Scientific
+drwxr-xr-x    2 ftp      net          4096 Jun  9  2010 TinyBoot
+drwxr-xr-x    3 ftp      net          4096 Apr  9  2008 Tools
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 Unreviewed
+
+./Applications:
+total 1460
+-r--r--r--    1 ftp      net          1551 Nov 26  1997 00Index
+-r--r--r--    1 ftp      net         22655 Mar 16  1997 01234th.f
+-r--r--r--    1 ftp      net           111 Mar 16  1997 01234th.txt
+-r--r--r--    1 ftp      net        376318 Apr  4  1999 4th-33a.tgz
+-r--r--r--    1 ftp      net        465323 Apr  4  1999 4th-33a.zip
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 4th-old
+-r--r--r--    1 ftp      net          2907 Apr  4  1999 4th-read.me
+-r--r--r--    1 ftp      net          2881 Mar 16  1997 99beers.f
+-r--r--r--    1 ftp      net           172 Mar 16  1997 99beers.txt
+drwxr-xr-x    2 ftp      net          4096 Jun  8  2012 ANS
+-r--r--r--    1 ftp      net          1419 Mar 18  2004 doermakeLB.zip
+-r--r--r--    1 ftp      net           486 Aug 23  1996 editb.txt
+-r--r--r--    1 ftp      net         13453 Aug 23  1996 editb.zip
+-r--r--r--    1 ftp      net         15311 Apr 21  1998 edo.txt
+-r--r--r--    1 ftp      net         10113 Apr 20  1998 edo.zip
+-r--r--r--    1 ftp      net           408 Apr 20  1998 enum.4th
+-r--r--r--    1 ftp      net          1253 Apr 20  1998 enumdesc.4th
+drwxr-xr-x    2 ftp      net          4096 Jun 16  2003 F83
+-r--r--r--    1 ftp      ftp         23715 Jun  5  2012 float4th14.zip
+-rw-r--r--    1 ftp      ftp          4924 May 13  2010 floatint.fs
+-r--r--r--    1 ftp      net         41597 Dec 15  1996 fosm1v1.zip
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 fpc
+-r--r--r--    1 ftp      net           708 Oct  5  1997 ftest.fs
+-r--r--r--    1 ftp      ftp         17134 Sep 10  2011 gforth-pixel.fs
+-r--r--r--    1 ftp      ftp         11227 Sep 10  2011 gforth-union.fs
+-r--r--r--    1 ftp      ftp            54 Jun  5  2012 illyesfp.txt
+-r--r--r--    1 ftp      ftp          6991 Jun  5  2012 illyesfp.zip
+-r--r--r--    1 ftp      net        106025 Oct  7  1997 kandinski-0.tgz
+-r--r--r--    1 ftp      net         11744 Oct  7  1997 kandoc.txt
+-r--r--r--    1 ftp      net         14583 Oct 17  2004 matchpnt.zip
+-r--r--r--    1 ftp      net         67564 Oct 17  2004 mousbutn.zip
+-r--r--r--    1 ftp      net          6081 Nov 13  1996 oofemu.4th
+-r--r--r--    1 ftp      net         14654 Oct 17  2004 pointed.zip
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 pygmy
+-r--r--r--    1 ftp      net         11452 Aug 23  1996 readme.atl
+-r--r--r--    1 ftp      net           983 Aug 23  1996 sinth.txt
+-r--r--r--    1 ftp      net          6411 Aug 23  1996 sinth.zip
+-r--r--r--    1 ftp      net           978 Aug 23  1996 synthes.txt
+-r--r--r--    1 ftp      net          6669 Aug 23  1996 synthes.zip
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 ThisForth
+drwxr-xr-x    2 ftp      net          4096 Sep 21  2005 turbo
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 Win32For
+-r--r--r--    1 ftp      net          3654 Mar 12  1997 winkh.txt
+-r--r--r--    1 ftp      net         27023 Mar 12  1997 winkh.zip
+-r--r--r--    1 ftp      net           293 Apr  2  1997 winkk.txt
+-r--r--r--    1 ftp      net         27992 Apr  2  1997 winkk.zip
+-r--r--r--    1 ftp      net         15348 Apr  5  1998 xms4th.txt
+-r--r--r--    1 ftp      net         16553 Apr 20  1998 xmslib.zip
+
+./Applications/4th-old:
+total 1784
+-r--r--r--    1 ftp      net        290722 Sep  4  1997 4th-31d.tgz
+-r--r--r--    1 ftp      net        354701 Sep  4  1997 4th-31d.zip
+-r--r--r--    1 ftp      net        408048 Jan 12  1998 4th32em.tgz
+-r--r--r--    1 ftp      net           369 Jan 12  1998 4th32em.txt
+-r--r--r--    1 ftp      net        333815 Nov 26  1997 4th-32e.tgz
+-r--r--r--    1 ftp      net        404912 Nov 26  1997 4th-32e.zip
+-r--r--r--    1 ftp      net          2635 Nov 26  1997 4th-read.me
+
+./Applications/ANS:
+total 1000
+-r--r--r--    1 ftp      net          2860 Aug 23  1996 00Index
+-r--r--r--    1 ftp      net         30957 Aug 23  1996 big.zip
+-r--r--r--    1 ftp      net         17776 Mar 27  1997 class10.tgz
+-r--r--r--    1 ftp      net          1319 Feb 20  1997 CLASS10.TXT
+-r--r--r--    1 ftp      net         19863 Feb 20  1997 CLASS10.ZIP
+-r--r--r--    1 ftp      net          1287 Mar  9  1997 classes10.txt
+-r--r--r--    1 ftp      net          1114 Apr  7  1997 classM10.txt
+-r--r--r--    1 ftp      net         29122 Apr  6  1997 classM10.zip
+-r--r--r--    1 ftp      net         25520 Aug 23  1996 core.fr
+-r--r--r--    1 ftp      net           473 Mar 31  2003 crc16b.txt
+-r--r--r--    1 ftp      net          1557 Mar 31  2003 crc16b.zip
+-r--r--r--    1 ftp      net         24154 Aug 23  1996 debugger.ans
+-r--r--r--    1 ftp      net          6075 Aug 23  1996 fileio.fo
+-r--r--r--    1 ftp      net          4585 Aug 23  1996 fileio.nofloat.fth
+-r--r--r--    1 ftp      ftp          5043 Jun  5  2012 finput03.txt
+-rw-r--r--    1 ftp      net          6037 Sep 16  2002 fpout11.f
+-rw-r--r--    1 ftp      net         10208 Jan 31  2005 fpout15.f
+-rw-r--r--    1 ftp      net         11333 Jan 31  2005 fpout16.f
+-rw-r--r--    1 ftp      net         11874 Feb 23  2005 fpout17.f
+-rw-r--r--    1 ftp      net         12941 Jul 22  2005 fpout18.f
+-rw-r--r--    1 ftp      net         15591 Nov 10  2005 fpout19.f
+-rw-r--r--    1 ftp      net         15464 Oct 23  2005 fpout19.f.OLD
+-rw-r--r--    1 ftp      net         15778 Sep  5  2006 fpout20.f
+-rw-r--r--    1 ftp      net         14412 Jun  5  2007 fpout22.f
+-rw-r--r--    1 ftp      net          9581 Jun  5  2007 fpout32.f
+-rw-r--r--    1 ftp      net         10337 Nov 19  2007 fpout33.f
+-rw-r--r--    1 ftp      net         10236 Jan 24  2008 fpout34.f
+-rw-r--r--    1 ftp      ftp         10382 Dec  5  2010 fpout35.f
+-rw-r--r--    1 ftp      ftp         10622 Feb  6  2011 fpout36.f
+-rw-r--r--    1 ftp      ftp         11366 Feb 18  2011 fpout37.f
+-rw-r--r--    1 ftp      ftp         11443 May 25  2011 fpout38.f
+-r--r--r--    1 ftp      ftp         11618 May 21  2012 fpout39.f
+-rw-r--r--    1 ftp      net           737 Sep 16  2002 fpout.txt
+-r--r--r--    1 ftp      ftp            57 Jun  5  2012 fracout.txt
+-r--r--r--    1 ftp      ftp          2456 Jun  5  2012 fracout.zip
+-r--r--r--    1 ftp      net           291 Nov 12  1998 ftest1.f
+-r--r--r--    1 ftp      net         22590 Nov  4  1998 ftran109.f
+-r--r--r--    1 ftp      net         22770 Nov 12  1998 ftran110.f
+-r--r--r--    1 ftp      net         24614 Sep 27  1997 ftran1.f
+-r--r--r--    1 ftp      net         24505 Sep 22  1997 ftran.f
+-r--r--r--    1 ftp      net         27265 Oct  5  1997 ftran.fs
+-r--r--r--    1 ftp      net         10496 Aug 23  1996 lzss.doc
+-r--r--r--    1 ftp      net         13824 Aug 23  1996 lzss.fo
+-r--r--r--    1 ftp      net         50039 Aug 23  1996 maf1v02.zip
+-r--r--r--    1 ftp      net         20371 Aug 23  1996 memory.fth
+-r--r--r--    1 ftp      net          1971 Aug 23  1996 mpafread.me
+-r--r--r--    1 ftp      net         45523 Aug 23  1996 paf0v04.zip
+-r--r--r--    1 ftp      net          8051 Sep  9  1999 Quicksort.fth
+-r--r--r--    1 ftp      net         16000 Jun  2  2006 Represent_11.txt
+-r--r--r--    1 ftp      net         18987 Nov 28  2006 Represent_20.txt
+-r--r--r--    1 ftp      net         21450 Jan 24  2008 Represent_21.txt
+-r--r--r--    1 ftp      ftp         23202 Dec  5  2010 Represent_30.txt
+-r--r--r--    1 ftp      ftp         24565 Jun  5  2012 Represent_31.txt
+-r--r--r--    1 ftp      ftp          2737 Jan 23  2012 represent_in_c.zip
+-r--r--r--    1 ftp      net         92444 Aug 23  1996 stand4th.zip
+-r--r--r--    1 ftp      net         29055 Sep 13  1997 strtfrth.txt
+-r--r--r--    1 ftp      net          1974 Aug 23  1996 stwords.txt
+-r--r--r--    1 ftp      net         11477 Aug 23  1996 stwords.zip
+-r--r--r--    1 ftp      net          1648 Aug 23  1996 tester.fr
+-r--r--r--    1 ftp      net          3503 Aug 23  1996 uudecode.seq
+-r--r--r--    1 ftp      net          3614 Aug 23  1996 uuencode.seq
+
+./Applications/F83:
+total 160
+-r--r--r--    1 ftp      net          1726 Jun 15  2003 f83-app.txt
+-r--r--r--    1 ftp      net         39039 Jun 15  2003 f83-app.zip
+-r--r--r--    1 ftp      net           924 Feb 12  1997 f83tetr.readme
+-r--r--r--    1 ftp      net          4918 Feb 12  1997 f83tetr.zip
+-r--r--r--    1 ftp      net         25600 Jan  2  1998 floating.blk
+-r--r--r--    1 ftp      net           109 Jun 15  2003 hpset.txt
+-r--r--r--    1 ftp      net         17572 Jun 15  2003 hpset.zip
+-r--r--r--    1 ftp      net           104 Jun 15  2003 pset.txt
+-r--r--r--    1 ftp      net         17603 Jun 15  2003 pset.zip
+-r--r--r--    1 ftp      net           133 Dec 30  1998 SCRAMBLE.TXT
+-r--r--r--    1 ftp      net         21702 Dec 30  1998 SCRAMBLE.ZIP
+
+./Applications/fpc:
+total 3380
+-r--r--r--    1 ftp      net          6528 Aug 23  1996 2-mandel.arc
+-r--r--r--    1 ftp      net          9856 Aug 23  1996 asmhnt01.arc
+-r--r--r--    1 ftp      net          3388 Aug 23  1996 benchmrk.seq
+-r--r--r--    1 ftp      net         36096 Aug 23  1996 besides.arc
+-r--r--r--    1 ftp      net         47360 Aug 23  1996 cardfile.arc
+-r--r--r--    1 ftp      net         46208 Aug 23  1996 changes.arc
+-r--r--r--    1 ftp      net         22015 May 29  1997 chess1-0.seq
+-r--r--r--    1 ftp      net          4568 Apr 20  1998 dectohex.msg
+-r--r--r--    1 ftp      net          9216 Aug 23  1996 dirscan.arc
+-r--r--r--    1 ftp      net          6760 Aug 23  1996 div0.seq
+-r--r--r--    1 ftp      net          2432 Aug 23  1996 doermake.arc
+-r--r--r--    1 ftp      net          1920 Aug 23  1996 dynarray.seq
+-r--r--r--    1 ftp      net         10240 Aug 23  1996 ekbd.arc
+-r--r--r--    1 ftp      net         13184 Aug 23  1996 ext-edit.arc
+-r--r--r--    1 ftp      net         10752 Aug 23  1996 fdvapi2.arc
+-r--r--r--    1 ftp      net         17408 Aug 23  1996 ff-color.arc
+-r--r--r--    1 ftp      net          4992 Aug 23  1996 ff-expct.arc
+-r--r--r--    1 ftp      net        132224 Aug 23  1996 ffpc225a.arc
+-r--r--r--    1 ftp      net         82944 Aug 23  1996 ffpc225h.arc
+-r--r--r--    1 ftp      net        130176 Aug 23  1996 ffpc225s.arc
+-r--r--r--    1 ftp      net          7680 Aug 23  1996 ff-tut.arc
+-r--r--r--    1 ftp      net          3328 Aug 23  1996 filestut.zip
+-r--r--r--    1 ftp      net         23680 Aug 23  1996 flisp.zip
+-r--r--r--    1 ftp      net          2176 Aug 23  1996 fornext.arc
+-r--r--r--    1 ftp      net         51968 Aug 23  1996 forthdos.zip
+-r--r--r--    1 ftp      net          3025 Aug 23  1996 fpc-exp.seq
+-r--r--r--    1 ftp      net         10752 Aug 23  1996 fpc-heap.arc
+-r--r--r--    1 ftp      net          2176 Aug 23  1996 fpchelp.arc
+-r--r--r--    1 ftp      net        305238 Aug 23  1996 fpcl1-7.lzh
+-r--r--r--    1 ftp      net          4608 Aug 23  1996 fpcore.arc
+-r--r--r--    1 ftp      net          4608 Aug 23  1996 fpcreg.arc
+-r--r--r--    1 ftp      net          1920 Aug 23  1996 fudge00.arc
+-r--r--r--    1 ftp      net          6784 Aug 23  1996 fvars.arc
+-r--r--r--    1 ftp      net          5120 Aug 23  1996 fxpoint.arc
+-r--r--r--    1 ftp      net         52480 Aug 23  1996 fxref110.zip
+-r--r--r--    1 ftp      net          7168 Aug 23  1996 game.arc
+-r--r--r--    1 ftp      net         89088 Aug 23  1996 girlsmal.zip
+-r--r--r--    1 ftp      net         70784 Aug 23  1996 grafkrns.arc
+-r--r--r--    1 ftp      net          8448 Aug 23  1996 graphics.arc
+-r--r--r--    1 ftp      net        129664 Aug 23  1996 gunton.zip
+-r--r--r--    1 ftp      net         13952 Aug 23  1996 hercules.zip
+-r--r--r--    1 ftp      net          8960 Aug 23  1996 hlintr.zip
+-r--r--r--    1 ftp      net          8960 Aug 23  1996 hlint.zip
+-r--r--r--    1 ftp      net          3584 Aug 23  1996 htrof.zip
+-r--r--r--    1 ftp      net          5760 Aug 23  1996 jb#edit.arc
+-r--r--r--    1 ftp      net         10496 Aug 23  1996 jbledit.arc
+-r--r--r--    1 ftp      net        133888 Aug 23  1996 jdemo13.zip
+-r--r--r--    1 ftp      net          1281 Aug 23  1996 joystick.seq
+-r--r--r--    1 ftp      net         75264 Aug 23  1996 land26.zip
+-r--r--r--    1 ftp      net          3072 Aug 23  1996 lehmer.arc
+-r--r--r--    1 ftp      net          5888 Aug 23  1996 lequ9249.arc
+-r--r--r--    1 ftp      net         18176 Aug 23  1996 line1018.zip
+-r--r--r--    1 ftp      net          2048 Aug 23  1996 localmps.arc
+-r--r--r--    1 ftp      net          2192 Aug 23  1996 magic.seq
+-r--r--r--    1 ftp      net          4992 Aug 23  1996 mcga.arc
+-r--r--r--    1 ftp      net         29440 Aug 23  1996 meks.zip
+-r--r--r--    1 ftp      net         86016 Aug 23  1996 mtun11.arc
+-r--r--r--    1 ftp      net         98944 Aug 23  1996 mturt13.zip
+-r--r--r--    1 ftp      net          5248 Aug 23  1996 multpath.arc
+-r--r--r--    1 ftp      net          6400 Aug 23  1996 newmouse.zip
+-r--r--r--    1 ftp      net        164736 Aug 23  1996 obk3501.zip
+-r--r--r--    1 ftp      net         13952 Aug 23  1996 oo4th21.arc
+-r--r--r--    1 ftp      net         13568 Aug 23  1996 ooforth.arc
+-r--r--r--    1 ftp      net          6272 Aug 23  1996 oops.arc
+-r--r--r--    1 ftp      net          8192 Aug 23  1996 ov-cgav2.arc
+-r--r--r--    1 ftp      net         62877 Aug 23  1996 pasm386c.lzh
+-r--r--r--    1 ftp      net         66304 Aug 23  1996 pasm386c.zip
+-r--r--r--    1 ftp      net         19200 Aug 23  1996 pc_pdp1.zip
+-r--r--r--    1 ftp      net         10496 Aug 23  1996 pfo-001.arc
+-r--r--r--    1 ftp      net         27081 Aug 23  1996 pfo-001.seq
+-r--r--r--    1 ftp      net          5376 Aug 23  1996 pprint.zip
+-r--r--r--    1 ftp      net          9344 Aug 23  1996 prtwords.arc
+-r--r--r--    1 ftp      net          7680 Aug 23  1996 pstack.arc
+-r--r--r--    1 ftp      net          1920 Aug 23  1996 rand3mps.arc
+-r--r--r--    1 ftp      net          2432 Aug 23  1996 rbios.arc
+-r--r--r--    1 ftp      net         51072 Aug 23  1996 rb-utils.zip
+-r--r--r--    1 ftp      net          7808 Aug 23  1996 records.zip
+-r--r--r--    1 ftp      net         14976 Aug 23  1996 sfloat1.arc
+-r--r--r--    1 ftp      net          2944 Aug 23  1996 sigmodel.arc
+-r--r--r--    1 ftp      net        242048 Aug 23  1996 smiley35.zip
+-r--r--r--    1 ftp      net        234286 Aug 23  1996 smiley.lzh
+-r--r--r--    1 ftp      net          3200 Aug 23  1996 sound01.seq
+-r--r--r--    1 ftp      net           896 Aug 23  1996 ssv.arc
+-r--r--r--    1 ftp      net         10752 Aug 23  1996 taskutil.arc
+-r--r--r--    1 ftp      net          8704 Aug 23  1996 tetra.arc
+-r--r--r--    1 ftp      net          5760 Aug 23  1996 tictac.arc
+-r--r--r--    1 ftp      net          6016 Aug 23  1996 tracht2.arc
+-r--r--r--    1 ftp      net         16384 Aug 23  1996 turtles.arc
+-r--r--r--    1 ftp      net         55040 Aug 23  1996 vkal40b.zip
+-r--r--r--    1 ftp      net         82432 Aug 23  1996 vpsfp101.arc
+-r--r--r--    1 ftp      net          3456 Aug 23  1996 window01.arc
+-r--r--r--    1 ftp      net          4864 Aug 23  1996 wordndx3.arc
+-r--r--r--    1 ftp      net         27207 Aug 23  1996 xms.seq
+-r--r--r--    1 ftp      net          2672 Jun 12  1998 xseg2cfa.seq
+-r--r--r--    1 ftp      net         57472 Aug 23  1996 zdemo.arc
+
+./Applications/pygmy:
+total 48
+-r--r--r--    1 ftp      net           325 Mar 16  1997 sokoban.txt
+-r--r--r--    1 ftp      net         19409 Mar 16  1997 sokoban.zip
+-r--r--r--    1 ftp      net           793 Apr 21  1998 xbase.txt
+-r--r--r--    1 ftp      net         17463 Apr 20  1998 xbase.zip
+
+./Applications/ThisForth:
+total 108
+-r--r--r--    1 ftp      net          1244 Aug 23  1996 fp-load
+-r--r--r--    1 ftp      net         27695 Aug 23  1996 tcp.sh01
+-r--r--r--    1 ftp      net          8208 Aug 23  1996 tcp.tar.gz
+-r--r--r--    1 ftp      net         15907 Aug 23  1996 tcp.tar.Z
+-r--r--r--    1 ftp      net         25230 Aug 23  1996 xdr.sh01
+-r--r--r--    1 ftp      net          6696 Aug 23  1996 xdr.tar.gz
+-r--r--r--    1 ftp      net         11775 Aug 23  1996 xdr.tar.Z
+
+./Applications/turbo:
+total 28
+-r--r--r--    1 ftp      net          5460 Apr 24  1998 food.doc
+-r--r--r--    1 ftp      net         10387 Apr 24  1998 food.zip
+-r--r--r--    1 ftp      net          5460 Apr 24  1998 lisez.moi
+
+./Applications/Win32For:
+total 640
+-r--r--r--    1 ftp      net         17197 Jun  7  1998 bezier.f
+-r--r--r--    1 ftp      net           785 Nov 14  1998 codebase.txt
+-r--r--r--    1 ftp      net        187857 Nov 14  1998 codebase.zip
+-r--r--r--    1 ftp      net           225 Mar 13  1998 Fpauk3.txt
+-r--r--r--    1 ftp      net        152653 Mar 13  1998 Fpauk3.zip
+-r--r--r--    1 ftp      net         16608 Feb 14  1998 fsl_util.f
+-r--r--r--    1 ftp      net          3714 Jan  3  1998 Movesort.txt
+-r--r--r--    1 ftp      net        195248 Jan  3  1998 Movesort.zip
+-r--r--r--    1 ftp      net         16556 Aug 23  1996 pauk.doc
+-r--r--r--    1 ftp      net         19288 Aug 23  1996 w_pauk.zip
+-r--r--r--    1 ftp      net           237 Aug 23  1996 w_tcp.txt
+-r--r--r--    1 ftp      net          3869 Aug 23  1996 w_tcp.zip
+
+./Archive:
+total 140
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 beta
+drwxr-xr-x    2 ftp      net          4096 Oct  6  2000 docs
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 filedocs
+drwxr-xr-x    4 ftp      net          8192 Apr  7  2000 ibm
+-r--r--r--    1 ftp      net         79277 Sep 20  1998 ls-lR
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 mac
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 news
+drwxr-xr-x    2 ftp      net          4096 Sep 21  2005 others
+-rw-r--r--    1 ftp      net           799 Aug 23  1996 README
+drwxr-xr-x    2 ftp      net         12288 Apr  7  2000 talk
+drwxr-xr-x    3 ftp      net          4096 Feb  6  2010 tutorials
+drwxr-xr-x    2 ftp      net          4096 Sep 21  2005 various
+
+./Archive/beta:
+total 184
+-r--r--r--    1 ftp      net        140116 Aug 23  1996 pkz110eu.exe
+-r--r--r--    1 ftp      net         40785 Aug 23  1996 xd51v2.zip
+
+./Archive/docs:
+total 2548
+-r--r--r--    1 ftp      net          5760 Aug 23  1996 4thbib2.arc
+-r--r--r--    1 ftp      net         16256 Aug 23  1996 4thbooks.arc
+-r--r--r--    1 ftp      net          4738 Aug 23  1996 4thsort.txt
+-r--r--r--    1 ftp      net         11741 Aug 23  1996 allocate.txt
+-r--r--r--    1 ftp      net         12288 Aug 23  1996 ansforms.txt
+-r--r--r--    1 ftp      net        147456 Aug 23  1996 anstc15.arc
+-r--r--r--    1 ftp      net         22144 Aug 23  1996 b10sum.arc
+-r--r--r--    1 ftp      net         18629 Aug 23  1996 badencon.txt
+-r--r--r--    1 ftp      net        349440 Aug 23  1996 basis17.arc
+-r--r--r--    1 ftp      net          4898 Aug 23  1996 benchmk.txt
+-r--r--r--    1 ftp      net         14881 Aug 23  1996 bfigl.txt
+-r--r--r--    1 ftp      net         10749 Aug 23  1996 bfig.txt
+-r--r--r--    1 ftp      net          2212 Aug 23  1996 books1.txt
+-r--r--r--    1 ftp      net          4333 Aug 23  1996 cardf83.txt
+-r--r--r--    1 ftp      net          8960 Aug 23  1996 ckstd.arc
+-r--r--r--    1 ftp      net         12132 Aug 23  1996 cm891023
+-r--r--r--    1 ftp      net         34944 Aug 23  1996 comforml.arc
+-r--r--r--    1 ftp      net         13222 Aug 23  1996 elements.txt
+-r--r--r--    1 ftp      net          6679 Aug 23  1996 esl.txt
+-r--r--r--    1 ftp      net         32846 Aug 23  1996 f83-20.man
+-r--r--r--    1 ftp      net         41017 Aug 23  1996 f83.lex
+-r--r--r--    1 ftp      net         72704 Aug 23  1996 f83-prn.arc
+-r--r--r--    1 ftp      net          2950 Aug 23  1996 f83x.rev
+-r--r--r--    1 ftp      net          1920 Aug 23  1996 fact.arc
+-r--r--r--    1 ftp      net         22272 Aug 23  1996 fdvol1-8.arc
+-r--r--r--    1 ftp      net          4783 Aug 23  1996 fdvol8.txt
+-r--r--r--    1 ftp      net         26783 Aug 23  1996 fig-2-83.txt
+-r--r--r--    1 ftp      net         18673 Aug 23  1996 figbusiness.txt
+-r--r--r--    1 ftp      net         22784 Aug 23  1996 figbylaws.arc
+-r--r--r--    1 ftp      net            58 Dec 30  1998 FIGINST.TXT
+-r--r--r--    1 ftp      net        108672 Dec 30  1998 FIGINST.ZIP
+-r--r--r--    1 ftp      net         19398 Aug 23  1996 figorder.cat
+-r--r--r--    1 ftp      net          3117 Aug 23  1996 figrules.txt
+-r--r--r--    1 ftp      net          4352 Aug 23  1996 floored.arc
+-r--r--r--    1 ftp      net         10782 Aug 23  1996 floored.div
+-r--r--r--    1 ftp      net         22741 Aug 23  1996 fltr-03.91
+-r--r--r--    1 ftp      net          7040 Aug 23  1996 fnst.arc
+-r--r--r--    1 ftp      net          8644 Aug 23  1996 forth.1st
+-r--r--r--    1 ftp      net         35968 Aug 23  1996 forth4me.arc
+-r--r--r--    1 ftp      net         69888 Aug 23  1996 forth-83.arc
+-r--r--r--    1 ftp      net         11904 Aug 23  1996 forthai.arc
+-r--r--r--    1 ftp      net          8960 Aug 23  1996 forthbc.zip
+-r--r--r--    1 ftp      net          8192 Aug 23  1996 forthbib.arc
+-r--r--r--    1 ftp      net          8441 Aug 23  1996 forthbk.txt
+-r--r--r--    1 ftp      net          7424 Aug 23  1996 forthnet.arc
+-r--r--r--    1 ftp      net         30464 Aug 23  1996 forthpat.arc
+-r--r--r--    1 ftp      net         24576 Aug 23  1996 frthbib.arc
+-r--r--r--    1 ftp      net         13542 Aug 23  1996 frthbib.lzh
+-r--r--r--    1 ftp      net           128 Dec 30  1998 FTH83STD.TXT
+-r--r--r--    1 ftp      net         98497 Dec 30  1998 FTH83STD.ZIP
+-r--r--r--    1 ftp      net         19986 Aug 23  1996 fvgfp.txt
+-r--r--r--    1 ftp      net          5888 Aug 23  1996 gstrings.arc
+-r--r--r--    1 ftp      net         42624 Aug 23  1996 help-83.arc
+-r--r--r--    1 ftp      net         14208 Aug 23  1996 hostprop.arc
+-r--r--r--    1 ftp      net          2166 Aug 23  1996 hp28c.txt
+-r--r--r--    1 ftp      net         16000 Aug 23  1996 hsinfo.arc
+-r--r--r--    1 ftp      net         14503 Aug 23  1996 humble.txt
+-r--r--r--    1 ftp      net          7424 Aug 23  1996 infohs.arc
+-r--r--r--    1 ftp      net          3456 Aug 23  1996 inspect.arc
+-r--r--r--    1 ftp      net          8576 Aug 23  1996 interpre.arc
+-r--r--r--    1 ftp      net         40192 Aug 23  1996 kernel83.arc
+-r--r--r--    1 ftp      net          5376 Aug 23  1996 legend.arc
+-r--r--r--    1 ftp      net        128256 Aug 23  1996 libmenu1.exe
+-r--r--r--    1 ftp      net          6551 Aug 23  1996 lmiz80.rev
+-r--r--r--    1 ftp      net          4789 Aug 23  1996 mforth.rev
+-r--r--r--    1 ftp      net         21120 Aug 23  1996 minim491.arc
+-r--r--r--    1 ftp      net         15747 Aug 23  1996 minutes.10
+-r--r--r--    1 ftp      net         16716 Aug 23  1996 minutes.12
+-r--r--r--    1 ftp      net         18304 Aug 23  1996 minutes.13
+-r--r--r--    1 ftp      net         18797 Aug 23  1996 minutes.14
+-r--r--r--    1 ftp      net          5504 Aug 23  1996 minutes.arc
+-r--r--r--    1 ftp      net         14325 Aug 23  1996 moore1.txt
+-r--r--r--    1 ftp      net          3456 Aug 23  1996 msjforth.arc
+-r--r--r--    1 ftp      net         11392 Aug 23  1996 newduals.arc
+-r--r--r--    1 ftp      net          6656 Aug 23  1996 notes.arc
+-r--r--r--    1 ftp      net          7424 Aug 23  1996 orange1a.arc
+-r--r--r--    1 ftp      net         14808 Aug 23  1996 parable.txt
+-r--r--r--    1 ftp      net         10624 Aug 23  1996 pasforth.arc
+-r--r--r--    1 ftp      net         18660 Aug 23  1996 pasforth.txt
+-r--r--r--    1 ftp      net          9984 Aug 23  1996 pbformat.arc
+-r--r--r--    1 ftp      net         31738 Aug 23  1996 perms.txt
+-r--r--r--    1 ftp      net          8262 Aug 23  1996 postnews.txt
+-r--r--r--    1 ftp      net         14698 Aug 23  1996 primer.txt
+-r--r--r--    1 ftp      net          4096 Aug 23  1996 proposal.arc
+-r--r--r--    1 ftp      net         50304 Aug 23  1996 rb890417.arc
+-r--r--r--    1 ftp      net         26756 Aug 23  1996 record.txt
+-r--r--r--    1 ftp      net         14080 Aug 23  1996 rtfrtf.zoo
+-r--r--r--    1 ftp      net          3456 Aug 23  1996 scope.arc
+-r--r--r--    1 ftp      net          9728 Aug 23  1996 seeforth.arc
+-r--r--r--    1 ftp      net         14336 Aug 23  1996 sofigb13.zip
+-r--r--r--    1 ftp      net         11136 Aug 23  1996 sort.arc
+-r--r--r--    1 ftp      net         33739 Aug 23  1996 spagetti.5th
+-r--r--r--    1 ftp      net          6144 Aug 23  1996 standard.arc
+-r--r--r--    1 ftp      net         17364 Aug 23  1996 start.txt
+-r--r--r--    1 ftp      net          6732 Aug 23  1996 strstds.txt
+-r--r--r--    1 ftp      net          8078 Aug 23  1996 survey.fig
+-r--r--r--    1 ftp      net         17536 Aug 23  1996 techprop.arc
+-r--r--r--    1 ftp      net          5248 Aug 23  1996 techpros.arc
+-r--r--r--    1 ftp      net         12032 Aug 23  1996 testing1.arc
+-r--r--r--    1 ftp      net          7552 Aug 23  1996 testing2.arc
+-r--r--r--    1 ftp      net          7552 Aug 23  1996 testing3.arc
+-r--r--r--    1 ftp      net          9870 Aug 23  1996 threads.txt
+-r--r--r--    1 ftp      net          8960 Aug 23  1996 tp90-754.arc
+-r--r--r--    1 ftp      net         34560 Aug 23  1996 why4th.arc
+-r--r--r--    1 ftp      net         23552 Aug 23  1996 wordp11.arc
+-r--r--r--    1 ftp      net          4522 Aug 23  1996 writing.txt
+-r--r--r--    1 ftp      net          5120 Aug 23  1996 x3j14m3.arc
+
+./Archive/filedocs:
+total 228
+-r--r--r--    1 ftp      net         42240 Aug 23  1996 files90.arc
+-r--r--r--    1 ftp      net         77696 Aug 23  1996 files.arc
+-r--r--r--    1 ftp      net         69376 Aug 23  1996 libfiles.arc
+-r--r--r--    1 ftp      net         29568 Aug 23  1996 offline.arc
+
+./Archive/ibm:
+total 11992
+-r--r--r--    1 ftp      net         41216 Aug 23  1996 44thed.arc
+-r--r--r--    1 ftp      net         12081 Aug 23  1996 4th2text.c
+-r--r--r--    1 ftp      net        338688 Aug 23  1996 4th_86.zip
+-r--r--r--    1 ftp      net         23296 Aug 23  1996 4thplay.zip
+-r--r--r--    1 ftp      net          4352 Aug 23  1996 adrsbook.arc
+-r--r--r--    1 ftp      net         16384 Aug 23  1996 aistring.arc
+-r--r--r--    1 ftp      net          4096 Aug 23  1996 alcom.arc
+-r--r--r--    1 ftp      net         14464 Aug 23  1996 aleph.arc
+-r--r--r--    1 ftp      net          8576 Aug 23  1996 altqueue.arc
+-r--r--r--    1 ftp      net          2432 Aug 23  1996 anagrams.arc
+-r--r--r--    1 ftp      net          6656 Aug 23  1996 analyze.arc
+-r--r--r--    1 ftp      net         64256 Aug 23  1996 anna4thd.lzh
+-r--r--r--    1 ftp      net         35840 Aug 23  1996 annfix.lzh
+-r--r--r--    1 ftp      net         19072 Aug 23  1996 ansi-p.4th
+-r--r--r--    1 ftp      net          2048 Aug 23  1996 apilim.arc
+-r--r--r--    1 ftp      net        104280 Aug 23  1996 ariel.arc
+-r--r--r--    1 ftp      net        117248 Aug 23  1996 astro4th.arc
+-r--r--r--    1 ftp      net          6272 Aug 23  1996 ballsgbc.arc
+drwxr-xr-x    2 ftp      net          4096 Sep 21  2005 bbl
+-r--r--r--    1 ftp      net          1664 Aug 23  1996 bikegear.arc
+-r--r--r--    1 ftp      net         13312 Aug 23  1996 blktofth.arc
+-r--r--r--    1 ftp      net          4736 Aug 23  1996 bloxtext.arc
+-r--r--r--    1 ftp      net          3584 Aug 23  1996 brkbox.arc
+-r--r--r--    1 ftp      net          8192 Aug 23  1996 brkforth.arc
+-r--r--r--    1 ftp      net         34048 Aug 23  1996 browse88.arc
+-r--r--r--    1 ftp      net          2816 Aug 23  1996 bullcows.arc
+-r--r--r--    1 ftp      net         26496 Aug 23  1996 bunblk34.arc
+-r--r--r--    1 ftp      net          3584 Aug 23  1996 bvmem.arc
+-r--r--r--    1 ftp      net         15872 Aug 23  1996 caesar.arc
+-r--r--r--    1 ftp      net         91264 Aug 23  1996 calif330.arc
+-r--r--r--    1 ftp      net          3448 Aug 23  1996 car!goat.txt
+-r--r--r--    1 ftp      net          7040 Aug 23  1996 car-goat.zip
+-r--r--r--    1 ftp      net         14464 Aug 23  1996 car!goat.zip
+-r--r--r--    1 ftp      net          9472 Aug 23  1996 carlos.arc
+-r--r--r--    1 ftp      net          4096 Aug 23  1996 cctable.arc
+-r--r--r--    1 ftp      net          2176 Aug 23  1996 chaos.arc
+-r--r--r--    1 ftp      net         48128 Aug 23  1996 chap20.arc
+-r--r--r--    1 ftp      net          1536 Aug 23  1996 chdir.arc
+-r--r--r--    1 ftp      net           896 Aug 23  1996 clock.arc
+-r--r--r--    1 ftp      net          1408 Aug 23  1996 cloneclk.arc
+-r--r--r--    1 ftp      net          1920 Aug 23  1996 cmdline.arc
+-r--r--r--    1 ftp      net           825 Aug 23  1996 cmd-wjm.hsf
+-r--r--r--    1 ftp      net        132992 Aug 23  1996 c_n_4th.arc
+-r--r--r--    1 ftp      net        104704 Aug 23  1996 comm!.arc
+-r--r--r--    1 ftp      net        128000 Aug 23  1996 comm-cga.arc
+-r--r--r--    1 ftp      net        130944 Aug 23  1996 comm-hrc.arc
+-r--r--r--    1 ftp      net          2432 Aug 23  1996 concord.arc
+-r--r--r--    1 ftp      net         18048 Aug 23  1996 cookie.zip
+-r--r--r--    1 ftp      net         12288 Aug 23  1996 cpuv20.arc
+-r--r--r--    1 ftp      net          1664 Aug 23  1996 csearch.arc
+-r--r--r--    1 ftp      net          5120 Aug 23  1996 cube.arc
+-r--r--r--    1 ftp      net        215680 Aug 23  1996 d854th.arc
+-r--r--r--    1 ftp      net         10368 Aug 23  1996 d85qedit.arc
+-r--r--r--    1 ftp      net          1792 Aug 23  1996 date.arc
+-r--r--r--    1 ftp      net          1792 Aug 23  1996 datetime.arc
+-r--r--r--    1 ftp      net         34048 Aug 23  1996 db.arc
+-r--r--r--    1 ftp      net          3200 Aug 23  1996 dbase.arc
+-r--r--r--    1 ftp      net          3784 Aug 23  1996 dbiii.txt
+-r--r--r--    1 ftp      net          9216 Aug 23  1996 des.arc
+-r--r--r--    1 ftp      net          9216 Aug 23  1996 desf83.arc
+-r--r--r--    1 ftp      net         84352 Aug 23  1996 design.arc
+-r--r--r--    1 ftp      net         25856 Aug 23  1996 djacket2.arc
+-r--r--r--    1 ftp      net          3456 Aug 23  1996 dosrw.arc
+-r--r--r--    1 ftp      net          5120 Aug 23  1996 doswndow.arc
+-r--r--r--    1 ftp      net           896 Aug 23  1996 dot-ss.arc
+-r--r--r--    1 ftp      net          2688 Aug 23  1996 drufiles.arc
+-r--r--r--    1 ftp      net           896 Aug 23  1996 ebc2asc.zip
+-r--r--r--    1 ftp      net          6656 Aug 23  1996 ed-ibm.arc
+-r--r--r--    1 ftp      net           366 Aug 23  1996 edit.4th
+-r--r--r--    1 ftp      net          9088 Aug 23  1996 ext86-c.arc
+-r--r--r--    1 ftp      net          1792 Aug 23  1996 ezdir.arc
+-r--r--r--    1 ftp      net         27776 Aug 23  1996 fbbs.arc
+-r--r--r--    1 ftp      net          6144 Aug 23  1996 fcbint.arc
+-r--r--r--    1 ftp      net        198656 Aug 23  1996 fed.arc
+-r--r--r--    1 ftp      net        215680 Aug 23  1996 fifth_sw.arc
+-r--r--r--    1 ftp      net         38975 Aug 23  1996 fig86.lzh
+-r--r--r--    1 ftp      net          5504 Aug 23  1996 figsort.arc
+-r--r--r--    1 ftp      net          2176 Aug 23  1996 figstrs.arc
+-r--r--r--    1 ftp      net          3456 Aug 23  1996 fileio.arc
+-r--r--r--    1 ftp      net         36096 Aug 23  1996 files_21.arc
+-r--r--r--    1 ftp      net         36352 Aug 23  1996 files21.arc
+-r--r--r--    1 ftp      net         22528 Aug 23  1996 float4th.arc
+-r--r--r--    1 ftp      net          5632 Aug 23  1996 float.arc
+-r--r--r--    1 ftp      net          5760 Aug 23  1996 fmodem.arc
+-r--r--r--    1 ftp      net          9216 Aug 23  1996 forlog.arc
+-r--r--r--    1 ftp      net         11221 Aug 23  1996 forth2c.txt
+-r--r--r--    1 ftp      net         53888 Aug 23  1996 forth.arc
+-r--r--r--    1 ftp      net         99096 Aug 23  1996 forthcmp.zip
+-r--r--r--    1 ftp      net        133350 Aug 23  1996 forthed.lzh
+-r--r--r--    1 ftp      net         23040 Aug 23  1996 fpt-f83.arc
+-r--r--r--    1 ftp      net         14080 Aug 23  1996 fsed-30.arc
+-r--r--r--    1 ftp      net         49664 Aug 23  1996 fsp.arc
+-r--r--r--    1 ftp      net         34816 Aug 23  1996 fsrwind.arc
+-r--r--r--    1 ftp      net         41216 Aug 23  1996 fta.arc
+-r--r--r--    1 ftp      net         57344 Aug 23  1996 funpyg.zip
+-r--r--r--    1 ftp      net         73344 Aug 23  1996 future86.arc
+-r--r--r--    1 ftp      net          4992 Aug 23  1996 fuzzyset.arc
+-r--r--r--    1 ftp      net         80128 Aug 23  1996 fwindow.arc
+-r--r--r--    1 ftp      net        250368 Aug 23  1996 gkforth2.arc
+-r--r--r--    1 ftp      net        139648 Aug 23  1996 gkforth.arc
+-r--r--r--    1 ftp      net        131072 Aug 23  1996 gkfrth2a.arc
+-r--r--r--    1 ftp      net        124672 Aug 23  1996 gkfrth2b.arc
+-r--r--r--    1 ftp      net         15360 Aug 23  1996 goodies.arc
+-r--r--r--    1 ftp      net        100864 Aug 23  1996 gr2ddemo.arc
+-r--r--r--    1 ftp      net         52096 Aug 23  1996 gr2dwind.arc
+-r--r--r--    1 ftp      net         32128 Aug 23  1996 graphwin2.arc
+-r--r--r--    1 ftp      net         49024 Aug 23  1996 grow.arc
+-r--r--r--    1 ftp      net          5632 Aug 23  1996 halo1.arc
+-r--r--r--    1 ftp      net         27136 Aug 23  1996 halocnv.arc
+-r--r--r--    1 ftp      net          4864 Aug 23  1996 hamuni.arc
+-r--r--r--    1 ftp      net         39936 Aug 23  1996 hdisks.arc
+-r--r--r--    1 ftp      net          2560 Aug 23  1996 hello.arc
+-r--r--r--    1 ftp      net          6656 Aug 23  1996 help.arc
+-r--r--r--    1 ftp      net         45328 Aug 23  1996 hence4th.arc
+-r--r--r--    1 ftp      net          7040 Aug 23  1996 highmem.arc
+-r--r--r--    1 ftp      net          2688 Aug 23  1996 hsfvocs1.arc
+-r--r--r--    1 ftp      net          6784 Aug 23  1996 imgenh4.arc
+-r--r--r--    1 ftp      net          6912 Aug 23  1996 indxf83.arc
+-r--r--r--    1 ftp      net          1024 Aug 23  1996 input.arc
+-r--r--r--    1 ftp      net          3328 Aug 23  1996 ioplus.arc
+-r--r--r--    1 ftp      net         41344 Aug 23  1996 ising.arc
+-r--r--r--    1 ftp      net          2944 Aug 23  1996 jd.arc
+-r--r--r--    1 ftp      net          2560 Aug 23  1996 julian.arc
+-r--r--r--    1 ftp      net        126848 Aug 23  1996 kdoc.arc
+-r--r--r--    1 ftp      net        248704 Aug 23  1996 kforth.arc
+-r--r--r--    1 ftp      net         74496 Aug 23  1996 kmisc.arc
+-r--r--r--    1 ftp      net         22656 Aug 23  1996 lc2app.arc
+-r--r--r--    1 ftp      net          1536 Aug 23  1996 lc.arc
+-r--r--r--    1 ftp      net          2432 Aug 23  1996 ldump.zip
+-r--r--r--    1 ftp      net          1920 Aug 23  1996 load87.arc
+-r--r--r--    1 ftp      net          7040 Aug 23  1996 lstates.arc
+-r--r--r--    1 ftp      net          7424 Aug 23  1996 lz-4th.zip
+-rw-r--r--    1 ftp      net        191150 Aug 23  1996 make-mvp.exe
+-r--r--r--    1 ftp      net         63360 Aug 23  1996 mandel.arc
+-r--r--r--    1 ftp      net          5632 Aug 23  1996 mandlzen.arc
+-r--r--r--    1 ftp      net         43776 Aug 23  1996 mcp.arc
+-r--r--r--    1 ftp      net          4827 Aug 23  1996 memory.4th
+-r--r--r--    1 ftp      net          6656 Aug 23  1996 menu-mk.arc
+-r--r--r--    1 ftp      net         24832 Aug 23  1996 menutest.arc
+-r--r--r--    1 ftp      net          4224 Aug 23  1996 merge.arc
+-r--r--r--    1 ftp      net         13781 Aug 23  1996 min4th25.lzh
+-r--r--r--    1 ftp      net         32000 Aug 23  1996 mini4t41.arc
+-r--r--r--    1 ftp      net         18560 Aug 23  1996 mini4th.arc
+-r--r--r--    1 ftp      net          2688 Aug 23  1996 miscibm2.arc
+-r--r--r--    1 ftp      net          2560 Aug 23  1996 misc_ibm.arc
+-r--r--r--    1 ftp      net        123648 Aug 23  1996 mm30.arc
+-r--r--r--    1 ftp      net         45056 Aug 23  1996 mm30odds.arc
+-r--r--r--    1 ftp      net         84352 Aug 23  1996 mmdocs.arc
+-r--r--r--    1 ftp      net         15634 Aug 23  1996 mpu401.pcf
+-r--r--r--    1 ftp      net           640 Aug 23  1996 multi.arc
+-r--r--r--    1 ftp      net         65024 Aug 23  1996 music.arc
+-r--r--r--    1 ftp      net         61824 Aug 23  1996 mvpmath.arc
+-r--r--r--    1 ftp      net         73600 Aug 23  1996 mx86.arc
+-r--r--r--    1 ftp      net         41984 Aug 23  1996 mycad.arc
+-r--r--r--    1 ftp      net         11392 Aug 23  1996 ned03.arc
+-r--r--r--    1 ftp      net          2944 Aug 23  1996 neural.arc
+-r--r--r--    1 ftp      net         28544 Aug 23  1996 nexpect9.arc
+-r--r--r--    1 ftp      net         22400 Aug 23  1996 novice3.arc
+-r--r--r--    1 ftp      net          5248 Aug 23  1996 objects.arc
+-r--r--r--    1 ftp      net         28994 Aug 23  1996 objects.txt
+-r--r--r--    1 ftp      net         11008 Aug 23  1996 orphans.arc
+-r--r--r--    1 ftp      net          2304 Aug 23  1996 ovals.arc
+-r--r--r--    1 ftp      net          5120 Aug 23  1996 packcode.arc
+-r--r--r--    1 ftp      net         99328 Aug 23  1996 pang330.arc
+-r--r--r--    1 ftp      net          9728 Aug 23  1996 params.arc
+-r--r--r--    1 ftp      net         17920 Aug 23  1996 parser.arc
+-r--r--r--    1 ftp      net         28160 Aug 23  1996 pcblk.arc
+-r--r--r--    1 ftp      net          1024 Aug 23  1996 pcblkfix.arc
+-r--r--r--    1 ftp      net          3584 Aug 23  1996 pcclockx.arc
+-r--r--r--    1 ftp      net        197504 Aug 23  1996 pcfig4th.arc
+-r--r--r--    1 ftp      net         87552 Aug 23  1996 pcfmisc1.arc
+-r--r--r--    1 ftp      net         89856 Aug 23  1996 pcfmisc2.arc
+-r--r--r--    1 ftp      net        122880 Aug 23  1996 pcpng.arc
+-r--r--r--    1 ftp      net         45056 Aug 23  1996 pcterm.arc
+-r--r--r--    1 ftp      net        128512 Aug 23  1996 pde202.arc
+-r--r--r--    1 ftp      net        281249 Aug 23  1996 pfe095.zip
+-r--r--r--    1 ftp      net         30208 Aug 23  1996 pfm01001.arc
+-r--r--r--    1 ftp      net          3840 Aug 23  1996 pfmusic.arc
+-r--r--r--    1 ftp      net         10112 Aug 23  1996 pfoof2.zip
+-r--r--r--    1 ftp      net          9984 Aug 23  1996 pi10.arc
+-r--r--r--    1 ftp      net         82048 Aug 23  1996 ping330.arc
+-r--r--r--    1 ftp      net          1664 Aug 23  1996 pixel.arc
+-r--r--r--    1 ftp      net         24832 Aug 23  1996 polycopy.arc
+-r--r--r--    1 ftp      net          5120 Aug 23  1996 polyobj.zip
+-r--r--r--    1 ftp      net        120064 Aug 23  1996 pong330.arc
+-r--r--r--    1 ftp      net         45824 Aug 23  1996 populate.arc
+-r--r--r--    1 ftp      net          1024 Aug 23  1996 prompt.arc
+-r--r--r--    1 ftp      net          6223 Aug 23  1996 pulldown.txt
+-r--r--r--    1 ftp      net          1024 Aug 23  1996 pyg13fix.zip
+-r--r--r--    1 ftp      net         61958 Aug 23  1996 pygmy11.lzh
+-r--r--r--    1 ftp      net         65877 Aug 23  1996 pygmy13.lzh
+-r--r--r--    1 ftp      net         88965 Aug 23  1996 pygmy14.zip
+-r--r--r--    1 ftp      net        366464 Aug 23  1996 qf25.arc
+-r--r--r--    1 ftp      net         10496 Aug 23  1996 quat1v1.zip
+-r--r--r--    1 ftp      net        107264 Aug 23  1996 rainbow.arc
+-r--r--r--    1 ftp      net        164224 Aug 23  1996 rb1005.arc
+-r--r--r--    1 ftp      net         86656 Aug 23  1996 rbsrc.arc
+-r--r--r--    1 ftp      net          5888 Aug 23  1996 rdarc.arc
+-r--r--r--    1 ftp      net         62080 Aug 23  1996 reversi.arc
+-r--r--r--    1 ftp      net        322304 Aug 23  1996 rff2.zip
+-r--r--r--    1 ftp      net         19840 Aug 23  1996 rohdaf83.arc
+-r--r--r--    1 ftp      net         33792 Aug 23  1996 rtty.zip
+-rw-r--r--    1 ftp      net        143930 Aug 23  1996 s4.zip
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 scientific_forth
+-r--r--r--    1 ftp      net         99840 Aug 23  1996 scope120.exe
+-r--r--r--    1 ftp      net         13056 Aug 23  1996 scrdir.arc
+-r--r--r--    1 ftp      net         25472 Aug 23  1996 screens.arc
+-r--r--r--    1 ftp      net          1280 Aug 23  1996 sdir.arc
+-r--r--r--    1 ftp      net          3968 Aug 23  1996 seg.arc
+-r--r--r--    1 ftp      net          3712 Aug 23  1996 serint4.arc
+-r--r--r--    1 ftp      net          6144 Aug 23  1996 sgp.arc
+-r--r--r--    1 ftp      net          2688 Aug 23  1996 sheets.arc
+-r--r--r--    1 ftp      net          5915 Aug 23  1996 showed.t
+-r--r--r--    1 ftp      net         58496 Aug 23  1996 sixth.arc
+-r--r--r--    1 ftp      net         34036 Aug 23  1996 sixth.lzh
+-r--r--r--    1 ftp      net         43136 Aug 23  1996 slicehsf.arc
+-r--r--r--    1 ftp      net         75136 Aug 23  1996 sonzen3.arc
+-r--r--r--    1 ftp      net        128000 Aug 23  1996 sort-out.arc
+-r--r--r--    1 ftp      net          1536 Aug 23  1996 spawn2.arc
+-r--r--r--    1 ftp      net         12928 Aug 23  1996 spread1.arc
+-r--r--r--    1 ftp      net          1823 Aug 23  1996 stack.fiv
+-r--r--r--    1 ftp      net         21248 Aug 23  1996 state.zip
+-r--r--r--    1 ftp      net          6656 Aug 23  1996 strcase.arc
+-r--r--r--    1 ftp      net          2304 Aug 23  1996 struc.arc
+-r--r--r--    1 ftp      net          2944 Aug 23  1996 sutil.arc
+-r--r--r--    1 ftp      net         40576 Aug 23  1996 t2s-s2t.arc
+-r--r--r--    1 ftp      net          2304 Aug 23  1996 tail.arc
+-r--r--r--    1 ftp      net         25216 Aug 23  1996 telcon-2.arc
+-r--r--r--    1 ftp      net          3968 Aug 23  1996 teleindx.arc
+-r--r--r--    1 ftp      net         65024 Aug 23  1996 tens.arc
+-r--r--r--    1 ftp      net          1792 Aug 23  1996 textload.arc
+-r--r--r--    1 ftp      net        253056 Aug 23  1996 til874th.arc
+-r--r--r--    1 ftp      net         11008 Aug 23  1996 til87qed.arc
+-r--r--r--    1 ftp      net          1664 Aug 23  1996 tinytrm.arc
+-r--r--r--    1 ftp      net          1536 Aug 23  1996 toprodos.arc
+-r--r--r--    1 ftp      net        148096 Aug 23  1996 tp.ark
+-r--r--r--    1 ftp      net         23040 Aug 23  1996 tpl1-10.zip
+-r--r--r--    1 ftp      net         50560 Aug 23  1996 tsrforth.arc
+-r--r--r--    1 ftp      net          6016 Aug 23  1996 uarts.arc
+-r--r--r--    1 ftp      net        231929 Aug 23  1996 ucc4th-a.lzh
+-r--r--r--    1 ftp      net         77071 Aug 23  1996 ucc4th-b.lzh
+-r--r--r--    1 ftp      net        126720 Aug 23  1996 udforth.zip
+-r--r--r--    1 ftp      net        110336 Aug 23  1996 uforthv2.arc
+-r--r--r--    1 ftp      net         10240 Aug 23  1996 video1.arc
+-r--r--r--    1 ftp      net          7680 Aug 23  1996 videof83.arc
+-r--r--r--    1 ftp      net        175360 Aug 23  1996 volks4th.arc
+-r--r--r--    1 ftp      net          4224 Aug 23  1996 wdcount.arc
+-r--r--r--    1 ftp      net          9252 Aug 23  1996 whypygmy.txt
+-r--r--r--    1 ftp      net          7248 Aug 23  1996 wilsedit.txt
+-r--r--r--    1 ftp      net         18048 Aug 23  1996 windows.arc
+-r--r--r--    1 ftp      net         36864 Aug 23  1996 windows.fth
+-r--r--r--    1 ftp      net         14720 Aug 23  1996 windowsh.zip
+-r--r--r--    1 ftp      net          1280 Aug 23  1996 wndwutil.arc
+-r--r--r--    1 ftp      net          8448 Aug 23  1996 xlate.arc
+-r--r--r--    1 ftp      net          6268 Aug 23  1996 xmodem.fth
+-r--r--r--    1 ftp      net         12928 Aug 23  1996 xrefhs.arc
+-r--r--r--    1 ftp      net         48226 Aug 23  1996 zen1-10.lzh
+-r--r--r--    1 ftp      net         99968 Aug 23  1996 zen15a.zip
+-r--r--r--    1 ftp      net         76288 Aug 23  1996 zen18a.zip
+-r--r--r--    1 ftp      net         19072 Aug 23  1996 zen2app3.zip
+-r--r--r--    1 ftp      net          4608 Aug 23  1996 zendos.arc
+-r--r--r--    1 ftp      net          1024 Aug 23  1996 zenfloat.arc
+-r--r--r--    1 ftp      net        151424 Aug 23  1996 zenmasm1.arc
+-r--r--r--    1 ftp      net           384 Aug 23  1996 zenmisc.arc
+
+./Archive/ibm/bbl:
+total 3760
+-r--r--r--    1 ftp      net        292224 Aug 23  1996 abdoc.zip
+-r--r--r--    1 ftp      net        131968 Aug 23  1996 ab-m.zip
+-r--r--r--    1 ftp      net        267776 Aug 23  1996 abprd.zip
+-r--r--r--    1 ftp      net         31232 Aug 23  1996 abtxt.zip
+-r--r--r--    1 ftp      net         87296 Aug 23  1996 backup.zip
+-r--r--r--    1 ftp      net         66816 Aug 23  1996 bbl_a.arc
+-r--r--r--    1 ftp      net        211584 Aug 23  1996 bblasm.zip
+-r--r--r--    1 ftp      net        187648 Aug 23  1996 bbl_b.arc
+-r--r--r--    1 ftp      net        234368 Aug 23  1996 bbldoc.zip
+-r--r--r--    1 ftp      net          6963 Aug 23  1996 bblfast.asm
+-r--r--r--    1 ftp      net          6016 Aug 23  1996 bblforth.arc
+-r--r--r--    1 ftp      net         12412 Aug 23  1996 bblforth.txt
+-r--r--r--    1 ftp      net        238848 Aug 23  1996 bblpri.zip
+-r--r--r--    1 ftp      net         25088 Aug 23  1996 bblx.arc
+-r--r--r--    1 ftp      net        328960 Aug 23  1996 bbl.zip
+-r--r--r--    1 ftp      net         31232 Aug 23  1996 blkview.arc
+-r--r--r--    1 ftp      net         27648 Aug 23  1996 canpri.zip
+-r--r--r--    1 ftp      net        103936 Aug 23  1996 canuck.zip
+-r--r--r--    1 ftp      net         25984 Aug 23  1996 future.zip
+-r--r--r--    1 ftp      net         34816 Aug 23  1996 gespen.zip
+-r--r--r--    1 ftp      net        185600 Aug 23  1996 hdtest.zip
+-r--r--r--    1 ftp      net        278912 Aug 23  1996 hint.zip
+-r--r--r--    1 ftp      net        119936 Aug 23  1996 misc.zip
+-r--r--r--    1 ftp      net         17280 Aug 23  1996 nedcnfig.arc
+-r--r--r--    1 ftp      net         14720 Aug 23  1996 neddoc.zip
+-r--r--r--    1 ftp      net         22656 Aug 23  1996 readme.zip
+-r--r--r--    1 ftp      net         59392 Aug 23  1996 restore.zip
+-r--r--r--    1 ftp      net        321408 Aug 23  1996 shop.zip
+-r--r--r--    1 ftp      net        114944 Aug 23  1996 tsr.zip
+-r--r--r--    1 ftp      net         67584 Aug 23  1996 yankdoc.zip
+-r--r--r--    1 ftp      net        142976 Aug 23  1996 yankee.zip
+
+./Archive/ibm/scientific_forth:
+total 32
+-r--r--r--    1 ftp      net         30464 Aug 23  1996 update03.exe
+
+./Archive/mac:
+total 5996
+-r--r--r--    1 ftp      net          2688 Aug 23  1996 BEZIER.ARC
+-r--r--r--    1 ftp      net          3334 Aug 23  1996 ccinfo.mfp
+-r--r--r--    1 ftp      net          7600 Aug 23  1996 doer.mfp
+-r--r--r--    1 ftp      net         16768 Aug 23  1996 extents.mch
+-r--r--r--    1 ftp      net          8628 Aug 23  1996 forps.mfp
+-r--r--r--    1 ftp      net         14720 Aug 23  1996 FORTHACC.ARC
+-r--r--r--    1 ftp      net         32256 Aug 23  1996 GRAPHWIN.MOP
+-r--r--r--    1 ftp      net          3640 Aug 23  1996 install.txt
+-r--r--r--    1 ftp      net        159737 Aug 23  1996 kevo0.9b2.sit.hqx
+-r--r--r--    1 ftp      net           864 Aug 23  1996 License.kevo
+-r--r--r--    1 ftp      net          1420 Aug 23  1996 Modification.history.kevo
+-r--r--r--    1 ftp      net       1078671 Aug 23  1996 Mops2.2.hqx
+-r--r--r--    1 ftp      net         57005 Aug 23  1996 Mops231Nuc.SEA.hqx
+-r--r--r--    1 ftp      net        188416 Aug 23  1996 Mops231s.sea.hqx
+-r--r--r--    1 ftp      net        719463 Aug 23  1996 Mops23m.sea.hqx
+-r--r--r--    1 ftp      net        319551 Aug 23  1996 MopsManual.hqx
+-r--r--r--    1 ftp      net        202702 Aug 23  1996 mops.tutorial.hqx
+-r--r--r--    1 ftp      net         65566 Aug 23  1996 MPW.Yerk3.5Example.hqx
+-r--r--r--    1 ftp      net          5888 Aug 23  1996 msfltr.mfp
+-r--r--r--    1 ftp      net         52864 Aug 23  1996 pf3src.sit
+-r--r--r--    1 ftp      net        102016 Aug 23  1996 pocket3.sit
+-r--r--r--    1 ftp      net        191761 Aug 23  1996 pocket4h-1.4.sit
+-r--r--r--    1 ftp      net          5008 Aug 23  1996 qamac.4th
+-r--r--r--    1 ftp      net          7063 Aug 23  1996 rcpict.mfp
+-r--r--r--    1 ftp      net           901 Aug 23  1996 Readme.kevo
+-r--r--r--    1 ftp      net          4140 Aug 23  1996 ReadMe.yerk.txt
+-r--r--r--    1 ftp      net          5376 Aug 23  1996 records.mch
+-r--r--r--    1 ftp      net          8192 Aug 23  1996 STARFIGH.MOP
+-r--r--r--    1 ftp      net          6925 Aug 23  1996 struct.4th
+-r--r--r--    1 ftp      net         11520 Aug 23  1996 tn0011.mfp
+-r--r--r--    1 ftp      net          2816 Aug 23  1996 with.mfp
+-r--r--r--    1 ftp      net        622760 Aug 23  1996 yerk3.63.hqx
+-r--r--r--    1 ftp      net        580981 Aug 23  1996 yerk3.64.hqx
+-r--r--r--    1 ftp      net        130044 Aug 23  1996 yerk.com.hqx
+-r--r--r--    1 ftp      net        704809 Aug 23  1996 yerkManual3.64.hqx
+-r--r--r--    1 ftp      net        675232 Aug 23  1996 yerkManual.hqx
+-r--r--r--    1 ftp      net          4231 Aug 23  1996 YerkReadMe.txt
+
+./Archive/news:
+total 5296
+-rw-r--r--    1 ftp      net         72605 Aug 23  1996 forth0.lzh
+-rw-r--r--    1 ftp      net         23645 Aug 23  1996 forth10.lzh
+-rw-r--r--    1 ftp      net         47751 Aug 23  1996 forth11.lzh
+-rw-r--r--    1 ftp      net         99698 Aug 23  1996 forth12.lzh
+-rw-r--r--    1 ftp      net         74768 Aug 23  1996 forth13.lzh
+-rw-r--r--    1 ftp      net         87251 Aug 23  1996 forth14.lzh
+-rw-r--r--    1 ftp      net        110210 Aug 23  1996 forth15.lzh
+-rw-r--r--    1 ftp      net         90948 Aug 23  1996 forth16.lzh
+-rw-r--r--    1 ftp      net         24540 Aug 23  1996 forth17.lzh
+-rw-r--r--    1 ftp      net         40414 Aug 23  1996 forth18.lzh
+-rw-r--r--    1 ftp      net         38986 Aug 23  1996 forth19.lzh
+-rw-r--r--    1 ftp      net        867302 Aug 23  1996 forth1.lzh
+-rw-r--r--    1 ftp      net         38141 Aug 23  1996 forth20.lzh
+-rw-r--r--    1 ftp      net        152097 Aug 23  1996 forth21.lzh
+-rw-r--r--    1 ftp      net        116416 Aug 23  1996 forth22.lzh
+-rw-r--r--    1 ftp      net         92661 Aug 23  1996 forth23.lzh
+-rw-r--r--    1 ftp      net         80472 Aug 23  1996 forth24.lzh
+-rw-r--r--    1 ftp      net        130909 Aug 23  1996 forth25.lzh
+-rw-r--r--    1 ftp      net        246450 Aug 23  1996 forth26.lzh
+-rw-r--r--    1 ftp      net        166187 Aug 23  1996 forth27.lzh
+-rw-r--r--    1 ftp      net        294547 Aug 23  1996 forth28.lzh
+-rw-r--r--    1 ftp      net        108168 Aug 23  1996 forth29.lzh
+-rw-r--r--    1 ftp      net         99533 Aug 23  1996 forth2.lzh
+-rw-r--r--    1 ftp      net        225979 Aug 23  1996 forth30.lzh
+-rw-r--r--    1 ftp      net        162849 Aug 23  1996 forth31.lzh
+-rw-r--r--    1 ftp      net        202434 Aug 23  1996 forth32.lzh
+-rw-r--r--    1 ftp      net         70559 Aug 23  1996 forth33.lzh
+-rw-r--r--    1 ftp      net        194693 Aug 23  1996 forth34.lzh
+-rw-r--r--    1 ftp      net        218423 Aug 23  1996 forth35.lzh
+-rw-r--r--    1 ftp      net        126488 Aug 23  1996 forth36.lzh
+-rw-r--r--    1 ftp      net        116511 Aug 23  1996 forth37.lzh
+-rw-r--r--    1 ftp      net        216029 Aug 23  1996 forth38.lzh
+-rw-r--r--    1 ftp      net        120853 Aug 23  1996 forth39.lzh
+-rw-r--r--    1 ftp      net        108730 Aug 23  1996 forth3.lzh
+-rw-r--r--    1 ftp      net         65342 Aug 23  1996 forth40.lzh
+-rw-r--r--    1 ftp      net         85067 Aug 23  1996 forth41.lzh
+-rw-r--r--    1 ftp      net         30881 Aug 23  1996 forth42.lzh
+-rw-r--r--    1 ftp      net         31306 Aug 23  1996 forth4.lzh
+-rw-r--r--    1 ftp      net         34258 Aug 23  1996 forth5.lzh
+-rw-r--r--    1 ftp      net         49473 Aug 23  1996 forth6.lzh
+-rw-r--r--    1 ftp      net         16026 Aug 23  1996 forth7.lzh
+-rw-r--r--    1 ftp      net          7850 Aug 23  1996 forth8.lzh
+-rw-r--r--    1 ftp      net         26534 Aug 23  1996 forth9.lzh
+-rw-r--r--    1 ftp      net           166 Aug 23  1996 README
+
+./Archive/others:
+total 948
+-r--r--r--    1 ftp      net          3712 Aug 23  1996 8080asm.arc
+-r--r--r--    1 ftp      net          2688 Aug 23  1996 aim88.arc
+-r--r--r--    1 ftp      net          4921 Aug 23  1996 asm6502.txt
+-r--r--r--    1 ftp      net          1664 Aug 23  1996 batcher.zip
+-r--r--r--    1 ftp      net          1106 Aug 23  1996 cf83dem3.txt
+-r--r--r--    1 ftp      net           128 Aug 23  1996 cf83demo.bas
+-r--r--r--    1 ftp      net         15360 Aug 23  1996 cf83demo.bin
+-r--r--r--    1 ftp      net          6144 Aug 23  1996 cmfloat.arc
+-r--r--r--    1 ftp      net         19200 Aug 23  1996 cmforth.arc
+-r--r--r--    1 ftp      net          7680 Aug 23  1996 cmforthx.arc
+-r--r--r--    1 ftp      net          1493 Aug 23  1996 conditional_of.txt
+-r--r--r--    1 ftp      net        155392 Aug 23  1996 f838080.arc
+-r--r--r--    1 ftp      net         38272 Aug 23  1996 f83util.arc
+-r--r--r--    1 ftp      net          2500 Aug 23  1996 fast_walsh.txt
+-r--r--r--    1 ftp      net          9472 Aug 23  1996 fft.arc
+-r--r--r--    1 ftp      net         13824 Aug 23  1996 forth9.bin
+-r--r--r--    1 ftp      net          9344 Aug 23  1996 frisc3co.arc
+-r--r--r--    1 ftp      net          1536 Aug 23  1996 frisc.arc
+-r--r--r--    1 ftp      net         38528 Aug 23  1996 fs100.arc
+-r--r--r--    1 ftp      net         24960 Aug 23  1996 fth100.arc
+-r--r--r--    1 ftp      net          4480 Aug 23  1996 graph150.arc
+-r--r--r--    1 ftp      net          4549 Aug 23  1996 hp.txt
+-r--r--r--    1 ftp      net         11776 Aug 23  1996 keirsy12.arc
+-r--r--r--    1 ftp      net         50560 Aug 23  1996 lmatrix1.arc
+-r--r--r--    1 ftp      net         12928 Aug 23  1996 m100-4th.4th
+-r--r--r--    1 ftp      net          5932 Aug 23  1996 m100-4th.doc
+-r--r--r--    1 ftp      net         17564 Aug 23  1996 m100-pt1.src
+-r--r--r--    1 ftp      net         15921 Aug 23  1996 m100-pt2.src
+-r--r--r--    1 ftp      net          3279 Aug 23  1996 model100.txt
+-r--r--r--    1 ftp      net         30848 Aug 23  1996 more.ti
+-r--r--r--    1 ftp      net         48384 Aug 23  1996 nec4th.arc
+-r--r--r--    1 ftp      net         18944 Aug 23  1996 nvxdebug.arc
+-r--r--r--    1 ftp      net          9600 Aug 23  1996 os9forth.arc
+-r--r--r--    1 ftp      net         23424 Aug 23  1996 pdp114th.zip
+-r--r--r--    1 ftp      net         10240 Aug 23  1996 pdp11dat.zip
+-r--r--r--    1 ftp      net          2124 Aug 23  1996 pfe.txt
+-r--r--r--    1 ftp      net         16922 Aug 23  1996 psforth.02.90
+-r--r--r--    1 ftp      net          6706 Aug 23  1996 psforth.lzh
+-r--r--r--    1 ftp      net         25472 Aug 23  1996 px83-102.arc
+-r--r--r--    1 ftp      net         16768 Aug 23  1996 ratio.arc
+-r--r--r--    1 ftp      net         12416 Aug 23  1996 s8_novix.arc
+-r--r--r--    1 ftp      net         20864 Aug 23  1996 sc32benc.arc
+-r--r--r--    1 ftp      net          6016 Aug 23  1996 scasm32.arc
+-r--r--r--    1 ftp      net         11278 Aug 23  1996 scasm32.f
+-r--r--r--    1 ftp      net          5632 Aug 23  1996 talk4000.arc
+-r--r--r--    1 ftp      net         34176 Aug 23  1996 tidbits.ti
+-r--r--r--    1 ftp      net         54784 Aug 23  1996 tm2.arc
+-r--r--r--    1 ftp      net          1655 Aug 23  1996 trs80.txt
+-r--r--r--    1 ftp      net          7040 Aug 23  1996 turtle.arc
+
+./Archive/talk:
+total 8352
+-r--r--r--    1 ftp      net         17920 Aug 23  1996 00f90.arc
+-r--r--r--    1 ftp      net          2003 Aug 23  1996 100sq1.txt
+-r--r--r--    1 ftp      net          2470 Aug 23  1996 100sqrd.agn
+-r--r--r--    1 ftp      net          6204 Aug 23  1996 100sqrd.txt
+-r--r--r--    1 ftp      net        109056 Aug 23  1996 4net8990.arc
+-r--r--r--    1 ftp      net         14088 Aug 23  1996 4thunix.txt
+-r--r--r--    1 ftp      net          4140 Aug 23  1996 atari.txt
+-r--r--r--    1 ftp      net          5888 Aug 23  1996 atfurman.arc
+-r--r--r--    1 ftp      net         12557 Aug 23  1996 atfurman.txt
+-r--r--r--    1 ftp      net          2575 Aug 23  1996 atlfig86.apr
+-r--r--r--    1 ftp      net          1229 Aug 23  1996 atlfig87.jan
+-r--r--r--    1 ftp      net         98176 Aug 23  1996 b4b12fb.arc
+-r--r--r--    1 ftp      net         21271 Aug 23  1996 bar0104.90
+-r--r--r--    1 ftp      net         10496 Aug 23  1996 bar01049.arc
+-r--r--r--    1 ftp      net         12872 Aug 23  1996 bar0105.89
+-r--r--r--    1 ftp      net         17115 Aug 23  1996 bar0107.88
+-r--r--r--    1 ftp      net          7723 Aug 23  1996 bar0109.92
+-r--r--r--    1 ftp      net          4480 Aug 23  1996 bar01099.arc
+-r--r--r--    1 ftp      net         24516 Aug 23  1996 bar0111.90
+-r--r--r--    1 ftp      net         11648 Aug 23  1996 bar01119.arc
+-r--r--r--    1 ftp      net         15411 Aug 23  1996 bar0114.88
+-r--r--r--    1 ftp      net           781 Aug 23  1996 bar0117.91
+-r--r--r--    1 ftp      net          7623 Aug 23  1996 bar0119.89
+-r--r--r--    1 ftp      net         14586 Aug 23  1996 bar0121.88
+-r--r--r--    1 ftp      net         11453 Aug 23  1996 bar0125.90
+-r--r--r--    1 ftp      net          5888 Aug 23  1996 bar01259.arc
+-r--r--r--    1 ftp      net         18102 Aug 23  1996 bar0126.89
+-r--r--r--    1 ftp      net         20353 Aug 23  1996 bar0128.88
+-r--r--r--    1 ftp      net         15035 Aug 23  1996 bar0130.89
+-r--r--r--    1 ftp      net         28928 Aug 23  1996 bar0188.arc
+-r--r--r--    1 ftp      net         11456 Aug 23  1996 bar0201.90
+-r--r--r--    1 ftp      net          6272 Aug 23  1996 bar02019.arc
+-r--r--r--    1 ftp      net         12793 Aug 23  1996 bar0202.89
+-r--r--r--    1 ftp      net         16297 Aug 23  1996 bar0204.89
+-r--r--r--    1 ftp      net         32592 Aug 23  1996 bar0208.90
+-r--r--r--    1 ftp      net         16384 Aug 23  1996 bar02089.arc
+-r--r--r--    1 ftp      net         25606 Aug 23  1996 bar0211.88
+-r--r--r--    1 ftp      net         14684 Aug 23  1996 bar0214.91
+-r--r--r--    1 ftp      net          7552 Aug 23  1996 bar02149.arc
+-r--r--r--    1 ftp      net         16643 Aug 23  1996 bar0216.89
+-r--r--r--    1 ftp      net         18486 Aug 23  1996 bar0218.88
+-r--r--r--    1 ftp      net          9205 Aug 23  1996 bar0219.89
+-r--r--r--    1 ftp      net          4736 Aug 23  1996 bar0219.arc
+-r--r--r--    1 ftp      net          2222 Aug 23  1996 bar0222.89
+-r--r--r--    1 ftp      net         29561 Aug 23  1996 bar0222.90
+-r--r--r--    1 ftp      net         14464 Aug 23  1996 bar02229.arc
+-r--r--r--    1 ftp      net         34487 Aug 23  1996 bar0225.89
+-r--r--r--    1 ftp      net         17892 Aug 23  1996 bar0228.91
+-r--r--r--    1 ftp      net          8960 Aug 23  1996 bar02289.arc
+-r--r--r--    1 ftp      net         23382 Aug 23  1996 bar0301.90
+-r--r--r--    1 ftp      net         11392 Aug 23  1996 bar03019.arc
+-r--r--r--    1 ftp      net         14984 Aug 23  1996 bar0302.89
+-r--r--r--    1 ftp      net          7680 Aug 23  1996 bar03028.arc
+-r--r--r--    1 ftp      net         13839 Aug 23  1996 bar0303.88
+-r--r--r--    1 ftp      net         14678 Aug 23  1996 bar0306.90
+-r--r--r--    1 ftp      net         14257 Aug 23  1996 bar0307.91
+-r--r--r--    1 ftp      net          7424 Aug 23  1996 bar03079.arc
+-r--r--r--    1 ftp      net         15484 Aug 23  1996 bar0308.90
+-r--r--r--    1 ftp      net          7168 Aug 23  1996 bar03089.arc
+-r--r--r--    1 ftp      net         15316 Aug 23  1996 bar0310.88
+-r--r--r--    1 ftp      net         12485 Aug 23  1996 bar0310.91
+-r--r--r--    1 ftp      net          5760 Aug 23  1996 bar03109.arc
+-r--r--r--    1 ftp      net          7527 Aug 23  1996 bar0316.89
+-r--r--r--    1 ftp      net          7552 Aug 23  1996 bar03168.arc
+-r--r--r--    1 ftp      net         12974 Aug 23  1996 bar0319.89
+-r--r--r--    1 ftp      net         24667 Aug 23  1996 bar0321.91
+-r--r--r--    1 ftp      net         11904 Aug 23  1996 bar03219.arc
+-r--r--r--    1 ftp      net         15268 Aug 23  1996 bar0323.89
+-r--r--r--    1 ftp      net          7424 Aug 23  1996 bar03238.arc
+-r--r--r--    1 ftp      net         18983 Aug 23  1996 bar0324.91
+-r--r--r--    1 ftp      net          7936 Aug 23  1996 bar03249.arc
+-r--r--r--    1 ftp      net         19226 Aug 23  1996 bar0330.89
+-r--r--r--    1 ftp      net          9472 Aug 23  1996 bar03308.arc
+-r--r--r--    1 ftp      net         48360 Aug 23  1996 bar0402.89
+-r--r--r--    1 ftp      net         13983 Aug 23  1996 bar0404.91
+-r--r--r--    1 ftp      net          7040 Aug 23  1996 bar04049.arc
+-r--r--r--    1 ftp      net         22627 Aug 23  1996 bar0407.88
+-r--r--r--    1 ftp      net         16163 Aug 23  1996 bar0411.91
+-r--r--r--    1 ftp      net         17983 Aug 23  1996 bar0412.90
+-r--r--r--    1 ftp      net         18545 Aug 23  1996 bar0413.89
+-r--r--r--    1 ftp      net          8704 Aug 23  1996 bar04138.arc
+-r--r--r--    1 ftp      net          6482 Aug 23  1996 bar0414.88
+-r--r--r--    1 ftp      net         21760 Aug 23  1996 bar04168.arc
+-r--r--r--    1 ftp      net          3499 Aug 23  1996 bar0420.89
+-r--r--r--    1 ftp      net          9344 Aug 23  1996 bar04208.arc
+-r--r--r--    1 ftp      net         32767 Aug 23  1996 bar0423.89
+-r--r--r--    1 ftp      net         15872 Aug 23  1996 bar04238.arc
+-r--r--r--    1 ftp      net         11658 Aug 23  1996 bar0425.91
+-r--r--r--    1 ftp      net          6272 Aug 23  1996 bar04259.arc
+-r--r--r--    1 ftp      net         12737 Aug 23  1996 bar0426.90
+-r--r--r--    1 ftp      net         11776 Aug 23  1996 bar04269.arc
+-r--r--r--    1 ftp      net          9431 Aug 23  1996 bar0427.89
+-r--r--r--    1 ftp      net          9088 Aug 23  1996 bar04278.arc
+-r--r--r--    1 ftp      net         10391 Aug 23  1996 bar0428.88
+-r--r--r--    1 ftp      net         14385 Aug 23  1996 bar0502.91
+-r--r--r--    1 ftp      net         24357 Aug 23  1996 bar0503.90
+-r--r--r--    1 ftp      net         11648 Aug 23  1996 bar05039.arc
+-r--r--r--    1 ftp      net         17377 Aug 23  1996 bar0504.89
+-r--r--r--    1 ftp      net          8576 Aug 23  1996 bar05048.arc
+-r--r--r--    1 ftp      net         31578 Aug 23  1996 bar0507.89
+-r--r--r--    1 ftp      net         16128 Aug 23  1996 bar05078.arc
+-r--r--r--    1 ftp      net         17870 Aug 23  1996 bar0508.88
+-r--r--r--    1 ftp      net          7552 Aug 23  1996 bar05188.arc
+-r--r--r--    1 ftp      net         23172 Aug 23  1996 bar0520.90
+-r--r--r--    1 ftp      net          8960 Aug 23  1996 bar0520.90z
+-r--r--r--    1 ftp      net         21720 Aug 23  1996 bar0522.88
+-r--r--r--    1 ftp      net         15934 Aug 23  1996 bar0523.91
+-r--r--r--    1 ftp      net          8320 Aug 23  1996 bar05239.arc
+-r--r--r--    1 ftp      net          3307 Aug 23  1996 bar0524.90
+-r--r--r--    1 ftp      net          3712 Aug 23  1996 bar05249.arc
+-r--r--r--    1 ftp      net         20621 Aug 23  1996 bar0525.89
+-r--r--r--    1 ftp      net         10240 Aug 23  1996 bar05258.arc
+-r--r--r--    1 ftp      net         19676 Aug 23  1996 bar0526.88
+-r--r--r--    1 ftp      net         37220 Aug 23  1996 bar0529.88
+-r--r--r--    1 ftp      net         16484 Aug 23  1996 bar0531.90
+-r--r--r--    1 ftp      net          8576 Aug 23  1996 bar05319.arc
+-r--r--r--    1 ftp      net         19623 Aug 23  1996 bar0602.88
+-r--r--r--    1 ftp      net         12116 Aug 23  1996 bar0603.90
+-r--r--r--    1 ftp      net          5632 Aug 23  1996 bar06039.arc
+-r--r--r--    1 ftp      net         14722 Aug 23  1996 bar0604.89
+-r--r--r--    1 ftp      net         19675 Aug 23  1996 bar0605.88
+-r--r--r--    1 ftp      net          8408 Aug 23  1996 bar0606.91
+-r--r--r--    1 ftp      net          4608 Aug 23  1996 bar06069.arc
+-r--r--r--    1 ftp      net          5720 Aug 23  1996 bar0607.90
+-r--r--r--    1 ftp      net         18560 Aug 23  1996 bar06079.arc
+-r--r--r--    1 ftp      net         14235 Aug 23  1996 bar0610.88
+-r--r--r--    1 ftp      net         14237 Aug 23  1996 bar0613.91
+-r--r--r--    1 ftp      net          7296 Aug 23  1996 bar06139.arc
+-r--r--r--    1 ftp      net         14072 Aug 23  1996 bar0614.90
+-r--r--r--    1 ftp      net          6656 Aug 23  1996 bar06149.arc
+-r--r--r--    1 ftp      net         12991 Aug 23  1996 bar0616.88
+-r--r--r--    1 ftp      net         11781 Aug 23  1996 bar0616.89
+-r--r--r--    1 ftp      net          6144 Aug 23  1996 bar06168.arc
+-r--r--r--    1 ftp      net         20219 Aug 23  1996 bar0622.89
+-r--r--r--    1 ftp      net          9856 Aug 23  1996 bar06228.arc
+-r--r--r--    1 ftp      net         16069 Aug 23  1996 bar0623.88
+-r--r--r--    1 ftp      net         18151 Aug 23  1996 bar0625.89
+-r--r--r--    1 ftp      net          8832 Aug 23  1996 bar06258.arc
+-r--r--r--    1 ftp      net          6728 Aug 23  1996 bar0626.88
+-r--r--r--    1 ftp      net         17219 Aug 23  1996 bar0628.90
+-r--r--r--    1 ftp      net          9216 Aug 23  1996 bar06289.arc
+-r--r--r--    1 ftp      net         12322 Aug 23  1996 bar0703.88
+-r--r--r--    1 ftp      net         11639 Aug 23  1996 bar0705.90
+-r--r--r--    1 ftp      net          6144 Aug 23  1996 bar07059.arc
+-r--r--r--    1 ftp      net         13802 Aug 23  1996 bar0706.89
+-r--r--r--    1 ftp      net          9472 Aug 23  1996 bar07068.arc
+-r--r--r--    1 ftp      net         13812 Aug 23  1996 bar0712.90
+-r--r--r--    1 ftp      net          6912 Aug 23  1996 bar07129.arc
+-r--r--r--    1 ftp      net         10517 Aug 23  1996 bar0714.88
+-r--r--r--    1 ftp      net         17671 Aug 23  1996 bar0722.88
+-r--r--r--    1 ftp      net         10947 Aug 23  1996 bar0725.91
+-r--r--r--    1 ftp      net          5760 Aug 23  1996 bar07259.arc
+-r--r--r--    1 ftp      net         15461 Aug 23  1996 bar0726.90
+-r--r--r--    1 ftp      net          7808 Aug 23  1996 bar07269.arc
+-r--r--r--    1 ftp      net         11556 Aug 23  1996 bar0727.89
+-r--r--r--    1 ftp      net          5760 Aug 23  1996 bar07278.arc
+-r--r--r--    1 ftp      net         19893 Aug 23  1996 bar0728.88
+-r--r--r--    1 ftp      net          7272 Aug 23  1996 bar0801.91
+-r--r--r--    1 ftp      net          4224 Aug 23  1996 bar08019.arc
+-r--r--r--    1 ftp      net         16468 Aug 23  1996 bar0802.90
+-r--r--r--    1 ftp      net          8320 Aug 23  1996 bar08029.arc
+-r--r--r--    1 ftp      net          6400 Aug 23  1996 bar08038.arc
+-r--r--r--    1 ftp      net         21955 Aug 23  1996 bar0804.88
+-r--r--r--    1 ftp      net         12566 Aug 23  1996 bar0804.89
+-r--r--r--    1 ftp      net         14024 Aug 23  1996 bar0809.90
+-r--r--r--    1 ftp      net          7040 Aug 23  1996 bar08099.arc
+-r--r--r--    1 ftp      net         37138 Aug 23  1996 bar0810.89
+-r--r--r--    1 ftp      net         18944 Aug 23  1996 bar08108.arc
+-r--r--r--    1 ftp      net         16985 Aug 23  1996 bar0811.88
+-r--r--r--    1 ftp      net         16828 Aug 23  1996 bar0817.89
+-r--r--r--    1 ftp      net          8064 Aug 23  1996 bar08178.arc
+-r--r--r--    1 ftp      net         15398 Aug 23  1996 bar0818.88
+-r--r--r--    1 ftp      net         17024 Aug 23  1996 bar0820.89
+-r--r--r--    1 ftp      net          7601 Aug 23  1996 bar082991
+-r--r--r--    1 ftp      net          4096 Aug 23  1996 bar08299.arc
+-r--r--r--    1 ftp      net         18537 Aug 23  1996 bar0831.89
+-r--r--r--    1 ftp      net          8960 Aug 23  1996 bar08318.arc
+-r--r--r--    1 ftp      net         66176 Aug 23  1996 bar0888.arc
+-r--r--r--    1 ftp      net         27770 Aug 23  1996 bar0901.88
+-r--r--r--    1 ftp      net         11969 Aug 23  1996 bar0905.91
+-r--r--r--    1 ftp      net          6656 Aug 23  1996 bar09059.arc
+-r--r--r--    1 ftp      net         10916 Aug 23  1996 bar0907.89
+-r--r--r--    1 ftp      net          5632 Aug 23  1996 bar09078.arc
+-r--r--r--    1 ftp      net         10595 Aug 23  1996 bar0907.90
+-r--r--r--    1 ftp      net          8448 Aug 23  1996 bar09079.arc
+-r--r--r--    1 ftp      net         11425 Aug 23  1996 bar0908.88
+-r--r--r--    1 ftp      net         31187 Aug 23  1996 bar0910.89
+-r--r--r--    1 ftp      net         15232 Aug 23  1996 bar09108.arc
+-r--r--r--    1 ftp      net         13462 Aug 23  1996 bar0913.90
+-r--r--r--    1 ftp      net          6400 Aug 23  1996 bar09139.arc
+-r--r--r--    1 ftp      net         30528 Aug 23  1996 bar0915.88
+-r--r--r--    1 ftp      net         24207 Aug 23  1996 bar0920.90
+-r--r--r--    1 ftp      net         10496 Aug 23  1996 bar09209.arc
+-r--r--r--    1 ftp      net         23207 Aug 23  1996 bar0921.89
+-r--r--r--    1 ftp      net         11392 Aug 23  1996 bar09218.arc
+-r--r--r--    1 ftp      net         17177 Aug 23  1996 bar0929.88
+-r--r--r--    1 ftp      net         10865 Aug 23  1996 bar1004.90
+-r--r--r--    1 ftp      net          5504 Aug 23  1996 bar10049.arc
+-r--r--r--    1 ftp      net         15079 Aug 23  1996 bar1005.89
+-r--r--r--    1 ftp      net          7552 Aug 23  1996 bar10058.arc
+-r--r--r--    1 ftp      net         14773 Aug 23  1996 bar1011.90
+-r--r--r--    1 ftp      net          7424 Aug 23  1996 bar10119.arc
+-r--r--r--    1 ftp      net         10285 Aug 23  1996 bar1013.88
+-r--r--r--    1 ftp      net          4797 Aug 23  1996 bar1017.91
+-r--r--r--    1 ftp      net          2816 Aug 23  1996 bar10179.arc
+-r--r--r--    1 ftp      net         16676 Aug 23  1996 bar1019.89
+-r--r--r--    1 ftp      net          8576 Aug 23  1996 bar10198.arc
+-r--r--r--    1 ftp      net         14317 Aug 23  1996 bar1025.90
+-r--r--r--    1 ftp      net          7040 Aug 23  1996 bar10259.arc
+-r--r--r--    1 ftp      net         21772 Aug 23  1996 bar1026.89
+-r--r--r--    1 ftp      net         10880 Aug 23  1996 bar10268.arc
+-r--r--r--    1 ftp      net          6400 Aug 23  1996 bar10791.zip
+-r--r--r--    1 ftp      net          8670 Aug 23  1996 bar1101.90
+-r--r--r--    1 ftp      net          4608 Aug 23  1996 bar11019.arc
+-r--r--r--    1 ftp      net         15613 Aug 23  1996 bar1102.89
+-r--r--r--    1 ftp      net          8320 Aug 23  1996 bar11028.arc
+-r--r--r--    1 ftp      net         11729 Aug 23  1996 bar1103.88
+-r--r--r--    1 ftp      net          8055 Aug 23  1996 bar1108.90
+-r--r--r--    1 ftp      net          4480 Aug 23  1996 bar11089.arc
+-r--r--r--    1 ftp      net          9883 Aug 23  1996 bar1110.88
+-r--r--r--    1 ftp      net          1340 Aug 23  1996 bar1113.88
+-r--r--r--    1 ftp      net         15399 Aug 23  1996 bar1116.89
+-r--r--r--    1 ftp      net          8320 Aug 23  1996 bar11168.arc
+-r--r--r--    1 ftp      net         12132 Aug 23  1996 bar1117.88
+-r--r--r--    1 ftp      net         10715 Aug 23  1996 bar1121.91
+-r--r--r--    1 ftp      net          5248 Aug 23  1996 bar11219.arc
+-r--r--r--    1 ftp      net         25278 Aug 23  1996 bar1126.89
+-r--r--r--    1 ftp      net         11648 Aug 23  1996 bar11268.arc
+-r--r--r--    1 ftp      net         15515 Aug 23  1996 bar1129.90
+-r--r--r--    1 ftp      net          7680 Aug 23  1996 bar11299.arc
+-r--r--r--    1 ftp      net         18085 Aug 23  1996 bar1130.89
+-r--r--r--    1 ftp      net          9216 Aug 23  1996 bar11308.arc
+-r--r--r--    1 ftp      net          8411 Aug 23  1996 bar1201.88
+-r--r--r--    1 ftp      net         20505 Aug 23  1996 bar1203.89
+-r--r--r--    1 ftp      net         10752 Aug 23  1996 bar12038.arc
+-r--r--r--    1 ftp      net         10429 Aug 23  1996 bar1206.90
+-r--r--r--    1 ftp      net          5760 Aug 23  1996 bar12069.arc
+-r--r--r--    1 ftp      net         29999 Aug 23  1996 bar1207.89
+-r--r--r--    1 ftp      net         15104 Aug 23  1996 bar12078.arc
+-r--r--r--    1 ftp      net         15875 Aug 23  1996 bar1210.87
+-r--r--r--    1 ftp      net         22309 Aug 23  1996 bar1210.89
+-r--r--r--    1 ftp      net         10880 Aug 23  1996 bar12108.arc
+-r--r--r--    1 ftp      net         15420 Aug 23  1996 bar1217.87
+-r--r--r--    1 ftp      net         27392 Aug 23  1996 bar12178.arc
+-r--r--r--    1 ftp      net         10815 Aug 23  1996 bar1219.91
+-r--r--r--    1 ftp      net          5504 Aug 23  1996 bar12199.arc
+-r--r--r--    1 ftp      net          9246 Aug 23  1996 bar1220.90
+-r--r--r--    1 ftp      net          4992 Aug 23  1996 bar12209.arc
+-r--r--r--    1 ftp      net         18500 Aug 23  1996 bar1221.89
+-r--r--r--    1 ftp      net          9088 Aug 23  1996 bar12218.arc
+-r--r--r--    1 ftp      net         14845 Aug 23  1996 bar1222.88
+-r--r--r--    1 ftp      net         14416 Aug 23  1996 bar1227.90
+-r--r--r--    1 ftp      net          7424 Aug 23  1996 bar12279.arc
+-r--r--r--    1 ftp      net         21275 Aug 23  1996 bar1228.89
+-r--r--r--    1 ftp      net         10496 Aug 23  1996 bar12288.arc
+-r--r--r--    1 ftp      net         19960 Aug 23  1996 bar1229.88
+-r--r--r--    1 ftp      net         13696 Aug 23  1996 bar1287.arc
+-r--r--r--    1 ftp      net         27520 Aug 23  1996 bar89521.arc
+-r--r--r--    1 ftp      net          8192 Aug 23  1996 bbar0216.arc
+-r--r--r--    1 ftp      net         25088 Aug 23  1996 belgium.arc
+-r--r--r--    1 ftp      net         18238 Aug 23  1996 best0f01.89
+-r--r--r--    1 ftp      net         15488 Aug 23  1996 bestof01.90
+-r--r--r--    1 ftp      net          9014 Aug 23  1996 bestof02.91
+-r--r--r--    1 ftp      net         11978 Aug 23  1996 bestof03.88
+-r--r--r--    1 ftp      net         13335 Aug 23  1996 bestof03.89
+-r--r--r--    1 ftp      net         13744 Aug 23  1996 bestof03.90
+-r--r--r--    1 ftp      net         17089 Aug 23  1996 bestof04.90
+-r--r--r--    1 ftp      net         21846 Aug 23  1996 bestof04.91
+-r--r--r--    1 ftp      net         14197 Aug 23  1996 bestof05.88
+-r--r--r--    1 ftp      net          7220 Aug 23  1996 bestof05.89
+-r--r--r--    1 ftp      net         33351 Aug 23  1996 bestof05.92
+-r--r--r--    1 ftp      net         21942 Aug 23  1996 bestof06.90
+-r--r--r--    1 ftp      net         13096 Aug 23  1996 bestof06.91
+-r--r--r--    1 ftp      net         11700 Aug 23  1996 bestof07.88
+-r--r--r--    1 ftp      net         14331 Aug 23  1996 bestof08.90
+-r--r--r--    1 ftp      net         22478 Aug 23  1996 bestof08.91
+-r--r--r--    1 ftp      net         14067 Aug 23  1996 bestof09.88
+-r--r--r--    1 ftp      net         14633 Aug 23  1996 bestof09.89
+-r--r--r--    1 ftp      net         10687 Aug 23  1996 bestof10.90
+-r--r--r--    1 ftp      net         53315 Aug 23  1996 bestof10.91
+-r--r--r--    1 ftp      net         19223 Aug 23  1996 bestof11.88
+-r--r--r--    1 ftp      net         10215 Aug 23  1996 bestof11.89
+-r--r--r--    1 ftp      net         11054 Aug 23  1996 bestof12.90
+-r--r--r--    1 ftp      net         11129 Aug 23  1996 bestof12.91
+-r--r--r--    1 ftp      net         94720 Aug 23  1996 beta.arc
+-r--r--r--    1 ftp      net         85248 Aug 23  1996 bgn8790.arc
+-r--r--r--    1 ftp      net           318 Aug 23  1996 bnfug.ann
+-r--r--r--    1 ftp      net         10880 Aug 23  1996 brad_r.arc
+-r--r--r--    1 ftp      net         13067 Aug 23  1996 b-vs-t.txt
+-r--r--r--    1 ftp      net         21275 Aug 23  1996 c02t0112.87
+-r--r--r--    1 ftp      net          9216 Aug 23  1996 c02t0511.87
+-r--r--r--    1 ftp      net         10462 Aug 23  1996 c12t0209.87
+-r--r--r--    1 ftp      net          5360 Aug 23  1996 c12t0611.87
+-r--r--r--    1 ftp      net         92800 Aug 23  1996 c14t0202.arc
+-r--r--r--    1 ftp      net         80128 Aug 23  1996 c14t0203.arc
+-r--r--r--    1 ftp      net         19328 Aug 23  1996 caabike.arc
+-r--r--r--    1 ftp      net          2227 Aug 23  1996 cafig89.jan
+-r--r--r--    1 ftp      net          8832 Aug 23  1996 cases491.arc
+-r--r--r--    1 ftp      net          3840 Aug 23  1996 cfb-net.arc
+-r--r--r--    1 ftp      net         13896 Aug 23  1996 cforth.txt
+-r--r--r--    1 ftp      net          1445 Aug 23  1996 clay.txt
+-r--r--r--    1 ftp      net          3456 Aug 23  1996 clmforth.arc
+-r--r--r--    1 ftp      net          7296 Aug 23  1996 cm891023.arc
+-r--r--r--    1 ftp      net         59520 Aug 23  1996 cm90.arc
+-r--r--r--    1 ftp      net         15282 Aug 23  1996 cmoore.co2
+-r--r--r--    1 ftp      net          4387 Aug 23  1996 coco.txt
+-r--r--r--    1 ftp      net         90240 Aug 23  1996 comptriv.arc
+-r--r--r--    1 ftp      net          1913 Aug 23  1996 cowboys.txt
+-r--r--r--    1 ftp      net         12544 Aug 23  1996 cows1018.arc
+-r--r--r--    1 ftp      net         88064 Aug 23  1996 data0690.arc
+-r--r--r--    1 ftp      net         16768 Aug 23  1996 dcmtn491.arc
+-r--r--r--    1 ftp      net          3863 Aug 23  1996 ddj-tool.rev
+-r--r--r--    1 ftp      net         15613 Aug 23  1996 debate.txt
+-r--r--r--    1 ftp      net          9344 Aug 23  1996 divrepli.arc
+-r--r--r--    1 ftp      net          5504 Aug 23  1996 drumabbs.arc
+-r--r--r--    1 ftp      net         16640 Aug 23  1996 f83beg90.arc
+-r--r--r--    1 ftp      net          3968 Aug 23  1996 fb2000.arc
+-r--r--r--    1 ftp      net          9728 Aug 23  1996 feierbac.arc
+-r--r--r--    1 ftp      net          2568 Aug 23  1996 fifth25.txt
+-r--r--r--    1 ftp      net         20480 Aug 23  1996 fig0188.arc
+-r--r--r--    1 ftp      net         43904 Aug 23  1996 figbbs.arc
+-r--r--r--    1 ftp      net          8832 Aug 23  1996 figbusin.arc
+-r--r--r--    1 ftp      net          8192 Aug 23  1996 figcon87.arc
+-r--r--r--    1 ftp      net         58240 Aug 23  1996 figfb191.arc
+-r--r--r--    1 ftp      net          6494 Aug 23  1996 fireside.88
+-r--r--r--    1 ftp      net        111104 Aug 23  1996 fmktpl90.arc
+-r--r--r--    1 ftp      net          6784 Aug 23  1996 foops.arc
+-r--r--r--    1 ftp      net         14052 Aug 23  1996 foops.txt
+-r--r--r--    1 ftp      net          5520 Aug 23  1996 forthbad.txt
+-r--r--r--    1 ftp      net          3468 Aug 23  1996 forthhdw.txt
+-r--r--r--    1 ftp      net          3952 Aug 23  1996 fourth.rev
+-r--r--r--    1 ftp      net          7040 Aug 23  1996 fpc_rtc.arc
+-r--r--r--    1 ftp      net         15208 Aug 23  1996 fpc_rtc.txt
+-r--r--r--    1 ftp      net         13122 Aug 23  1996 frisc3.txt
+-r--r--r--    1 ftp      net         95488 Aug 23  1996 ft23789.arc
+-r--r--r--    1 ftp      net         54400 Aug 23  1996 funix90.arc
+-r--r--r--    1 ftp      net          5294 Aug 23  1996 future4th.txt
+-r--r--r--    1 ftp      net         22272 Aug 23  1996 fwrong90.arc
+-r--r--r--    1 ftp      net         18299 Aug 23  1996 genie.25c
+-r--r--r--    1 ftp      net          5462 Aug 23  1996 goto.txt
+-r--r--r--    1 ftp      net         15315 Aug 23  1996 guides.esp
+-r--r--r--    1 ftp      net         23424 Aug 23  1996 guykelly.arc
+-r--r--r--    1 ftp      net          7040 Aug 23  1996 haydon.arc
+-r--r--r--    1 ftp      net         14891 Aug 23  1996 haydon.txt
+-r--r--r--    1 ftp      net         12672 Aug 23  1996 hd8789.arc
+-r--r--r--    1 ftp      net         95744 Aug 23  1996 hrs8790.arc
+-r--r--r--    1 ftp      net          2304 Aug 23  1996 hsf-appl.arc
+-r--r--r--    1 ftp      net          1498 Aug 23  1996 ibmpc.txt
+-r--r--r--    1 ftp      net         31104 Aug 23  1996 impl0290.arc
+-r--r--r--    1 ftp      net         74880 Aug 23  1996 impl491.arc
+-r--r--r--    1 ftp      net        112640 Aug 23  1996 inprn690.arc
+-r--r--r--    1 ftp      net          8576 Aug 23  1996 intr_oop.arc
+-r--r--r--    1 ftp      net          2294 Aug 23  1996 jfar.txt
+-r--r--r--    1 ftp      net          9216 Aug 23  1996 jobs717.arc
+-r--r--r--    1 ftp      net          6656 Aug 23  1996 jsrthrd.arc
+-r--r--r--    1 ftp      net         14985 Aug 23  1996 jsrthrd.txt
+-r--r--r--    1 ftp      net         13312 Aug 23  1996 language.arc
+-r--r--r--    1 ftp      net          8848 Aug 23  1996 learning.txt
+-r--r--r--    1 ftp      net          6784 Aug 23  1996 lmi0189.arc
+-r--r--r--    1 ftp      net          2816 Aug 23  1996 lmi-rtx.arc
+-r--r--r--    1 ftp      net         57984 Aug 23  1996 loop789.arc
+-r--r--r--    1 ftp      net         18432 Aug 23  1996 macbot.arc
+-r--r--r--    1 ftp      net          5411 Aug 23  1996 macbot.txt
+-r--r--r--    1 ftp      net          2481 Aug 23  1996 metafrth.txt
+-r--r--r--    1 ftp      net          8704 Aug 23  1996 mike_ham.arc
+-r--r--r--    1 ftp      net         20386 Aug 23  1996 mike_ham.txt
+-r--r--r--    1 ftp      net          6784 Aug 23  1996 minimal.arc
+-r--r--r--    1 ftp      net          1944 Aug 23  1996 minimal.txt
+-r--r--r--    1 ftp      net          7552 Aug 23  1996 misc.arc
+-r--r--r--    1 ftp      net         18816 Aug 23  1996 miscpapr.zip
+-r--r--r--    1 ftp      net         16335 Aug 23  1996 misc.txt
+-r--r--r--    1 ftp      net          6144 Aug 23  1996 mm2089.arc
+-r--r--r--    1 ftp      net          8448 Aug 23  1996 moore4th.arc
+-r--r--r--    1 ftp      net         16561 Aug 23  1996 moore4th.txt
+-r--r--r--    1 ftp      net         13636 Aug 23  1996 moore87.sep
+-r--r--r--    1 ftp      net         36992 Aug 23  1996 msglm590.arc
+-r--r--r--    1 ftp      net          4992 Aug 23  1996 muench.arc
+-r--r--r--    1 ftp      net          9774 Aug 23  1996 muench.txt
+-r--r--r--    1 ftp      net          1464 Aug 23  1996 mvpamiga.txt
+-r--r--r--    1 ftp      net          2069 Aug 23  1996 neural.txt
+-r--r--r--    1 ftp      net          9915 Aug 23  1996 nights.txt
+-r--r--r--    1 ftp      net         52864 Aug 23  1996 nonf0490.arc
+-r--r--r--    1 ftp      net         10132 Aug 23  1996 novix1.txt
+-r--r--r--    1 ftp      net          6641 Aug 23  1996 novix.txt
+-r--r--r--    1 ftp      net           640 Aug 23  1996 novixvid.arc
+-r--r--r--    1 ftp      net         18048 Aug 23  1996 oof8990.arc
+-r--r--r--    1 ftp      net          9856 Aug 23  1996 ouverson.arc
+-r--r--r--    1 ftp      net         20724 Aug 23  1996 ouverson.txt
+-r--r--r--    1 ftp      net         20480 Aug 23  1996 parncfb.arc
+-r--r--r--    1 ftp      net         42496 Aug 23  1996 PDKERN91.ARC
+-r--r--r--    1 ftp      net         42496 Aug 23  1996 pdsys90.arc
+-r--r--r--    1 ftp      net          1607 Aug 23  1996 persexp.des
+-r--r--r--    1 ftp      net          2093 Aug 23  1996 premoore.txt
+-r--r--r--    1 ftp      net          5504 Aug 23  1996 pre-pyg.zip
+-r--r--r--    1 ftp      net          9074 Aug 23  1996 promote.txt
+-r--r--r--    1 ftp      net          2740 Aug 23  1996 protocol.txt
+-r--r--r--    1 ftp      net         25856 Aug 23  1996 ptech89.arc
+-r--r--r--    1 ftp      net          5230 Aug 23  1996 pygmyltr.txt
+-r--r--r--    1 ftp      net         23936 Aug 23  1996 radiortc.arc
+-r--r--r--    1 ftp      net          8704 Aug 23  1996 ragsdale.arc
+-r--r--r--    1 ftp      net         18720 Aug 23  1996 ragsdale.txt
+-r--r--r--    1 ftp      net          9344 Aug 23  1996 raskin.arc
+-r--r--r--    1 ftp      net         21612 Aug 23  1996 raskin.txt
+-r--r--r--    1 ftp      net        101376 Aug 23  1996 rbot8990.arc
+-r--r--r--    1 ftp      net          8215 Aug 23  1996 rep5860.txt
+-r--r--r--    1 ftp      net          3072 Aug 23  1996 rich-env.arc
+-r--r--r--    1 ftp      net          7695 Aug 23  1996 sacred.txt
+-r--r--r--    1 ftp      net          5632 Aug 23  1996 sandrson.arc
+-r--r--r--    1 ftp      net         11096 Aug 23  1996 sandrson.txt
+-r--r--r--    1 ftp      net          5504 Aug 23  1996 sbc32.arc
+-r--r--r--    1 ftp      net         18944 Aug 23  1996 selfrep.arc
+-r--r--r--    1 ftp      net          4992 Aug 23  1996 sergei.arc
+-r--r--r--    1 ftp      net         10327 Aug 23  1996 sergei.txt
+-r--r--r--    1 ftp      net          8064 Aug 23  1996 shepherd.arc
+-r--r--r--    1 ftp      net         16138 Aug 23  1996 shepherd.txt
+-r--r--r--    1 ftp      net          8415 Aug 23  1996 silicon1
+-r--r--r--    1 ftp      net          6248 Aug 23  1996 silicon2
+-r--r--r--    1 ftp      net         62464 Aug 23  1996 st21189.arc
+-r--r--r--    1 ftp      net          1536 Aug 23  1996 stds-rev.arc
+-r--r--r--    1 ftp      net         26752 Aug 23  1996 stjoan.arc
+-r--r--r--    1 ftp      net        156800 Aug 23  1996 tcb1189.arc
+-r--r--r--    1 ftp      net         98048 Aug 23  1996 tcmsc491.arc
+-r--r--r--    1 ftp      net         30259 Aug 23  1996 teaching.4th
+-r--r--r--    1 ftp      net          5768 Aug 23  1996 tms34010.txt
+-r--r--r--    1 ftp      net          7552 Aug 23  1996 tomalmy.arc
+-r--r--r--    1 ftp      net         17486 Aug 23  1996 tomalmy.txt
+-r--r--r--    1 ftp      net             0 Aug 23  1996 ufthbbs.log
+-r--r--r--    1 ftp      net         43008 Aug 23  1996 unarc2.scr
+-r--r--r--    1 ftp      net          1451 Aug 23  1996 unarc_2.txt
+-r--r--r--    1 ftp      net        158208 Aug 23  1996 unbfb.arc
+-r--r--r--    1 ftp      net         10368 Aug 23  1996 unix888.arc
+-r--r--r--    1 ftp      net          5248 Aug 23  1996 unix.arc
+-r--r--r--    1 ftp      net          4089 Aug 23  1996 vpplanner.cnf
+-r--r--r--    1 ftp      net          7787 Aug 23  1996 whats4th.txt
+-r--r--r--    1 ftp      net          1061 Aug 23  1996 which4th.txt
+-r--r--r--    1 ftp      net         24192 Aug 23  1996 whoher90.arc
+-r--r--r--    1 ftp      net          5187 Aug 23  1996 whyforth.txt
+-r--r--r--    1 ftp      net          7168 Aug 23  1996 whypygmy.arc
+-r--r--r--    1 ftp      net          7808 Aug 23  1996 winnebik.arc
+-r--r--r--    1 ftp      net          8840 Aug 23  1996 witness2.txt
+-r--r--r--    1 ftp      net         16736 Aug 23  1996 witness.txt
+-r--r--r--    1 ftp      net          4344 Aug 23  1996 writeonly.txt
+-r--r--r--    1 ftp      net          7436 Aug 23  1996 wrong.4th
+-r--r--r--    1 ftp      net         18578 Aug 23  1996 x3j14chair.txt
+-r--r--r--    1 ftp      net         23424 Aug 23  1996 xcfb1290.arc
+-r--r--r--    1 ftp      net         11914 Aug 23  1996 yerk.txt
+-r--r--r--    1 ftp      net          6144 Aug 23  1996 zennotes.arc
+
+./Archive/tutorials:
+total 1812
+-r--r--r--    1 ftp      net         10725 Aug 23  1996 bixquans.txt
+-r--r--r--    1 ftp      net         25984 Aug 23  1996 diary10.arc
+-r--r--r--    1 ftp      net         20352 Aug 23  1996 diary10c.arc
+-r--r--r--    1 ftp      net         36736 Aug 23  1996 diary11.arc
+-r--r--r--    1 ftp      net          8704 Aug 23  1996 diary2.arc
+-r--r--r--    1 ftp      net          6016 Aug 23  1996 diary3.arc
+-r--r--r--    1 ftp      net        272128 Aug 23  1996 diary4.arc
+-r--r--r--    1 ftp      net          5120 Aug 23  1996 diary5.arc
+-r--r--r--    1 ftp      net         74496 Aug 23  1996 diary6.arc
+-r--r--r--    1 ftp      net         10752 Aug 23  1996 diary7.arc
+-r--r--r--    1 ftp      net        197248 Aug 23  1996 diary8.arc
+-r--r--r--    1 ftp      net         19840 Aug 23  1996 diary9.arc
+-r--r--r--    1 ftp      net          9856 Aug 23  1996 diary.arc
+-r--r--r--    1 ftp      net         39168 Aug 23  1996 expert90.zip
+-r--r--r--    1 ftp      net         47104 Aug 23  1996 f83tutor.arc
+-r--r--r--    1 ftp      net         36352 Aug 23  1996 f83tuttx.arc
+-r--r--r--    1 ftp      net         92160 Aug 23  1996 fpca.arc
+-r--r--r--    1 ftp      net        155648 Aug 23  1996 fpcb.arc
+-r--r--r--    1 ftp      net         80896 Aug 23  1996 fpch.arc
+drwxr-xr-x    2 ftp      net          4096 Jun 30  2011 gforth-sdl-opengl
+-r--r--r--    1 ftp      net          9171 Aug 23  1996 guess.txt
+-r--r--r--    1 ftp      net         78080 Aug 23  1996 haskell.zip
+-r--r--r--    1 ftp      net         51712 Aug 23  1996 infobas2.arc
+-r--r--r--    1 ftp      net         19172 Aug 23  1996 intro.4th
+-r--r--r--    1 ftp      net          8088 Aug 23  1996 jbinput.seq
+-r--r--r--    1 ftp      net        217472 Aug 23  1996 learn4th.arc
+-r--r--r--    1 ftp      net          8192 Aug 23  1996 lesson0.arc
+-r--r--r--    1 ftp      net         70656 Aug 23  1996 lesson2.arc
+-r--r--r--    1 ftp      net         82944 Aug 23  1996 lesson3.arc
+-r--r--r--    1 ftp      net          3584 Aug 23  1996 novice.arc
+-r--r--r--    1 ftp      net          2304 Aug 23  1996 shape.arc
+-r--r--r--    1 ftp      net          9411 Aug 23  1996 sq&arc.hlp
+-r--r--r--    1 ftp      net          5760 Aug 23  1996 tutorial.arc
+-r--r--r--    1 ftp      net          9600 Aug 23  1996 visisort.arc
+-r--r--r--    1 ftp      net         15104 Aug 23  1996 words2ed.txt
+
+./Archive/tutorials/gforth-sdl-opengl:
+total 4152
+-r--r--r--    1 ftp      net           802 Feb  6  2010 3ddemo-info.txt
+-r--r--r--    1 ftp      net        717241 Feb  6  2010 3DDemo.zip
+-r--r--r--    1 ftp      net           977 Feb  6  2010 glforth-r18-info.txt
+-r--r--r--    1 ftp      net         34677 Feb  6  2010 glforth-r18.zip
+-rw-r--r--    1 ftp      ftp           913 Jul  6  2010 opengl-lesson01-info.txt
+-rw-r--r--    1 ftp      ftp         36707 Jul  6  2010 opengl-lesson01.zip
+-rw-r--r--    1 ftp      ftp           904 Jul  6  2010 opengl-lesson02-info.txt
+-rw-r--r--    1 ftp      ftp         32222 Jul  6  2010 opengl-lesson02.zip
+-rw-r--r--    1 ftp      ftp           898 Jul  6  2010 opengl-lesson03-info.txt
+-rw-r--r--    1 ftp      ftp         32047 Jul  6  2010 opengl-lesson03.zip
+-rw-r--r--    1 ftp      ftp           894 Jul  7  2010 opengl-lesson04-info.txt
+-rw-r--r--    1 ftp      ftp         32220 Jul  7  2010 opengl-lesson04.zip
+-rw-r--r--    1 ftp      ftp           895 Jul  7  2010 opengl-lesson05-info.txt
+-rw-r--r--    1 ftp      ftp         32252 Jul  7  2010 opengl-lesson05.zip
+-rw-r--r--    1 ftp      ftp           901 Jul 24  2010 opengl-lesson06-info.txt
+-rw-r--r--    1 ftp      ftp         55039 Jul 24  2010 opengl-lesson06.zip
+-rw-r--r--    1 ftp      ftp           916 Jul 25  2010 opengl-lesson07-info.txt
+-rw-r--r--    1 ftp      ftp        115581 Jul 25  2010 opengl-lesson07.zip
+-rw-r--r--    1 ftp      ftp           894 Jul 25  2010 opengl-lesson08-info.txt
+-rw-r--r--    1 ftp      ftp         82282 Jul 25  2010 opengl-lesson08.zip
+-rw-r--r--    1 ftp      ftp           912 Jul 25  2010 opengl-lesson09-info.txt
+-rw-r--r--    1 ftp      ftp         44445 Jul 25  2010 opengl-lesson09.zip
+-rw-r--r--    1 ftp      ftp           906 Jul 25  2010 opengl-lesson10-info.txt
+-rw-r--r--    1 ftp      ftp        152982 Jul 25  2010 opengl-lesson10.zip
+-rw-r--r--    1 ftp      ftp           907 Jul 25  2010 opengl-lesson11-info.txt
+-rw-r--r--    1 ftp      ftp         84129 Jul 25  2010 opengl-lesson11.zip
+-rw-r--r--    1 ftp      ftp           892 Jul 26  2010 opengl-lesson12-info.txt
+-rw-r--r--    1 ftp      ftp         71354 Jul 26  2010 opengl-lesson12.zip
+-rw-r--r--    1 ftp      ftp           898 Jul 31  2010 opengl-lesson13-info.txt
+-rw-r--r--    1 ftp      ftp         35877 Jul 31  2010 opengl-lesson13.zip
+-rw-r--r--    1 ftp      ftp           895 Jul 31  2010 opengl-lesson16-info.txt
+-rw-r--r--    1 ftp      ftp        114603 Jul 31  2010 opengl-lesson16.zip
+-rw-r--r--    1 ftp      ftp           913 Jul 31  2010 opengl-lesson17-info.txt
+-rw-r--r--    1 ftp      ftp         87307 Jul 31  2010 opengl-lesson17.zip
+-rw-r--r--    1 ftp      ftp           892 Aug  1  2010 opengl-lesson18-info.txt
+-rw-r--r--    1 ftp      ftp         45077 Aug  1  2010 opengl-lesson18.zip
+-rw-r--r--    1 ftp      ftp           923 Aug  1  2010 opengl-lesson19-info.txt
+-rw-r--r--    1 ftp      ftp         38701 Aug  1  2010 opengl-lesson19.zip
+-rw-r--r--    1 ftp      ftp           893 Aug  1  2010 opengl-lesson20-info.txt
+-rw-r--r--    1 ftp      ftp        174305 Aug  1  2010 opengl-lesson20.zip
+-rw-r--r--    1 ftp      ftp           916 Aug  1  2010 opengl-lesson21-info.txt
+-rw-r--r--    1 ftp      ftp        323448 Aug  1  2010 opengl-lesson21.zip
+-rw-r--r--    1 ftp      ftp           913 Aug  6  2010 opengl-lesson22-info.txt
+-rw-r--r--    1 ftp      ftp        424648 Aug  6  2010 opengl-lesson22.zip
+-rw-r--r--    1 ftp      ftp           907 Aug  7  2010 opengl-lesson23-info.txt
+-rw-r--r--    1 ftp      ftp        210268 Aug  7  2010 opengl-lesson23.zip
+-rw-r--r--    1 ftp      ftp           924 May 26  2011 opengl-lesson24-info.txt
+-rw-r--r--    1 ftp      ftp         64158 May 26  2011 opengl-lesson24.zip
+-rw-r--r--    1 ftp      ftp           909 May 26  2011 opengl-lesson25-info.txt
+-rw-r--r--    1 ftp      ftp         45220 May 26  2011 opengl-lesson25.zip
+-rw-r--r--    1 ftp      ftp           928 May 27  2011 opengl-lesson26-info.txt
+-rw-r--r--    1 ftp      ftp         73778 May 27  2011 opengl-lesson26.zip
+-rw-r--r--    1 ftp      ftp           890 Jun 16  2011 opengl-lesson27-info.txt
+-rw-r--r--    1 ftp      ftp         37163 Jun 16  2011 opengl-lesson27.zip
+-r--r--r--    1 ftp      net           438 Feb  6  2010 README-SDL.txt
+-rw-r--r--    1 ftp      net          1147 Feb  6  2010 sdl-01-description.txt
+-rw-r--r--    1 ftp      net         12546 Feb  6  2010 sdl-01-gforth install-and-followups.txt.zip
+-rw-r--r--    1 ftp      net          2366 Apr 17  2010 sdl-16bpp.fs
+-rw-r--r--    1 ftp      net          6989 Apr 17  2010 sdl-16bpp.txt
+-rw-r--r--    1 ftp      ftp         10142 Jun 19  2010 sdl-bug-report01.txt
+-rw-r--r--    1 ftp      net           758 Feb  7  2010 sdl-tut02-info.txt
+-rw-r--r--    1 ftp      net         32152 Feb  7  2010 sdl-tut02.zip
+-rw-r--r--    1 ftp      net           738 Feb 18  2010 sdl-tut03-info.txt
+-rw-r--r--    1 ftp      net          6531 Feb 18  2010 sdl-tut03.zip
+-rw-r--r--    1 ftp      net           748 Feb 22  2010 sdl-tut04-info.txt
+-rw-r--r--    1 ftp      net          8700 Feb 22  2010 sdl-tut04.zip
+-rw-r--r--    1 ftp      net           749 Feb 26  2010 sdl-tut05-info.txt
+-rw-r--r--    1 ftp      net         51724 Feb 26  2010 sdl-tut05.zip
+-rw-r--r--    1 ftp      net           747 Feb 28  2010 sdl-tut06-info.txt
+-rw-r--r--    1 ftp      net         62784 Feb 28  2010 sdl-tut06.zip
+-rw-r--r--    1 ftp      net           843 Mar 27  2010 sdl-tut07-info.txt
+-rw-r--r--    1 ftp      net         69671 Mar 27  2010 sdl-tut07.zip
+-rw-r--r--    1 ftp      net           956 Mar 28  2010 sdl-tut08-info.txt
+-rw-r--r--    1 ftp      net         73297 Mar 28  2010 sdl-tut08.zip
+-rw-r--r--    1 ftp      net          1097 Apr 17  2010 sdl-tut09-info.txt
+-rw-r--r--    1 ftp      net         72446 Apr 17  2010 sdl-tut09.zip
+-rw-r--r--    1 ftp      ftp           765 May  2  2010 sdl-tut10-info.txt
+-rw-r--r--    1 ftp      ftp         82275 May  2  2010 sdl-tut10.zip
+-rw-r--r--    1 ftp      ftp           777 May  9  2010 sdl-tut11-info.txt
+-rw-r--r--    1 ftp      ftp        106899 May  9  2010 sdl-tut11.zip
+-rw-r--r--    1 ftp      ftp           718 Jun 13  2010 sdl-tut12-info.txt
+-rw-r--r--    1 ftp      ftp        110568 Jun 13  2010 sdl-tut12.zip
+
+./Archive/various:
+total 3300
+-r--r--r--    1 ftp      net         20327 Aug 23  1996 4thinpub.txt
+-r--r--r--    1 ftp      net          1770 Aug 23  1996 4thtoblk.txt
+-r--r--r--    1 ftp      net        120064 Aug 23  1996 68000efo.exe
+-r--r--r--    1 ftp      net        143872 Aug 23  1996 8086e32.exe
+-r--r--r--    1 ftp      net         54016 Aug 23  1996 8086v101.exe
+-r--r--r--    1 ftp      net          8001 Aug 23  1996 adrprog.fth
+-r--r--r--    1 ftp      net         44955 Aug 23  1996 anna4thd.lzh
+-r--r--r--    1 ftp      net         14336 Aug 23  1996 anonymus.blk
+-r--r--r--    1 ftp      net           512 Aug 23  1996 arrays.arc
+-r--r--r--    1 ftp      net          8960 Aug 23  1996 badencon.arc
+-r--r--r--    1 ftp      net         18629 Aug 23  1996 badencon.txt
+-r--r--r--    1 ftp      net          6528 Aug 23  1996 ballsgth.arc
+-r--r--r--    1 ftp      net          1920 Aug 23  1996 ballsrjb.arc
+-r--r--r--    1 ftp      net          5491 Aug 23  1996 basic.txt
+-r--r--r--    1 ftp      net         58002 Aug 23  1996 bblinter
+-r--r--r--    1 ftp      net          3072 Aug 23  1996 binding.arc
+-r--r--r--    1 ftp      net         14376 Aug 23  1996 bitfield.txt
+-r--r--r--    1 ftp      net           768 Aug 23  1996 bitmiror.arc
+-r--r--r--    1 ftp      net         24491 Aug 23  1996 brad-r.txt
+-r--r--r--    1 ftp      net          5628 Aug 23  1996 calendar.4th
+-r--r--r--    1 ftp      net          3905 Aug 23  1996 camefrom.txt
+-r--r--r--    1 ftp      net           456 Aug 23  1996 case.4th
+-r--r--r--    1 ftp      net         20644 Aug 23  1996 cf83.demo
+-r--r--r--    1 ftp      net         20644 Aug 23  1996 cf83demo.a
+-r--r--r--    1 ftp      net         20644 Aug 23  1996 cf83demo.b
+-r--r--r--    1 ftp      net          3072 Aug 23  1996 class.arc
+-r--r--r--    1 ftp      net         15242 Aug 23  1996 compon.lib
+-r--r--r--    1 ftp      net         15872 Aug 23  1996 control.arc
+-r--r--r--    1 ftp      net          6258 Aug 23  1996 digitalker.txt
+-r--r--r--    1 ftp      net          2432 Aug 23  1996 dimarray.arc
+-r--r--r--    1 ftp      net          2103 Aug 23  1996 dragon.lst
+-r--r--r--    1 ftp      net          6726 Aug 23  1996 drumafil
+-r--r--r--    1 ftp      net         10752 Aug 23  1996 duals.arc
+-r--r--r--    1 ftp      net          5306 Aug 23  1996 dynam.fth
+-r--r--r--    1 ftp      net         13409 Aug 23  1996 edittalk.mms
+-r--r--r--    1 ftp      net         14336 Aug 23  1996 edo.arc
+-r--r--r--    1 ftp      net         10240 Aug 23  1996 emacs_fo
+-r--r--r--    1 ftp      net             0 Aug 23  1996 example
+-r--r--r--    1 ftp      net          6239 Aug 23  1996 filestut.ori
+-r--r--r--    1 ftp      net          8966 Aug 23  1996 fireside.txt
+-r--r--r--    1 ftp      net          7671 Aug 23  1996 flrdiv&f.txt
+-r--r--r--    1 ftp      net          5821 Aug 23  1996 force-ar.txt
+-r--r--r--    1 ftp      net          3108 Aug 23  1996 force-bo.txt
+-r--r--r--    1 ftp      net         13637 Aug 23  1996 forthand.txt
+-r--r--r--    1 ftp      net        150528 Aug 23  1996 forthman.shk
+-r--r--r--    1 ftp      net          5208 Aug 23  1996 fossil.msg
+-r--r--r--    1 ftp      net         61824 Aug 23  1996 fp-mvp.arc
+-r--r--r--    1 ftp      net         51968 Aug 23  1996 fstrings.arc
+-r--r--r--    1 ftp      net         60544 Aug 23  1996 ftntxt.arc
+-r--r--r--    1 ftp      net        388864 Aug 23  1996 gs16fort.shk
+-r--r--r--    1 ftp      net          8373 Aug 23  1996 ham.4th
+-r--r--r--    1 ftp      net         25728 Aug 23  1996 hlfe.arc
+-r--r--r--    1 ftp      net         16384 Aug 23  1996 hoztree.scr
+-r--r--r--    1 ftp      net          1920 Aug 23  1996 infix.arc
+-r--r--r--    1 ftp      net          2038 Aug 23  1996 info_con.j
+-r--r--r--    1 ftp      net         22716 Aug 23  1996 insdustry.asc
+-r--r--r--    1 ftp      net          3640 Aug 23  1996 install.txt
+-r--r--r--    1 ftp      net         14917 Aug 23  1996 interpreter.txt
+-r--r--r--    1 ftp      net          2552 Aug 23  1996 interprt.fth
+-r--r--r--    1 ftp      net         39936 Aug 23  1996 jax4v301.lzh
+-r--r--r--    1 ftp      net         41856 Aug 23  1996 jax4v308.lzh
+-r--r--r--    1 ftp      net         18688 Aug 23  1996 jaxromut.zoo
+-r--r--r--    1 ftp      net         37376 Aug 23  1996 jgn-eg1.arc
+-r--r--r--    1 ftp      net          2461 Aug 23  1996 late-bin.cod
+-r--r--r--    1 ftp      net          3282 Aug 23  1996 late-bin.doc
+-r--r--r--    1 ftp      net          1408 Aug 23  1996 life.arc
+-r--r--r--    1 ftp      net         20157 Aug 23  1996 lindly.4th
+-r--r--r--    1 ftp      net         13842 Aug 23  1996 lmi_newsletter
+-r--r--r--    1 ftp      net          2048 Aug 23  1996 localswb.arc
+-r--r--r--    1 ftp      net          2048 Aug 23  1996 local-v.arc
+-r--r--r--    1 ftp      net          1536 Aug 23  1996 longbran.arc
+-r--r--r--    1 ftp      net          2441 Aug 23  1996 macros.fth
+-r--r--r--    1 ftp      net          1008 Aug 23  1996 math.4th
+-r--r--r--    1 ftp      net          2485 Aug 23  1996 menu.scr
+-r--r--r--    1 ftp      net        180096 Aug 23  1996 mopstut.sea
+-r--r--r--    1 ftp      net          4352 Aug 23  1996 morecase.arc
+-r--r--r--    1 ftp      net          7270 Aug 23  1996 mvpdeco2.4th
+-r--r--r--    1 ftp      net         19041 Aug 23  1996 mvpsedi3.4th
+-r--r--r--    1 ftp      net          7798 Aug 23  1996 neural-n.txt
+-r--r--r--    1 ftp      net          3328 Aug 23  1996 number.arc
+-r--r--r--    1 ftp      net          5120 Aug 23  1996 opsys2.arc
+-r--r--r--    1 ftp      net         12355 Aug 23  1996 pd4th&op.txt
+-r--r--r--    1 ftp      net         10112 Aug 23  1996 pfoof2.zip
+-r--r--r--    1 ftp      net          2176 Aug 23  1996 pi.arc
+-r--r--r--    1 ftp      net         12288 Aug 23  1996 pictured.arc
+-r--r--r--    1 ftp      net          1152 Aug 23  1996 pictureq.zip
+-r--r--r--    1 ftp      net          5120 Aug 23  1996 pid.arc
+-r--r--r--    1 ftp      net          3072 Aug 23  1996 posess.arc
+-r--r--r--    1 ftp      net         20543 Aug 23  1996 postpone
+-r--r--r--    1 ftp      net          5248 Aug 23  1996 prelude.arc
+-r--r--r--    1 ftp      net          9085 Aug 23  1996 prezenco.txt
+-r--r--r--    1 ftp      net          7552 Aug 23  1996 prolog2.arc
+-r--r--r--    1 ftp      net          9088 Aug 23  1996 prolog.arc
+-r--r--r--    1 ftp      net          1305 Aug 23  1996 prtcntl.4th
+-r--r--r--    1 ftp      net         31744 Aug 23  1996 purple4t.bqy
+-r--r--r--    1 ftp      net         98048 Aug 23  1996 puzzl491.arc
+-r--r--r--    1 ftp      net          7936 Aug 23  1996 pxs2.arc
+-r--r--r--    1 ftp      net          7680 Aug 23  1996 qtf-79.arc
+-r--r--r--    1 ftp      net          6656 Aug 23  1996 quote-to.arc
+-r--r--r--    1 ftp      net         32768 Aug 23  1996 quote-to.scr
+-r--r--r--    1 ftp      net          2176 Aug 23  1996 randnums.arc
+-r--r--r--    1 ftp      net           384 Aug 23  1996 random.arc
+-r--r--r--    1 ftp      net           512 Aug 23  1996 randscr.arc
+-r--r--r--    1 ftp      net          2225 Aug 23  1996 rapidfile.txt
+-r--r--r--    1 ftp      net        115968 Aug 23  1996 ravenfor.shk
+-r--r--r--    1 ftp      net           110 Aug 23  1996 read.me
+-r--r--r--    1 ftp      net          4140 Aug 23  1996 readme.txt
+-r--r--r--    1 ftp      net          7436 Aug 23  1996 restart.txt
+-r--r--r--    1 ftp      net           642 Aug 23  1996 reverso.sou
+-r--r--r--    1 ftp      net          5398 Aug 23  1996 rtmenus.4th
+-r--r--r--    1 ftp      net          1329 Aug 23  1996 runtime-
+-r--r--r--    1 ftp      net         11318 Aug 23  1996 scb32.txt
+-r--r--r--    1 ftp      net             3 Aug 23  1996 seed-fil.mfp
+-r--r--r--    1 ftp      net          3200 Aug 23  1996 seq.arc
+-r--r--r--    1 ftp      net          3712 Aug 23  1996 sets.arc
+-r--r--r--    1 ftp      net          8927 Aug 23  1996 sigforth.txt
+-r--r--r--    1 ftp      net          3968 Aug 23  1996 simp1.arc
+-r--r--r--    1 ftp      net          8576 Aug 23  1996 solver.arc
+-r--r--r--    1 ftp      net           729 Aug 23  1996 sound.4th
+-r--r--r--    1 ftp      net         11520 Aug 23  1996 speech1.arc
+-r--r--r--    1 ftp      net           640 Aug 23  1996 speechez.arc
+-r--r--r--    1 ftp      net         11648 Aug 23  1996 spread.arc
+-r--r--r--    1 ftp      net         54272 Aug 23  1996 ssa.arc
+-r--r--r--    1 ftp      net         10624 Aug 23  1996 stackmac.arc
+-r--r--r--    1 ftp      net         23308 Aug 23  1996 stackmac.txt
+-r--r--r--    1 ftp      net          2048 Aug 23  1996 stakword.arc
+-r--r--r--    1 ftp      net         16640 Aug 23  1996 stand-al.arc
+-r--r--r--    1 ftp      net         39207 Aug 23  1996 stand-al.txt
+-r--r--r--    1 ftp      net          4096 Aug 23  1996 starfigh.arc
+-r--r--r--    1 ftp      net         10176 Aug 23  1996 stfranc.txt
+-r--r--r--    1 ftp      net         34176 Aug 23  1996 streamio.arc
+-r--r--r--    1 ftp      net         11188 Aug 23  1996 streams.4th
+-r--r--r--    1 ftp      net         31391 Aug 23  1996 string.4th
+-r--r--r--    1 ftp      net         37376 Aug 23  1996 string.arc
+-r--r--r--    1 ftp      net          2176 Aug 23  1996 strings.arc
+-r--r--r--    1 ftp      net         15232 Aug 23  1996 str-stk.arc
+-r--r--r--    1 ftp      net          3680 Aug 23  1996 structl.4th
+-r--r--r--    1 ftp      net          6588 Aug 23  1996 style
+-r--r--r--    1 ftp      net          5376 Aug 23  1996 svars.arc
+-r--r--r--    1 ftp      net           512 Aug 23  1996 syn.arc
+-r--r--r--    1 ftp      net          6656 Aug 23  1996 syntax.arc
+-r--r--r--    1 ftp      net         16512 Aug 23  1996 timerq.arc
+-r--r--r--    1 ftp      net          8704 Aug 23  1996 tools.arc
+-r--r--r--    1 ftp      net           552 Aug 23  1996 tools.txt
+-r--r--r--    1 ftp      net          3840 Aug 23  1996 towers.arc
+-r--r--r--    1 ftp      net          7771 Aug 23  1996 tracht1.seq
+-r--r--r--    1 ftp      net          2360 Aug 23  1996 turing.doc
+-r--r--r--    1 ftp      net         10112 Aug 23  1996 types.arc
+-r--r--r--    1 ftp      net          7552 Aug 23  1996 vpplanne.arc
+-r--r--r--    1 ftp      net         13264 Aug 23  1996 winnebiko.txt
+-r--r--r--    1 ftp      net         86784 Aug 23  1996 wis72591.arc
+-r--r--r--    1 ftp      net          6656 Aug 23  1996 writeonl.arc
+-r--r--r--    1 ftp      net          8704 Aug 23  1996 x3j14cha.arc
+-r--r--r--    1 ftp      net          1280 Aug 23  1996 xmdmcrc.arc
+-r--r--r--    1 ftp      net          2304 Aug 23  1996 xref.arc
+-r--r--r--    1 ftp      net           768 Aug 23  1996 yiqingrt.arc
+-r--r--r--    1 ftp      net          8960 Aug 23  1996 zedit113.arc
+
+./Compilers:
+total 8
+drwxr-xr-x   10 ftp      net          4096 Apr  7  2000 cross
+drwxr-xr-x   10 ftp      net          4096 Nov 22  2005 native
+
+./Compilers/cross:
+total 940
+-r--r--r--    1 ftp      net          9828 Dec 11  1997 2k1forth.txt
+-r--r--r--    1 ftp      net        237102 Dec 16  1997 2k1forth.zip
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 68000
+drwxr-xr-x    2 ftp      net          4096 Sep 21  2005 68hc11
+drwxr-xr-x    2 ftp      net          4096 Sep 21  2005 68xx
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 8051
+-r--r--r--    1 ftp      net          1697 Dec 31  1996 bdm32.txt
+-r--r--r--    1 ftp      net          9332 Dec 31  1996 bdm32.zip
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 Camel
+drwxr-xr-x    2 ftp      net          4096 Sep 21  2005 eForth
+-r--r--r--    1 ftp      net          2034 Nov  8  1996 holon4th.txt
+-r--r--r--    1 ftp      net        158276 Nov  8  1996 holon4th.zip
+-r--r--r--    1 ftp      net        485341 Aug 23  1996 p21-4th.zip
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 PIC
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 z80
+
+./Compilers/cross/68000:
+total 3372
+-r--r--r--    1 ftp      net          9472 Aug 23  1996 68kasm.arc
+-r--r--r--    1 ftp      net         11136 Aug 23  1996 68kforth.arc
+-r--r--r--    1 ftp      net         56864 Aug 23  1996 botforth.txt
+-r--r--r--    1 ftp      net         30464 Aug 23  1996 botfth68.arc
+-r--r--r--    1 ftp      net         18771 Aug 23  1996 catch.txt
+-r--r--r--    1 ftp      net          8192 Aug 23  1996 ddjfft.arc
+-rw-r--r--    1 ftp      net           915 Aug 23  1996 f68kans.txt
+-rw-r--r--    1 ftp      net           885 Aug 23  1996 f68kans.update
+-rw-r--r--    1 ftp      net        432742 Aug 23  1996 f68kans.zip
+-r--r--r--    1 ftp      net          1284 Aug 23  1996 F68K.INF
+-r--r--r--    1 ftp      net        394555 Aug 23  1996 f68k.tar.Z
+-r--r--r--    1 ftp      net           731 Aug 23  1996 f68k.txt
+-r--r--r--    1 ftp      net        255252 Aug 23  1996 f68k.zoo
+-r--r--r--    1 ftp      net        118912 Aug 23  1996 f83-68k.arc
+-r--r--r--    1 ftp      net        155008 Aug 23  1996 f83xboot.arc
+-r--r--r--    1 ftp      net         22224 Aug 23  1996 forth-68000.tar.z
+-rw-r--r--    1 ftp      net        278569 Sep  2  1996 gf6ap808.zip
+-rw-r--r--    1 ftp      net        285131 Sep  2  1996 gf6gf808.zip
+-rw-r--r--    1 ftp      net        199860 Sep  3  1996 gf6lr808.zip
+-rw-r--r--    1 ftp      net          6730 Sep  2  1996 gf6read.me
+-rw-r--r--    1 ftp      net        354858 Sep  2  1996 gf6t1808.zip
+-rw-r--r--    1 ftp      net        108113 Sep  2  1996 gf6t2808.zip
+-r--r--r--    1 ftp      net         14280 Aug 23  1996 library.txt
+-r--r--r--    1 ftp      net         62592 Aug 23  1996 lp4thblk.arc
+-r--r--r--    1 ftp      net           634 Aug 23  1996 m16what.txt
+-r--r--r--    1 ftp      net           828 Aug 23  1996 OS9TILE.INF
+-r--r--r--    1 ftp      net        145925 Aug 23  1996 OS9TILE.LZH
+-r--r--r--    1 ftp      net           777 Aug 23  1996 readme.68000
+-r--r--r--    1 ftp      net          2048 Aug 23  1996 rnd.arc
+-r--r--r--    1 ftp      net         22400 Aug 23  1996 s4th68k.arc
+-r--r--r--    1 ftp      net        146060 Aug 23  1996 tile-os9.lzh
+-r--r--r--    1 ftp      net        102400 Aug 23  1996 unifth68.arc
+-r--r--r--    1 ftp      net         67456 Aug 23  1996 vpsfp68k.arc
+
+./Compilers/cross/68hc11:
+total 836
+-r--r--r--    1 ftp      net         11008 Aug 23  1996 68hc11.arc
+-r--r--r--    1 ftp      net         63744 Aug 23  1996 68hc11ut.arc
+-r--r--r--    1 ftp      net         42752 Aug 23  1996 f68hc11.arc
+-r--r--r--    1 ftp      net         12288 Aug 23  1996 f68hc11a.zip
+-r--r--r--    1 ftp      net         59264 Aug 23  1996 f68tools.zip
+-r--r--r--    1 ftp      net         47232 Aug 23  1996 forth11.arc
+-r--r--r--    1 ftp      net         32384 Aug 23  1996 hc11fp.arc
+-r--r--r--    1 ftp      net         10046 Aug 23  1996 m6811asm.zip
+-r--r--r--    1 ftp      net         15744 Aug 23  1996 maxlasm.zip
+-r--r--r--    1 ftp      net          3072 Aug 23  1996 maxstr.zip
+-r--r--r--    1 ftp      net        108544 Aug 23  1996 mxtool01.zip
+-r--r--r--    1 ftp      net         96512 Aug 23  1996 mxtool02.zip
+-r--r--r--    1 ftp      net         57984 Aug 23  1996 mxtool03.zip
+-r--r--r--    1 ftp      net         28928 Aug 23  1996 mxtool04.zip
+-r--r--r--    1 ftp      net         16512 Aug 23  1996 mxtool05.zip
+-r--r--r--    1 ftp      net          2176 Aug 23  1996 mxtool06.zip
+-r--r--r--    1 ftp      net         42112 Aug 23  1996 mxtool07.zip
+-r--r--r--    1 ftp      net         14208 Aug 23  1996 mxtool08.zip
+-r--r--r--    1 ftp      net         41344 Aug 23  1996 mxtool09.zip
+-r--r--r--    1 ftp      net         63104 Aug 23  1996 mxtool10.zip
+-r--r--r--    1 ftp      net          5573 Aug 23  1996 nmi_lcd.txt
+-r--r--r--    1 ftp      net          2473 Aug 23  1996 serial.txt
+-r--r--r--    1 ftp      net          2432 Aug 23  1996 walsh.arc
+-r--r--r--    1 ftp      net          3456 Aug 23  1996 xmodem9.arc
+
+./Compilers/cross/68xx:
+total 180
+-r--r--r--    1 ftp      net         17536 Aug 23  1996 6805-4th.arc
+-r--r--r--    1 ftp      net          3712 Aug 23  1996 6809asm.zip
+-r--r--r--    1 ftp      net         19159 Aug 23  1996 asm680x.txt
+-r--r--r--    1 ftp      net         53120 Aug 23  1996 ff2.lzh
+-r--r--r--    1 ftp      net         14080 Aug 23  1996 ff9forth.arc
+-r--r--r--    1 ftp      net         59136 Aug 23  1996 ff9.lzh
+
+./Compilers/cross/8051:
+total 1196
+-r--r--r--    1 ftp      net         16232 Aug 23  1996 51forth.zip
+-r--r--r--    1 ftp      net        285696 Aug 23  1996 f51docs.zip
+-r--r--r--    1 ftp      net        269440 Aug 23  1996 f86docs.zip
+-r--r--r--    1 ftp      net        157952 Aug 23  1996 forth51.zip
+-r--r--r--    1 ftp      net         99584 Aug 23  1996 forth552.zip
+-r--r--r--    1 ftp      net        262016 Aug 23  1996 forth86.zip
+-r--r--r--    1 ftp      net         91648 Aug 23  1996 misc51.zip
+-r--r--r--    1 ftp      net          6285 Aug 23  1996 read51.txt
+
+./Compilers/cross/Camel:
+total 224
+-rw-r--r--    1 ftp      net           691 Nov 12  1997 00Index
+-r--r--r--    1 ftp      net         54151 Aug 23  1996 cam09-10.zip
+-r--r--r--    1 ftp      net         30911 Aug 23  1996 cam51-11.zip
+-r--r--r--    1 ftp      net         31298 Aug 23  1996 cam51-13.zip
+-r--r--r--    1 ftp      net         33904 Sep  3  1997 cam51-15.zip
+-r--r--r--    1 ftp      net         30255 Aug 23  1996 cam80-12.zip
+-r--r--r--    1 ftp      net          9117 Aug 23  1996 readme.09
+-r--r--r--    1 ftp      net          7037 Sep  3  1997 readme.51
+-r--r--r--    1 ftp      net          6779 Aug 23  1996 readme.z80
+
+./Compilers/cross/eForth:
+total 812
+-rw-r--r--    1 ftp      net         25356 Aug 23  1996 56e4read.me
+-rw-r--r--    1 ftp      net         85816 Aug 23  1996 56k2e4th.zip
+-r--r--r--    1 ftp      net         17507 Aug 23  1996 e4th386.lzh
+-r--r--r--    1 ftp      net         28800 Aug 23  1996 ecbe4th.zip
+-rw-r--r--    1 ftp      net         86118 Sep  2  1996 eforth17.zip
+-r--r--r--    1 ftp      net         36170 Aug 23  1996 eforth51.lzh
+-r--r--r--    1 ftp      net         37504 Aug 23  1996 eforth51.zip
+-r--r--r--    1 ftp      net         51301 Aug 23  1996 eforth.lzh
+-r--r--r--    1 ftp      net         54528 Aug 23  1996 eforth.zip
+-r--r--r--    1 ftp      net         53624 Aug 23  1996 hc11e4th.zip
+-rw-r--r--    1 ftp      net         88307 Sep 11  1998 hc12e4th.asm
+-rw-r--r--    1 ftp      net          1473 Sep 11  1998 hc12e4th.txt
+-rw-r--r--    1 ftp      net         92163 Sep 11  1998 hc16e4th.asm
+-rw-r--r--    1 ftp      net           883 Sep 11  1998 hc16e4th.txt
+-r--r--r--    1 ftp      net         98944 Aug 23  1996 z80efort.zip
+
+./Compilers/cross/PIC:
+total 700
+-r--r--r--    1 ftp      net         52082 Aug  5  1997 f2pic10.exe
+-r--r--r--    1 ftp      net         58820 Dec 17  1996 f2pic.exe
+-r--r--r--    1 ftp      net          2139 Feb  6  1997 Irtc84.txt
+-r--r--r--    1 ftp      net        489613 Feb 19  1997 Irtc84.zip
+-r--r--r--    1 ftp      net         38017 Mar 10  2000 mary-1.0a50.tar.gz
+-r--r--r--    1 ftp      net          1067 Mar 13  2000 mary-1.0a51.readme
+-r--r--r--    1 ftp      net         41344 Mar 13  2000 mary-1.0a51.tar.gz
+-r--r--r--    1 ftp      net          1070 Mar 10  2000 mary.txt
+
+./Compilers/cross/z80:
+total 428
+-r--r--r--    1 ftp      net         20608 Aug 23  1996 fast8.com
+-r--r--r--    1 ftp      net         14336 Apr 30  1998 mc2.com
+-r--r--r--    1 ftp      net          1962 Apr 30  1998 mc2.txt
+-r--r--r--    1 ftp      net          5120 Aug 23  1996 relocate.arc
+-r--r--r--    1 ftp      net        114304 Aug 23  1996 uni4th80.arc
+-r--r--r--    1 ftp      net         12288 Aug 23  1996 z8000.arc
+-r--r--r--    1 ftp      net         30720 Aug 23  1996 z8001.zsc
+-r--r--r--    1 ftp      net         51200 Apr 30  1998 z80frfth.asm
+-r--r--r--    1 ftp      net          1790 Apr 30  1998 z80frfth.txt
+-r--r--r--    1 ftp      net          1797 Apr 30  1998 z80mu310.txt
+-r--r--r--    1 ftp      net        113920 Aug 23  1996 z80mu310.zip
+-r--r--r--    1 ftp      net          5683 Aug 23  1996 z8kforth.doc
+-r--r--r--    1 ftp      net         26752 Aug 23  1996 z8talker.zip
+
+./Compilers/native:
+total 32
+drwxr-xr-x    2 root     root         4096 Apr  8  2002 cpm
+drwxr-xr-x    2 ftp      net          4096 Apr  8  2002 cpm86
+lrwxrwxrwx    1 root     root            5 Nov 22  2005 dos -> msdos
+drwxr-xr-x    4 ftp      net          4096 Feb 12  2001 mac
+drwxr-xr-x   17 ftp      net          4096 Oct 15  2004 misc
+drwxr-xr-x    8 ftp      net          4096 Nov 11  2004 msdos
+drwxr-xr-x    2 ftp      net          4096 Mar  2  2007 OS-2
+drwxr-xr-x   10 ftp      net          4096 Mar  3  2012 unix
+drwxr-xr-x    3 ftp      net          4096 Apr  7  2000 windows
+
+./Compilers/native/cpm:
+total 96
+-r--r--r--    1 ftp      net           939 Apr  7  2002 FORTH79-README.TXT
+-r--r--r--    1 ftp      net         86464 Apr  7  2002 forth79.tar.gz
+
+./Compilers/native/cpm86:
+total 144
+-r--r--r--    1 ftp      net          1807 Dec 14  2000 f83cpm86.txt
+-r--r--r--    1 ftp      net        123644 Dec 14  2000 f83cpm86.zip
+-r--r--r--    1 ftp      net            62 Dec 18  2000 f83ed86.txt
+-r--r--r--    1 ftp      net          6862 Dec 18  2000 f83ed86.zip
+
+./Compilers/native/mac:
+total 92
+lrwxrwxrwx    1 root     root           29 Sep 21  2005 Archive -> ../../../../Forth/Archive/mac
+drwxr-xr-x    3 ftp      net          4096 Apr 12  2004 Mops
+-rw-r--r--    1 ftp      net         78720 Aug 23  1996 this4th-00b01.mac.cpt.bin
+drwxr-xr-x    2 ftp      net          4096 Sep 21  2005 Yerk
+
+./Compilers/native/mac/Mops:
+total 23132
+-r--r--r--    1 ftp      net          1716 Aug 23  1996 00_Index_Mops
+-r--r--r--    1 ftp      net         18707 Aug 23  1996 App_Framework_0.3.sit.hqx
+-r--r--r--    1 ftp      net         15289 Aug 23  1996 GrDemo.2.7.sit.hqx
+-r--r--r--    1 ftp      net          9163 Nov 12  1997 GRDEMO.TXT
+-r--r--r--    1 ftp      net        159153 Aug 23  1996 J-Foil.sea.hqx
+-r--r--r--    1 ftp      net          3594 Aug 23  1996 J-Foil.txt
+-r--r--r--    1 ftp      net        126753 Feb 28  1999 MAPP3.sea.bin
+-r--r--r--    1 ftp      net       2535808 Feb 22  1999 Mops340built.sea.bin
+-r--r--r--    1 ftp      net       1387392 Feb 22  1999 Mops340.sea.bin
+-r--r--r--    1 ftp      net          2188 Feb 22  1999 Mops340.txt
+-r--r--r--    1 ftp      net       1569408 Feb 22  1999 Mops34PDF.sea.bin
+-r--r--r--    1 ftp      net           960 Feb 22  1999 Mops34PDF.txt
+-r--r--r--    1 ftp      net        465280 Feb 22  1999 Mops34Wrd.sea.bin
+-r--r--r--    1 ftp      net           955 Feb 22  1999 Mops34Wrd.txt
+-r--r--r--    1 ftp      net       2721408 Dec 27  1999 Mops350built.sea.bin
+-r--r--r--    1 ftp      net       1469952 Dec 27  1999 Mops350.sea.bin
+-r--r--r--    1 ftp      net          2291 Dec 27  1999 Mops350.txt
+-r--r--r--    1 ftp      net       2415488 Feb 10  2001 Mops403.sit.bin
+-r--r--r--    1 ftp      net          1987 Feb 10  2001 Mops403.txt
+-r--r--r--    1 ftp      net       3259776 Nov 16  2003 Mops540.sit.bin
+-r--r--r--    1 ftp      net        166029 Aug 23  1996 MopsApp.sea.hqx
+-r--r--r--    1 ftp      net          1634 Mar  8  1999 MopsApp.txt
+-r--r--r--    1 ftp      net         17381 Nov  4  1996 mops.faq.txt
+-r--r--r--    1 ftp      net        746368 Sep 20  2000 MopsManual400PDF.sit.bin
+-r--r--r--    1 ftp      net        386432 Sep 20  2000 MopsManual400Word.sit.bin
+-r--r--r--    1 ftp      net        321503 Nov 14  1997 mopsman.zip
+-r--r--r--    1 ftp      net        321503 Nov 17  1997 MOPSMAN.ZIP
+-r--r--r--    1 ftp      net         31945 Aug 23  1996 Mops_Newbie_Kit-2.7.sit.hqx
+-r--r--r--    1 ftp      net         24587 Aug 23  1996 Mops_Newbie_Kit.sit.hqx
+drwxr-xr-x    2 ftp      net          4096 Sep 21  2005 old
+-r--r--r--    1 ftp      net        354245 Nov 12  1997 PARTIII.RTF
+-r--r--r--    1 ftp      net        205259 Nov 12  1997 PARTII.RTF
+-r--r--r--    1 ftp      net        548018 Nov 12  1997 PARTI.RTF
+-r--r--r--    1 ftp      net        174137 Nov 12  1997 PARTIV.RTF
+-r--r--r--    1 ftp      net        906752 Oct 17  1997 PMops08b1.sea.bin
+-r--r--r--    1 ftp      net        650112 Oct 15  1997 PMops08b1.sea.bin.old
+-r--r--r--    1 ftp      net          1230 Oct 15  1997 PMops08b1.txt
+-r--r--r--    1 ftp      net        933376 Oct 26  1997 PMops08b2.sea.bin
+-r--r--r--    1 ftp      net          1281 Oct 26  1997 PMops08b2.txt
+-r--r--r--    1 ftp      net       1255808 Dec 14  1997 PMops08b3.sea.bin
+-r--r--r--    1 ftp      net          1264 Dec 14  1997 PMops08b3.txt
+-r--r--r--    1 ftp      net        253732 Aug 23  1996 Quick_Edit.2.7.sea.hqx
+-r--r--r--    1 ftp      net          7564 Aug 23  1996 ReadMe_App_Framework.txt
+-r--r--r--    1 ftp      net          3240 Nov 12  1997 !README.TXT
+-r--r--r--    1 ftp      net          9118 Nov 12  1997 !ROADMAP.RTF
+-r--r--r--    1 ftp      net          2711 Nov 12  1997 SIN.TXT
+-r--r--r--    1 ftp      net          3661 Nov 12  1997 TURTLE.TXT
+
+./Compilers/native/mac/Mops/old:
+total 17136
+-r--r--r--    1 ftp      net       1323776 Feb  3  1998 Mops300.sea.bin
+-r--r--r--    1 ftp      net       1441920 Feb 15  1998 Mops301.sea.bin
+-r--r--r--    1 ftp      net          1419 Feb 15  1998 Mops301.txt
+-r--r--r--    1 ftp      net       1379712 Feb 11  1998 Mops30PDF.sit
+-r--r--r--    1 ftp      net           705 Feb  6  1998 Mops30PDF.txt
+-r--r--r--    1 ftp      net        425984 Feb  6  1998 Mops30Wrd.sit
+-r--r--r--    1 ftp      net           760 Feb  6  1998 Mops30Wrd.txt
+-r--r--r--    1 ftp      net       1541376 May  4  1998 Mops31PDF.sea.bin
+-r--r--r--    1 ftp      net           955 May  4  1998 Mops31PDF.txt
+-r--r--r--    1 ftp      net       1337600 May  4  1998 Mops31.sea.bin
+-r--r--r--    1 ftp      net          1363 May  4  1998 Mops31.txt
+-r--r--r--    1 ftp      net        449024 May  4  1998 Mops31Wrd.sea.bin
+-r--r--r--    1 ftp      net           950 May  4  1998 Mops31Wrd.txt
+-r--r--r--    1 ftp      net       2390144 Jul  5  1998 Mops32built.sea.bin
+-r--r--r--    1 ftp      net       1360768 Jul  5  1998 Mops32.sea.bin
+-r--r--r--    1 ftp      net          2203 Jul  5  1998 Mops32.txt
+-rw-r--r--    1 ftp      net       2456320 Oct  4  1998 Mops33built.sea.bin
+-rw-r--r--    1 ftp      net       1542528 Oct  4  1998 Mops33PDF.sea.bin
+-rw-r--r--    1 ftp      net       1328512 Oct  4  1998 Mops33.sea.bin
+-r--r--r--    1 ftp      net          2093 Oct  4  1998 Mops33.txt
+-rw-r--r--    1 ftp      net        458112 Oct  4  1998 Mops33Wrd.sea.bin
+
+./Compilers/native/mac/Yerk:
+total 1564
+-rw-r--r--    1 ftp      net        498560 Aug 23  1996 yerk_367.sea.bin
+-rw-r--r--    1 ftp      net        531456 Oct  7  1996 Yerk_3.68.sea.bin
+-rw-r--r--    1 ftp      net        548224 Aug 23  1996 yerkManual3.67.sea.bin
+-rw-r--r--    1 ftp      net          4797 Oct  7  1996 YerkReadMe.txt
+
+./Compilers/native/misc:
+total 1936
+-r--r--r--    1 ftp      net         23340 Dec 17  1997 44.tar.gz
+-r--r--r--    1 ftp      net         14654 Dec 17  1997 44.txt
+drwxr-xr-x    3 ftp      net          4096 Nov 11  2004 amiga
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 appleII
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 atari_8bit
+drwxr-xr-x    3 ftp      net          4096 Apr  7  2000 atari_st
+-r--r--r--    1 ftp      net        269663 Aug 23  1996 atlast-1.0.tgz
+-r--r--r--    1 ftp      net         11452 Aug 29  1995 atlast.txt
+-r--r--r--    1 ftp      net         10827 Aug 23  1996 cmforth.zip
+drwxr-xr-x    2 ftp      net          4096 Feb  5  2001 ColorForth
+drwxr-xr-x    2 ftp      net          4096 Jul 29  2003 commodore64
+drwxr-xr-x    3 ftp      net          4096 Apr  7  2000 cpm
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 dforth
+-r--r--r--    1 ftp      net          1899 Aug 23  1996 f68kans.txt
+-r--r--r--    1 ftp      net        501385 Aug 23  1996 f68kans.zip
+drwxr-xr-x    6 ftp      net          4096 Apr  8  2004 FICL
+drwxr-xr-x    2 ftp      net          4096 Sep 21  2005 ficl202
+drwxr-xr-x    2 ftp      net          4096 Sep 21  2005 ficl203
+drwxr-xr-x    3 ftp      net          4096 Sep 21  2005 ficl_old
+drwxr-xr-x    3 ftp      net          4096 Oct  9  2006 graspForth
+drwxr-xr-x    2 ftp      net          4096 Apr  8  2004 M4th
+-r--r--r--    1 ftp      net        183807 Aug 23  1996 until222.zip
+-r--r--r--    1 ftp      net          9726 Aug 23  1996 until22.txt
+-r--r--r--    1 ftp      net        236373 Aug 23  1996 until251.zip
+-r--r--r--    1 ftp      net        236514 Aug 23  1996 until252.zip
+-r--r--r--    1 ftp      net         97367 Aug 23  1996 until25doc.zip
+-r--r--r--    1 ftp      net         13283 Aug 23  1996 until25.txt
+-r--r--r--    1 ftp      net        249293 Feb  3  2000 upforth.tgz
+-r--r--r--    1 ftp      net          9619 Apr  6  1998 upforth.txt
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 vax
+
+./Compilers/native/misc/amiga:
+total 3300
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 68000
+-r--r--r--    1 ftp      net         49280 Aug 23  1996 a4thdoc.arc
+-r--r--r--    1 ftp      net         62848 Aug 23  1996 a4thinc.arc
+-r--r--r--    1 ftp      net        152576 Aug 23  1996 a4thsys.arc
+-r--r--r--    1 ftp      net        304459 Aug 23  1996 a4th.zoo
+-r--r--r--    1 ftp      net        138752 Aug 23  1996 amigaf83.arc
+-r--r--r--    1 ftp      net           384 Aug 23  1996 amigprtr.arc
+-r--r--r--    1 ftp      net        146688 Aug 23  1996 battle.arc
+-r--r--r--    1 ftp      net        130510 Aug 23  1996 cforth.zoo
+-r--r--r--    1 ftp      net          1792 Aug 23  1996 dcompile.arc
+-r--r--r--    1 ftp      net         15104 Aug 23  1996 evlvbugs.arc
+-r--r--r--    1 ftp      net         34176 Aug 23  1996 flview.arc
+-r--r--r--    1 ftp      net           512 Aug 23  1996 getenv.lzh
+-r--r--r--    1 ftp      net          9088 Aug 23  1996 hammm.arc
+-r--r--r--    1 ftp      net         11136 Aug 23  1996 imake.arc
+-r--r--r--    1 ftp      net          2038 Aug 23  1996 info_con.j
+-r--r--r--    1 ftp      net          3200 Aug 23  1996 j4fixes.arc
+-r--r--r--    1 ftp      net          5248 Aug 23  1996 j4neural.arc
+-r--r--r--    1 ftp      net          9019 Aug 23  1996 j4thaux.txt
+-r--r--r--    1 ftp      net          2432 Aug 23  1996 j4words.arc
+-r--r--r--    1 ftp      net          5504 Aug 23  1996 jaxa4vdt.arc
+-r--r--r--    1 ftp      net          2432 Aug 23  1996 jforth20.arc
+-r--r--r--    1 ftp      net          5313 Aug 23  1996 jforth.txt
+-r--r--r--    1 ftp      net       1910529 Nov 10  2004 JForth_v3.zip
+-r--r--r--    1 ftp      net          9728 Aug 23  1996 joydemo.arc
+-r--r--r--    1 ftp      net          6016 Aug 23  1996 metavocs.arc
+-r--r--r--    1 ftp      net           640 Aug 23  1996 mfmacros.arc
+-r--r--r--    1 ftp      net          1536 Aug 23  1996 mfstack.arc
+-r--r--r--    1 ftp      net         86912 Aug 23  1996 mvp4th.arc
+-r--r--r--    1 ftp      net          2816 Aug 23  1996 mvpami.arc
+-r--r--r--    1 ftp      net         11648 Aug 23  1996 mvpdoc2.arc
+-r--r--r--    1 ftp      net          2432 Aug 23  1996 nu-dimarrayf83.arc
+-r--r--r--    1 ftp      net          2232 Aug 23  1996 parsecli
+-r--r--r--    1 ftp      net          9442 Aug 23  1996 profiler
+-r--r--r--    1 ftp      net          1920 Aug 23  1996 r8svx.arc
+-r--r--r--    1 ftp      net          4608 Aug 23  1996 see.arc
+-r--r--r--    1 ftp      net         45696 Aug 23  1996 seesay2.arc
+-r--r--r--    1 ftp      net         12928 Aug 23  1996 sortdemo.arc
+-r--r--r--    1 ftp      net          2432 Aug 23  1996 stripbit.arc
+-r--r--r--    1 ftp      net         21888 Aug 23  1996 strpkg.arc
+-r--r--r--    1 ftp      net         10496 Aug 23  1996 unblock.zoo
+-r--r--r--    1 ftp      net          7424 Aug 23  1996 xasm.arc
+
+./Compilers/native/misc/amiga/68000:
+total 1700
+-r--r--r--    1 ftp      net          9472 Aug 23  1996 68kasm.arc
+-r--r--r--    1 ftp      net         11136 Aug 23  1996 68kforth.arc
+-r--r--r--    1 ftp      net         56864 Aug 23  1996 botforth.txt
+-r--r--r--    1 ftp      net         30464 Aug 23  1996 botfth68.arc
+-r--r--r--    1 ftp      net         18771 Aug 23  1996 catch.txt
+-r--r--r--    1 ftp      net          8192 Aug 23  1996 ddjfft.arc
+-r--r--r--    1 ftp      net          1284 Aug 23  1996 F68K.INF
+-r--r--r--    1 ftp      net        394555 Aug 23  1996 f68k.tar.Z
+-r--r--r--    1 ftp      net           731 Aug 23  1996 f68k.txt
+-r--r--r--    1 ftp      net        255252 Aug 23  1996 f68k.zoo
+-r--r--r--    1 ftp      net        118912 Aug 23  1996 f83-68k.arc
+-r--r--r--    1 ftp      net        155008 Aug 23  1996 f83xboot.arc
+-r--r--r--    1 ftp      net         22224 Aug 23  1996 forth-68000.tar.z
+-r--r--r--    1 ftp      net         14280 Aug 23  1996 library.txt
+-r--r--r--    1 ftp      net         62592 Aug 23  1996 lp4thblk.arc
+-r--r--r--    1 ftp      net           634 Aug 23  1996 m16what.txt
+-r--r--r--    1 ftp      net           828 Aug 23  1996 OS9TILE.INF
+-r--r--r--    1 ftp      net        145925 Aug 23  1996 OS9TILE.LZH
+-r--r--r--    1 ftp      net           777 Aug 23  1996 readme.68000
+-r--r--r--    1 ftp      net          2048 Aug 23  1996 rnd.arc
+-r--r--r--    1 ftp      net         22400 Aug 23  1996 s4th68k.arc
+-r--r--r--    1 ftp      net        146060 Aug 23  1996 tile-os9.lzh
+-r--r--r--    1 ftp      net        102400 Aug 23  1996 unifth68.arc
+-r--r--r--    1 ftp      net         67456 Aug 23  1996 vpsfp68k.arc
+
+./Compilers/native/misc/appleII:
+total 760
+-r--r--r--    1 ftp      net         99712 Aug 23  1996 appufth.arc
+-r--r--r--    1 ftp      net         44955 Aug 23  1996 appufth.doc
+-r--r--r--    1 ftp      net         11392 Aug 23  1996 appufth.fth
+-r--r--r--    1 ftp      net         27008 Aug 23  1996 appufth.sys
+-r--r--r--    1 ftp      net         82048 Aug 23  1996 appufth.wrd
+-r--r--r--    1 ftp      net          6144 Aug 23  1996 ddd
+-r--r--r--    1 ftp      net          1920 Aug 23  1996 decomp.bqy
+-r--r--r--    1 ftp      net         67840 Aug 23  1996 f83x.sou
+-r--r--r--    1 ftp      net         68608 Aug 23  1996 f83x.uti
+-r--r--r--    1 ftp      net         12288 Aug 23  1996 forps2.fth
+-r--r--r--    1 ftp      net         67584 Aug 23  1996 gsfdocs.bqy
+-r--r--r--    1 ftp      net         42112 Aug 23  1996 gsforth.bqy
+-r--r--r--    1 ftp      net         36352 Aug 23  1996 purple4th.bsq
+-r--r--r--    1 ftp      net         32512 Aug 23  1996 qforth1.shk
+-r--r--r--    1 ftp      net         41216 Aug 23  1996 qforth2.shk
+-r--r--r--    1 ftp      net          1004 Aug 23  1996 qforth.readme.TXT
+-r--r--r--    1 ftp      net          5553 Aug 23  1996 ufthapp.pro
+-r--r--r--    1 ftp      net         72960 Aug 23  1996 uniforth.bqy
+
+./Compilers/native/misc/atari_8bit:
+total 372
+-r--r--r--    1 ftp      net        105856 Aug 23  1996 atrforth.arc
+-r--r--r--    1 ftp      net          1652 Aug 23  1996 figforth.atr
+-r--r--r--    1 ftp      net         64512 Aug 23  1996 figforth.shr
+-r--r--r--    1 ftp      net          4096 Aug 23  1996 figshrnk.utl
+-r--r--r--    1 ftp      net         63488 Aug 23  1996 figtutor.shr
+-r--r--r--    1 ftp      net         45029 Aug 23  1996 fortha.arc
+-r--r--r--    1 ftp      net         44939 Aug 23  1996 forthb.arc
+-r--r--r--    1 ftp      net         29056 Aug 23  1996 yatc.arc
+
+./Compilers/native/misc/atari_st:
+total 2252
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 68000
+-r--r--r--    1 ftp      net          3328 Aug 23  1996 bradley.arc
+-r--r--r--    1 ftp      net        152320 Aug 23  1996 f32st.arc
+-rw-r--r--    1 ftp      net           915 Aug 23  1996 f68kans.txt
+-rw-r--r--    1 ftp      net        432742 Aug 23  1996 f68kans.zip
+-r--r--r--    1 ftp      net        234752 Aug 23  1996 f68kst11.arc
+-r--r--r--    1 ftp      net        126720 Aug 23  1996 f83st.arc
+-r--r--r--    1 ftp      net          6544 Aug 23  1996 forps.t
+-r--r--r--    1 ftp      net        146944 Aug 23  1996 forst.arc
+-r--r--r--    1 ftp      net          5024 Aug 23  1996 fortest.txt
+-r--r--r--    1 ftp      net        234406 Aug 23  1996 forth_83.zoo
+-r--r--r--    1 ftp      net        183168 Aug 23  1996 forthmac.arc
+-r--r--r--    1 ftp      net          3398 Aug 23  1996 gem.bin
+-r--r--r--    1 ftp      net          9728 Aug 23  1996 gemdos.arc
+-r--r--r--    1 ftp      net         32896 Aug 23  1996 GRAPHWIN3.ARC
+-r--r--r--    1 ftp      net         12672 Aug 23  1996 hdextend.arc
+-r--r--r--    1 ftp      net        113664 Aug 23  1996 inmng.arc
+-r--r--r--    1 ftp      net          3840 Aug 23  1996 joytoy.t
+-r--r--r--    1 ftp      net          2432 Aug 23  1996 jstick.t
+-r--r--r--    1 ftp      net          3840 Aug 23  1996 local927.arc
+-r--r--r--    1 ftp      net          4992 Aug 23  1996 localobj.arc
+-r--r--r--    1 ftp      net         63104 Aug 23  1996 lp4th.arc
+-r--r--r--    1 ftp      net          1920 Aug 23  1996 mfstspec.arc
+-r--r--r--    1 ftp      net          6144 Aug 23  1996 mtest1.arc
+-r--r--r--    1 ftp      net          7040 Aug 23  1996 profile.arc
+-r--r--r--    1 ftp      net         13236 Aug 23  1996 runed.t
+-r--r--r--    1 ftp      net          3840 Aug 23  1996 stforps.arc
+-r--r--r--    1 ftp      net         40320 Aug 23  1996 stforth.arc
+-r--r--r--    1 ftp      net          3200 Aug 23  1996 stfsedit.arc
+-r--r--r--    1 ftp      net         18432 Aug 23  1996 stmail00.arc
+-r--r--r--    1 ftp      net        148096 Aug 23  1996 stp1.arc
+-r--r--r--    1 ftp      net        103552 Aug 23  1996 stp2.arc
+-r--r--r--    1 ftp      net         51072 Aug 23  1996 stp3.arc
+-r--r--r--    1 ftp      net          8704 Aug 23  1996 stpl91.arc
+-r--r--r--    1 ftp      net          1218 Aug 23  1996 stpwhat.txt
+
+./Compilers/native/misc/atari_st/68000:
+total 1700
+-r--r--r--    1 ftp      net          9472 Aug 23  1996 68kasm.arc
+-r--r--r--    1 ftp      net         11136 Aug 23  1996 68kforth.arc
+-r--r--r--    1 ftp      net         56864 Aug 23  1996 botforth.txt
+-r--r--r--    1 ftp      net         30464 Aug 23  1996 botfth68.arc
+-r--r--r--    1 ftp      net         18771 Aug 23  1996 catch.txt
+-r--r--r--    1 ftp      net          8192 Aug 23  1996 ddjfft.arc
+-r--r--r--    1 ftp      net          1284 Aug 23  1996 F68K.INF
+-r--r--r--    1 ftp      net        394555 Aug 23  1996 f68k.tar.Z
+-r--r--r--    1 ftp      net           731 Aug 23  1996 f68k.txt
+-r--r--r--    1 ftp      net        255252 Aug 23  1996 f68k.zoo
+-r--r--r--    1 ftp      net        118912 Aug 23  1996 f83-68k.arc
+-r--r--r--    1 ftp      net        155008 Aug 23  1996 f83xboot.arc
+-r--r--r--    1 ftp      net         22224 Aug 23  1996 forth-68000.tar.z
+-r--r--r--    1 ftp      net         14280 Aug 23  1996 library.txt
+-r--r--r--    1 ftp      net         62592 Aug 23  1996 lp4thblk.arc
+-r--r--r--    1 ftp      net           634 Aug 23  1996 m16what.txt
+-r--r--r--    1 ftp      net           828 Aug 23  1996 OS9TILE.INF
+-r--r--r--    1 ftp      net        145925 Aug 23  1996 OS9TILE.LZH
+-r--r--r--    1 ftp      net           777 Aug 23  1996 readme.68000
+-r--r--r--    1 ftp      net          2048 Aug 23  1996 rnd.arc
+-r--r--r--    1 ftp      net         22400 Aug 23  1996 s4th68k.arc
+-r--r--r--    1 ftp      net        146060 Aug 23  1996 tile-os9.lzh
+-r--r--r--    1 ftp      net        102400 Aug 23  1996 unifth68.arc
+-r--r--r--    1 ftp      net         67456 Aug 23  1996 vpsfp68k.arc
+
+./Compilers/native/misc/ColorForth:
+total 568
+-r--r--r--    1 ftp      net        418722 Feb  5  2001 4thish3.zip
+-r--r--r--    1 ftp      net         90261 Feb  5  2001 4word12.zip
+-r--r--r--    1 ftp      net         50418 Feb  5  2001 c4th100.zip
+
+./Compilers/native/misc/commodore64:
+total 916
+-r--r--r--    1 ftp      net          2845 Nov 29  2002 64forth.txt
+-r--r--r--    1 ftp      net        150263 Jul 28  2003 64forth.zip
+-r--r--r--    1 ftp      net         57344 Aug 23  1996 bfdocs.arc
+-r--r--r--    1 ftp      net         21248 Aug 23  1996 bforth.arc
+-r--r--r--    1 ftp      net        178426 Dec  2  1997 blazin64.zip
+-r--r--r--    1 ftp      net         82550 Aug 23  1996 blazinforth.arc
+-r--r--r--    1 ftp      net         79398 Aug 23  1996 blazinforth.doc
+-r--r--r--    1 ftp      net        173251 Dec  2  1997 blazinp4.zip
+-r--r--r--    1 ftp      net         23936 Aug 23  1996 c6491.arc
+-r--r--r--    1 ftp      net          7936 Aug 23  1996 c64float.arc
+-r--r--r--    1 ftp      net          2816 Aug 23  1996 c64txt.arc
+-r--r--r--    1 ftp      net          6960 Aug 23  1996 files.pro
+-r--r--r--    1 ftp      net         32004 Aug 23  1996 geoforth.arc
+-r--r--r--    1 ftp      net           373 Aug 23  1996 geoforth.doc
+-r--r--r--    1 ftp      net         31360 Aug 23  1996 kermit64.arc
+-r--r--r--    1 ftp      net          4853 Aug 23  1996 multi64.fth
+-r--r--r--    1 ftp      net          4786 Aug 23  1996 multitas.fth
+-r--r--r--    1 ftp      net          9510 Aug 23  1996 object.fth
+-r--r--r--    1 ftp      net          3584 Aug 23  1996 scrlck.blz
+-r--r--r--    1 ftp      net          3300 Aug 23  1996 strings.txt
+
+./Compilers/native/misc/cpm:
+total 1016
+-r--r--r--    1 ftp      net         56704 Aug 23  1996 68kforth.lbr
+-r--r--r--    1 ftp      net           640 Aug 23  1996 aplforth.tip
+-r--r--r--    1 ftp      net          4992 Aug 23  1996 blk2scr.arc
+-r--r--r--    1 ftp      net         13312 Aug 23  1996 blktofth.ark
+-r--r--r--    1 ftp      net           253 Jan 18  1998 cpmstoic.txt
+-r--r--r--    1 ftp      net         86949 Jan 23  1998 cpmstoic.zip
+drwxr-xr-x    2 ftp      net          4096 Oct  6  2000 DXFORTH
+-r--r--r--    1 ftp      net          7424 Aug 23  1996 ed-cpm.arc
+-r--r--r--    1 ftp      net         15360 Aug 23  1996 f83-20.mzn
+-r--r--r--    1 ftp      net        155136 Aug 23  1996 f83v2-80.ark
+-r--r--r--    1 ftp      net          7296 Aug 23  1996 fndstr.arc
+-r--r--r--    1 ftp      net         68244 Aug 23  1996 forth130.asm
+-r--r--r--    1 ftp      net          2176 Aug 23  1996 forth130.use
+-r--r--r--    1 ftp      net         22656 Aug 23  1996 forthlib.arc
+-r--r--r--    1 ftp      net         49664 Aug 23  1996 forth-nl.lbr
+-r--r--r--    1 ftp      net         60544 Aug 23  1996 mm20.arc
+-r--r--r--    1 ftp      net         52736 Aug 23  1996 mouse.arc
+-r--r--r--    1 ftp      net         89728 Aug 23  1996 mx20.arc
+-r--r--r--    1 ftp      net          5890 Aug 23  1996 nit4th.asm
+-r--r--r--    1 ftp      net          3328 Aug 23  1996 notepad.arc
+-r--r--r--    1 ftp      net        127360 Aug 23  1996 pistol.arc
+-r--r--r--    1 ftp      net         10240 Aug 23  1996 tools.bqk
+-r--r--r--    1 ftp      net           640 Aug 23  1996 type.arc
+-r--r--r--    1 ftp      net         96896 Aug 23  1996 uniforth.lbr
+-r--r--r--    1 ftp      net          8576 Aug 23  1996 zeditor.fq3
+
+./Compilers/native/misc/cpm/DXFORTH:
+total 420
+-r--r--r--    1 ftp      net          1140 Dec 29  1998 DXFORTH.TXT
+-r--r--r--    1 ftp      net        159924 Dec 29  1998 DXFORTH.ZIP
+-r--r--r--    1 ftp      net            58 Dec 29  1998 FIGINST.TXT
+-r--r--r--    1 ftp      net        108672 Dec 29  1998 FIGINST.ZIP
+-r--r--r--    1 ftp      net           128 Dec 29  1998 FTH83STD.TXT
+-r--r--r--    1 ftp      net         98497 Dec 29  1998 FTH83STD.ZIP
+-r--r--r--    1 ftp      net           133 Dec 29  1998 SCRAMBLE.TXT
+-r--r--r--    1 ftp      net         21702 Dec 29  1998 SCRAMBLE.ZIP
+
+./Compilers/native/misc/dforth:
+total 164
+-r--r--r--    1 ftp      net         56956 Aug 27  1998 dforth05.zip
+-r--r--r--    1 ftp      net         97170 Mar 24  1999 dforth08.zip
+-r--r--r--    1 ftp      net           445 Mar 24  1999 dforth.txt
+
+./Compilers/native/misc/FICL:
+total 644
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 ficl202
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 ficl203
+drwxr-xr-x    2 root     net          4096 May 26  2000 ficl204
+-r--r--r--    1 ftp      net        631549 Apr 25  2001 ficl205.zip
+-r--r--r--    1 ftp      net           189 Apr 25  2001 ficl.html
+drwxr-xr-x    3 ftp      net          4096 Apr  7  2000 Old
+
+./Compilers/native/misc/FICL/ficl202:
+total 564
+-r--r--r--    1 ftp      net        402474 Oct 22  1998 ficl202.zip
+-r--r--r--    1 ftp      net         86964 Oct 22  1998 ficl.html
+-r--r--r--    1 ftp      net          2349 Oct 22  1998 ficl_logo.jpg
+-r--r--r--    1 ftp      net         63155 Oct 22  1998 ficl_oop.jpg
+
+./Compilers/native/misc/FICL/ficl203:
+total 876
+-r--r--r--    1 ftp      net        524284 May 24  1999 ficl203.zip
+-r--r--r--    1 ftp      net         34088 May 24  1999 ficlddj.pdf
+-r--r--r--    1 ftp      net        102686 May 24  1999 ficl.html
+-r--r--r--    1 ftp      net          2349 May 24  1999 ficl_logo.jpg
+-r--r--r--    1 ftp      net         63155 May 24  1999 ficl_oop.jpg
+-r--r--r--    1 ftp      net        140379 May 24  1999 jwsforml.pdf
+
+./Compilers/native/misc/FICL/ficl204:
+total 1520
+-r--r--r--    1 ftp      net        530101 May 24  2000 ficl204.zip
+-r--r--r--    1 ftp      net         34088 May 24  2000 ficlddj.PDF
+-r--r--r--    1 ftp      net        139876 May 24  2000 ficl.html
+-r--r--r--    1 ftp      net          2349 May 24  2000 ficl_logo.jpg
+-r--r--r--    1 ftp      net         63155 May 24  2000 ficl_oop.jpg
+-r--r--r--    1 ftp      net        609506 May 24  2000 ficlwin.zip
+-r--r--r--    1 ftp      net        140379 May 24  2000 jwsforml.PDF
+
+./Compilers/native/misc/FICL/Old:
+total 776
+-r--r--r--    1 ftp      net          4370 Mar 25  1998 ficl103.txt
+-r--r--r--    1 ftp      net         81831 Mar 25  1998 ficl103.zip
+-r--r--r--    1 ftp      net          5914 May 22  1998 ficl105.txt
+-r--r--r--    1 ftp      net        287306 May 22  1998 ficl105.zip
+-r--r--r--    1 ftp      net        386792 Sep 20  1998 ficl200.zip
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 ficl201
+
+./Compilers/native/misc/FICL/Old/ficl201:
+total 532
+-rw-r--r--    1 ftp      net        388328 Sep 22  1998 ficl201.zip
+-rw-r--r--    1 ftp      net         72987 Sep 22  1998 ficl.html
+-rw-r--r--    1 ftp      net          2349 Sep 22  1998 ficl_logo.jpg
+-rw-r--r--    1 ftp      net         63155 Sep 22  1998 ficl_oop.jpg
+
+./Compilers/native/misc/ficl202:
+total 564
+-r--r--r--    1 ftp      net        402474 Oct 21  1998 ficl202.zip
+-r--r--r--    1 ftp      net         86964 Oct 21  1998 ficl.html
+-r--r--r--    1 ftp      net          2349 Oct 21  1998 ficl_logo.jpg
+-r--r--r--    1 ftp      net         63155 Oct 21  1998 ficl_oop.jpg
+
+./Compilers/native/misc/ficl203:
+total 876
+-r--r--r--    1 ftp      net        524284 May 24  1999 ficl203.zip
+-r--r--r--    1 ftp      net         34088 May 24  1999 ficlddj.pdf
+-r--r--r--    1 ftp      net        102686 May 24  1999 ficl.html
+-r--r--r--    1 ftp      net          2349 May 24  1999 ficl_logo.jpg
+-r--r--r--    1 ftp      net         63155 May 24  1999 ficl_oop.jpg
+-r--r--r--    1 ftp      net        140379 May 24  1999 jwsforml.pdf
+
+./Compilers/native/misc/ficl_old:
+total 776
+-r--r--r--    1 ftp      net          4370 Mar 24  1998 ficl103.txt
+-r--r--r--    1 ftp      net         81831 Mar 24  1998 ficl103.zip
+-r--r--r--    1 ftp      net          5914 May 22  1998 ficl105.txt
+-r--r--r--    1 ftp      net        287306 May 22  1998 ficl105.zip
+-r--r--r--    1 ftp      net        386792 Sep 20  1998 ficl200.zip
+drwxr-xr-x    2 ftp      net          4096 Sep 21  2005 ficl201
+
+./Compilers/native/misc/ficl_old/ficl201:
+total 532
+-rw-r--r--    1 ftp      net        388328 Sep 22  1998 ficl201.zip
+-rw-r--r--    1 ftp      net         72987 Sep 22  1998 ficl.html
+-rw-r--r--    1 ftp      net          2349 Sep 22  1998 ficl_logo.jpg
+-rw-r--r--    1 ftp      net         63155 Sep 22  1998 ficl_oop.jpg
+
+./Compilers/native/misc/graspForth:
+total 88
+-r--r--r--    1 ftp      ftp          7201 Oct  6  2006 graspforth.readme
+-r--r--r--    1 ftp      ftp         33769 Oct  6  2006 graspforth.tar.gz
+-r--r--r--    1 ftp      ftp         37639 Oct  6  2006 graspforth.zip
+drwxr-xr-x    2 ftp      net          4096 Oct  9  2006 Old
+
+./Compilers/native/misc/graspForth/Old:
+total 60
+-r--r--r--    1 ftp      net          5559 Oct 15  2004 graspforth.readme
+-r--r--r--    1 ftp      net         24431 Oct 15  2004 graspforth.tar.gz
+-r--r--r--    1 ftp      net         25326 Oct 15  2004 graspforth.zip
+
+./Compilers/native/misc/M4th:
+total 160
+-rw-r--r--    1 ftp      net        148602 Apr  8  2004 m4th14.zip
+-rw-r--r--    1 ftp      net          5568 Apr  6  1997 m4th.txt
+
+./Compilers/native/misc/vax:
+total 196
+-r--r--r--    1 ftp      net          7168 Aug 23  1996 fth4vms.arc
+-r--r--r--    1 ftp      net         21677 Aug 23  1996 vax-forth.tar-z
+-r--r--r--    1 ftp      net        163840 Aug 23  1996 vxfth.arc
+
+./Compilers/native/msdos:
+total 1488
+lrwxrwxrwx    1 root     root           29 Sep 21  2005 Archive -> ../../../../Forth/Archive/ibm
+-r--r--r--    1 ftp      net          2862 Apr 20  1998 desqview.4th
+drwxr-xr-x    3 root     root         4096 May 28  2012 DXForth
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 F83
+-r--r--r--    1 ftp      net          3277 Apr 20  1998 fasts.msg
+-r--r--r--    1 ftp      net         33024 Aug 23  1996 figforth8088.zip
+-r--r--r--    1 ftp      net        141060 Nov 10  2004 FirstForth.zip
+drwxr-xr-x    4 ftp      net          4096 Jun 19  2002 FPC
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 hForth
+-r--r--r--    1 ftp      net           740 Apr 20  1998 love4th.txt
+-r--r--r--    1 ftp      net        274787 Apr 20  1998 love4th.zip
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 Pygmy
+-r--r--r--    1 ftp      net        437708 Aug 23  1996 tfgraf.zip
+-r--r--r--    1 ftp      net        116556 Aug 23  1996 this4th.exe
+-r--r--r--    1 ftp      net        103537 Aug 23  1996 this4thx.exe
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 transputer
+-r--r--r--    1 ftp      net           913 Aug 23  1996 turbof.txt
+-r--r--r--    1 ftp      net        334240 Aug 23  1996 turbof.zip
+
+./Compilers/native/msdos/DXForth:
+total 3260
+-r--r--r--    1 ftp      net         82413 May  5  2007 bgi11.zip
+-r--r--r--    1 ftp      net         82387 Apr 22  2010 bgi12.zip
+-r--r--r--    1 ftp      ftp         82397 May 21  2012 bgi13.zip
+-r--r--r--    1 ftp      net         70163 Dec  4  2006 bgi.zip
+-r--r--r--    1 ftp      net         32097 Mar 30  2006 DX-Forth352.txt
+-r--r--r--    1 ftp      net        192506 Jun  2  2006 DX-Forth352.zip
+-r--r--r--    1 ftp      net        192478 Sep  4  2006 DX-Forth354.zip
+-r--r--r--    1 ftp      net        198878 Dec  4  2006 DX-Forth356.zip
+-r--r--r--    1 ftp      net        198845 May  5  2007 DX-Forth361.zip
+-r--r--r--    1 ftp      net        201532 Jan 12  2008 DX-Forth373.zip
+-r--r--r--    1 ftp      net        223473 Apr 22  2010 dxfth390.zip
+-r--r--r--    1 ftp      net        229893 Apr 22  2010 dxfth391.zip
+-r--r--r--    1 ftp      ftp        243658 Oct 19  2010 dxfth392.zip
+-r--r--r--    1 ftp      ftp        252210 May 21  2012 dxfth397.zip
+-r--r--r--    1 ftp      net         78967 Dec  4  2006 eprom.zip
+-r--r--r--    1 ftp      net          1726 Sep  4  2006 f83asmbug.txt
+-r--r--r--    1 ftp      net         23809 Nov 22  2005 fgraph11.zip
+-r--r--r--    1 ftp      net         23845 May  5  2007 fgraph12.zip
+-r--r--r--    1 ftp      net         24086 Apr 22  2010 fgraph13.zip
+-r--r--r--    1 ftp      net         28042 Nov 10  2004 fgraph.zip
+-r--r--r--    1 ftp      net         22267 Mar 22  2004 hexbin01.zip
+-r--r--r--    1 ftp      net         32961 Mar 22  2004 kcs07b.zip
+-r--r--r--    1 ftp      net          8067 Jan 28  2006 kcs08.txt
+-r--r--r--    1 ftp      net         32959 Jun  2  2006 kcs08.zip
+-r--r--r--    1 ftp      net         34566 Mar 22  2004 kimtap04.zip
+-r--r--r--    1 ftp      net         35157 Nov 10  2004 kimtap05.zip
+-r--r--r--    1 ftp      net         28872 Mar 22  2004 morse02.zip
+-r--r--r--    1 ftp      net          3851 Jul 14  2003 MORSE.TXT
+-rw-r--r--    1 ftp      ftp         36218 May 22  2012 nixie4th.zip
+drwxr-xr-x    2 ftp      net          4096 Oct 28  2008 Old
+-r--r--r--    1 ftp      net         24319 Mar 22  2004 osilod2b.zip
+-r--r--r--    1 ftp      net         31131 Oct 25  2008 pede4th.zip
+-r--r--r--    1 ftp      net         14667 Mar 22  2004 resist01.zip
+-r--r--r--    1 ftp      net         19430 Apr 22  2010 resist02.zip
+-r--r--r--    1 ftp      net         30069 Mar 22  2004 solent02.zip
+-r--r--r--    1 ftp      net         92775 Dec  4  2006 svbgi352.zip
+-r--r--r--    1 ftp      net         92922 May  5  2007 svbgi353.zip
+-r--r--r--    1 ftp      net         13647 Mar 22  2004 track01.zip
+-r--r--r--    1 ftp      net         19250 Apr 22  2010 track02.zip
+-r--r--r--    1 ftp      net         24713 Nov 10  2004 worms.zip
+-r--r--r--    1 ftp      net         22005 Jan 12  2008 ww4th.zip
+-r--r--r--    1 ftp      net         23262 May  5  2007 xplgraph.zip
+-r--r--r--    1 ftp      net         74125 Apr 22  2010 xpl-pgm.zip
+
+./Compilers/native/msdos/DXForth/Old:
+total 1244
+-r--r--r--    1 ftp      net           827 Sep 14  2002 DX-Forth23.txt
+-r--r--r--    1 ftp      net        168057 Sep 14  2002 DX-Forth23.zip
+-r--r--r--    1 ftp      net           874 Dec 30  2001 DX-Forth2.txt
+-r--r--r--    1 ftp      net        185117 Dec 30  2001 DX-Forth2.zip
+-r--r--r--    1 ftp      net           955 Sep 14  2002 DX-Forth30.txt
+-r--r--r--    1 ftp      net        150308 Sep 14  2002 DX-Forth30.zip
+-r--r--r--    1 ftp      net        153673 Oct 21  2003 DX-Forth31.zip
+-r--r--r--    1 ftp      net        166537 Mar 22  2004 DX-Forth32.zip
+-r--r--r--    1 ftp      net        178449 Nov 10  2004 DX-Forth33.zip
+-r--r--r--    1 ftp      net        183992 Nov 22  2005 DX-Forth34.zip
+-r--r--r--    1 ftp      net         31112 Jan 12  2008 pede4th.zip
+
+./Compilers/native/msdos/F83:
+total 964
+-r--r--r--    1 ftp      net        201472 Aug 23  1996 f83aides.arc
+-r--r--r--    1 ftp      net         63017 Aug 23  1996 f83a.lzh
+-r--r--r--    1 ftp      net         54972 Aug 23  1996 f83b.lzh
+-r--r--r--    1 ftp      net           896 Aug 23  1996 f83color.arc
+-r--r--r--    1 ftp      net        327552 Aug 23  1996 f83s6.arc
+-r--r--r--    1 ftp      net         50176 Aug 23  1996 f83tsr.lzh
+-r--r--r--    1 ftp      net         36264 Aug 23  1996 f83tutor.lzh
+-r--r--r--    1 ftp      net        133402 Aug 23  1996 f83v2-ms.lzh
+-r--r--r--    1 ftp      net         57856 Aug 23  1996 f83xhelp.arc
+-r--r--r--    1 ftp      net          2048 Aug 23  1996 f83xlcls.arc
+-r--r--r--    1 ftp      net          4864 Aug 23  1996 f83xstrs.arc
+
+./Compilers/native/msdos/FPC:
+total 3248
+lrwxrwxrwx    1 root     root           28 Sep 22  2005 Applications -> ../../../../Applications/fpc
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 fpc-3.55
+drwxr-xr-x    2 ftp      net          4096 Sep 21  2005 fpc-3.56
+-rw-r--r--    1 ftp      net       1108172 Aug 23  1996 fpc36.zip
+-rw-r--r--    1 ftp      net           431 Aug 23  1996 f-pl.doc
+-rw-r--r--    1 ftp      net         62165 Aug 23  1996 f-pl.zip
+-rw-r--r--    1 ftp      net         15955 Aug 23  1996 pauk.doc
+-rw-r--r--    1 ftp      net        147548 Aug 23  1996 pauk.zip
+-r--r--r--    1 ftp      ftp         27554 Jun 18  2002 RS232IBA.SEQ
+-rw-r--r--    1 ftp      net           373 Aug 23  1996 seec.doc
+-rw-r--r--    1 ftp      net          5357 Aug 23  1996 seec.zip
+-rw-r--r--    1 ftp      net         29455 Aug 23  1996 smiley.doc
+-rw-r--r--    1 ftp      net        311073 Aug 23  1996 smily46n.zip
+-rw-r--r--    1 ftp      net       1279991 Aug 23  1996 tcom25.zip
+-rw-r--r--    1 ftp      net           592 Oct  6  1998 Usw.txt
+-rw-r--r--    1 ftp      net        102508 Oct  3  1998 Usw.zip
+-rw-r--r--    1 ftp      net         15957 Aug 23  1996 vfm.doc
+-rw-r--r--    1 ftp      net        144557 Aug 23  1996 vfm.zip
+
+./Compilers/native/msdos/FPC/fpc-3.55:
+total 1636
+-r--r--r--    1 ftp      net        335473 Aug 23  1996 fpc355-1.zip
+-r--r--r--    1 ftp      net        321760 Aug 23  1996 fpc355-2.zip
+-r--r--r--    1 ftp      net        341823 Aug 23  1996 fpc355-3.zip
+-r--r--r--    1 ftp      net        340569 Aug 23  1996 fpc355-4.zip
+-r--r--r--    1 ftp      net        303155 Aug 23  1996 fpc355-5.zip
+
+./Compilers/native/msdos/FPC/fpc-3.56:
+total 1880
+-r--r--r--    1 ftp      net         13696 Aug 23  1996 curley.zip
+-r--r--r--    1 ftp      net         58112 Aug 23  1996 fpc356.zip
+-r--r--r--    1 ftp      net        182272 Aug 23  1996 fpcdoc.zip
+-r--r--r--    1 ftp      net         83584 Aug 23  1996 fpchlp.zip
+-r--r--r--    1 ftp      net        258432 Aug 23  1996 fpcsrc.zip
+-r--r--r--    1 ftp      net        173696 Aug 23  1996 fpc.zip
+-r--r--r--    1 ftp      net        113514 Aug 23  1996 newz.zip
+-r--r--r--    1 ftp      net          9344 Aug 23  1996 samples.zip
+-r--r--r--    1 ftp      net         76800 Aug 23  1996 smith.zip
+-r--r--r--    1 ftp      net         56960 Aug 23  1996 tcom6805.zip
+-r--r--r--    1 ftp      net         90368 Aug 23  1996 tcom80.zip
+-r--r--r--    1 ftp      net         31872 Aug 23  1996 tcom96.zip
+-r--r--r--    1 ftp      net         16256 Aug 23  1996 tcomgen.zip
+-r--r--r--    1 ftp      net        135680 Aug 23  1996 tcomsamp.zip
+-r--r--r--    1 ftp      net        111872 Aug 23  1996 tcomsrc.zip
+-r--r--r--    1 ftp      net        113280 Aug 23  1996 tcomutil.zip
+-r--r--r--    1 ftp      net        220672 Aug 23  1996 tcom.zip
+-r--r--r--    1 ftp      net         84352 Aug 23  1996 zimmer.zip
+
+./Compilers/native/msdos/hForth:
+total 2648
+-r--r--r--    1 ftp      net         15096 Aug 23  1996 hf86v097.txt
+-r--r--r--    1 ftp      net        382411 Aug 23  1996 hf86v097.zip
+-r--r--r--    1 ftp      net         14223 Jun  2  1997 hf86v099.txt
+-r--r--r--    1 ftp      net        412646 Jun  5  1997 hf86v099.zip
+-r--r--r--    1 ftp      net         14223 Jun  2  1997 hf86v09a.txt
+-r--r--r--    1 ftp      net        414626 Jun 29  1997 hf86v09a.zip
+-r--r--r--    1 ftp      net        412491 Jul  8  1997 hf86v09b.zip
+-r--r--r--    1 ftp      net        413953 Jul 11  1997 hf86v09c.zip
+-r--r--r--    1 ftp      net        138381 Aug 18  1997 hf-arm.tar.gz
+-r--r--r--    1 ftp      net         21510 Nov  6  1997 hf-arm.txt
+-r--r--r--    1 ftp      net          2863 Jun  5  1997 hfz80v99.txt
+-r--r--r--    1 ftp      net        131987 Jun  5  1997 hfz80v99.zip
+-r--r--r--    1 ftp      net          2863 Jun  5  1997 hfz80v9a.txt
+-r--r--r--    1 ftp      net        131986 Jun 29  1997 hfz80v9a.zip
+-r--r--r--    1 ftp      net        131986 Jul 11  1997 hfz80v9c.zip
+
+./Compilers/native/msdos/Pygmy:
+total 496
+-rw-r--r--    1 ftp      net          4798 Aug 23  1996 4thintro.txt
+-rw-r--r--    1 ftp      net          3651 Jul 28  1997 anspygm1.txt
+-rw-r--r--    1 ftp      net          6068 Jul 28  1997 anspygm1.zip
+-rw-r--r--    1 ftp      net          7692 Aug 23  1996 espidx.dbf
+-rw-r--r--    1 ftp      net         20969 Aug 23  1996 forths.dbf
+-rw-r--r--    1 ftp      net          8608 Aug 23  1996 forth.txt
+-rw-r--r--    1 ftp      net          1822 Aug 23  1996 pr.bas
+-rw-r--r--    1 ftp      net          6144 Aug 23  1996 prgen.scr
+-rw-r--r--    1 ftp      net          1807 Aug 18  1994 pygfiles.txt
+-rw-r--r--    1 ftp      net        101632 Aug 23  1996 pygmy14.exe
+-rw-r--r--    1 ftp      net        118969 Oct 16  1997 pygmy15.zip
+-rw-r--r--    1 ftp      net         82535 Jul  4  1997 pygmy.txt
+-rw-r--r--    1 ftp      net          2200 Sep 14  1995 pygtools.txt
+-rw-r--r--    1 ftp      net         86593 Aug 23  1996 pygtools.zip
+-rw-r--r--    1 ftp      net          2237 Aug 23  1996 starting.out
+
+./Compilers/native/msdos/transputer:
+total 904
+-r--r--r--    1 ftp      net          6026 Jul 14  1998 f-tp-100.idx
+-r--r--r--    1 ftp      net        911025 Jul 14  1998 f-tp-100.zip
+
+./Compilers/native/OS-2:
+total 1064
+-r--r--r--    1 ftp      net          3973 Aug 23  1996 enumdll.doc
+-r--r--r--    1 ftp      net         22784 Aug 23  1996 forthos2.zip
+-r--r--r--    1 ftp      net         21026 Aug 23  1996 forth.zip
+-r--r--r--    1 ftp      net         20145 Dec  6  2006 FWRITE.4TH
+-r--r--r--    1 ftp      net          5396 Dec  6  2006 GotFK1.4th
+-r--r--r--    1 ftp      net         14763 Dec  6  2006 GotFK1.TXT
+-r--r--r--    1 ftp      net         10034 Dec  6  2006 GotFK2.4th
+-r--r--r--    1 ftp      net         19718 Dec  6  2006 GotFK2.TXT
+-r--r--r--    1 ftp      net          8855 Dec  6  2006 GotFK3.4th
+-r--r--r--    1 ftp      net         10306 Dec  6  2006 GotFK3.TXT
+-r--r--r--    1 ftp      net         10615 Dec  8  2006 GotFK4.4TH
+-r--r--r--    1 ftp      net         16928 Dec  8  2006 GotFK4.TXT
+-r--r--r--    1 ftp      net         16922 Dec 11  2006 GotSK1.4TH
+-r--r--r--    1 ftp      net         15658 Dec 11  2006 GotSK1.TXT
+-r--r--r--    1 ftp      net         19250 Dec 13  2006 GotSK2.4TH
+-r--r--r--    1 ftp      net         25024 Dec 13  2006 GotSK2.txt
+-r--r--r--    1 ftp      net         12570 Dec 15  2006 GotSK3.4TH
+-r--r--r--    1 ftp      net         23591 Dec 15  2006 GotSK3.txt
+-r--r--r--    1 ftp      net         11472 Dec 18  2006 GotSK4.4TH
+-r--r--r--    1 ftp      net         15134 Dec 18  2006 GotSK4.TXT
+-r--r--r--    1 ftp      net         23372 Dec 20  2006 GotSK5.4TH
+-r--r--r--    1 ftp      net          6700 Dec 20  2006 GotSK5.TXT
+-r--r--r--    1 ftp      net         15168 Jan  8  2007 GotTK1.4TH
+-r--r--r--    1 ftp      net         32642 Jan  8  2007 GotTK1.TXT
+-r--r--r--    1 ftp      ftp         21989 Feb  4  2007 GotTK2.4TH
+-r--r--r--    1 ftp      ftp         28044 Feb  4  2007 GotTK2.TXT
+-r--r--r--    1 ftp      net         19549 Mar  1  2007 GotTK3.4th
+-r--r--r--    1 ftp      net         25003 Mar  1  2007 GotTK3.TXT
+-rw-r--r--    1 ftp      net          1484 Apr 17  1997 os2forth.txt
+-rw-r--r--    1 ftp      net        551687 Apr 17  1997 os2forth.zip
+lrwxrwxrwx    1 ftp      net            31 Sep 21  2005 pfe095.zip -> ../../../Archive/ibm/pfe095.zip
+
+./Compilers/native/unix:
+total 7324
+-r--r--r--    1 ftp      net         50944 Aug 23  1996 annforth.arc
+-r--r--r--    1 ftp      net           640 Aug 23  1996 b2t.arc
+-r--r--r--    1 ftp      net       1107124 Apr 23  1998 bigforth.tar.gz
+-r--r--r--    1 ftp      net          1553 Jun  8  1997 bigforth.txt
+-r--r--r--    1 ftp      net       1101438 Jul  8  1997 bigforth.zip
+-r--r--r--    1 ftp      net         68761 Aug 23  1996 c-forth.tar.z
+-r--r--r--    1 ftp      net         60928 Aug 23  1996 cforthu.arc
+drwxr-xr-x    2 ftp      net          4096 Sep 21  2005 CRAY
+-r--r--r--    1 ftp      net        980480 Aug 23  1996 f83.tar.z
+-r--r--r--    1 ftp      net        709543 Oct 11  1997 gforth-0.3.0.tar.gz
+-r--r--r--    1 ftp      net       1009496 Mar  3  1999 gforth-0.4.0.tar.gz
+-r--r--r--    1 ftp      net           913 Mar  3  1999 gforth.lsm
+-r--r--r--    1 ftp      net          1674 Aug 23  1996 gforth.txt
+-r--r--r--    1 ftp      net         65295 Aug 23  1996 gray20.4th
+-r--r--r--    1 ftp      net         34048 Aug 23  1996 gray20.arc
+drwxr-xr-x    2 ftp      net          4096 Sep 21  2005 H3sm-1.0c
+-r--r--r--    1 ftp      net        150888 Feb  3  2000 H3sm-1.0c.tgz
+-r--r--r--    1 ftp      net          2370 Feb  4  2000 H3sm.html
+drwxr-xr-x    2 ftp      net          4096 Sep 21  2005 IRIX
+drwxr-xr-x    2 ftp      net          4096 Sep 21  2005 Linux
+drwxr-xr-x    2 ftp      net          4096 Sep 21  2005 NetBSD
+-r--r--r--    1 ftp      net        138316 Aug 23  1996 pfe0913b.zip
+-r--r--r--    1 ftp      net           489 Aug 23  1996 pfe-0.9.13.lsm
+-r--r--r--    1 ftp      net        266697 Aug 23  1996 pfe-0.9.13.tar.gz
+-r--r--r--    1 ftp      net        158537 Aug 23  1996 pfe-0.9.14.bin.tar.gz
+-r--r--r--    1 ftp      net        158925 Aug 23  1996 pfe0914b.zip
+-r--r--r--    1 ftp      net        269068 Aug 23  1996 pfe-0.9.14.tar.gz
+-r--r--r--    1 ftp      net        353860 Aug 23  1996 pfe0914.zip
+-r--r--r--    1 ftp      net         53125 Aug 23  1996 pfetcp.sh01
+-r--r--r--    1 ftp      net         13637 Aug 23  1996 pfetcp.tar.gz
+-r--r--r--    1 ftp      net         24069 Aug 23  1996 pfetcp.tar.Z
+drwxr-xr-x    2 ftp      net          4096 Sep 21  2005 RISCOS
+-r--r--r--    1 ftp      net          4079 Aug 23  1996 scheme.4th
+drwxr-xr-x    2 ftp      net          4096 Sep 21  2005 SLinux
+lrwxrwxrwx    1 ftp      net            19 Sep 21  2005 this4th.linux -> Linux/thisforth.elf
+-rw-r--r--    1 ftp      net        139264 Aug 23  1996 this4th.SUN
+-rw-r--r--    1 ftp      net         64137 Aug 23  1996 this4th.tar.gz
+-rw-r--r--    1 ftp      net         75149 Aug 23  1996 this4th.zip
+-r--r--r--    1 ftp      net        237449 Aug 23  1996 tile-forth-2.1.tar.z
+-r--r--r--    1 ftp      net          5453 Aug 23  1996 tile_posix_io.shar
+-r--r--r--    1 ftp      net          4224 Aug 23  1996 turing.arc
+-r--r--r--    1 ftp      net          6720 Aug 23  1996 turing.sim
+drwxr-xr-x    2 ftp      net          4096 Mar  3  2012 Zaurus
+
+./Compilers/native/unix/CRAY:
+total 1148
+-rw-r--r--    1 ftp      net       1167968 Aug 23  1996 this4th.CRAY
+
+./Compilers/native/unix/H3sm-1.0c:
+total 32
+-r--r--r--    1 ftp      net         15598 Dec  2  1999 article4.html
+-r--r--r--    1 ftp      net          1002 Feb 17  1991 FAQ.html
+-r--r--r--    1 ftp      net          7321 Feb 10  1991 H3sm.1.html
+-r--r--r--    1 ftp      net          2370 Dec  3  1999 H3sm.html
+
+./Compilers/native/unix/IRIX:
+total 540
+-rw-r--r--    1 ftp      net        200704 Aug 23  1996 pfe099.SGI
+-rw-r--r--    1 ftp      net        342284 Aug 23  1996 this4th.SGI
+
+./Compilers/native/unix/Linux:
+total 1160
+-r--r--r--    1 ftp      net         27086 Aug 23  1996 aforth.tgz
+-r--r--r--    1 ftp      net        137815 May  5  1997 dynoof-0.1.6.tgz
+-rw-r--r--    1 ftp      net          5867 May  5  1997 dynoof.README
+-r--r--r--    1 ftp      net         60631 Feb  3  2000 eforth-linux.tgz
+-r--r--r--    1 ftp      net          1504 Feb  4  2000 eforth-linux.txt
+-r--r--r--    1 ftp      net          2071 Aug 23  1996 fcontrol.fth
+-r--r--r--    1 ftp      net        494235 May  5  1999 Flk.1.3.tar.gz
+-r--r--r--    1 ftp      net          1542 May  5  1999 Flk.1.3.txt
+-r--r--r--    1 ftp      net         10050 Aug 23  1996 fsl-util.fth
+-r--r--r--    1 ftp      net         38002 Jun 16  1999 linux-eforth-1.0e.tar.gz
+-r--r--r--    1 ftp      net          1108 Jun 16  1999 linux-eforth-1.0e.txt
+-r--r--r--    1 ftp      net         16625 Aug 23  1996 lxeforth.tgz
+-r--r--r--    1 ftp      net          1055 Nov 16  1994 lxeforth.txt
+lrwxrwxrwx    1 ftp      net            35 Sep 21  2005 oofemu.4th -> ../../../../Applications/oofemu.4th
+-rw-r--r--    1 ftp      net         98308 Aug 23  1996 pfe0.9.14
+-rw-r--r--    1 ftp      net        107777 Aug 23  1996 pfe0.9.14.elf
+lrwxrwxrwx    1 ftp      net            20 Sep 21  2005 pfe-0.9.14.tar.gz -> ../pfe-0.9.14.tar.gz
+-r--r--r--    1 ftp      net          2113 Aug 23  1996 ports.fth
+-rw-r--r--    1 ftp      net         51200 Sep  4  1996 serialio.tar
+-rw-r--r--    1 ftp      net         61438 Feb 13  1997 thisforth.elf
+
+./Compilers/native/unix/NetBSD:
+total 204
+-r--r--r--    1 ftp      net         67189 Dec 15  1998 ficl-2.02-bin-sun360
+-r--r--r--    1 ftp      net         57432 Dec 22  1998 gforth-0.3.0-bin-sun3-60.tar.gz
+-r--r--r--    1 ftp      net         60248 Dec  2  1998 gforth-0.3.0-bin-sun4-110.tar.gz
+-r--r--r--    1 ftp      net           286 Dec  2  1998 gforth.readme
+
+./Compilers/native/unix/RISCOS:
+total 848
+-rw-r--r--    1 ftp      net        188416 Aug 23  1996 pfe09.12.MIPS
+-rw-r--r--    1 ftp      net        294912 Aug 23  1996 pfe09.14.MIPS
+-rw-r--r--    1 ftp      net        372480 Aug 23  1996 this4th.MIPS
+
+./Compilers/native/unix/SLinux:
+total 68
+-r--r--r--    1 ftp      net           297 Dec  2  1998 gforth.readme
+-r--r--r--    1 ftp      net         58480 Dec  2  1998 gforth.tar.gz
+
+./Compilers/native/unix/Zaurus:
+total 136
+-r--r--r--    1 ftp      net         64206 Mar  3  2012 gforth.0.5.0.ipk
+-r--r--r--    1 ftp      net         62629 Mar  3  2012 zaurus-gforth-0.5.0.tar.gz
+
+./Compilers/native/windows:
+total 4636
+-r--r--r--    1 ftp      net        148906 Apr 23  1998 gf030htm.zip
+-r--r--r--    1 ftp      net       1150707 Apr 23  1998 gf030win32-binonly.zip
+-r--r--r--    1 ftp      net       1962359 Apr 23  1998 gf030win32.zip
+-r--r--r--    1 ftp      net        458906 Feb  8  1999 pfe0922.zip
+-r--r--r--    1 ftp      net          1215 Feb  8  1999 README0922
+-r--r--r--    1 ftp      net        979827 Aug 23  1996 wfshr101.exe
+-r--r--r--    1 ftp      net          1901 Aug 23  1996 wfshr101.txt
+drwxr-xr-x    3 ftp      net          4096 Apr  7  2000 Win32For
+
+./Compilers/native/windows/Win32For:
+total 3436
+-r--r--r--    1 ftp      net          9561 Jul  4  1998 35sampleold.zip
+-r--r--r--    1 ftp      net         10675 Dec  4  1998 35sample.zip
+-r--r--r--    1 ftp      net          2065 Oct 17  1997 35sampl.zip
+-r--r--r--    1 ftp      net          9700 Aug 23  1996 mtask2.f
+-r--r--r--    1 ftp      net          4417 Aug 23  1996 mtask.f
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 Old
+-r--r--r--    1 ftp      net       1439710 Apr  5  1999 W32for41.exe
+-r--r--r--    1 ftp      net         32639 Apr  5  1999 W32for41.faq
+-r--r--r--    1 ftp      net         50492 Apr  5  1999 W32for41.new
+-r--r--r--    1 ftp      net          2893 Apr  5  1999 W32for41.txt
+-r--r--r--    1 ftp      net       1558661 Mar  3  2000 W32for42.exe
+-r--r--r--    1 ftp      net        167002 Aug 23  1996 winconold.zip
+-r--r--r--    1 ftp      net          2758 Aug 23  1996 wincon.txt
+-r--r--r--    1 ftp      net        178810 Dec  4  1998 wincon.zip
+
+./Compilers/native/windows/Win32For/Old:
+total 9296
+-r--r--r--    1 ftp      net        520479 Aug 13  1997 35updt01.exe
+-r--r--r--    1 ftp      net        772222 Oct 17  1997 35updt02.exe
+-r--r--r--    1 ftp      net        786290 Jan 27  1998 35updt03.exe
+-r--r--r--    1 ftp      net        848570 May 25  1998 35updt04.exe
+-r--r--r--    1 ftp      net        855531 Jul  4  1998 35updt05.exe
+-r--r--r--    1 ftp      net       1338983 Oct  8  1996 w32for33.exe
+-r--r--r--    1 ftp      net         29033 Oct  8  1996 w32for33.faq
+-r--r--r--    1 ftp      net         31216 Oct  8  1996 w32for33.new
+-r--r--r--    1 ftp      net          5101 Oct 10  1996 w32for33.txt
+-r--r--r--    1 ftp      net       1365570 Jan 23  1997 w32for34b5.exe
+-r--r--r--    1 ftp      net         29033 Jan 23  1997 w32for34b5.faq
+-r--r--r--    1 ftp      net         16881 Jan 23  1997 w32for34b5.new
+-r--r--r--    1 ftp      net          5101 Jan 23  1997 w32for34b5.txt
+-r--r--r--    1 ftp      net       1335308 Jul 29  1997 w32for35.exe
+-r--r--r--    1 ftp      net         31057 Jul 29  1997 w32for35.faq
+-r--r--r--    1 ftp      net         27392 Jul 29  1997 w32for35.new
+-r--r--r--    1 ftp      net          3496 Jul 29  1997 w32for35.txt
+-r--r--r--    1 ftp      net       1359202 Dec  4  1998 W32for40.exe
+-r--r--r--    1 ftp      net         32639 Dec  4  1998 W32for40.faq
+-r--r--r--    1 ftp      net         41269 Dec  4  1998 W32for40.new
+-r--r--r--    1 ftp      net          2949 Dec  4  1998 W32for40.txt
+
+./FAQ:
+total 460
+-r--r--r--    1 ftp      net           571 Oct 12  1998 00Index
+-r--r--r--    1 ftp      net         12552 Jul  3  1999 ANSForth
+-r--r--r--    1 ftp      net         28016 Dec 17  1999 books
+lrwxrwxrwx    1 root     root            7 Sep 21  2005 forthfaq.1 -> general
+lrwxrwxrwx    1 root     root            6 Sep 21  2005 forthfaq.2 -> online
+lrwxrwxrwx    1 root     root            7 Sep 21  2005 forthfaq.3 -> vendors
+lrwxrwxrwx    1 root     root            7 Sep 21  2005 forthfaq.4 -> systems
+lrwxrwxrwx    1 root     root            5 Sep 21  2005 forthfaq.5 -> books
+lrwxrwxrwx    1 root     root            6 Sep 21  2005 forthfaq.6 -> groups
+lrwxrwxrwx    1 root     root            8 Sep 21  2005 forthfaq.7 -> ANSForth
+-r--r--r--    1 ftp      net        194560 Feb  3  2000 forthfaq.tar
+-r--r--r--    1 ftp      net         65094 Feb  3  2000 forthfaq.tgz
+-r--r--r--    1 ftp      net         24151 Jan 30  2000 general
+-r--r--r--    1 ftp      net          7577 Dec  6  1998 groups
+-r--r--r--    1 ftp      net         12079 Aug 11  1999 online
+-r--r--r--    1 ftp      net          7817 Aug 16  1999 README.1
+-r--r--r--    1 ftp      net         71493 Aug 11  1999 systems
+-r--r--r--    1 ftp      net         17311 Jul  6  1999 vendors
+
+./FD:
+total 20
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 1995
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 1996
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 1997
+drwxr-xr-x    2 ftp      net          4096 Sep 21  2005 1998
+drwxr-xr-x    2 ftp      net          4096 Apr 25  2000 1999
+
+./FD/1995:
+total 4
+-rw-r--r--    1 ftp      net          1930 Aug 23  1996 fcontrol.seq
+
+./FD/1996:
+total 428
+-r--r--r--    1 ftp      net          1505 Oct  7  1996 acheck.lst
+-r--r--r--    1 ftp      net          1906 Oct  7  1996 acheck.seq
+-r--r--r--    1 ftp      net         17913 Aug 23  1996 ansi.seq
+-r--r--r--    1 ftp      net           867 Oct  7  1996 arrays.lst
+-r--r--r--    1 ftp      net          1540 Oct  7  1996 arrays.seq
+-r--r--r--    1 ftp      net          2043 Aug 23  1996 bipolar.fth
+-r--r--r--    1 ftp      net          5998 Aug 30  1996 discp.fth
+-r--r--r--    1 ftp      net          6750 Aug 23  1996 dynmem.seq
+-r--r--r--    1 ftp      net         18340 Aug 23  1996 elvey1.fth
+-r--r--r--    1 ftp      net          7340 Aug 23  1996 elvey2.fth
+-r--r--r--    1 ftp      net          7852 Aug 23  1996 fcontrol.4th
+-r--r--r--    1 ftp      net        126976 Aug 26  1996 fcontrol.exe
+-r--r--r--    1 ftp      net          2071 Aug 23  1996 fcontrol.fth
+-r--r--r--    1 ftp      net         71734 Aug 26  1996 fcontrol.ovl
+-r--r--r--    1 ftp      net          1930 Aug 23  1996 fcontrol.seq
+-r--r--r--    1 ftp      net          6975 Oct 10  1996 fileio.fth
+-r--r--r--    1 ftp      net           862 Aug 23  1996 fpc2ans.seq
+-r--r--r--    1 ftp      net          3289 Oct 10  1996 freq.fth
+-r--r--r--    1 ftp      net         10050 Aug 23  1996 fsl-util.fth
+-r--r--r--    1 ftp      net         12848 Aug 23  1996 fsl-util.seq
+-r--r--r--    1 ftp      net          2795 Oct 10  1996 gensig.fth
+-r--r--r--    1 ftp      net           603 Aug 23  1996 hbridge.fth
+-r--r--r--    1 ftp      net          1570 Aug 23  1996 ports.fth
+-r--r--r--    1 ftp      net          2448 Aug 23  1996 pport.fth
+-r--r--r--    1 ftp      net          2148 Aug 23  1996 pwm.fth
+-r--r--r--    1 ftp      net          3040 Oct 10  1996 regen.fth
+-r--r--r--    1 ftp      net          6529 Aug 23  1996 spi.fth
+-r--r--r--    1 ftp      net          2734 Aug 23  1996 steppers.seq
+-r--r--r--    1 ftp      net          8992 Aug 23  1996 structs1_9.seq
+-r--r--r--    1 ftp      net         22654 Jan  3  1997 structs.fth
+lrwxrwxrwx    1 root     root           11 Sep 21  2005 structs.seq -> structs.fth
+-r--r--r--    1 ftp      net           265 Aug 23  1996 usec.seq
+-r--r--r--    1 ftp      net          2742 Aug 23  1996 XanHash.seq
+
+./FD/1997:
+total 116
+-r--r--r--    1 ftp      net          2450 Sep  1  1997 lms.fth
+-r--r--r--    1 ftp      net           160 Aug 27  1997 lsq.data
+-r--r--r--    1 ftp      net          3022 Aug 27  1997 lsq.fth
+-r--r--r--    1 ftp      net          4215 Jan 16  1997 pid.fth
+-r--r--r--    1 ftp      net         87288 Aug 28  1997 pyg_embl.exe
+-r--r--r--    1 ftp      net          3593 Sep  1  1997 rls.fth
+
+./FD/1998:
+total 44
+-r--r--r--    1 ftp      net          1106 Mar  3  1998 lsq.4th
+-r--r--r--    1 ftp      net         21618 Mar  3  1998 Profiler.zip
+-r--r--r--    1 ftp      net         14202 May 25  1998 Wavrik.txt
+
+./FD/1999:
+total 40
+-r--r--r--    1 ftp      net          4684 Aug 16  1999 CrakPoly.zip
+-r--r--r--    1 ftp      net         15303 Jul 23  1999 PICasmRM.zip
+-r--r--r--    1 ftp      net          8501 Aug 14  1999 ReedSol.zip
+-r--r--r--    1 ftp      net           891 Aug 16  1999 UsrStack.zip
+
+./FIG:
+total 16
+-r--r--r--    1 ftp      net          6037 Aug 23  1996 bofd95.txt
+drwxr-xr-x    2 ftp      net          4096 Apr  3  2000 fig
+-r--r--r--    1 ftp      net          2919 Aug 23  1996 presmsg.txt
+
+./FIG/fig:
+total 0
+
+./Literature:
+total 7496
+-r--r--r--    1 ftp      net           730 Aug 23  1996 00Index
+-r--r--r--    1 ftp      net         10646 Aug 23  1996 8231a.zip
+-r--r--r--    1 ftp      net        564134 Aug 18  1999 ansforth.pdf
+-r--r--r--    1 ftp      net         67117 Aug 23  1996 ansforth.ps
+-r--r--r--    1 ftp      net        211793 Aug 23  1996 dpans2_1.zip
+-r--r--r--    1 ftp      net        214076 Aug 23  1996 dpans22a.zip
+-r--r--r--    1 ftp      net        211800 Aug 23  1996 dpans2_2.zip
+-r--r--r--    1 ftp      net        526131 Aug 23  1996 dpans6_ps.zip
+-r--r--r--    1 ftp      net        249990 Dec 16  1996 dpans6v3_2.zip
+-r--r--r--    1 ftp      net        250153 Dec 22  1996 dpans6v3_3.zip
+-r--r--r--    1 ftp      net        458246 Aug 23  1996 dpans6.zip
+-r--r--r--    1 ftp      net        161126 Aug 23  1996 dpans94a.zip
+-r--r--r--    1 ftp      net         18022 Apr  6  1999 forth_coding.txt
+-r--r--r--    1 ftp      net          9730 Apr  6  1999 forth_style.txt
+-r--r--r--    1 ftp      net       1183792 Aug 23  1996 fprimer.zip
+-r--r--r--    1 ftp      ftp           460 Mar 28 00:58 fth79std.txt
+-r--r--r--    1 ftp      ftp         23849 Mar 28 00:58 fth79std.zip
+-r--r--r--    1 ftp      net         12897 Aug 23  1996 hornbook.intro
+-r--r--r--    1 ftp      net         37552 Aug 23  1996 intro.zip
+-r--r--r--    1 ftp      net        198862 Mar  2  1998 mofXIX5.pdf
+lrwxrwxrwx    1 root     root           41 Sep 21  2005 mops.faq.txt -> ../Compilers/native/mac/Mops/mops.faq.txt
+-r--r--r--    1 ftp      net         32293 Aug 23  1996 NOBLE004.HTM.txt
+-r--r--r--    1 ftp      net         92772 Aug 23  1996 randnum.tar.gz
+-r--r--r--    1 ftp      net        125203 Aug 23  1996 randnum.tar.Z
+-r--r--r--    1 ftp      net           273 Aug 23  1996 read_me.8231a
+-r--r--r--    1 ftp      net       1012169 Aug 23  1996 rtf5pps.zip
+-r--r--r--    1 ftp      net       1016780 Mar 10  1994 rtfv5p3.ps
+-r--r--r--    1 ftp      net        850217 Apr  9  1999 rtfv5.pdf
+
+./Misc:
+total 796
+lrwxrwxrwx    1 root     root           32 Sep 21  2005 f2pic.exe -> ../Compilers/cross/PIC/f2pic.exe
+-r--r--r--    1 ftp      net         32658 Aug 23  1996 froth-0.40a-bin.zip
+-r--r--r--    1 ftp      net         59904 Aug 23  1996 froth-0.40a-src.zip
+-rw-r--r--    1 ftp      net          2719 Aug 23  1996 froth.doc
+-r--r--r--    1 ftp      net        318322 Aug 23  1996 frothsrc.zip
+-r--r--r--    1 ftp      net        329865 Aug 23  1996 froth.zip
+-r--r--r--    1 ftp      net         20808 Dec 30  2006 PalIntro.zip
+-rw-r--r--    1 ftp      net         24190 Jul 22  1997 vforth.tar.Z
+-rw-r--r--    1 ftp      net          1104 Jul 22  1997 vforth.txt
+
+./Reviewed:
+total 4488
+-rw-r--r--    1 ftp      net           780 Aug 23  1996 00Index
+-rw-r--r--    1 ftp      net        202609 Aug 23  1996 alefth.zoo
+-rw-r--r--    1 ftp      net          1741 Aug 23  1996 ANNOUNCE.alefth
+-rw-r--r--    1 ftp      net         11452 Aug 23  1996 atlast.txt
+-rw-r--r--    1 ftp      net        306293 Aug 23  1996 atlast.zip
+drwxr-xr-x    2 ftp      net          4096 Apr  7  2000 DSP
+-rw-r--r--    1 ftp      net        145326 Aug 23  1996 forthmacs.arc
+-rw-r--r--    1 ftp      net          1179 Aug 23  1996 forthmacs.msg
+-rw-r--r--    1 ftp      net        625839 Aug 23  1996 froth-0.41b.zip
+-rw-r--r--    1 ftp      net        340390 Aug 23  1996 frothsrc.zip
+-rw-r--r--    1 ftp      net        724212 Aug 23  1996 froth.zip
+-rw-r--r--    1 ftp      net        123754 Aug 23  1996 jx4a0317.lzh
+-rw-r--r--    1 ftp      net        120562 Aug 23  1996 jx4nt110.zip
+-rw-r--r--    1 ftp      net          8430 Aug 23  1996 lmians.4th
+-rw-r--r--    1 ftp      net        245953 Aug 23  1996 ooflst.zip
+-rw-r--r--    1 ftp      net         13635 Aug 23  1996 oof.readme
+-rw-r--r--    1 ftp      net        211142 Aug 23  1996 oof.zip
+-rw-r--r--    1 ftp      net        458496 Aug 23  1996 timbre1.tar.Z
+-rw-r--r--    1 ftp      net        526280 Aug 23  1996 timbre.mac
+-rw-r--r--    1 ftp      net        355521 Aug 23  1996 timbre.zip
+-rw-r--r--    1 ftp      net          5892 May 26  1994 wpforth.txt
+-rw-r--r--    1 ftp      net         57484 Aug 23  1996 wpforth.zip
+
+./Reviewed/DSP:
+total 176
+-rw-r--r--    1 ftp      net        136624 Aug 23  1996 dspkit.zip
+-rw-r--r--    1 ftp      net         12918 Aug 23  1996 hfrfax.zip
+-rw-r--r--    1 ftp      net         16413 Aug 23  1996 project.txt
+
+./Scientific:
+total 1204
+-rw-r--r--    1 ftp      net          3342 Aug 23  1996 00Index
+-r--r--r--    1 ftp      net          4822 Aug 23  1996 adaptint.seq
+-r--r--r--    1 ftp      net          4885 May 17  1999 adpt_g3.fth
+-r--r--r--    1 ftp      net          3536 Aug 23  1996 aitken.seq
+-r--r--r--    1 ftp      net          9684 Aug 23  1996 amoeba.seq
+-rw-r--r--    1 ftp      net          5429 Jul 31  1998 arrays.txt
+-r--r--r--    1 ftp      net          6145 Aug 23  1996 backsub.seq
+-r--r--r--    1 ftp      net         31347 May  7  1999 big.fth
+-r--r--r--    1 ftp      net          9931 May 28  1998 cmath.fth
+-r--r--r--    1 ftp      net         10303 Aug 23  1996 complex2.seq
+-r--r--r--    1 ftp      net          8121 Aug 23  1996 complex3.seq
+-r--r--r--    1 ftp      net         10587 Aug 23  1996 complex4.seq
+-r--r--r--    1 ftp      net          7952 Aug 23  1996 complex.seq
+-r--r--r--    1 ftp      net          5414 Aug 23  1996 crc.fth
+-r--r--r--    1 ftp      net          1113 Aug 23  1996 cube_rt.seq
+-r--r--r--    1 ftp      net          6048 Aug 23  1996 cubic.seq
+-r--r--r--    1 ftp      net          4732 Aug 23  1996 dates.seq
+-r--r--r--    1 ftp      net          4100 Aug 23  1996 dets.seq
+-r--r--r--    1 ftp      net          9595 Aug 23  1996 dfourier.seq
+-r--r--r--    1 ftp      net          2133 Aug 23  1996 divdiffs.seq
+lrwxrwxrwx    1 ftp      net            19 Sep 21  2005 dynmem.seq -> ../Tools/dynmem.seq
+-r--r--r--    1 ftp      net          3574 Aug 23  1996 elip12.seq
+-r--r--r--    1 ftp      net          2658 Aug 23  1996 elip.seq
+-r--r--r--    1 ftp      net          2517 Aug 23  1996 expint.seq
+-r--r--r--    1 ftp      net          1902 Aug 23  1996 factorl.seq
+-r--r--r--    1 ftp      net         12582 Aug 23  1996 ffourier.seq
+-r--r--r--    1 ftp      net          6975 Feb 21  1998 fileio.fth
+-r--r--r--    1 ftp      net          3397 Aug 23  1996 find.seq
+-rw-r--r--    1 ftp      net          7743 Sep 21  2005 fpout16.f
+-r--r--r--    1 ftp      net         12941 Sep 23  2005 fpout18.f
+-r--r--r--    1 ftp      net         15778 Sep  4  2006 fpout20.f
+-r--r--r--    1 ftp      net         14412 Jun  6  2007 fpout22.f
+-r--r--r--    1 ftp      net          9581 Jun  6  2007 fpout32.f
+-r--r--r--    1 ftp      net         10337 Nov 18  2007 fpout33.f
+-r--r--r--    1 ftp      net         10236 Jan 25  2008 fpout34.f
+lrwxrwxrwx    1 ftp      net            35 Sep 21  2005 fsl_util.f -> ../Applications/Win32For/fsl_util.f
+-r--r--r--    1 ftp      net         12361 Aug 23  1996 fsl-util.fo
+-r--r--r--    1 ftp      net         10050 Aug 23  1996 fsl-util.fth
+-r--r--r--    1 ftp      net          9965 May 27  1998 fsl-utilg.fth
+-r--r--r--    1 ftp      net         12848 Aug 23  1996 fsl_util.seq
+-rw-r--r--    1 ftp      net          1751 Jul  1  1995 fslzip.txt
+-rw-r--r--    1 ftp      net        187392 Aug 23  1996 fslzip.zip
+-r--r--r--    1 ftp      net          7760 Aug 23  1996 gamma.seq
+-r--r--r--    1 ftp      net          5161 Aug 23  1996 gauleg.seq
+-r--r--r--    1 ftp      net         24358 Feb 20  1997 gaussj.seq
+-r--r--r--    1 ftp      net          3642 Aug 23  1996 gauss.seq
+-rw-r--r--    1 ftp      net          4778 Jul 31  1998 guidelines.txt
+-r--r--r--    1 ftp      net          5511 Jun 12  1998 hartley.seq
+-r--r--r--    1 ftp      net          4549 Aug 23  1996 hartley.tst
+-r--r--r--    1 ftp      net          3904 Aug 23  1996 hermite.seq
+-r--r--r--    1 ftp      net          4566 Aug 23  1996 hilbert.seq
+-r--r--r--    1 ftp      net          3329 Aug 23  1996 horner.seq
+-r--r--r--    1 ftp      net          8525 Aug 23  1996 integral.fth
+-r--r--r--    1 ftp      net          3242 Aug 23  1996 invm.seq
+-r--r--r--    1 ftp      net          6799 Apr  2  1999 isaac.fth
+-r--r--r--    1 ftp      net          1073 Aug 23  1996 jvn-util.fo
+-r--r--r--    1 ftp      net          3453 Aug 23  1996 kande.seq
+-r--r--r--    1 ftp      net          3130 Aug 23  1996 lagrange.seq
+-r--r--r--    1 ftp      net         17099 Feb 20  1997 levmarq.seq
+-r--r--r--    1 ftp      net        170152 Jul  1  1999 Library.tgz
+-r--r--r--    1 ftp      net           963 Aug 23  1996 logistic.seq
+-r--r--r--    1 ftp      net         11174 Aug 23  1996 lufact.seq
+-r--r--r--    1 ftp      net          6063 Aug 23  1996 newton.seq
+-r--r--r--    1 ftp      net         13624 Aug 23  1996 pcylfun.seq
+-r--r--r--    1 ftp      net          7080 Aug 23  1996 polrat.seq
+-r--r--r--    1 ftp      net         10442 Aug 23  1996 polys.seq
+-r--r--r--    1 ftp      net          8029 Aug 23  1996 r250.seq
+-r--r--r--    1 ftp      net          4190 Aug 23  1996 ran4.seq
+-r--r--r--    1 ftp      net         13676 Jan 26  1999 randdist.fth
+-r--r--r--    1 ftp      net          2997 Aug 23  1996 regfalsi.seq
+-r--r--r--    1 ftp      net         17595 Aug 23  1996 runge4.seq
+-r--r--r--    1 ftp      net          6440 Aug 23  1996 seriespw.seq
+-r--r--r--    1 ftp      net          5682 Jul  1  1999 shanks.fth
+-r--r--r--    1 ftp      net          2263 Aug 23  1996 shellsrt.seq
+-r--r--r--    1 ftp      net          3544 Aug 23  1996 sph_bes.seq
+-rw-r--r--    1 ftp      net         10447 Sep 30  1999 status.txt
+-r--r--r--    1 ftp      net         22654 Dec 19  1996 structs.fth
+lrwxrwxrwx    1 ftp      net            11 Sep 21  2005 structs.seq -> structs.fth
+-rw-r--r--    1 ftp      net         19910 Aug 23  1996 structs.txt
+-r--r--r--    1 ftp      net          8476 Aug 23  1996 sunday.seq
+-r--r--r--    1 ftp      net         36814 Aug 23  1996 svd.seq
+-r--r--r--    1 ftp      net          3914 Aug 23  1996 telscop1.seq
+-r--r--r--    1 ftp      net          4104 Aug 23  1996 telscop2.seq
+-r--r--r--    1 ftp      net          4835 May 17  1999 trap_int.fth
+-r--r--r--    1 ftp      net          2754 Aug 23  1996 umd.fo
+-rw-r--r--    1 ftp      net          1678 Aug 23  1996 Version.num
+-r--r--r--    1 ftp      net         40923 Aug 23  1996 vulgar.fth
+-r--r--r--    1 ftp      net          4111 May 19  1998 walsh.fth
+
+./TinyBoot:
+total 2468
+-rw-r--r--    1 ftp      net       1960006 May 22  2007 ff303.zip
+-rw-r--r--    1 ftp      net          2983 May 22  2007 line.txt
+-rw-r--r--    1 ftp      net        339382 May 22  2007 man0108.pdf
+-rw-r--r--    1 ftp      net         56891 May 22  2007 spixlex.txt
+-rw-r--r--    1 ftp      net         62598 May 22  2007 TOFintro.pdf
+-rw-r--r--    1 ftp      net         58909 May 22  2007 usbmouso.txt
+-rw-r--r--    1 ftp      net         14440 May 22  2007 usbmouss.txt
+
+./Tools:
+total 472
+-rw-r--r--    1 ftp      net           450 Aug 23  1996 00Index
+-r--r--r--    1 ftp      net          2508 Aug 23  1996 4th2txt.c
+-r--r--r--    1 ftp      net         15630 Aug 23  1996 ansify.seq
+-r--r--r--    1 ftp      net         17913 Aug 23  1996 ansi.seq
+-r--r--r--    1 ftp      net          9757 Aug 23  1996 asm386.fth
+-r--r--r--    1 ftp      net         13761 Apr  9  2008 concordance.fth
+-r--r--r--    1 ftp      net         24154 Aug 23  1996 debugger.ans
+-r--r--r--    1 ftp      net          6750 Aug 23  1996 dynmem.seq
+-r--r--r--    1 ftp      net          1726 Aug 23  1996 enums.fth
+-r--r--r--    1 ftp      net          6975 Feb 18  1998 fileio.f
+-r--r--r--    1 ftp      net          6976 Feb 18  1998 fileio.nofloat.f
+-r--r--r--    1 ftp      net          5758 Aug 23  1996 fileio.seq
+-r--r--r--    1 ftp      net         27117 Aug 23  1996 forth.el
+-r--r--r--    1 ftp      net           862 Aug 23  1996 fpc2ans.seq
+-r--r--r--    1 ftp      net         16174 Apr  9  2008 ftags.fth
+-r--r--r--    1 ftp      net         12275 Apr 14  1999 gfob-0.1.0.tar.gz
+-r--r--r--    1 ftp      net          1321 Apr 14  1999 gfob.txt
+-r--r--r--    1 ftp      net         31072 Aug 23  1996 gforth.el
+drwxr-xr-x    2 ftp      net          4096 Apr  9  2008 pfe
+-r--r--r--    1 ftp      net           432 May 20  1999 stackex.f
+-r--r--r--    1 ftp      net          1920 May 20  1999 stacks.f
+-r--r--r--    1 ftp      net         22654 Dec 19  1996 structs.fth
+-r--r--r--    1 ftp      net          2768 Aug 23  1996 txt24th.c
+lrwxrwxrwx    1 root     root           32 Sep 21  2005 uudecode.seq -> ../Applications/ANS/uudecode.seq
+lrwxrwxrwx    1 root     root           32 Sep 21  2005 uuencode.seq -> ../Applications/ANS/uuencode.seq
+-r--r--r--    1 ftp      net        200832 Aug 23  1996 zipit.bin
+
+./Tools/pfe:
+total 32
+-r--r--r--    1 ftp      net         13628 Aug 23  1996 concordance.fth
+-r--r--r--    1 ftp      net         16040 Aug 23  1996 ftags.fth
+
+./Unreviewed:
+total 184
+-rw-r--r--    1 ftp      net           272 Aug 23  1996 00Index
+-rw-r--r--    1 ftp      net          2372 Aug 23  1996 boxmul.seq
+-rw-r--r--    1 ftp      net        145326 Aug 23  1996 forthmacs.arc
+-rw-r--r--    1 ftp      net          1179 Aug 23  1996 forthmacs.msg
+-rw-r--r--    1 ftp      net          6110 Aug 23  1996 quasi.seq
+-rw-r--r--    1 ftp      net          5011 Aug 23  1996 sdeint.seq
+-rw-r--r--    1 ftp      net          7779 Aug 23  1996 simannl.seq

@@ -1,0 +1,651 @@
+---[ Graphics of the Third Kind, Part III ]-----------[03/01/2007]---
+
+                         by Timothy Trussell
+
+---[ Where We Are ]--------------------------------------------------
+
+Last column, we used code that allowed us to perform solid fills on
+four-coordinate polygon images that can be animated.
+
+This time, we will explore the implementation of texturizing the fill
+component of the polygon image, which gives us a much more visually
+appealing shading to our polygons than the standard solid color
+method used in GotTK2.
+
+There is, however, a price to be paid for the advanced methods of
+shading we will be getting into, and that price is speed.
+
+In the single color, solid fill method, we have the fastest method of
+filling the polygon sides available, since the core of the fill is
+done with the STOSB and STOSD opcodes
+
+The advanced methods require us to fall back to plotting individual
+pixels for each element of the polygon.
+
+The reason for this is found in the description of how these advanced
+shading methods are to be implemented.
+
+---[ Gouraud Shading ]-----------------------------------------------
+
+What follows is an extract from a very famous book on computer
+graphics titled:
+
+           Computer Graphics: Principles and Practice
+           by Foley, Van Dam, Feiner and Hughes
+           Addison Wesley press, 2nd Edition, 1990
+
+===[ Start Extract ]=================================================
+
+{'Gouraud' is pronounced rather like goo (rhyming with 'hood') row
+           (rhyming with 'how'); ie. the 'd' is silent}
+
+'Gouraud shading' [GOUR71], also called 'intensity interpolation
+shading' or 'color interpolation shading', eliminates intensity
+discontinuities. Color Plate II.30 uses Gouraud shading. Although
+most of the Mach banding of Color Plate II.29 is no longer visible in
+Color Plate II.30, the bright ridges on objects such as the torus and
+cone are Mach bands caused by a rapid, although not discontinuous,
+change in the slope of the intensity curve; Gouraud shading does not
+completely eliminate such intensity changes.
+
+Gouraud shading extends the concept of interpolated shading applied
+to individual polygons by interpolating polygon vertex illumination
+values that take into account the surface being approximated. The
+Gouraud shading process requires that the normal {perpendicular
+vector} be known for each vertex of the polygonal mesh. Gouraud was
+able to compute these 'vertex normals' directly from an analytical
+description of the surface. Alternatively, if the vertex normals are
+not stored with the mesh and cannot be determined directly from the
+actual surface, then, Gouraud suggested, we can approximate them by
+averaging the surface normals of all polygonal facets sharing each
+vertex (Fig 16.18). If an edge is meant to be visible (as at the
+joint between a plane's wing and body), then we find two vertex
+normals, one for each side of the edge, by averaging the normals of
+polygons on each side of the edge separately. Normals were not
+averaged across the teapot's patch cracks in Color Plate II.30.
+
+The next step in Gouraud shading is to find 'vertex intensities' by
+using the vertex normals with any desired illumination model.
+Finally, each polygon is shaded by linear interpolation of vertex
+intensities along each edge and then between edges along each scan
+line in the same way that we describe interpolating z values in
+Section 15.4. The term 'Gouraud shading' is often generalized to
+refer to intensity interpolation shading of even a single polygon
+in isolation, or to the interpolation of arbitrary colors associated
+with polygon vertices {as is the case in computer games}.
+
+The interpolation along edges can easily be integrated with the
+scan-line visible-surface algorithm of section 15.6. With each edge,
+we store for each color component {red, green and blue} the starting
+intensity and the change of intensity for each unit change in y. A
+visible span on a scan line is filled in by interpolating the
+intensity values of the two edges bounding the span. As in all
+linear-interpolation algorithms, a difference equation may be used
+for increased efficiency.
+===================================================[ End Extract ]===
+
+The last paragraph of the above extract is the key to what we need to
+implement to be able to perform Gouraud shading on our polygons, and
+the calculations for the intensities to be used have to be done on
+a pixel-by-pixel basis, hence the speed reduction of the algorithm.
+
+The call to the triangluar polygon fill routine is in the form:
+
+           gpoly3 ( &buf x1 y1 x2 y2 x3 y3 c1 c2 c3 -- )
+
+where
+
+      &buf is the address of the double buffer to draw pixels to,
+      x1/2/3 y1/2/3 are the x/y coordinates of the three corners,
+      c1/2/3 are the color intensities at the points A,B & C.
+
+As in the previous column, we will use a modified Bresenham Line
+routine to scan the edges of the line segments, building the
+Horizontal Line List needed to allow us to draw fast horizontal
+lines to fill the image with, but we will also add another element
+to the list - the color intensity value for the left and right side
+of the horizontal line.  These interpolated values will then be used
+by the line drawing routine to plot pixels that will be interpolated
+to be shaded between those two intensities.
+
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | |  A  | | | | | | | | | | | | | | | | 92
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | | |X| | | | | | | | | | | | | | | | | 93
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | | |X|X| | | | | | | | | | | | | | | | 94
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | | |X| |X| | | | | | | | | | | | | | | 95
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | | |X| | |X| | | | | | | | | | | | | | 96
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | | |X| | | |X| | | | | | | | | | | | | 97
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | | |X| | | | |X| | | | | | | | | | | | 98
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | | |X| | | | | |X| | | | | | | | | | | 99
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | | |X| | |+| | | |X| B | | | | | | | | 100
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | | |X| | | | | |X| | | | | | | | | | | 101
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | | |X| | | | |X| | | | | | | | | | | | 102
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | | |X| | | |X| | | | | | | | | | | | | 103
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | | |X| | |X| | | | | | | | | | | | | | 104
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | | |X| |X| | | | | | | | | | | | | | | 105
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | | |X|X| | | | | | | | | | | | | | | | 106
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | | |X| | | | | | | | | | | | | | | | | 107
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | |  C  | | | | | | | | | | | | | | | | 108
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+         1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+         4 4 4 5 5 5 5 5 5 5 5 5 5 6 6 6 6 6 6 6 6 6 6 7 7 7 7
+         7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 7 2
+
+Now, to start the code description, we'll add the data components:
+
+        {1WORD}-DEF 200 [] pel[]-obj pel-ndx
+
+        pel[]-obj HeapAllot LeftX[]
+        pel[]-obj HeapAllot RightX[]
+        pel[]-obj HeapAllot LColor[]
+        pel[]-obj HeapAllot RColor[]
+
+These arrays are used to hold the Left and Right X coordinates for
+each Y line of the polygon being drawn, as in the previous column.
+We are adding the LColor and RColor arrays, to hold the intensity
+values that are interpolated by the ScanEdge code while processing
+the line segments AB, BC and AC.
+
+To facilitate making the code easier to read, I will save all the
+parameters to VALUEs.
+
+        value gx1
+        value gx2
+        value gx3
+        value gy1
+        value gy2
+        value gy3
+        value gc1
+        value gc2
+        value gc3
+        value gbuf
+
+and create more VALUEs for the working variables
+
+        value deltax_l1
+        value deltax_l2
+        value deltax_r
+        value delta_c1
+        value delta_c2
+        value delta_c3
+        value startx
+        value startc
+        value qx
+        value qc
+
+Now, for the main polygon routine.  All passed parameters are to be
+considered to be in the format of standard 32-bit integers.
+
+        : gpoly3 ( &buf x1 y1 x2 y2 x3 y3 c1 c2 c3 -- )
+
+First, save the parameters to the working VALUEs
+
+          to gc3 to gc2 to gc1
+          to gy3 to gx3
+          to gy2 to gx2
+          to gy1 to gx1
+          to gbuf
+
+Next, we need to sort the parameters by the Y values.  The first step
+is to ensure that Y1 is less than Y3:
+
+          gy1 gy3 > if            \ y3 must be the largest y-value
+            gy3 gy1 to gy3 to gy1
+            gx3 gx1 to gx3 to gx1
+            gc3 gc1 to gc3 to gc1
+          then
+
+And then we ensure that Y1 is less than Y2
+
+          gy1 gy2 > if
+            gy2 gy1 to gy2 to gy1 \ y1 must be the smallest y-value
+            gx2 gx1 to gx2 to gx1
+            gc2 gc1 to gc2 to gc1
+          then
+
+Finally, ensure that Y2 is less than Y3
+
+          gy2 gy3 > if
+            gy2 gy3 to gy2 to gy3 \ y2 must be the middle value
+            gx2 gx3 to gx2 to gx3
+            gc2 gc3 to gc2 to gc3
+          then
+
+Referencing the ASCII drawing above, at this point we are certain
+that the coordinates are now ordered so that A < B < C, based on the
+passed Y coordinates for each point.
+
+Now, we initialize the Delta values for pixel coordinate X1/X2, and
+C1/C2:
+
+          gy2 gy1 - 0 <> if
+            gx2 gx1 - 8 LSHIFT gy2 gy1 - /
+            gc2 gc1 - 8 LSHIFT gy2 gy1 - /
+          else
+            0 0
+          then
+          to delta_c1
+          to deltax_l1
+
+Now, we process for line segment AB (top to middle point), saving the
+points to the LeftX array, and calculating the color intensity also,
+saving the intensity to the LColor array.
+
+We aren't worried about line segment actually being the Right side of
+this polygon, as the coordinates are adjusted correctly in the Line
+drawing routine.
+
+          gx1 8 LSHIFT to startx
+          gc1 8 LSHIFT to startc
+
+          gy2 1+ gy1 do                 \ Calculate segment [Y1|Y2]
+            startx 8 RSHIFT LeftX[] i pel-ndx !
+            deltax_l1 +to startx
+            startc 8 RSHIFT LColor[] i pel-ndx !
+            delta_c1 +to startc
+          loop
+
+Initialize the Delta values for pixel coordinate X2/X3, and C2/C3:
+
+          gy3 gy2 - 0 <> if
+            gx3 gx2 - 8 LSHIFT gy3 gy2 - /
+            gc3 gc2 - 8 LSHIFT gy3 gy2 - /
+          else
+            0 0
+          then
+          to delta_c2
+          to deltax_l2
+
+And process line segment BC (middle to bottom):
+
+          gx2 8 LSHIFT to startx
+          gc2 8 LSHIFT to startc
+
+          gy3 1+ gy2 do                 \ Calculate segment [Y2|Y3]
+            startx 8 RSHIFT LeftX[] i pel-ndx !
+            deltax_l2 +to startx
+            startc 8 RSHIFT LColor[] i pel-ndx !
+            delta_c2 +to startc
+          loop
+
+Initialize the Delta values for pixel coordinate X1/X3, and C1/C3:
+
+          gy3 gy1 - 0 <> if
+            gx3 gx1 - 8 LSHIFT gy3 gy1 - /
+            gc3 gc1 - 8 LSHIFT gy3 gy1 - /
+          else
+            0 0
+          then
+          to delta_c3
+          to deltax_r
+
+And process the final segment, AC (top to bottom):
+
+          gx1 8 LSHIFT to startx
+          gc1 8 LSHIFT to startc
+
+          gy3 1+ gy1 do                 \ Calculate segment [Y1|Y3]
+            i gy2 = if
+              startx 8 RSHIFT to qx
+              startc 8 RSHIFT to qc
+            then
+            startx 8 RSHIFT RightX[] i pel-ndx !
+            deltax_r +to startx
+            startc 8 RSHIFT RColor[] i pel-ndx !
+            delta_c3 +to startc
+          loop
+
+Now that all the left/right edges and initial color intensities have
+been calculated, we process the Horizontal Line List and draw all the
+lines in the polygon, filling the image:
+
+          gx2 qx - 0 <> if
+            gc2 qc - 8 LSHIFT gx2 qx - / %Delta !
+            gy3 1+ gy1 do
+              gbuf
+              LeftX[] i pel-ndx @
+              RightX[] i pel-ndx @
+              i
+              LColor[] i pel-ndx @
+              RColor[] i pel-ndx @
+              GHLine
+            loop
+          then
+        ;
+
+---[ Breaking it down a little finer ]-------------------------------
+
+The key to the ScanEdge and color interpolation is that these calcs
+are being done with Fixed Point calculations, the purpose being to
+give us a higher level of accuracy than is available with the normal
+integer operations, while avoiding the time overhead of Floating
+Point manipulations.  This is accomplished by using the lowest 8 bits
+of the number as the fractional amount, with the highest 24 bits used
+as the integer value (24.8 format).
+
+                           32-bit Integer
++----------------+----------------+----------------+----------------+
+|1F1E1D1C1B1A1918|1716151413121110|0F0E0D0C0B0A0908|0706050403020100|
++----------------+----------------+----------------+----------------+
+   Bits 24..31      Bits 16..23       Bits 8..15        Bits 0..7
+
+                 24-bit Integer with 8-bit Fractional
++----------------+----------------+----------------+----------------+
+|<------------ Used as 24-bit Integer ------------>|<- Fractional ->|
++----------------+----------------+----------------+----------------+
+
+---[Note]------------------------------------------------------------
+If more precision were required, we could easily change this to use
+the lowest 16 bits as the fractional, with the highest 16 bits for
+the integer (16.16 format), as we are using this to map the physical
+X coordinates of the video display. As it is, 24-bit integers have a
+value range of [0..16,777,215] which is quite sufficient for us.
+--------------------------------------------------------[End Note]---
+
+Here, we calc ((X2-X1)*256)/(Y2-Y1), which gives us DeltaX in the
+Fixed Point format.
+
+Then, we calc ((C2-C1)*256)/(Y2-Y1), giving us DeltaC, again as a
+Fixed Point value.
+
+          gy2 gy1 - 0 <> if
+            gx2 gx1 - 8 LSHIFT gy2 gy1 - /
+            gc2 gc1 - 8 LSHIFT gy2 gy1 - /
+          else
+            0 0
+          then
+          to delta_c1
+          to deltax_l1
+
+In the ScanEdge sequence, we convert X1 and C1 to Fixed numbers
+
+        startx = X1*256
+        startc = C1*256
+
+In the loop, each LeftX element is set to startx/256, and the LColor
+element is set to startc/256. These are the high 24-bits of the
+startx/startc values, which we get by dropping the lowest 8 bits (by
+dividing them by 256).
+
+The Delta values are then added to the startx and startc values.
+
+          gx1 8 LSHIFT to startx
+          gc1 8 LSHIFT to startc
+
+          gy2 1+ gy1 do                 \ Calculate segment [Y1|Y2]
+            startx 8 RSHIFT LeftX[] i pel-ndx !
+            deltax_l1 +to startx
+            startc 8 RSHIFT LColor[] i pel-ndx !
+            delta_c1 +to startc
+          loop
+
+The above process is repeated twice more, for the BC and AC segments.
+
+The final stage is to process the Horizontal Line List that has just
+been created by the above three sequences.
+
+          gx2 qx - 0 <> if
+            gc2 qc - 8 LSHIFT gx2 qx - / %Delta !
+            gy3 1+ gy1 do
+              gbuf
+              LeftX[] i pel-ndx @
+              RightX[] i pel-ndx @
+              i
+              LColor[] i pel-ndx @
+              RColor[] i pel-ndx @
+              GHLine
+            loop
+          then
+
+---[ Gouraud Line Drawing ]------------------------------------------
+
+This requires a modified HLine function that plots the individual
+pixels on each of the horizontal lines, rather than just plotting all
+the pixels in the same color. This change comes from needing the
+routine to interpolate the color intensity for each pixel on the fly.
+
+        variable %Delta
+
+        code GHLine ( &buf x1 x2 y c1 c2 -- )
+                            bx  push    \ all parms to stack
+                         bp sp  xchg    \ setup stack frame
+
+Set EBX to the double buffer address, to use as our plot pointer
+
+               5 cells [bp] bx  mov     \ bx=&buf
+
+If x1>x2 then swap them, as well as the c1/c2 values
+
+               4 cells [bp] ax  mov
+               3 cells [bp] ax  cmp
+                          1 L#  jl      \ continue if x1<x2
+               3 cells [bp] dx  mov     \ else swap x1/x2
+               ax 3 cells [bp]  mov
+               dx 4 cells [bp]  mov
+               1 cells [bp] ax  mov     \ and swap c1/c2
+               0 cells [bp] dx  mov
+               ax 0 cells [bp]  mov
+               dx 1 cells [bp]  mov
+        1 L:
+
+Calculate the Y*320+X1+&buf value for the initial point
+
+               2 cells [bp] ax  mov     \ ax=y
+                        6 # cl  mov
+                         ax cl  shl     \ ax=y*64
+                         ax bx  add     \ bx=&buf[y*64]
+                        2 # cl  mov
+                         ax cl  shl     \ ax=y*256
+                         ax bx  add     \ bx=&buf[y*320]
+               4 cells [bp] bx  add     \ bx=&buf[y*320+x1]
+
+Convert C1 to a Fixed Point (24.8 format) value, in EAX
+
+               1 cells [bp] ax  mov     \ ax=c1
+                        8 # cl  mov
+                         ax cl  shl     \ c1=c1<<8 (color)
+
+Set DX to the width of the line (X2-X1) to be plotted; use as counter
+
+               3 cells [bp] dx  mov     \ dx=x2
+               4 cells [bp] dx  sub     \ dx=x2-x1 (width)
+                            dx  inc     \ may need to remove this...
+                                cld
+
+In this loop, note that we are plotting the AH register.  This is
+actually the LSB of the 24-bit integer in the EAX register, and we
+save some cpu cycles by being able to use it directly, rather than
+performing a divide by 256 first to get the value into the AL reg.
+The pixel pointer (EBX) is then incremented, followed by adding the
+%Delta value to EAX which adds the color increment to the Fixed Point
+value in EAX.
+
+        2 L:
+                     ah 0 [bx]  mov     \ actually plotting color>>8
+                            bx  inc
+                  %Delta #) ax  add     \ inc(color,delta)
+                            dx  dec
+                          2 L#  jnz
+
+And then exit
+
+                         bp sp  xchg    \ restore stack frame
+                  6 cells # sp  add     \ drop parameters
+                            bx  pop     \ get new TOS
+                            end-code
+                            no-expand
+
+---[ Random Gouraud Polygons ]---------------------------------------
+
+To test the above module, we will modify the FillPoly1 routine from
+the previous column to work with the gpoly3 word.
+
+        : GFillPoly
+          $13 InitGraph
+          begin
+            key? not
+          while
+            VPage0[]            \ &buf
+            300 rnd 10 +        \ &buf x1
+            180 rnd 10 +        \ &buf x1 y1
+            300 rnd 10 +        \ &buf x1 y1 x2
+            180 rnd 10 +        \ &buf x1 y1 x2 y2
+            300 rnd 10 +        \ &buf x1 y1 x2 y2 x3
+            180 rnd 10 +        \ &buf x1 y1 x2 y2 x3 y3
+            63 rnd              \ &buf x1 y1 x2 y2 x3 y3 c1
+            63 rnd              \ &buf x1 y1 x2 y2 x3 y3 c1 c2
+            63 rnd              \ &buf x1 y1 x2 y2 x3 y3 c1 c2 c3
+            gpoly3              \ --
+            WaitRetrace
+            VPage0[] BlitBuffer
+          repeat
+          key drop
+          CloseGraph
+        ;
+
+This words draws random triangles to the screen, and fills them based
+on the default palette present in the VGA registers.
+
+The following version, GFillPoly1, initializes the palette to a gray
+scale for the first 64 palette entries, and shows a much clearer use
+of what the Gouraud code actually does in use.  Press PAUSE to hold
+the action at any point if the drawing goes too fast.
+
+        : GrayScale
+          63 0 do
+            i i i i SetColor
+          loop
+        ;
+
+        : GFillPoly1
+          $13 InitGraph
+          GrayScale
+          begin
+            key? not
+          while
+            VPage0[]            \ &buf
+            300 rnd 10 +        \ &buf x1
+            180 rnd 10 +        \ &buf x1 y1
+            300 rnd 10 +        \ &buf x1 y1 x2
+            180 rnd 10 +        \ &buf x1 y1 x2 y2
+            300 rnd 10 +        \ &buf x1 y1 x2 y2 x3
+            180 rnd 10 +        \ &buf x1 y1 x2 y2 x3 y3
+            63 rnd              \ &buf x1 y1 x2 y2 x3 y3 c1
+            63 rnd              \ &buf x1 y1 x2 y2 x3 y3 c1 c2
+            63 rnd              \ &buf x1 y1 x2 y2 x3 y3 c1 c2 c3
+            gpoly3              \ --
+            WaitRetrace
+            VPage0[] BlitBuffer
+          repeat
+          key drop
+          CloseGraph
+        ;
+
+The correct initialization of the palette plays a large part of how
+the displayed image is presented when it's drawn onto the screen.
+
+---[ Moving Back To 3D ]---------------------------------------------
+
+Now that we've done the hard part of getting the drawing to work, I
+will modify the solid filled rotating cube from the previous column
+to utilize the Gouraud shading routine.
+
+        : DrawSide ( &buf a b c d -- )
+          to ds.d to ds.c to ds.b to ds.a
+          to ds.buf
+
+          ds.buf
+          temp[] ds.a cube-ndx dup .cX @ swap .cY @
+          temp[] ds.b cube-ndx dup .cX @ swap .cY @
+          temp[] ds.c cube-ndx dup .cX @ swap .cY @
+          ca cb cc
+          gpoly3
+          ds.buf
+          temp[] ds.c cube-ndx dup .cX @ swap .cY @
+          temp[] ds.d cube-ndx dup .cX @ swap .cY @
+          temp[] ds.a cube-ndx dup .cX @ swap .cY @
+          cc cb ca
+          gpoly3
+        ;
+
+        : DrawCube
+          RotateVectors()
+          ZBuffering()
+          VPage0[] 65536 0 fill
+          6 3 do
+            VPage0[]
+            ZSum[] i zsum-ndx .obj# @
+            case
+              0 of 0 1 2 3 DrawSide endof
+              1 of 4 5 6 7 DrawSide endof
+              2 of 0 1 5 4 DrawSide endof
+              3 of 3 2 6 7 DrawSide endof
+              4 of 0 4 7 3 DrawSide endof
+              5 of 1 5 6 2 DrawSide endof
+            endcase
+          loop
+        ;
+
+The difference between the solid filled version from the last column
+and this one is in the above two words, DrawSide and DrawCube.
+
+The DrawCube word performs the vector rotations and Z-buffering to
+sort the sides, and then the loop is used to draw the specific sides
+of the cube that have been determined to be visible.
+
+The DrawSide word then draws a pair of triangles based on the cube
+coordinates that have been defined by the InitCube word.
+
+Note that the order of the colors is reversed for the second polygon.
+This is done to match the color sequencing of the fill routine.  Try
+changing it to the first pattern to see the difference.
+
+I have included a pair of demo words for the cube demo, [ GCube ] and
+[ GCube1 ].  The first draws a standard rotating cube to the screen.
+The second rotates the cube and also sends it back and forth into
+space and then back to the screen.
+
+In the demo words, pressing the Space Bar will immediately select new
+(random) values for the three colors to be used in the next polygon
+drawing sequence.
+
+If you find a combination you want to use again, press any other key
+to exit the program, and then display the value of the ca, cb and cc
+VALUEs to see what their actual values are at that point.
+
+For a comparison, you might comment out the InitPalette line which
+initializes the first 64 palette entries to a gray scale pattern and
+then run the program to see how the default palette looks using this
+shading algorithm.  The results are ... interesting.
+
+---[ Wrapping Up ]---------------------------------------------------
+
+Gouraud shading is much more visually appealing than the flat fills
+that we have in the previous column, with a speed penalty that has to
+be controlled by the programmer so as to minimize the impact on the
+overall program flow during heavy animation sequences.
+
+Experimentation with different palettes is the only way to determine
+for yourself what combination of color values in your palette that
+will be needed for the application you are creating.
+
+So, until my next, enjoy.
+------------------------------------------------------[End GotTK3]---
+
+

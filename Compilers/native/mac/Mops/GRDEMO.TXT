@@ -1,0 +1,308 @@
+\ grdemo - source for Curves, a simple Mops application.
+
+\ Dec 93	mrh	Rewritten for the new View scheme.
+
+need	window+
+need	turtle
+
+
+\ Class Readout is a view which shows a box with a value in it.
+
+:class  READOUT  super{ view }
+
+	int		myValue
+
+:m PUT:		put: myValue  ;m
+
+:m DRAW:
+	clear: tempRect  draw: tempRect
+	-curs  3 10 gotoXY
+	1 tmode   9 tsize  1 tfont		\ Geneva 9
+	get: myValue  3 .r  ;m
+
+;class
+
+
+\ Class Indicator is a view which has two child views - a vertical scroll
+\ bar and a Readout box with the corresponding digital value.  These
+\ child views are set up as ivars of the Indicator.
+
+:class  INDICATOR  super{ view }
+
+	vScroll		theVScroll
+	Readout		theReadout
+
+:m GET:
+	get: theVscroll  ;m
+
+:m DRAW:
+	get: theVscroll  put: theReadout  (draw): super  ;m
+
+:m MOVED:
+	clear: self  moved: super  ;m
+
+:m PUTRANGE:	\ ( val -- )
+	putRange: theVscroll  ;m
+
+:m Actions:	\ ( action-list -- )
+	actions: theVScroll  ;m
+
+:m NEW: 
+	addr: theVscroll  addView: self
+	addr: theReadout  addView: self
+	new: super
+;m
+
+
+\ The Classinit: method for Indicator positions the two child views.
+\ This can be done at compile time, since by using appropriate
+\ justifications, the bounds values for the children never change.
+\ Even if the Indicator resizes, the children still come out right.
+
+:m CLASSINIT:
+	parCenter	parTop		parCenter	parBottom	setJust: theVscroll
+	-8			0			8			-20			setBounds: theVscroll
+	parCenter	parBottom	parCenter	parBottom	setJust: theReadout
+	-12		 	-16			12 			0  			setBounds: theReadout
+	classinit: super
+;m
+
+;class
+
+
+\ Class Pane is a view which just overrides the MOVED: method, to clear
+\ its (old) area before relocating itself.  This is often needed for
+\ views, but not always.
+
+:class  PANE	super{ view }
+
+:m MOVED:	clear: self  moved: super  ;m
+
+;class
+
+
+\ Now, we build three instances of class Indicator. These will be the
+\ three control gadgets for Curves, for control of the graphics parameters
+\ by the user.
+
+\ Again, by appropriate settings of the justifications and bounds, we
+\ can locate the Indicators at compile time, and they sort themselves
+\ out properly if the window is resized.
+
+\ A variation would be to make the Indicators into ivars of the
+\ main window view, dView -- it would then be easy to have multiple
+\ windows.  At present dView is just a View, but we could easily subclass
+\ View, and have the Indicators as ivars of the new class.  In this case
+\ the setting of the justification and bounds would be moved into the
+\ Classinit: method of the new class.
+
+
+indicator	ind1
+indicator	ind2
+indicator	ind3
+
+pane		dPane
+
+\ Here are the justification/bounds settings for dPane and the 3 indicators.
+\ The parent here is dView, the contView of the window.
+
+	parLeft		parTop	parRight	parBottom	setJust: dPane
+	0			0		-130		-16			setBounds: dPane
+
+	parRight	parTop	parRight	parBottom	setJust: ind1
+	-120		20		-95			-30			setBounds: ind1
+					
+	parRight	parTop	parRight	parBottom	setJust: ind2
+	-85			20		-60			-30			setBounds: ind2
+					
+	parRight	parTop	parRight	parBottom	setJust: ind3
+	-50			20		-25			-30			setBounds: ind3
+
+
+\ To show how easy it is to reorganize things, if you uncomment out
+\ these lines below, and comment out the lines above, the indicators will
+\ appear below dPane instead of on the right hand side.  They will appear
+\ evenly spaced out across the window, and start just over halfway down.
+\ If you resize the window these relationships will be maintained, thanks
+\ to our parent proportional (parProp) justification mode.
+
+\	parLeft		parTop	parRight	parProp		setJust: dPane
+\	0			0		-16			5000		setBounds: dPane
+\
+\	parLeft		parProp	parProp		parBottom	setJust: ind1
+\	0			5200	3333		-30			setBounds: ind1
+\					
+\	parProp		parProp	parProp		parBottom	setJust: ind2
+\	3333		5200	6667		-30			setBounds: ind2
+\					
+\	parProp		parProp	parRight	parBottom	setJust: ind3
+\	6667		5200	-16			-30			setBounds: ind3
+					
+
+
+view	DVIEW		\ This is the "contView" which covers the whole of
+					\  our window.  Dpane and the 3 Indicators will be
+					\  child views of this -- we set up this relationship
+					\  via AddView: messages in the NEW: method of grWind,
+					\  our window class (see just below).
+
+
+\ Now we assign constants to the window bounds.  These constants relate to
+\ the global coordinates of the small Macintosh screen.  An improvement
+\ might be to use ScreenBits to get the actual screen size and compute
+\ the initial values.
+
+40	value	gwL    
+60	value	gwT
+470	value	gwR
+290	value	gwB
+
+rect	RR
+
+\ Now we define a subclass of Window+ containing a drawing pane.
+\ This window will be a RndWind, draggable, non-growable.
+
+:class	GRWIND  super{ window+ }
+                   
+:m NEW: { taddr tlen -- }	\ Creates a new grWind with a title
+							\  passed in by the caller.
+							
+\ First we set up the child view relationships.  dView will be the main
+\ view, and here we set up the other views as children of dView.
+
+	dPane  addView: dView
+	ind1 addView: dView  ind2 addView: dView  ind3 addView: dView
+	
+	screenbits true setGrow: self	\ growable
+	true setZoom: self				\ zoomable
+	gwL  gwT gwR gwB  put: RR
+	RR tAddr tLen  docWind			\ initial rect, title, window type
+	true false						\ visible, no close box
+	dView							\ the main view
+	new: super						\ create the window!
+;m
+
+;class
+
+
+\ Here we instantiate grWind to create the Curves demo window.
+
+grWind	DWIND
+
+
+\ Now come the words which get called when various things happen in our
+\ window.
+
+: @DPARMS		\ ( -- p1 p2 p3 )   Draws the outline of the pane,
+				\  and fetches the drawing parameters from the three
+				\  scroll bars.
+	clear: tempRect  draw: tempRect
+	get: ind1  get: ind2  get: ind3  ;
+
+
+\ Now we define the 4 draw: handlers, 1 for each type of drawing. 
+
+:a SPIRAL	@dparms  putRange: bic    spiral: bic	;a
+:a SPIN		@dparms  putRange: anna   spin: anna	;a
+:a LJ		@dparms  putRange: bic    lj: bic   	;a
+				
+\ dragon requires start val on stack 
+
+:a DRAGON	@dparms  putRange: bic  home: bic 
+		get: ind1  dragon: bic   ;a
+ 
+
+: !RANGES  { max1 max2 max3 -- }	\ Stores new parameter ranges for the 
+					\  three scroll bars.
+	1  max1  putRange: ind1   1  max2  putRange: ind2  
+	1  max3  putRange: ind3  ;
+
+
+\ Text for the "about" display
+
+scon	ab1	"Curves was originally written by Charles Duff."
+scon	ab2	"Adapted for Mops by Michael Hore."
+
+
+:a ABOUT  
+	20 tfont 0 tmode  14  tsize
+	getRect: dPane  put: tempRect
+	clip: tempRect  clear: tempRect
+	28 40 gotoxy ab1 type  30 70 gotoxy ab2 type
+	initFont  waitClick  update: dWind  ;a    
+
+\ Here we tell the two Pen objects where to center themselves 
+\ when they do a Home: operation. Because these values will be retained
+\ in the pen objects when we do a SAVE, they can be set
+\ at compile time.
+
+150 110  center: bic
+150 110  center: anna
+
+\ Now we define the actions for the various control parts.
+\ each action handler executes a deferred get: on thisCtl, which
+\ is a value pointing to the control object that was clicked.
+\ The handler then modifies the value of the thumb, and causes
+\ an update event for dWind, which will cause it to be redrawn
+\ when the update event is handled.
+
+
+:a DOTHUMB		update: dWind  ;a
+:a DOPGUP		get: thisCtl  10 -  put: thisCtl  update: dWind  ;a 
+:a DOPGDN		get: thisCtl  10 +  put: thisCtl  update: dWind  ;a 
+:a DOLNUP		get: thisCtl  1-	put: thisCtl  update: dWind  ;a 
+:a DOLNDN		get: thisCtl  1+	put: thisCtl  update: dWind  ;a 
+
+' lj  setdraw: dPane
+
+xts{  doLnUp doLnDn doPgUp doPgDn doThumb  }   actions: ind1
+xts{  doLnUp doLnDn doPgUp doPgDn doThumb  }   actions: ind2
+xts{  doLnUp doLnDn doPgUp doPgDn doThumb  }   actions: ind3
+
+\ Define the menus for this application.  AppleMen is already there.
+
+6	menu	GRAFMEN
+
+\ Define the menu handler words. Each one sets a new handler
+\ for dWind's DRAW method, and then sets appropriate ranges and 
+\ titles for the scroll bars, and causes an update event.
+
+:a DOLISS		\ Does lissagous curves
+	['] lj  setdraw: dPane  200 200 179  !ranges 
+	update: dWind  ;a
+
+:a DOSPIRAL	\ Does spirals
+	['] spiral  setDraw: dPane  10 20 179  !ranges  
+	update: dWind  ;a
+
+:a DOSPIN	\ Does spinPolys
+	['] spin  setDraw: dPane  8 10 179  !ranges  
+	update: dWind  ;a
+
+:a DODRAG	\ Does Dragon curves
+	['] dragon  setDraw: dPane  8 20 179  !ranges  
+	update: dWind  ;a
+
+: SETREPS	\ Sets max reps in bic
+	300 putMax: bic  100 putMax: anna  ;
+
+:a SAYONARA	bye  ;a
+
+xts{  about doDsk  }		1  init: appleMen
+xts{  doLiss  doSpiral  doSpin  doDrag  null  sayonara  }
+							2  init: grafMen
+
+\ Here's the startup word for the turtle graphics demo.
+
+: GO	
+	instld?  NIF  " demo.rsrc" openresfile   THEN
+	" Curves"  new: dWind
+	getnew: appleMen  getnew: grafMen
+	appleMen  grafMen  2  init: menubar
+	setReps  200 200 179  !ranges  ( for Liss )  -echo -curs
+	eventLoop  ;			\ Listen to events and act on them
+	
+
+\ Here's the error word:
+
+: CRASH		3 beep 3 beep  sayonara  ;

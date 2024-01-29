@@ -1,0 +1,69 @@
+\ fcontrol.seq          Forth Code to control parallel printer port
+\                       see Ken Merk, Forth Dimensions July 1995
+
+\ ===================================================================
+
+
+CR .(  FCONTROL.SEQ )
+
+
+: FCONTROL.SEQ ;
+
+DECIMAL
+
+  $0040  $0008 @L              \ look for active LPT1 port
+         0= #IF                \ if no port found then abort
+             CLS
+             23 8 AT .( Parallel printer port not found. )
+             CLOSE QUIT
+        #ENDIF
+
+  $0040 $0008 @L CONSTANT #PORT
+
+code bset ( b #port -- )     \ SET each bit in #port that matches
+     pop dx                  \ every high bit in byte b
+     pop bx
+     in  ax, dx
+     or  al, bx
+     out dx, al
+     next
+end-code
+
+code brset ( b #port -- )     \ will RESET each bit in #port that matches
+     pop dx                   \ every high bit in byte b
+     pop bx
+     not bx
+     in  ax, dx
+     and al, bx
+     out dx, al
+     next
+end-code
+
+code btoggle ( b #port -- )     \ TOGGLE each bit in #port that matches
+     pop dx                     \ every high bit in byte b
+     pop bx
+     in  ax, dx
+     xor al, bx
+     out dx, al
+     next
+end-code
+
+: >ON  ( b -- )     #PORT bset ;        \ turn ON device
+: >OFF ( b -- )     #PORT brset ;       \ turn OFF device
+: TOGGLE ( b -- )   #PORT btoggle ;     \ TOGGLE device
+
+: KILL ( -- )       00 #PORT pc!  ;     \ turn OFF all devices
+: ALL-ON ( -- )    $FF #PORT pc!  ;     \ turn ON all devices
+
+: ON?    ( b -- f ) #PORT pc@ and 0<> ;  \ get ON status of device
+: OFF?   ( b -- f ) #PORT pc@ and 0=  ;  \ get OFF status of device
+
+: WRITE ( b -- )    #PORT pc! ;          \ WRITE byte to port
+: READ  ( -- b )    #PORT pc@ ;          \ READ byte at port
+
+\ : BINARY ( -- )     2 base ! ;           \ change base to binary
+
+\ ===================================================================
+
+
+

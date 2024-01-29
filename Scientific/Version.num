@@ -1,0 +1,39 @@
+	These are the current version numbers of each file
+
+adaptint.seq    V1.1        08:53:03 11/3/94
+aitken.seq      V1.1.2           20 August 1994
+complex.seq     V1.4           21 December 1994
+complex2.seq    V1.2           21 December 1994
+complex3.seq    V1.4            3 January  1995
+complex4.seq    V1.1            3 January  1995
+cube_rt.seq     V1.2  10/6/1994
+cubic.seq       10/6/1994
+dates.seq       V1.2           19 September 1994
+divdiffs.seq    V1.3           31 October 1994
+dynmem.seq      V1.9            4 January 1995
+elip.seq        V1.2           21 September 1994
+expint.seq      V1.1           21 September 1994
+factorl.seq     V1.1           18 October 1994
+fsl-util.fo     V1.11          26 January 1995
+fsl-util.fth    V1.7           26 January 1995
+fsl_util.seq    V1.18          26 January 1995
+gamma.seq       V1.2            6 October 1994
+gauleg.seq      V1.1            9 February 1995
+hartley.seq     V1.2           10 October 1994
+hartley.tst     V1.0            8 October 1994
+hermite.seq     V1.2           20 August 1994
+hilbert.seq     V1.1           26 January 1995
+horner.seq      V1.5           31 October 1994
+jvn-util.fo     10 October 1994
+lagrange.seq    V1.2           20 August 1994
+logistic.seq    V1.2           17 October 1994
+newton.seq      V1.4           20 August 1994
+pcylfun.seq     V1.1                 3 October 1994
+polrat.seq      V1.2           29 October 1994
+polys.seq       V1.1           21 September 1994
+r250.seq        V1.5           16 December 1994
+ran4.seq        V1.1           1/9/95
+regfalsi.seq    V1.0  10/6/1994
+seriespw.seq    V1.3           20 August 1994
+shellsrt.seq    v1.3    28 October 1994
+

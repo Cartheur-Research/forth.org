@@ -1,0 +1,450 @@
+
+\ OBJECT PROGRAMMING SUPPORT TOOLS     30 September, 1987       
+                                                                
+                                                                
+                                                                
+************************************************************    
+   The following routine is placed in the public                
+domain.  I give my permission for it to be used for             
+any legitimate purpose, free of charge.                         
+   I make no warranty of any kind for this routine, and         
+bear no responsibility whatever for its use.                    
+                                                                
+                      Rick F. Hoselton                          
+                                                                
+************************************************************    
+                                                                
+                                                                
+\ Loading                                                       
+                                                                
+CREATE APPLICATION                                              
+                                                                
+     2  9  THRU     \ Object tools                              
+    10 13  THRU     \ Testing - Demonstration                   
+                                                                
+                                                                
+\S                                                              
+                                                                
+This is a routine to assist FORTH programmers who               
+want to produce "OBJECT ORIENTED" code.  That phrase            
+seems to mean different things to different people.             
+Here is what it means to me.                                    
+                                                                
+                                                                
+\ ACTION                                                        
+                                                                
+CODE ACTION  ( obj msg -- )                                     
+  AX POP   W POP    6 # W ADD                                   
+  BEGIN  0 [W] W MOV   2 [W] AX CMP  0= UNTIL                   
+  4 # W ADD   0 [W] JMP   END-CODE                              
+                                                                
+\S                                                              
+                                                                
+: ACTION  ( obj msg -- )       \ Just like the CODE             
+  SWAP 6 +                     \ locate METHOD pointer          
+  BEGIN @ 2DUP 2+ @ = UNTIL    \ search for equal MESSAGE       
+  4 + NIP EXECUTE ;            \ execute the METHOD             
+                                                                
+                                                                
+                                                                
+\ ACTION                                                        
+                                                                
+VARIABLE 'MSG                  \ Current MESSAGE # location     
+                                                                
+VARIABLE 'OBJECT               \ Points to current OBJECT       
+                                                                
+: ACT ( pfa msg -- )           \ What MESSAGES do.              
+  2DUP  'MSG @ !  'OBJECT !   ACTION ;                          
+                                                                
+: ME ( -- ?? )                 \ Current OBJECT                 
+   'OBJECT @ ;                                                  
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                
+\ Object addressing                                             
+                                                                
+                                                                
+: >OBJECT ( rel-addr -- addr )  \ Locate in current OBJECT      
+   ME +  ;                                                      
+                                                                
+: >SUPER  ( rel-addr -- addr )  \ Locate in OBJECT's parent     
+   ME @ + ;                                                     
+                                                                
+: LINK, ( addr -- )             \ Link here to addressed head   
+   HERE OVER @ ,   SWAP ! ;     \ addr points here, here points 
+                                \ where addr pointed            
+                                                                
+                                                                
+                                                                
+                                                                
+\ MASTER                                                        
+                                                                
+: OBJECT>  ( -- )                                               
+   'OBJECT LINK,             \ make current and build father    
+   0 ,                       \ start with no sons               
+   2 >SUPER    LINK,         \ link up with brothers            
+   6 >SUPER @   ,  ;         \ inherit METHODs                  
+                                                                
+CREATE MASTER                                                   
+   MASTER 'OBJECT !          \ make master the current          
+   OBJECT>                   \ master is his own father !       
+   2 >OBJECT 6 ERASE         \ clear master                     
+                                                                
+                                                                
+                                                                
+                                                                
+\ (METHOD:)                                                     
+                                                                
+: (METHOD) ( -- msg )       \ Build a MESSAGE                   
+   CREATE HERE DOES> ACT ;                                      
+                                                                
+: ?CREATE  ( -- msg )       \ Get MESSAGE number                
+   >IN @   BL WORD FIND                                         
+   IF  NIP  >BODY ELSE  DROP >IN ! (METHOD) THEN ;              
+                                                                
+: (METHOD:)  ( -- )                                             
+   ?CREATE                  \ Be sure MESSAGE exists            
+   6 >OBJECT  LINK, ,       \ Link this MESSAGE number          
+   [ ' : @ ] LITERAL ,      \ Enter colon definition            
+   !CSP ] ;                 \ compile this METHOD               
+                                                                
+                                                                
+\ MASTER METHOD's                                               
+                                                                
+\ The system's base METHOD                                      
+(METHOD:) ANCHOR  ." I don't understand"  ;                     
+' ANCHOR >BODY 2+  'MSG !                                       
+                                                                
+\ Building a METHOD is a METHOD                                 
+(METHOD:)   METHOD:  ( -- )                                     
+  (METHOD:) ;                                                   
+                                                                
+\ Building a new OBJECT is a METHOD for the parent              
+MASTER METHOD: OBJECT: ( -- )                                   
+   CREATE    OBJECT> ;                                          
+                                                                
+                                                                
+                                                                
+\ .METHODS                                                      
+                                                                
+: .METHOD ( link -- )                                           
+   CR  DUP  6 U.R   DUP @  6 U.R                                
+   2+ @  DUP 6 U.R   2 SPACES BODY> >NAME .ID ;                 
+                                                                
+MASTER METHOD: .METHODS ( -- )                                  
+  BASE @ HEX   6 >OBJECT                                        
+  BEGIN  @  ?DUP WHILE  DUP .METHOD REPEAT                      
+  BASE ! ;                                                      
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                
+\ .SONS                                                         
+                                                                
+: .ME  (S n -- )                                                
+   CR SPACES   ME BODY> >NAME .ID ;                             
+                                                                
+MASTER METHOD: (.SONS) (S n -- )                                
+  DUP .ME   2+   2 >OBJECT                                      
+   BEGIN  @ DUP WHILE   2DUP 4 -   (.SONS)   REPEAT             
+  2DROP ;                                                       
+                                                                
+MASTER METHOD: .SONS  ( -- )                                    
+   0    ME (.SONS) ;                                            
+                                                                
+MASTER METHOD: .ONE                                             
+  4 .ME ;                                                       
+                                                                
+\ Testing & demonstration                                       
+                                                                
+MASTER OBJECT: VEHICLE                                          
+                                                                
+VEHICLE METHOD: #WHEELS  8 >SUPER @ ;                           
+                                                                
+VEHICLE OBJECT: BOAT      0 ,                                   
+VEHICLE OBJECT: CAR       4 ,                                   
+VEHICLE OBJECT: TRICYCLE  3 ,                                   
+                                                                
+CAR OBJECT: GREEN-MONSTER                                       
+BOAT OBJECT: QUEEN-MARY                                         
+\S                                                              
+QUEEN-MARY #WHEELS  .                                           
+GREEN-MONSTER #WHEELS  .                                        
+                                                                
+\ Testing & demonstration                                       
+                                                                
+MASTER OBJECT: AUTOMOBILE                                       
+                                                                
+                                                                
+                                                                
+AUTOMOBILE METHOD: OBJECT:  (S n -- )                           
+   CREATE OBJECT>      \ Build links                            
+   0 ,                 \  8) Odometer mileage                   
+   0 ,                 \ 10) Odometer mileage @ last fillup     
+   0 ,                 \ 12) gas in tank                        
+     ,  ;              \ 14) miles-per gallon                   
+                                                                
+                                                                
+                                                                
+                                                                
+\ Testing & demonstration                                       
+                                                                
+AUTOMOBILE METHOD: DRIVE (S n -- )                              
+   14 >OBJECT @   12 >OBJECT @  *   ( gas*mpg=range )  MIN      
+   DUP  8 >OBJECT +!                ( increment odometer )      
+   DUP  14 >OBJECT @  /   NEGATE 12 >OBJECT +!                  
+   ." I'm driving " . ."  miles " ;                             
+                                                                
+AUTOMOBILE METHOD: TELL-GAS (S -- )                             
+   12 >OBJECT @  CR                                             
+   ." I HAVE " . ." GALLONS IN MY TANK " ;                      
+                                                                
+AUTOMOBILE METHOD: FILL-GAS (S n -- )                           
+   12 >OBJECT +!   ME TELL-GAS  ;                               
+                                                                
+                                                                
+\ Testing & demonstration                                       
+                                                                
+ 7   AUTOMOBILE OBJECT: RACER                                   
+23   AUTOMOBILE OBJECT: SLOW-POKE                               
+                                                                
+SLOW-POKE METHOD: TELL-GAS  CR ." It's a secret! " ;            
+                                                                
+                                                                
+\S                                                              
+                                                                
+13 RACER FILL-GAS                                               
+100 RACER DRIVE                                                 
+RACER TELL-GAS                                                  
+SLOW-POKE TELL-GAS                                              
+                                                                
+                                                                
+\ Data Structures:                                              
+                                                                
+OFFSET    #BYTES    METHOD format                               
+0         2         next older brother METHOD pointer           
+2         2         MESSAGE number                              
+4         n         METHOD's code                               
+                                                                
+                                                                
+OFFSET    #BYTES   OBJECT format                                
+0         2        father OBJECT address                        
+2         2        youngest son OBJECT address + 4              
+4         2        next older brother OBJECT address + 4        
+6         2        youngest METHOD address                      
+8         n        optional local data                          
+                                                                
+                                                                
+\ Loading                                                       
+                                                                
+a "FORGETable" definition                                       
+                                                                
+The wordset to make OBJECTs and METHODs work.                   
+A demonstration.                                                
+                                                                
+                                                                
+                                                                
+This routine is written to work with LAXAN & PERRY's F83.       
+Other FORTH implementations will probably require some          
+changes.  Especially, check METHOD:  ACTION and ?CREATE.        
+                                                                
+                                                                
+                                                                
+                                                                
+\ ACTION                                                        
+                                                                
+This word finds the MESSAGE on the given OBJECT's               
+METHOD-list and performs the corresponding METHOD               
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                
+This high-level definition does the same thing.                 
+It is provided for documentation, and for those who             
+systems that aren't 8086 family based.  The speed loss          
+does not seem to be critical.                                   
+                                                                
+                                                                
+                                                                
+\ ACTION                                                        
+                                                                
+Points to the last METHOD in the list.  Placing the MESSAGE     
+   number into this location ensures that a match will be found!
+Points to the current OBJECT                                    
+                                                                
+Setup the OBJECT and MSG pointers, then go perform the          
+   METHOD requested for this OBJECT.                            
+                                                                
+Place current OBJECT's address onto the stack.                  
+                                                                
+                                                                
+Place current OBJECT's  FATHER's address onto the stack.        
+                                                                
+                                                                
+                                                                
+\ Object addressing                                             
+                                                                
+                                                                
+Convert an OBJECT offset into a memory address.                 
+                                                                
+                                                                
+Convert an offset in the current OBJECT'S father into a         
+memory address.                                                 
+                                                                
+Useful for building links, and we use many.                     
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                
+\ MASTER                                                        
+                                                                
+For building OBJECTS.                                           
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                
+MASTER is the top OBJECT in the system.  All OBJECTs,           
+even MASTER, are descendents of MASTER!                         
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                
+\ (METHOD:)                                                     
+                                                                
+Build a MESSAGE header, and leave the PFA on the stack.         
+At run time, the MESSAGE will ACT.                              
+                                                                
+If a MESSAGE has not been defined, define it.                   
+Either way, leave the MESSAGE number (parameter field address)  
+on the stack.  BE CAREFUL not to use a name for a MESSAGE that  
+has already been used for anything but a message!               
+                                                                
+Get (or create) the MESSAGE number.                             
+Compile this MESSAGE number and link up the METHOD chain.       
+Compile the code for this METHOD.                               
+                                                                
+                                                                
+                                                                
+\ MASTER METHODS                                                
+                                                                
+ANCHOR is always at the end of the METHOD chain.                
+Its MESSAGE number is set by ACT to the current MESSAGE.        
+So, if ACT finds no other matching METHOD, it uses this one.    
+                                                                
+This is the default METHOD for building METHOD's.               
+OBJECT's can have a different METHOD: if you define one.        
+                                                                
+                                                                
+This is the default METHOD for defining OBJECT's.               
+You may define a different OBJECT: to build                     
+more complex types of OBJECT's.                                 
+                                                                
+                                                                
+                                                                
+\ .METHODS                                                      
+                                                                
+Display the name of a METHOD.                                   
+                                                                
+                                                                
+                                                                
+Displays all the METHOD's that have been defined for the        
+current OBJECT.                                                 
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                
+\ .SONS                                                         
+                                                                
+Display the name of the addressed OBJECT.                       
+                                                                
+                                                                
+Display the name of the addressed OBJECT and, indented          
+the names of all his descendent OBJECTs.  This is a recursive   
+routine.  "LATE BINDING"  is very useful here.                  
+                                                                
+                                                                
+Display the name of the current OBJECT and all his              
+descendents.                                                    
+                                                                
+Display the name of the current OBJECT.                         
+                                                                
+                                                                
+\ Testing & demonstration                                       
+                                                                
+A "superclass" of vehicle types                                 
+                                                                
+A METHOD for finding the number of wheels for a                 
+  grandson of VEHICLE.                                          
+An OBJECT whose immediate descendants have no wheels            
+An OBJECT whose immediate descendants have 4 wheels             
+An OBJECT whose immediate descendents have 3 wheels             
+                                                                
+a famous car                                                    
+a famous boat   ( Well, really it's a ship )                    
+                                                                
+How many wheels does the QUEEN-MARY have ?                      
+How many wheels does the GREEN-MONSTER have?                    
+Never say CAR #WHEELS .  (#WHEELS isn't written for that.)      
+\ Testing & demonstration                                       
+                                                                
+A new example: AUTOMOBILE                                       
+Note that this AUTOMOBILE is not a son of VEHICLE.              
+We're on a new subject.                                         
+                                                                
+AUTOMOBILE type OBJECT's aren't quite the same as ordinary      
+OBJECT's.  They have some extra data appended.                  
+To define an AUTOMOBILE OBJECT, the miles-per-gallon for        
+that OBJECT must be on the stack.                               
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                
+\ Testing & demonstration                                       
+                                                                
+To drive our AUTOMOBILE n miles, we first check our range,      
+( gas times miles-per-gallon ) to see how far we can go.        
+Then we increment our odometer reading, decrease our fuel       
+and report just how far we drove.                               
+                                                                
+                                                                
+Report the fuel in the tank.                                    
+                                                                
+                                                                
+                                                                
+Add fuel to the tank.                                           
+In a more complicated example, we might check the gas tank      
+capacity, reduce the driver's cash, etc.                        
+                                                                
+\ Testing & demonstration                                       
+                                                                
+High performance, seven miles-per-gallon.                       
+Low performance, twenty-three miles-per-gallon.                 
+                                                                
+Some privacy for SLOW-POKE                                      
+This shows that different objects can use the same MESSAGE      
+name to produce different results.                              
+                                                                
+                                                                
+Put some gas in the tank.                                       
+Drive for a while.                                              
+Report gas remaining.                                           
+                                                                
+
+
+

@@ -1,0 +1,32 @@
+mary 1.0a51 - an optimizing native code Forth compiler for PIC microcontrollers
+Released on March 2000
+
+Copyright Francisco Rodrigo Escobedo Robles, 2000
+
+Visit http://www.pepix.net/proyectos/glazz/mary/ for info and latest versions
+Contact frer@pepix.net for suggestions
+
+mary is free as in freedom, as it's an Open Source work
+
+This version is covered by GNU General Public License version 2
+
+mary is currently in alpha state, so it's released to be used with caution.
+I honestly believe it works, but it can cause unknown errors, for which I
+cannot be held responsible. Particularly, if the entire Universe is
+collapsed into itself, I am innocent.
+
+
+This is the README file
+
+
+mary is in alpha state. The docs are also in alpha. Important changes may
+occur before beta.
+
+mary is an optimizing native code Forth compiler for PIC microcontrollers.
+It generates machine code instructions and optimizes sequences of them,
+constant values and logical operators.
+
+Read mary-manual.txt for documentation.
+
+For installing it:
+    tar -C /usr/local -zxvf mary-1.0a51.tar.gz

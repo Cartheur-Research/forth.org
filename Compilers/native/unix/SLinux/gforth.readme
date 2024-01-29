@@ -1,0 +1,13 @@
+
+       To install GFORTH:
+       
+       cd /usr/local
+       
+       gunzip -dc gforth.tar.gz | tar xovf -
+
+
+       The source distribution can be obtained from ftp.taygeta.com
+       in the Linux Forth archives or from the official GFORTH
+       site: ftp.complang.tuwien.ac.at
+       
+       

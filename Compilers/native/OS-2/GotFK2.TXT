@@ -1,0 +1,494 @@
+---[ Graphics of the First Kind, Part II ]------------[11/30/2006]---
+
+                         by Timothy Trussell
+
+---[ Where We Are ]--------------------------------------------------
+
+In the first column, I coded the following Forth words:
+
+        code SetMode    ( mode -- )
+        : InitGraph     ( mode# -- )
+        : CloseGraph    ( -- )
+        code Plot       ( x y c -- )
+        : VLine         ( x y1 y2 c -- )
+        : HLine         ( x1 x2 y c -- )
+        : Box           ( x1 y1 x2 y2 c -- )
+        : FBox          ( x1 y1 x2 y2 c -- )
+
+The thing they all have in common is that they all plot their pixels
+using the BIOS Interrupt 10h Function 0 call.
+
+In this second column, I will show you exactly how slow - on your own
+system - these original routines actually are.
+
+Note that we are still doing things in the 320x200x256 single planar
+video mode, where one pixel = one byte of video memory.
+
+So, break out the Dr. Pepper and Cheeto's, and let's get to it.
+
+---[ Speeding Things Up ]--------------------------------------------
+
+One of the main advantages of using the BIOS Interrupt to plot the
+pixels onto the screen is that the programmer doesn't have to know
+too much about the inner working of the machine to have it plot the
+pixel to the correct position.  In fact, the above Plot word works on
+all the basic graphics modes - CGALo, CGAHi, EGA and VGA Mode $13.
+
+A second is that the BIOS call handles the conversion of the (X,Y)
+coordinates to the actual screen address those coordinates point at.
+
+A third is that the BIOS calls are present and will work on any
+computer (PC) in existence (pretty much).
+
+The tradeoff to drawing pixels in this way is that it is extremely
+slow.
+
+If we were to directly access the video memory array, this would give
+us a vast improvement in the speed of plotting the pixels, as we
+could bypass the BIOS call.  But, doing this means that we have to
+take upon ourselves the overhead of figuring out what the actual
+offset of the pixel is, based on the (X,Y) coordinates and the
+current resolution limitations (0..319/0..199), and this has to be
+done for each and every pixel we draw to the screen.
+
+In Real Mode, this is fairly straightforward, as the base video
+address is located at $A000:0000.  All we need is a version of C!
+that works with the addition of a segment address, with parameters
+like:
+
+        code C!L ( c segment offset -- )
+
+Many versions of Forth have such a word already part of their code,
+but a typical example could be coded as:
+
+        code C!L ( c seg ofs -- )
+                                \ bx=ofs on entry as TOS
+                    ax  pop     \ ax=seg
+                    cx  pop     \ cx=c
+                    es  push    \ save registers to modify
+                    di  push
+                 ax es  mov     \ es=seg
+                 bx di  mov     \ di=ofs
+                 cl al  mov     \ al=c
+         es: al 0 [di]  mov     \ store the byte
+                    di  pop     \ restore registers
+                    es  pop
+                    bx  pop     \ get new TOS
+                    end-code
+                    no-expand
+
+      +-------------------------------------------------+
+      | Note:                                           |
+      |   This code segment will NOT work correctly in  |
+      |   the 32Forth system.  It is simply what the    |
+      |   code could look like for a 16-bit Forth, even |
+      |   though I have coded it using the standard     |
+      |   syntax for the 32Forth system.                |
+      +-------------------------------------------------+
+
+Our code that calls C!L would then have to take the (X,Y) coordinates
+and convert them using the formula Y * 320 + X (or, if you prefer, it
+would be Y 320 * X +) to calculate the offset from the first pixel in
+the video memory display of the referenced location to plot at.
+
+Using the code segment from the TextPixels word,
+
+            319 rnd             \ get a random X coord [0..319]
+            199 rnd             \ get a random Y coord [0..199]
+            255 rnd             \ get a random Color   [0..255]
+            PutPixel
+
+we would change this to
+
+            255 rnd             \ get a random Color   [0..255]
+            $0A000              \ segment of video memory
+            319 rnd             \ get a random X coord [0..319]
+            199 rnd             \ get a random Y coord [0..199]
+            320 * +             \ calculate Y*320+X address offset
+            C!L
+
+---[ Protected Mode Selectors ]--------------------------------------
+
+HOWEVER, we have a slight complication, due to the fact that the
+32Forth system operates in the Protected Mode environment.  We do not
+have direct access to the segment registers in the same way that it
+is done in Real Mode - where DOS and 16-bit Forths live and work.
+
+For the purpose of the tutorial *at this point* we need to access the
+video memory array that is physically located in the $A000 segment in
+the first megabyte of the computer's memory layout.  To do this in
+the Protected Mode, instead of simply putting $A000 into ES, we have
+to convert the segment address $A000 to a 32-bit Selector value.
+
+---------------------------------------------------------------------
+My *at this point* is meant to signify that later, especially when
+(or if) we get to things like the Linear Frame Buffers, some of the
+rules will change on how the video memory is accessed.
+---------------------------------------------------------------------
+
+It is beyond the scope of this column to explain about Selectors and
+how they are used in the DS:, ES:, FS: and GS: registers, but it is
+a simple matter to get the correct Selector value.
+
+In the 32Forth system, we will use a DPMI function call, SEG>DESC,
+that does this for us, as follows:
+
+        value VSelector $0A000 SEG>DESC to VSelector
+
+Here I create a VALUE which we will store the selector into.  By
+passing the Real Mode segment address I wish to access ($A000) to the
+SEG>DESC word, DPMI returns a Selector that we will use for the
+graphics from here on.  As stated in the DPMI documentation, repeated
+calls to the SEG>DESC word will return the same Selector for the
+$0A000 segment, no matter how many times it may be called in a
+program, so you can't run out of Selectors by calling SEG>DESC
+repeatedly.  Good programming techniques dictate that you only do it
+once, however.
+
+The DPMI system also has a function to release the Selector.
+
+I think that's about enough on Selectors for now.
+
+The above code for C!L will require only a slight change to let it
+work with the 32-bit selector that we have assigned to VSelector.
+Since this word can be really dangerous if left as a general C!L
+word, I will hard code it to work for the VGA memory only, and we
+will call it Plot1:
+
+        code Plot1 ( c ofs -- )
+                                \ bx=ofs on entry as TOS
+                    cx  pop     \ cx=c
+                    es  push    \ save registers to modify
+                    di  push
+                 bx di  mov     \ di=ofs
+        VSelector # ax  mov     \ ax=selector
+                 ax es  mov     \ es=selector
+                 cl al  mov     \ al=c
+         es: al 0 [di]  mov     \ plot the pixel
+                    di  pop     \ restore registers
+                    es  pop
+                    bx  pop     \ get new TOS
+                    end-code
+                    no-expand
+
+and recoding the TestPixels word to use this new construct:
+
+        : TestPlot1 ( -- )
+          $13 InitGraph
+          begin
+            key? not
+          while
+            255 rnd             \ get a random Color   [0..255]
+            319 rnd             \ get a random X coord [0..319]
+            199 rnd             \ get a random Y coord [0..199]
+            320 * +             \ calculate Y*320+X address offset
+            Plot1
+          repeat
+          key drop              \ lose the keypress
+          CloseGraph            \ sets 80x25 Text mode
+        ;
+
+There are versions of Forth where the above high level code segment
+would be comparable to assembly code as far as the speed of execution
+is concerned.  The idea, however, is to wring the fastest possible
+speed of plotting from the code that we can, and while TestPlot1 is
+significantly faster than TestPixels, we still have a bottleneck in
+the code - specifically the Y*320+X calculation.
+
+By adding the multiplication code to the Plot1 word, we can reduce
+the pixel plot word to the fastest code for plotting available.  The
+way to do this is by not actually doing multiplications (the MUL
+opcode) but by doing power-of-2 shift operations, which are much
+faster.
+
+It is seen that to multiply Y by 320, we can break this down into a
+pair of smaller multiplications, one of Y*64 and another of Y*256.
+At the bit level, this is a pair of shift operations using the SHL
+opcode, and is done as follows:
+
+        code Y*320 ( y -- y*320 )
+                                \ bx=y on entry as TOS
+                6 # cl  mov
+                 bx cl  shl     \ bx=y*64
+                 bx ax  mov     \ ax=y*64
+                2 # cl  mov
+                 ax cl  shl     \ ax=y*256  two more bit positions
+                 ax bx  add     \ bx=y*320  256+64=320...
+                    end-code
+                    no-expand
+
+Adding this to the defintion of Plot1 gives us a FastPlot word:
+
+---[Note]------------------------------------------------------------
+Rather than trying to swap the registers around to be able to access
+the parameters on the stack, I will now commence using BP to do this,
+by pushing BX to get all the parameters on the stack, and then swap
+BP and SP, setting up the stack frame.
+--------------------------------------------------------[End Note]---
+
+        code FastPlot ( x y c -- )
+                                \ bx=c on entry as TOS
+                    bx  push    \ put all parameters onto the stack
+                 bp sp  xchg    \ setup the stack frame
+                    es  push    \ save registers to be used
+                    di  push
+        VSelector # ax  mov
+                 ax es  mov     \ es=selector
+       \ Calculate Y*320+X
+       2 cells [bp] di  mov     \ di=x
+       1 cells [bp] ax  mov     \ ax=y
+                6 # cl  mov
+                 ax cl  shl     \ ax=y*64
+                 ax di  add     \ di=y*64+x
+                2 # cl  mov
+                 ax cl  shl     \ ax=y*256
+                 ax di  add     \ di=y*320+x
+       0 cells [bp] ax  mov     \ al=c
+         es: al 0 [di]  mov     \ plot the pixel
+                    di  pop     \ restore registers
+                    es  pop
+                 bp sp  xchg    \ restore stack frame
+          3 cells # sp  add     \ drop parameters
+                    bx  pop     \ get new TOS
+                    end-code
+                    no-expand
+
+The code flow is slightly changed in this word, but can be seen as
+
+        1. Save registers to be modified (ES/DI)
+        2. Set ES to the Selector for the video memory segment
+        3. Calculate Y*320+X
+          a. move X to DI
+          b. move Y to AX
+          c. shift AX 6 positions - AX=Y*64
+          d. add AX to DI - DI=Y*64+X
+          e. shift AX 2 more positions - AX=Y*256
+          f. add AX to DI - DI=Y*320+X
+        4. Set AL=color of pixel
+        5. Plot the pixel
+        6. Restore registers
+        7. Remove parameters and exit
+
+To compare the original BIOS version to the FastPlot version:
+
+        variable WhichPlot
+
+        : toggleit ( vadr -- ) dup @ not swap ! ;
+
+        : TestPlots
+          0 WhichPlot !         \ start off slow
+          $13 InitGraph
+          begin
+            key? if
+              key
+              dup 27 = if       \ ESC exits
+                drop 1
+              else
+                32 = if         \ space bar toggles
+                  WhichPlot toggleit
+                  $13 InitGraph \ clears the screen again
+                  0
+                then
+              then
+            else
+              0
+            then
+            not
+          while
+            319 rnd             \ get a random X coord [0..319]
+            199 rnd             \ get a random Y coord [0..199]
+            255 rnd             \ get a random Color   [0..255]
+            WhichPlot @ if
+              FastPlot
+            else
+              Plot
+            then
+          repeat
+          CloseGraph            \ sets 80x25 Text mode
+        ;
+
+The Space Bar toggles between Plot and FastPlot, and the ESC key
+exits the test.
+
+When switching modes, note how long it takes to fill the screen from
+when the mode starts.  The assembly version is VERY fast.
+
+---[ Turbo charging VLine/HLine ]------------------------------------
+
+It is possible to translate this speed to the VLine and HLine words
+by simply replacing the call to Plot with FastPlot, but there is an
+even faster method of speeding up these words by recoding them fully
+into assembly code:
+
+code FastVLine ( x y1 y2 c -- )
+                                \ c in bx on entry as TOS
+                    bx  push    \ put all parameters onto the stack
+                 bp sp  xchg    \ setup the stack frame
+                    es  push    \ save registers to be used
+                    di  push
+        VSelector # ax  mov     \ es=selector
+                 ax es  mov
+       \ Calculate Y*320+X
+       3 cells [bp] di  mov     \ di=x
+       2 cells [bp] ax  mov     \ ax=y1
+                6 # cl  mov
+                 ax cl  shl     \ ax=y1*64
+                 ax di  add     \ di=y*64+x
+                2 # cl  mov
+                 ax cl  shl     \ ax=y*256
+                 ax di  add     \ di=y*320+x
+       1 cells [bp] ax  mov     \ ax=y2
+       2 cells [bp] ax  sub     \ ax=y2-y1
+                 ax cx  mov     \ cx=len
+       0 cells [bp] al  mov     \ al=c
+1 L:
+         es: al 0 [di]  mov     \ plot the pixel
+              320 # di  add     \ increment to next line
+                    cx  dec     \ decrement count
+                  1 L#  jnz     \ loop until 0
+
+                    di  pop     \ restore register
+                    es  pop
+                 bp sp  xchg    \ restore stack frame
+          4 cells # sp  add     \ drop parameters
+                    bx  pop     \ get new TOS
+                    end-code
+                    no-expand
+
+FastVLine calculates the offset of the first pixel to plot, and then
+for each subsequent pixel it simply adds 320 to DI to get the offset
+of the pixel in the next screen line.
+
+code FastHLine ( x1 x2 y c -- )
+                                \ c in bx on entry as TOS
+                    bx  push    \ put all parameters onto the stack
+                 bp sp  xchg    \ setup the stack frame
+                    es  push    \ save registers to be used
+                    di  push
+        VSelector # ax  mov     \ es=selector
+                 ax es  mov
+       \ Calculate Y*320+X
+       3 cells [bp] di  mov     \ di=x
+       1 cells [bp] ax  mov     \ ax=y
+                6 # cl  mov
+                 ax cl  shl     \ ax=y1*64
+                 ax di  add     \ di=y*64+x
+                2 # cl  mov
+                 ax cl  shl     \ ax=y*256
+                 ax di  add     \ di=y*320+x
+       \ Calculate Length
+       2 cells [bp] ax  mov     \ ax=x2
+       3 cells [bp] ax  sub     \ ax=x2-x1
+                 ax cx  mov     \ cx=len
+       0 cells [bp] al  mov     \ al=c
+                        cld     \ set forward direction for DI inc
+                        rep     \ loop cx times
+                    al  stosb   \ each stosb increments DI
+
+                    di  pop     \ restore register
+                    es  pop
+                 bp sp  xchg    \ restore stack frame
+          4 cells # sp  add     \ drop parameters
+                    bx  pop     \ get new TOS
+                    end-code
+                    no-expand
+
+FastHLine also calculates the offset of the first pixel to plot, but
+then simply does a very fast REP STOSB operation that plots all the
+pixels in the line successively.
+
+There is yet another optimization to increase the speed of drawing in
+the FastHLine code, but that will come in a later column, as it
+involves using bit masks on the initial and last bytes of the line
+being drawn, as well as using the STOS opcode, storing 4 bytes at a
+time instead of only 1, as the above routine does.
+
+A similar speed test, showing the difference in drawing times between
+the VLine/HLine and FastVLine/FastHLine words seems to be in order:
+
+        variable WhichDir
+        variable cflag
+
+        : +cflag                \ limits colors to range [0..15]
+          1 cflag +!
+          cflag @ 15 > if 0 cflag ! then
+        ;
+
+        : TestLines2
+          0 WhichPlot !         \ 0=Slow, 1=Fast
+          0 WhichDir !          \ 0=Hor,  1=Ver
+          0 cflag !
+          $13 InitGraph
+          begin
+            key? if
+              key
+              dup 27 = if       \ ESC exits
+                drop 1
+              else
+                dup 32 = if     \ space bar toggles speed
+                  WhichPlot toggleit
+                  0
+                else
+                  8 = if        \ bckspc toggles direction h/v
+                    WhichDir toggleit
+                    0
+                  then
+                then
+              then
+            else
+              0
+            then
+            not
+          while
+            +cflag
+            WhichDir @ if 320 else 200 then
+            0 do
+              WhichDir @ if
+                i 10 190 cflag @
+              else
+                20 300 i cflag @
+              then
+              WhichDir @ if
+                WhichPlot @ if
+                  VLine
+                else
+                  FastVLine
+                then
+              else
+                WhichPlot @ if
+                  HLine
+                else
+                  FastHLine
+                then
+              then
+            loop
+          repeat
+          CloseGraph
+        ;
+
+I've combined the two tests into one routine.  The Backspace toggles
+between the Horizontal and Vertical directions, and the Space Bar
+toggles between Slow and Fast speeds.  Again, this shows the major
+difference in speeds between plotting pixels thru the BIOS interrupt
+call, and plotting them directly to the video memory.
+
+The line drawing in the FastHLine mode is probably going to give you
+a good example of Shearing - where there is a visible transition
+from one screen update by the VGA hardware to the next - while the
+drawing to the screen is going on.  On the CGA we used to have snow,
+now we have shearing.  We will take care of this problem in a later
+column, which will involve some more  advanced techniques that will
+also greatly speed up our display capabilities.
+
+---[ Wrapping Up ]---------------------------------------------------
+
+From here, we will be going to an implementation of the Bresenham
+Line Algorithm, possibly a conversion of that code to assembly code,
+drawing Sprites to the screen, and maybe a couple of the graphics
+demos that I've converted to 32Forth.
+
+Again, as before, the code so far can be modified for use on just
+about any Forth system.
+
+Time to send this to the printers...
+

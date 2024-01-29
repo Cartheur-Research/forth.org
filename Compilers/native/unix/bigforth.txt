@@ -1,0 +1,35 @@
+This is a small introduction to MINOS preview. It's not intented as
+manual, it just helps you to see MINOS work.
+
+MINOS and bigFORTH are copyrighted work, (c) 1997 by Bernd
+Paysan. You may copy MINOS as whole, without changes, as it is found
+in
+
+http://www.informatik.tu-muenchen.de/~paysan/bigforth.zip
+
+Since this is a demo, the right to use and copy this release of MINOS
+expires at 1997/9/1. There is no hard enforcement of this expiration,
+but an improved version of MINOS will be around then.
+
+MINOS consists of two parts: a widget library (also called MINOS), and
+an editor, the tool to master MINOS, called Theseus. To load MINOS,
+start "xbigforth" from the bigforth directory, and type in the window:
+
+include minos.str
+designer open
+
+This opens Theseus. To arrange objects, MINOS uses a box&glue
+model. Start with a box (usually a vertical box, vbox), and add all
+the widgets you want there. To navigate within the boxes (one box is
+the current box), use the four cursor buttons in the icon bar. The top
+five icons select the editing mode: Text, Code, Name, Delete and
+Try. The four icons below change the appending order of new objects:
+First in the current box, last in the current box, before the current
+object, after the current object. The three lower icons allow you to
+load, save and execute the current form. Another "designer open" in
+the dialog window opens another incarnation of Theseus
+
+MINOS isn't finished, so don't expect everything to work.
+
+To see some of MINOS features, type "include testwidgets.str" in the
+dialog window.

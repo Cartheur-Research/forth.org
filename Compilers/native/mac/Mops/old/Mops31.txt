@@ -1,0 +1,31 @@
+This is Mops 3.1, of May 1998.
+
+This package contains the full Mops system.  The distribution file
+Mops31.sea.bin is in binary format, which shouldn't present any
+problems to current Mac network software.  It's a self-extracting
+archive, so on a Mac, just double-click the file and it will expand
+itself.  (If you only have a Windows machine, bad luck.)
+
+When you expand the file, please read the files "ReadMe.1st" and
+"Mops 3.1 release notes" first.  They'll tell you what to do next.
+
+The manual is not included, but it should be available from the same
+location you got this.  It should be called Mops31Wrd.sit or Mops31PDF.sit
+(Word or PDF format).  It's a separate file because of size.
+
+You will really need the manual if you're going to do anything with Mops.
+
+
+
+I hope you enjoy Mops.
+
+
+------------------------------------------------------------------------
+Mike Hore        email:          mikeh@zeta.org.au
+                 Mops web page:  http://www.netaxs.com/~jayfar/mops.html
+snail-mail:                                                      _--_|\
+        Michael Hore                                            /      \
+        54 Frederick St,                                        \_.--._*
+		Sydenham  NSW  2044,                                          v
+		AUSTRALIA.
+------------------------------------------------------------------------

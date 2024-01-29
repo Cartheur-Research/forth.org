@@ -1,0 +1,1195 @@
+TOF words and their token assignments for the baseline SPIX bus implementation.
+
+This wordset supports the SPIX bus. Other bus types may have to have slight
+changes to the lexicon dealing with the bus.
+
+DUP           ( x -- x x )                xt = 0x20                CORE
+              Duplicate top item                                   
+
+DROP          ( x1 x2 -- x1 )             xt = 0x21                CORE
+              Remove item from stack                               
+
+SWAP          ( x1 x2 -- x2 x1 )          xt = 0x22                CORE
+              Swap top 2 cells                                     
+
+OVER          ( x1 x2 -- x1 x2 x1 )       xt = 0x23                CORE
+              Copy 2nd item on the stack                           
+
+AND           ( x1 x2 -- x3 )             xt = 0x24                CORE
+              Bitwise AND TOS with NOS                             
+
+OR            ( x1 x2 -- x3 )             xt = 0x25                CORE
+              Bitwise OR  TOS with NOS                             
+
+XOR           ( x1 x2 -- x3 )             xt = 0x26                CORE
+              Bitwise XOR TOS with NOS                             
+
+UM+           ( u1 u2 -- ud )             xt = 0x27                CORE
+              Add top two items, double result                     
+
++             ( x1 x2 -- x1+x2 )          xt = 0x28                CORE
+              Add TOS to NOS                                       
+
+-             ( x1 x2 -- x1-x2 )          xt = 0x29                CORE
+              Subtract TOS from NOS                                
+
+0=            ( x -- flag )               xt = 0x2A                CORE
+              True if x = 0                                        
+
+0<            ( n -- flag )               xt = 0x2B                CORE
+              True if signed x < 0                                 
+
+>R            ( x -- )                    xt = 0x2C                CORE
+              Push cell to return stack                            
+
+R>            ( -- x )                    xt = 0x2D                CORE
+              Pop cell from return stack                           
+
+U2/           ( x1 -- x2 )                xt = 0x2E                CORE
+              Logical right shift one bit                          
+
+2/            ( x1 -- x2 )                xt = 0x2F                CORE
+              Arithmetic right shift one bit                       
+
+C@            ( addr -- c )               xt = 0x30                CORE
+              Char fetch                                           
+
+W@            ( addr -- n )               xt = 0x31                CORE
+              16-bit fetch                                         
+
+@             ( addr -- n )               xt = 0x32                CORE
+              Cell fetch, MSB first                                
+
+C!            ( c addr -- )               xt = 0x33                CORE
+              Char store                                           
+
+W!            ( n addr -- )               xt = 0x34                CORE
+              16-bit store                                         
+
+!             ( n addr -- )               xt = 0x35                CORE
+              Cell store, MSB first                                
+
+A!            ( addr -- )                 xt = 0x36                CORE
+              Set A register                                       
+
+A@            ( -- addr )                 xt = 0x37                CORE
+              Get A register                                       
+
+@A            ( -- x )                    xt = 0x38                CORE
+              Fetch cell from A stream                             
+              Same as A@ @
+
+@A+           ( -- x )                    xt = 0x39                CORE
+              Lift cell from A stream                              
+              Same as A@ @  A@ CELL+ A!
+
+C@A           ( -- c )                    xt = 0x3A                CORE
+              Fetch char from A stream
+              Same as A@ C@
+
+C@A+          ( -- c )                    xt = 0x3B                CORE
+              Lift char from A stream                              
+              Same as A@ @  A@ CHAR+ A!
+
+!A            ( x -- )                    xt = 0x3C                CORE
+              Store cell to A stream                               
+              Same as A@ !
+
+!A+           ( x -- )                    xt = 0x3D                CORE
+              Append cell to A stream                              
+              Same as A@ !  A@ CELL+ A!
+
+C!A           ( x -- )                    xt = 0x3E                CORE
+              Store char to A stream                               
+              Same as A@ C!
+
+C!A+          ( x -- )                    xt = 0x3F                CORE
+              Append char to A stream                              
+              Same as A@ !  A@ CHAR+ A!
+
+@R            ( -- x )                    xt = 0x40                CORE
+              Fetch cell from R stream                             
+              Same as R@ @
+
+@R+           ( -- x )                    xt = 0x41                CORE
+              Lift cell from R stream                              
+              Same as R@ @  R> CELL+ >R
+
+!R            ( x -- )                    xt = 0x42                CORE
+              Store cell to R stream                               
+              Same as R@ !
+
+!R+           ( x -- )                    xt = 0x43                CORE
+              Append cell to R stream                              
+              Same as R@ !  R> CELL+ >R
+
+C,            ( c -- )                    xt = 0x44                CORE
+              Append char to dictionary                            
+
+W,            ( n -- )                    xt = 0x45                CORE
+              Append 16-bit to dictionary                          
+
+,             ( n -- )                    xt = 0x46                CORE
+              Append cell to dictionary                            
+
+CELL          ( -- x )                    xt = 0x47    constant    CORE
+              0x0002                                               
+
+TRUE          ( -- x )                    xt = 0x48    constant    CORE
+              0xFFFF                                               
+
+FALSE         ( -- x )                    xt = 0x49    constant    CORE
+              0x0000                                               
+
+-1            ( -- x )                    xt = 0x4A    constant    CORE
+              0xFFFF                                               
+
+0             ( -- x )                    xt = 0x4B    constant    CORE
+              0x0000                                               
+
+1             ( -- x )                    xt = 0x4C    constant    CORE
+              0x0001                                               
+
+2             ( -- x )                    xt = 0x4D    constant    CORE
+              0x0002                                               
+
+BL            ( -- x )                    xt = 0x4E    constant    CORE
+              ASCII blank                                          
+
+NIP           ( x1 x2 -- x1 )             xt = 0x4F                CORE
+              Discard 2nd item on stack                            
+
+1+            ( x -- x+1 )                xt = 0x50                CORE
+              Add 1 to TOS                                         
+
+1-            ( x -- x-1 )                xt = 0x51                CORE
+              Subtract 1 from TOS                                  
+
+2*            ( x1 -- x2 )                xt = 0x52                CORE
+              Logical left shift one bit                           
+
+INVERT        ( x -- ~x )                 xt = 0x53                CORE
+              Bitwise invert TOS                                   
+
+NEGATE        ( x -- -x )                 xt = 0x54                CORE
+              Negate TOS                                           
+
+R@            ( -- x )                    xt = 0x55                CORE
+              Copy cell from return stack                          
+
+DUP>R         ( x -- x )                  xt = 0x56                CORE
+              Copy cell to return stack                            
+
+R>DROP        ( x -- x )                  xt = 0x57                CORE
+              Copy cell to return stack                            
+
+0<>           ( x -- flag )               xt = 0x58                CORE
+              True if x <> 0                                       
+
+0>=           ( n -- flag )               xt = 0x59                CORE
+              True if signed x >= 0                                
+
+0<=           ( n -- flag )               xt = 0x5A                CORE
+              True if signed x <= 0                                
+
+0>            ( n -- flag )               xt = 0x5B                CORE
+              True if signed x > 0                                 
+
+=             ( x1 x2 -- f )              xt = 0x5C                CORE
+              True if NOS = TOS                                    
+
+<>            ( x1 x2 -- f )              xt = 0x5D                CORE
+              True if NOS <> TOS                                   
+
+?DUP          ( x -- x x | 0 )            xt = 0x5E                CORE
+              DUP if nonzero                                       
+
+LSHIFT        ( x1 u -- x1<<u )           xt = 0x5F                CORE
+              Left shift u places                                  
+
+RSHIFT        ( x1 u -- x1>>u )           xt = 0x60                CORE
+              Logical right shift u places                         
+
+>>A           ( x1 u -- x1>>u )           xt = 0x61                CORE
+              Arithmetic right shift u places                      
+
+2DROP         ( x1 x2 -- )                xt = 0x62                CORE
+              Drop cell pair                                       
+
+2DUP          ( x1 x2 -- x1 x2 x1 x2 )    xt = 0x63                CORE
+              Duplicate cell pair                                  
+
+2OVER         ( x1 x2 x3 x4 -- x1 x2 x3 x4xt = 0x64                CORE
+              Copy 2nd cell pair                                   
+
+2SWAP         ( x1 x2 x3 x4 -- x3 x4 x1 x2xt = 0x65                CORE
+              Exchange top two cell pairs                          
+
+D+            ( d1 d2 -- d3 )             xt = 0x66                CORE
+              Double-cell add                                      
+
+DNEGATE       ( d1 -- -d1 )               xt = 0x67                CORE
+              Double-cell negate                                   
+
+D-            ( d1 d2 -- d3 )             xt = 0x68                CORE
+              Double-cell subtraction                              
+
+UD2/          ( d1 -- d2 )                xt = 0x69                CORE
+              Logical right shift on double                        
+
+D2/           ( d1 -- d2 )                xt = 0x6A                CORE
+              Arithmetic right shift on double                     
+
+D2*           ( d1 -- d2 )                xt = 0x6B                CORE
+              Logical left shift on double                         
+
+CELL+         ( x -- x+1 )                xt = 0x6C                CORE
+              Add cellsize to TOS                                  
+
+CELLS         ( x1 -- x2 )                xt = 0x6D                CORE
+              Multiply by cell size                                
+
+CHAR+         ( x -- x+1 )                xt = 0x6E                CORE
+              Add chararacter size to TOS                          
+
+CHARS         ( x1 -- x2 )                xt = 0x6F                CORE
+              Multiply by character size                           
+
+COUNT         ( c-addr1 -- c-addr2 u )    xt = 0x70                CORE
+              Get length of a counted string                       
+
+ROT           ( a b c -- b c a )          xt = 0x71                CORE
+              Rotate third stack item to top                       
+
+-ROT          ( a b c -- c a b )          xt = 0x72                CORE
+              Rotate top to third stack item                       
+
+UNDER+        ( a b c -- a+c b )          xt = 0x73                CORE
+              Add TOS to item under NOS                            
+
+PICK          ( ... n -- ... xn )         xt = 0x74                CORE
+              Get nth stack element                                
+
+PLUCK         ( x1 x2 -- x1 x2 x1 )       xt = 0x75                CORE
+              2 pick                                               
+
+-PICK         ( ... x n -- ... )          xt = 0x76                CORE
+              Store NOS to the TOSth element                       
+
+ON            ( addr -- )                 xt = 0x77                CORE
+              Store true to addr                                   
+
+OFF           ( addr -- )                 xt = 0x78                CORE
+              Store false to addr                                  
+
++!            ( n addr -- )               xt = 0x79                CORE
+              Add n to the cell at addr                            
+
+TUCK          ( x1 x2 -- x2 x1 x2 )       xt = 0x7A                CORE
+              Tuck TOS under NOS                                   
+
+LAY           ( addr c -- addr' )         xt = 0x7B                CORE
+              Lay down next char in a string                       
+
+INCR          ( addr -- )                 xt = 0x7C                CORE
+              Increment cell by 1                                  
+
+DECR          ( addr -- )                 xt = 0x7D                CORE
+              Decrement cell by 1                                  
+
+2>R           ( d -- )                    xt = 0x7E                CORE
+              Push double to return stack                          
+
+2R>           ( -- d )                    xt = 0x7F                CORE
+              Pop double from return stack                         
+
+2R@           ( -- d )                    xt = 0x80                CORE
+              Copy double from return stack                        
+
+UNLOOP        ( -- )                      xt = 0x81                CORE
+              Discard loop parameters                              
+
+LEAVE         ( -- )                      xt = 0x82                CORE
+              Discard loop parameters, leave                       
+              return stack effect:
+              ( ... old-i RA-leave endlimit RA -- ... RA-leave )
+
+?EXIT         ( f -- )                    xt = 0x83                CORE
+              Exit definition if T
+
+I             ( -- n|u )                  xt = 0x84                CORE
+              Innermost loop index                                 
+
+J             ( -- n|u )                  xt = 0x85                CORE
+              Next innermost loop index                            
+
+<             ( x1 x2 -- f )              xt = 0x86                CORE
+              True if NOS < TOS                                    
+
+>=            ( x1 x2 -- f )              xt = 0x87                CORE
+              True if NOS >= TOS                                   
+
+>             ( x1 x2 -- f )              xt = 0x88                CORE
+              True if NOS > TOS                                    
+
+<=            ( x1 x2 -- f )              xt = 0x89                CORE
+              True if NOS >= TOS
+
+U<            ( u1 u2 -- flag )           xt = 0x8A                CORE
+              True if NOS < TOS unsigned                           
+
+D0=           ( d -- f )                  xt = 0x8B                CORE
+              True if double-cell = 0                              
+
+D0<           ( d -- f )                  xt = 0x8C                CORE
+              True if double-cell < 0                              
+
+D0<>          ( d -- f )                  xt = 0x8D                CORE
+              True if double-cell <> 0                             
+
+2!            ( x1 x2 a-addr -- )         xt = 0x8E                CORE
+              Double-cell store
+
+2@            ( a-addr -- x1 x2 )         xt = 0x8F                CORE
+              Double-cell fetch                                    
+
+ON?           ( addr -- f )               xt = 0x90                CORE
+              Flag at addr <> 0?                                   
+
+OFF?          ( addr -- f )               xt = 0x91                CORE
+              Flag at addr = 0?                                    
+
+BIT-ON        ( bit# addr -- )            xt = 0x92                CORE
+              Set bit# of char at addr                             
+
+BIT-OFF       ( bit# addr -- )            xt = 0x93                CORE
+              Clear bit# of char at addr                           
+
+BIT?          ( bit# addr -- f )          xt = 0x94                CORE
+              Test bit# of char at addr
+
+S>D           ( n -- d )                  xt = 0x95                CORE
+              Signed single --> signed double                      
+
+ABS           ( x -- |x| )                xt = 0x96                CORE
+              Absolute value of TOS                                
+
+DABS          ( d -- |d| )                xt = 0x97                CORE
+              Double-cell absolute value                           
+
+UMAX          ( n1 n2 -- n3 )             xt = 0x98                CORE
+              Choose maximum of n1, n2                             
+
+UMIN          ( n1 n2 -- n3 )             xt = 0x99                CORE
+              Choose minimum of n1, n2
+
+MAX           ( n1 n2 -- n3 )             xt = 0x9A                CORE
+              Choose maximum of n1, n2                             
+
+MIN           ( n1 n2 -- n3 )             xt = 0x9B                CORE
+              Choose minimum of n1, n2                             
+
+0MAX          ( x -- u )                  xt = 0x9C                CORE
+              Limit TOS to 0                                       
+
+WITHIN        ( u ul uh -- f )            xt = 0x9D                CORE
+              Lo <= n < hi unsigned                                
+
+BETWEEN       ( n lo hi --- f1 )          xt = 0x9E                CORE
+              Lo <= n <= hi signed                                 
+
+BOUNDS        ( a n -- aend abeg )        xt = 0x9F                CORE
+              Set up for DO..LOOP
+
+MOVE          ( asrc adest n -- )         xt = 0xA0                CORE
+              Move string of n chars                               
+              n limited to 65535 for 8051
+
+FILL          ( a n c -- )                xt = 0xA1                CORE
+              Fill array a with n chars of c                       
+
+/STRING       ( addr len n -- addr' len' )xt = 0xA2                CORE
+              Index into the string by n                           
+              Returns addr+n and len-n, n>=0
+
+UM*           ( u1 u2 -- ud )             xt = 0xA3                CORE
+              Unsigned 16*16 --> 32 multiply                       
+
+UM/MOD        ( ud u -- r q )             xt = 0xA4                CORE
+              Unsigned 32/16 --> r16 q16                           
+
+M/MOD         ( d n -- r q )              xt = 0xA5                CORE
+              Signed   d/n --> r q                                 
+
+MU/MOD        ( ud# un1 -- rem d#quot )   xt = 0xA6                CORE
+              Unsigned 32/16 --> r16 q32                           
+
+M*            ( n1 n2 -- d )              xt = 0xA7                CORE
+              Signed mult, double-cell result                      
+
+U/MOD         ( u1 u2 -- r q )            xt = 0xA8                CORE
+              Unsigned u/u --> r q                                 
+
+/MOD          ( n1 n2 -- r q )            xt = 0xA9                CORE
+              Dividend divisor -- rem quot                         
+
+MOD           ( n1 n2 -- r )              xt = 0xAA                CORE
+              Dividend divisor -- rem                              
+
+*/MOD         ( n1 n2 n3 -- r q )         xt = 0xAB                CORE
+              N1*n2/n3 --> rem quot                                
+
+/             ( n1 n2 -- q )              xt = 0xAC                CORE
+              Dividend divisor -- quot                             
+
+*             ( n1 n2 -- n3 )             xt = 0xAD                CORE
+              Signed mult, single-cell result                      
+
+*/            ( n1 n2 n3 -- q )           xt = 0xAE                CORE
+              N1*n2/n3 --> quot                                    
+
+FM/MOD        ( d1 n1 -- n2 n3 )          xt = 0xAF                CORE
+              Floored m/mod                                        
+
+SM/REM        ( d1 n2 -- n2 n3 )          xt = 0xB0                CORE
+              Symetric m/mod                                       
+
+ALLOT         ( n -- )                    xt = 0xB1                CORE
+              Allot n chars in dictionary                          
+
+ALIGNED       ( addr -- addr )            xt = 0xB2                CORE
+              Align tos with word boundary                         
+
+ALIGN         ( -- )                      xt = 0xB3                CORE
+              Align dp with word boundary                          
+
+HERE          ( -- addr )                 xt = 0xB4    cell        CORE
+              Address of next free char                            
+
+-SCAN         ( a n1 c -- a n2 )          xt = 0xB5                CORE
+              Remove trailing characters                           
+
+COMP          ( a1 a2 n1 -- f1 )          xt = 0xB6                CORE
+              String compare a1 a2 len                             
+
+SCAN          ( a1 n1 c1 -- a2 n2 )       xt = 0xB7                CORE
+              Scan string for character                            
+
+SKIP          ( a1 n1 c -- a2 n2 )        xt = 0xB8                CORE
+              Skip leading characters c                            
+
+EXECUTE       ( xt -- )                   xt = 0xB9                CORE
+              Execute bound code                                   
+
+ERASE         ( a n -- )                  xt = 0xBA                CORE
+              Fill array with zeros                                
+
+BLANK         ( a n -- )                  xt = 0xBB                CORE
+              Fill array with blanks                               
+
+MULTI         ( -- addr1 addr2 )          xt = 0xBC                CORE
+              Compile code for MULTI                               IMMEDIATE
+              MULTI ... REPEAT is equivalent to
+              BEGIN R@ 0< 0= WHILE R> 1- >R ... REPEAT
+
+CREATE        ( <xt> -- )                 xt = 0xBD                CORE
+              Compile code for data structure                      
+
+DOES>         ( -- )                      xt = 0xBE                CORE
+              Patch last create, point to code                     
+
+>BODY         ( xt -- pfa )               xt = 0xBF                CORE
+              Address of data field of an xt                       
+
+EMIT          ( char -- )                 xt = 0xC0                CORE
+              Output a character                                   
+
+TYPE          ( addr len -- )             xt = 0xC1                CORE
+              Output a string                                      
+
+EMITS         ( n char -- )               xt = 0xC2                CORE
+              Output repeated characters                           
+
+CR            ( -- )                      xt = 0xC3                CORE
+              New line on the console                              
+
+NUMPAD        ( -- addr )                 xt = 0xC4    cell        CORE
+              -> numeric conversion area                           
+
+PAD           ( -- addr )                 xt = 0xC5    cell        CORE
+              Address of scratchpad area                           
+
+<#            ( -- )                      xt = 0xC6                CORE
+              Start pictured numeric output                        
+
+HOLD          ( char -- )                 xt = 0xC7                CORE
+              Insert character into number                         
+
+#             ( ud1 -- ud2 )              xt = 0xC8                CORE
+              Convert one digit                                    
+
+#S            ( ud -- 0 )                 xt = 0xC9                CORE
+              Convert remaining digits                             
+
+SIGN          ( x -- )                    xt = 0xCA                CORE
+              Insert minus sign if n<0                             
+
+#>            ( ud -- addr len )          xt = 0xCB                CORE
+              Finish pictured numeric output                       
+
+SPACE         ( -- )                      xt = 0xCC                CORE
+              Emit a blank                                         
+
+SPACES        ( x -- )                    xt = 0xCD                CORE
+              Emit blanks                                          
+
+TYPE.         ( addr len -- )             xt = 0xCE                CORE
+              Type string and space                                
+
+,"            ( -- )                      xt = 0xCF                CORE
+              Copy string to dictionary                            
+              Lay a counted incoming string to the dictionary.
+
+(U.)          ( u -- a len )              xt = 0xD0                CORE
+              Convert unsigned to string                           
+
+(.)           ( n -- a len )              xt = 0xD1                CORE
+              Convert signed to string                             
+
+(UD.)         ( ud -- a len )             xt = 0xD2                CORE
+              Conv unsigned double to string                       
+
+(D.)          ( d -- a len )              xt = 0xD3                CORE
+              Convert signed double to string                      
+
+.             ( x -- )                    xt = 0xD4                CORE
+              Display signed to output device                      
+
+(LIT8)        ( <c> -- )                  xt = 0xD5                CORE
+              Compile signed 8-bit literal                         IMMEDIATE
+
+(LIT16)       ( <w> -- )                  xt = 0xD6                CORE
+              Compile signed 16-bit literal                        IMMEDIATE
+
+LITERAL       ( n -- )                    xt = 0xD7                CORE
+              Compile code for a literal                           IMMEDIATE
+
+[             ( -- )                      xt = 0xD8                CORE
+              Enter interpretive state                             IMMEDIATE
+
+]             ( -- )                      xt = 0xD9                CORE
+              Enter compiling state                                
+
+CONSTANT      ( x <xt> -- )               xt = 0xDA                CORE
+              Compile code for a constant                          
+              <xt> returns ( -- x )
+
+2CONSTANT     ( d <xt> -- )               xt = 0xDB                CORE
+              Compile code for double constant                     
+              <xt> returns ( -- d )
+
+ARRAY         ( x <xt> -- )               xt = 0xDC                CORE
+              Compile code for array of bytes                      
+              <xt> returns ( -- addr )
+
+STRING        ( x <xt> -- )               xt = 0xDD                CORE
+              Compile code for array of bytes                      
+              <xt> returns ( -- addr len )
+
+VARIABLE      ( <xt> -- )                 xt = 0xDE                CORE
+              Compile code for cell variable
+              <xt> returns ( -- addr )
+
+2VARIABLE     ( <xt> -- )                 xt = 0xDF                CORE
+              Compile code for double variable                     
+              <xt> returns ( -- addr )
+
+VALUE         ( x <xt> -- )               xt = 0xE0                CORE
+              Compile code for a value                             
+              <xt> returns ( -- x )
+
+:             ( <xt> -- )                 xt = 0xE1                CORE
+              Start a colon definition                             
+              Object code for the definition is compiled into the dictionary.
+              Semicolon binds this definition to the XT's table entry.
+
+;             ( -- )                      xt = 0xE2                CORE
+              End a colon definition                               IMMEDIATE
+              Also link this definition into the binding table.
+
+:NONAME       ( -- cfa )                  xt = 0xE3                CORE
+              Start a headerless definition                        
+              ** Warning **: This returns a static address, not an xt.
+              Not ANS compilant: you must use EXECUTECFA to execute the cfa.
+
+RECURSE       ( -- )                      xt = 0xE4                CORE
+              Compile static call to this word                     IMMEDIATE
+
+AHEAD         ( -- addr )                 xt = 0xE5                CORE
+              Compile code for AHEAD                               IMMEDIATE
+
+IF            ( -- addr )                 xt = 0xE6                CORE
+              Compile code for IF                                  IMMEDIATE
+
+THEN          ( addr -- )                 xt = 0xE7                CORE
+              Compile code for THEN                                IMMEDIATE
+
+ENDIF         ( addr -- )                 xt = 0xE8                CORE
+              Compile code for ENDIF                               IMMEDIATE
+
+ELSE          ( addr -- addr' )           xt = 0xE9                CORE
+              Compile code for ELSE                                IMMEDIATE
+
+BEGIN         ( -- addr )                 xt = 0xEA                CORE
+              Compile code for BEGIN                               IMMEDIATE
+
+UNTIL         ( addr -- )                 xt = 0xEB                CORE
+              Compile code for UNTIL                               IMMEDIATE
+
+AGAIN         ( addr -- )                 xt = 0xEC                CORE
+              Compile code for AGAIN                               IMMEDIATE
+
+WHILE         ( addr -- addr' )           xt = 0xED                CORE
+              Compile code for WHILE                               IMMEDIATE
+
+REPEAT        ( addr addr -- )            xt = 0xEE                CORE
+              Compile code for REPEAT                              IMMEDIATE
+
+DO            ( -- addr1 addr2 )          xt = 0xEF                CORE
+              Compile code for DO                                  IMMEDIATE
+
+?DO           ( -- addr1 addr2 )          xt = 0xF0                CORE
+              Compile code for ?DO                                 IMMEDIATE
+
+LOOP          ( addr1 addr2 -- )          xt = 0xF1                CORE
+              Compile code for                                     IMMEDIATE
+
++LOOP         ( addr1 addr2 -- )          xt = 0xF2                CORE
+              Compile code for +LOOP                               IMMEDIATE
+
+CASE          ( -- 0 )                    xt = 0xF3                CORE
+              Compile code for CASE                                IMMEDIATE
+
+OF            ( ... -- ... a )            xt = 0xF4                CORE
+              Compile code for OF                                  IMMEDIATE
+
+ENDOF         ( a -- a' )                 xt = 0xF5                CORE
+              Compile code for ENDOF                               IMMEDIATE
+
+ENDCASE       ( ... -- )                  xt = 0xF6                CORE
+              Compile code for ENDCASE                             IMMEDIATE
+
+."            ( <string> -- )             xt = 0xF7                CORE
+              Compile a string to type                             IMMEDIATE
+
+C"            ( <string> -- )             xt = 0xF8                CORE
+              Compile string, returns addr                         IMMEDIATE
+
+S"            ( <string> -- )             xt = 0xF9                CORE
+              Compile string, returns a,len                        IMMEDIATE
+
+'             ( <xt> -- )                 xt = 0xFA                CORE
+              Gets xt from the input stream                        
+
+[']           ( n -- )                    xt = 0xFB                CORE
+              Compiles XT as a literal                             IMMEDIATE
+
+CHAR          ( <char> -- )               xt = 0xFC                CORE
+              Gets char from the input stream                      
+
+EXIT          ( -- )                      xt = 0xFD                CORE
+              Compile an exit                                      IMMEDIATE
+
+CODE          ( <c><xt><length16><data> --) xt = 0xFE              CORE
+              Create a header for raw code, with no code attached to it
+              only if the CPU type matches.
+
+END           ( -- )                      xt = 0xFF                CORE
+              Terminates the evaluator                             IMMEDIATE
+
+WATCHDOG-     ( -- )                      xt = 0x180               CORE
+              Clear the watchdog-reset line
+
+WATCHDOG+     ( -- )                      xt = 0x181               CORE
+              Set the watchdog-reset line
+
+C>N           ( c -- x )                  xt = 0x182               CORE
+              Sign extend byte --> cell                            
+
+W>N           ( w -- x )                  xt = 0x183               CORE
+              Sign extend 16-bit --> cell                          
+
+C@P           ( a -- c )                  xt = 0x184               CORE
+              Char fetch from program memory                       
+
+@P            ( addr -- n )               xt = 0x185               CORE
+              Fetch from program memory                            
+
+W@P           ( addr -- x )               xt = 0x186               CORE
+              16bit fetch from program memory                      
+
+C!P           ( c addr -- )               xt = 0x187               CORE
+              Char store to program memory                         
+
+!P            ( x addr -- )               xt = 0x188               CORE
+              Store cell to program memory                         
+
+W!P           ( x addr -- )               xt = 0x189               CORE
+              16-bit store to program memory                       
+
+PAUSE         ( -- )                      xt = 0x18A               CORE
+              Hook for multitasker                                 
+
+TID           ( -- addr )                 xt = 0x18B               CORE
+              ID of current task                                   
+
+CLEAR         ( -- )                      xt = 0x18C               CORE
+              Clear the data stack                                 
+              Can be used in the main loop for safety, but check the
+              stack depth and issue a warning so as not to mask bugs.
+
+DEPTH         ( -- n )                    xt = 0x18D               CORE
+              # of cells on stack                                  
+
+'BIND         ( xt -- addr )              xt = 0x18E               CORE
+              Point to jump in binding table                       
+
+BIND@         ( xt -- addr )              xt = 0x18F               CORE
+              Get CFA from the binding table                       
+              Extract the destination address
+
+BIND!         ( addr xt -- )              xt = 0x190               CORE
+              Store CFA to the binding table                       
+              Place LJMP opcode and destination
+
+EXECUTECFA    ( addr -- )                 xt = 0x191               CORE
+              Execute at absolute address                          
+
+REBOOT        ( -- )                      xt = 0x192               CORE
+              Reset the CPU                                        
+
+COUNTER@      ( -- udtime )               xt = 0x193   double      CORE
+              Get 32-bit count, double cell                        
+
+COUNTER!      ( udtime -- )               xt = 0x194               CORE
+              Set 32-bit timer count                               
+
+|COUNTER|     ( d1 -- d2 )                xt = 0x195               CORE
+              Truncate difference to 32 bits                       
+
+CTRSCALE      ( -- x )                    xt = 0x196   constant    CORE
+              Msec per tick * 2^cellsize                           
+              For MS conversion. Equals 2^cellsize * 1000 / TickFrequency
+
+UNINITIALIZED ( -- )                      xt = 0x197               CORE
+              Error handler for DEFERed words                      
+
+3DROP         ( x1 x2 -- )                xt = 0x198               CORE
+              Drop cell pair                                       
+
+CELL-         ( x -- x-cell )             xt = 0x199               CORE
+              Decrement TOS by 1 cell                              
+
+UNDER1+       ( x1 x2 -- x1' x2 )         xt = 0x19A               CORE
+              Add 1 to NOS                                         
+
+UNDER1-       ( x1 x2 -- x1' x2 )         xt = 0x19B               CORE
+              Subtract 1 from NOS                                  
+
+>DIGIT        ( n -- c )                  xt = 0x19C               CORE
+              Convert digit to ASCII                               
+              : >DIGIT  dup 9 > 7 and + [char] 0 + ;
+
+BYTE-SPLIT    ( n -- cl ch )              xt = 0x19D               CORE
+              Split into lo and hi bytes                           
+
+WORD-SPLIT    ( n -- nl nh )              xt = 0x19E               CORE
+              Split 32 --> lo-16 hi-16                             
+
+BYTE-JOIN     ( cl ch -- n )              xt = 0x19F               CORE
+              Join lo and hi bytes                                 
+
+WORD-JOIN     ( nl nh -- n )              xt = 0x1A0               CORE
+              Join  lo-16 hi-16 --> 32                             
+
+BYTE-SWAP     ( n -- n' )                 xt = 0x1A1               CORE
+              Swap lower 2 bytes of n                              
+
+PALIGNED      ( addr -- addr )            xt = 0x1A2               CORE
+              Align tos with word boundary                         
+
+PALIGN        ( -- )                      xt = 0x1A3               CORE
+              Align dp with word boundary                          
+
+DIGIT         ( char base -- n f )        xt = 0x1A4               CORE
+              Convert ASCII to digit                               
+              If the character is equivalent to a digit in the specified base,
+              converts the character and return a TRUE flag, else leaves
+              char and FALSE.
+
+COUNTER<      ( d1 d2 -- f )              xt = 0x1A5               CORE
+              Compare time values, T if t2>t1                      
+
+B@@+          ( a -- c )                  xt = 0x1A6               CORE
+              Lift byte from an input stream                       
+              Assume the pointer will always be in RAM data space,
+              data is in data space.
+
+B@@+P         ( a -- c )                  xt = 0x1A7               CORE
+              Lift byte from an input stream                       
+              Assume the pointer will always be in RAM data space,
+              data is in code space.
+
+REBIND        ( xtsrc xtdest -- )         xt = 0x1A8               CORE
+              Bind a new action to a word                          
+
+BIND[         ( xtsrc xtdest -- | R: -- xtxt = 0x1A9               CORE
+              Bind a new action to a word                          
+
+]BIND         ( -- | R: xt cfa -- )       xt = 0x1AA               CORE
+              Restore old action                                   
+
+CPUTYPE       ( -- x )                    xt = 0x1AB   constant    CORE
+              Cpu code type: 1 = 8051                              
+
+ORG           ( addr -- )                 xt = 0x1AC               CORE
+              Change dictionary pointer                            
+
+RAM           ( -- )                      xt = 0x1AD               CORE
+              Set to compile to data space                         
+
+ROM           ( -- )                      xt = 0x1AE               CORE
+              Set to compile to code space                         
+
+EGETCH        ( -- c )                    xt = 0x1AF               CORE
+              Get next byte from input stream                      
+
+UNUSED        ( -- n )                    xt = 0x1B0               CORE
+              Number of unused data bytes                          
+
+(COMPILE)     ( <xt> -- )                 xt = 0x1B1               CORE
+              Compile call to xt's address                         
+
+,LIT          ( n -- )                    xt = 0x1B2               CORE
+              Compile code for a literal                           
+
+EGETCH16      ( -- n )                    xt = 0x1B3               CORE
+              Get the next 16-bit value                            
+
+LIFTTOKEN     ( -- xt )                   xt = 0x1B4               CORE
+              Get next token# from input strea                     
+
+CON$          ( -- addr len )             xt = 0x1B5               CORE
+              Raw buffer for virtual console                       
+
+_CLS          ( -- )                      xt = 0x1B6               CORE
+              Clears virtual console screen                        
+
+_EMIT         ( c -- )                    xt = 0x1B7               CORE
+              Output to the virtual console                        
+
+BASE          ( -- a )                    xt = 0x1B8   [cell]      CORE
+              Radix for number conversion                          
+
+HLD           ( -- a )                    xt = 0x1B9   [cell]      CORE
+              Pointer for numeric conversion                       
+
+STATE         ( -- a )                    xt = 0x1BA   [cell]      CORE
+              T if compile, F if interpret                         
+
+CLS           ( -- )                      xt = 0x1BB               CORE
+              Clear screen                                         
+
+DOORPAUSE     ( -- )                      xt = 0x1BC               CORE
+              Backdoor debugger hook                               
+
+VCON$         ( -- a len )                xt = 0x1BD               CORE
+              Virtual console output data                          
+
+PAD$          ( -- a )                    xt = 0x1BE   [string]    CORE
+              Scratchpad/conversion area                           
+
+$TYPE         ( $addr -- )                xt = 0x1BF               CORE
+              Output a counted string                              
+
+(.R)          ( n width -- a len )        xt = 0x1C0               CORE
+              Signed to string right justify                       
+
+(U.R)         ( n width -- a len )        xt = 0x1C1               CORE
+              Unsigned to string rt justify                        
+
+(LIT32)       ( <l> -- )                  xt = 0x1C2               CORE
+              Compile 32-bit literal                               IMMEDIATE
+
+RETRY         ( -- )                      xt = 0x1C3               CORE
+              Compile static jump to this word                     IMMEDIATE
+              Wil Baden invented RETRY, which jumps back to the beginning
+              of a word.
+
+#IF#          ( f -- )                    xt = 0x1C4               CORE
+              Skip forward if zero                                 
+              Used to conditionally evaluate incoming bytecode.
+
+NOOP          ( -- )                      xt = 0x1C5               CORE
+              Does nothing                                         
+
+HEX           ( -- )                      xt = 0x1C6               CORE
+              Use base 16 for numeric output                       
+
+DECIMAL       ( -- )                      xt = 0x1C7               CORE
+              Use base 10 for numeric output                       
+
+UD*           ( ud1 u -- ud2 )            xt = 0x1C8               CORE
+              Unsigned cell*cell -> double multiply
+
+>NUMBER       ( ud addr len -- ud' addr' lxt = 0x1C9               CORE
+              Convert string to a number                           
+
+IMMEDIATE     ( -- )                      xt = 0x1CA               CORE
+              Set IMMEDIATE bit of header                          
+
+CALL-ONLY     ( -- )                      xt = 0x1CB               CORE
+              Set CALL-ONLY bit of header                          
+
+MACRO         ( -- )                      xt = 0x1CC               CORE
+              Set MACRO bit of header                              
+
+ABORT         ( -- )                      xt = 0x1CD               CORE
+              Terminate evaluator input                            
+
+TO            ( n <xt> -- )               xt = 0x1CE               CORE
+              Prefix store to a VALUE                              IMMEDIATE
+              compile: ( <xt> -- )  *** STATE SMART ***
+
+<EVAL         ( addr -- )                 xt = 0x1CF               CORE
+              Set start address for evaluator                      
+
+EVAL>         ( -- c )                    xt = 0x1D0               CORE
+              Terminate evaluator input                            
+
+MARKER        ( <xt> -- )                 xt = 0x1D1               CORE
+              Create a marker that resets HERE                     
+              Compile code to reset 'here to previous value
+
+[COMPILE]     ( <xt> -- )                 xt = 0x1D2               CORE
+              Compiles code to compile a def                       IMMEDIATE
+              The created code compiles a call to xt at run time.
+
+COMPILE,      ( xt -- )                   xt = 0x1D3               CORE
+              Compile xt into the definition                       
+              Compiles a call into the binding table except when:
+              1. The word is inlineable (it's macro bit is set)
+              2. The XT is the same as that of the definition being built.
+                 To avoid accidental recursion, we bypass the binding table
+                 with a direct call.
+
+POSTPONE      ( <xt> -- )                 xt = 0x1D4               CORE
+              Compile next token in stream                         IMMEDIATE
+
+RELATIVE      ( -- )                      xt = 0x1D5               CORE
+              Reset base for relative tokens                       
+
+EVAL          ( -- )                      xt = 0x1D6               CORE
+              Evaluate the input stream                            
+
+EVALUATE      ( addr -- ior )             xt = 0x1D7               CORE
+              Evaluate a block of input                            
+              test checksum before loading
+              ior: 0 = ok, 1000 = bad checksum, 1001 = bad header,
+              other = stack changed
+
+EVAL=MEM      ( -- )                      xt = 0x1D8               CORE
+              Set up to evaluate from memory
+
+EVAL=CODE     ( -- )                      xt = 0x1D9               CORE
+              Set up to evaluate program mem                       
+
+EMPTY         ( -- )                      xt = 0x1DA               CORE
+              Empty the user dictionary                            
+
+MAINEVENT     ( -- )                      xt = 0x1DB               CORE
+              Called forever in a loop                             
+
+_UNINIT       ( -- )                      xt = 0x1DC               CORE
+              Report call to uninitialized xt                      
+
+NEWBINDINGS   ( addr -- )                 xt = 0x1DD               CORE
+              Initialize binding table                             
+
+NEWVALUES     ( addr -- )                 xt = 0x1DE               CORE
+              Initialize data space table                          
+
+SYSINIT       ( -- )                      xt = 0x1DF               CORE
+              Initialize drivers                                   
+
+TICKS         ( d -- )                    xt = 0x1E0               CORE
+              Make time delay, timer ticks                         
+              Invokes PAUSE for the double-cell number of timebase ticks.
+
+MS            ( u -- )                    xt = 0x1E1               CORE
+              Make time delay, milliseconds                        
+              Invokes PAUSE until the desired number of milliseconds
+              has elapsed.  For better performance, use TICKS.
+
+PREMATURE?    ( addr -- f )               xt = 0x1E2               CORE
+              Tests a timer for timeout                            
+              Compares a variable against the present time,
+              returns F and clears it if it has timed out.
+              Uses double variable: mark|threshold
+
+CALTIMER      ( addr msec -- )            xt = 0x1E3               CORE
+              Calibrates a short timer                             
+              Run this at startup to calibrate timers
+
+(LOCAL@)      ( <offset> -- )             xt = 0x1E4               CORE
+              Compile local@                                       IMMEDIATE
+
+(LOCAL!)      ( <offset> -- )             xt = 0x1E5               CORE
+              Compile local!                                       IMMEDIATE
+
+(LOCAL[)      ( <offset> -- )             xt = 0x1E6               CORE
+              Compile local setup                                  IMMEDIATE
+
+(]LOCAL)      ( <offset> -- )             xt = 0x1E7               CORE
+              Compile local teardown                               IMMEDIATE
+
+EEDEVICE      ( -- a )                    xt = 0x1F2   [cell]      CORE
+              EEPROM device select 0..7                            
+
+<EE!          ( addr -- )                 xt = 0x1F3               CORE
+              Send control bytes to EEPROM                         
+              send control byte(s), return control byte for status polling
+
+EEPOLL        ( -- f )                    xt = 0x1F4               CORE
+              Test for presence of EEPROM                          
+              read last selected device, return T if found.
+
+EE!>          ( -- ior )                  xt = 0x1F5               CORE
+              End EEPROM write, T if error                         
+
+EE!           ( c -- )                    xt = 0x1F6               CORE
+              Store next byte to EEPROM
+
+<EE@          ( addr -- )                 xt = 0x1F7               CORE
+              Set up for sequential read                           
+
+EE@           ( -- c )                    xt = 0x1F8               CORE
+              Get next sequential EEPROM byte                      
+
+EE@>          ( -- c )                    xt = 0x1F9               CORE
+              Get next EEPROM byte, end read                       
+
+EEMIN         ( -- x )                    xt = 0x1FA   constant    CORE
+              Minimum EEPROM address                               
+
+EEMAX         ( -- x )                    xt = 0x1FB   constant    CORE
+              Maximum EEPROM address                               
+
+EE=MAIN       ( -- )                      xt = 0x1FC               CORE
+              Select main serial eeprom                            
+              If you have an alternate IIC EEPROM bus, you can define a
+              word similar to this one to redirect serial EEPROM operators
+              to that bus.
+
+EVAL=EE       ( -- )                      xt = 0x1FD               CORE
+              Set up to evaluate EEPROM code                       
+
+EE@N          ( a -- n )                  xt = 0x1FE               CORE
+              Read 16-bit value from EEPROM                        
+
+PRIMARYBOOT   ( -- a )                    xt = 0x1FF               CORE
+              Address of pre-boot program                          
+
+SECONDARYBOOT ( -- a )                    xt = 0x200               CORE
+              Address of post-boot program                         
+
+X_NODE        ( node# -- )                xt = 0x201               CORE
+              Selects a new node                                   
+
+X_PORT        ( port# -- )                xt = 0x202               CORE
+              Selects a port within a node                         
+
+X_TRANSFER    ( addr len -- )             xt = 0x203               CORE
+              Xfer current port to/from memory                     
+              Shift an active SS to the desired node, then transfer the data.
+              First, we assume all SS lines are inactive. As long as this is
+              the case, it's safe to clock the port-select counter. Upon entry,
+              the port# is indeterminate.
+
+X_RESET       ( -- )                      xt = 0x204               CORE
+              Clears the bus logic                                 
+
+X_SVC?        ( -- f )                    xt = 0x205               CORE
+              Looks for service plug                               
+              A service plug disables bootup. On the SPIX bus, short
+              pins 5 & 6 together to indicate a service plug.
+
+LAST_BYTE     ( -- a )                    xt = 0x206   [cell]      CORE
+              Result from x_byte!                                  
+
+X_BYTE!       ( c -- )                    xt = 0x207               CORE
+              Write byte to SPIX output                            
+
+X_READ        ( src dest len -- )         xt = 0x208               CORE
+              Read from boot EEPROM                                
+              Read EEPROM into RAM using page read.
+              Read segments twice to check for bit errors.
+
+X_WRITE       ( src dest len -- )         xt = 0x209               CORE
+              Write to boot EEPROM                                 
+              Write data in blocks until it's written
+
+X_WRSR        ( c -- result )             xt = 0x20A               CORE
+              Write to status register                             
+
+BOOTIMAGE     ( -- a )                    xt = 0x20B   [RAMdata]   CORE
+              2K boot ROM image                                    
+              The BootImage array is for temporary storage of boot code. We
+              can't boot directly from EEPROM because of possible communication
+              errors. So, we copy it to RAM and then evaluate it. You can
+              define this as a constant if you know of a free area of RAM
+              that nobody will bother.
+
+CURRENTNODE   ( -- a )                    xt = 0x20C   [cell]      CORE
+              Next free node                                       
+              Points to the next empty node, the one after the end of the
+              SPIX chain. This is bumped upward during ennumeration of the SPIX
+              devices.
+
+DEADBUS       ( -- a )                    xt = 0x20D   [cell]      CORE
+              T if booting has been disabled                       
+
+MY            ( -- )                      xt = 0x20E               CORE
+              Current node number                                  IMMEDIATE
+              state smart: compile a literal or return the number.
+              The interpret action only makes sense when evaluating boot code.
+              Sample Usage : emit my x_node lcd_emit ;
+
+X_TEST        ( node -- ior )             xt = 0x20F               CORE
+              Test boot ROM   ior: 0=valid                         
+              Get data from the bottom of the boot EEPROM
+              Expecting: C0 DE ?? 07 C9 csum16 length24
+
+EVAL_EXT      ( -- )                      xt = 0x210               CORE
+              Evaluate external SIP boot code                      
+
+HPTIMER       ( -- a )                    xt = 0x211   [double]    CORE
+                                                                   
+
+HOTPLUGPOLL   ( -- )                      xt = 0x212               CORE
+              Test for change in bus config                        
+
+AT-XY         ( col row -- )              xt = 0x213               CORE
+              Position cursor at col,row                           
+
+MAX-XY        ( -- cols rows )            xt = 0x214               CORE
+              Maximum cursor coordinate                            
+
+AT-XY?        ( -- col row )              xt = 0x215               CORE
+              Current cursor position                              
+
+MYSTUFF       ( -- )                      xt = 0x216               APP
+              Main program, called within loop                     
+              Peripherals can extend this to add themselves to the macroloop.
+
+

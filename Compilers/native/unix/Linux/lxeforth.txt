@@ -1,0 +1,18 @@
+--- Linux/i386 port of eForth v1.0 ---
+
+This port of eForth v1.0 to Linux is based on the DJGPP/GO32 version
+by Andy Valencia (now vandys@cisco.com). Actually, the only modifications
+were the conversion of DOS calls (as treated by DJGPP's GO32 DOS extender),
+the replacement of .align's that did not work with Linux version of GAS
+(which seems to take a 16-bit word size first argument, and fills with NOP's,
+whereas vandys' program needed a byte size argument and zero-filling), and
+disabling of input echoing and version message (words TAP and 'BOOT).
+
+
+--    ,        	                                ,           _ v    ~  ^  --
+-- Fare -- rideau@clipper.ens.fr -- Francois-Rene Rideau -- +)ang-Vu Ban --
+--                                      '                   / .          --
+MOOSE project member. OSL developper.                     |   |   /
+Dreams about The Universal (Distributed) Database.       --- --- //
+Snail mail: 6, rue Augustin Thierry 75019 PARIS FRANCE   /|\ /|\ //
+Phone: 033 1 42026735                                    /|\ /|\ /

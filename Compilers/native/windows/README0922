@@ -1,0 +1,22 @@
+This is the file README and belongs to version 0.9.22 of January, 07 1999
+of the C++Builder Win32 port of the portable Forth-environment.
+--------------------------------------------------------------------------
+
+What is it?
+===========
+
+PFE is the portable FORTH environment by Dirk Zoller. This contribution contains the
+executeable for Windows 95/Windows NT 4.0 and all source files for Borland/Inprise C++Builder 
+for recompilation. For installation just extract the executeable PFE.EXE and start it.
+PFE does not use any Windows registry entries, so for deinstallation just delete the files.
+
+The original PFE files have version 0.9.14 and can be found under 
+http://www.taygeta.com/forthcomp.html
+
+For optimal perfomance (and further documentation) please install the files of 0.9.14 under 
+c:\pfe and copy pfe.exe and the changes file of this distribution to c:\pfe. You can overwrite 
+the original source files and the changes file. The sources will also (hopefully) compile for 
+all the other targets. All changes are documented in the file changes of this contribution. 
+The *.pat files in the \src\pat directory show the differences compared to version 0.9.14.
+
+Stefan Wenk ( email pfewin32@siemens.at )

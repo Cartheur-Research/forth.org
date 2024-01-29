@@ -1,0 +1,179 @@
+
+
+   Status of the Forth Scientific Library Project  17 Sept 1999
+
+
+
+
+   Code contributions:
+
+
+   Reviewed and accepted:
+   (reviewed code is available via anonymous FTP at
+    ftp.taygeta.com/pub/Forth/Scientific or via WWW at
+    http://www.taygeta.com/scilib.html)
+
+
+   1. Real Exponential Integral (ACM #20)                    Skip Carter
+   2. Complete Elliptic Integral (ACM #149)                  Skip Carter
+   3. Polynomial evaluation by the Horner method             Skip Carter
+   4. Logistic function and its first derivative             Skip Carter
+   5. Cube root of real number by Newton's method            Julian Noble
+   6. Solution of cubic equations with real coefficients     Julian Noble
+   7. Regula Falsi root finder                               Julian Noble
+   8. Fast Hartley (Bracewell) Transform                     Skip Carter
+      (with supplemental utilities and tests by Marcel Hendrix)
+   9. Aitken Interpolation (ACM #70)                          Skip Carter
+  10. Hermite Interpolation (ACM #211)                        Skip Carter
+  11. Lagrange Interpolation (ACM #210)                       Skip Carter
+  12. Forward and Backward divided differences                Skip Carter
+  13. Newton Interpolation with Divided differences (ACM 168 & 169) Skip Carter
+  14. Factorial                                               Skip Carter
+  15. Shell sort for floating point arrays                    Charles Montgomery
+  16. Exponentiation of a series  (ACM # 158)                 Skip Carter
+  17. Polynomial and Rational function interpolation and extrapolation
+                                                              Marcel Hendrix
+  18. The Gamma, LogGamma and reciprocal Gamma functions      Skip Carter
+  19. Adaptive Integration using Trapezoid rule               Julian Noble
+  20. Parabolic Cylinder functions and related Confluent Hypergeometric functions
+                                                              Skip Carter
+  21. Special Polynomial (Chebyshev, Hermite, Laguerre, Generalized Laguerre,
+                       Legendre and Bessel) Evaluation       Skip Carter
+  22. Conversion between calendar date and Julian day (ACM 199) Skip Carter
+  23. R250  (also minimal standard) Pseudo-random number generator    Skip Carter
+  24. RAN4 Pseudo-random number generator                     Gordon Charlton
+  25. Finite segment of Hilbert Matrices, their inverses and determinants
+                                                             Skip Carter
+  26. FIND nth element of an unsorted array (ACM #65)        Skip Carter
+  27. Gauss-Legendre Integration                             Skip Carter
+  28. Complete Elliptic Integral of the first kind
+      and second kind (ACM #55 and #56)                     Skip Carter
+  29. 4th order and adaptive Runge-Kutta solvers for systems of ODEs
+                                                            Skip Carter
+  30. Complete Elliptic Integrals of 1st and 2nd kinds (ACM #165)  Skip Carter
+  31. Telescope 1 (ACM 37) (reduction of degree of polynomial approximations)
+             Skip Carter
+  32. Telescope 2 (ACM 38)                                      Skip Carter
+  33. LUFACT, LU Factorization of square matrices               Skip Carter
+  34. Determinant of an LU factored matrix                      Skip Carter
+  35. Back-substitution solution for LU factored linear systems Skip Carter
+  36. Inverse of an LU factored matrix                          Skip Carter
+  37. Four methods for Direct Fourier Transforms                Skip Carter
+  38. Radix-2 Fast Fourier Transform routines                   Skip Carter
+      (5 versions one, two, and three butterflies, tabular, non-tabular)
+  39. Singular Value Decomposition                              Marcel Hendrix
+  40.  Amoeba -- Multidimensional Simplex minimization
+                                              of a function     Marcel Hendrix
+  41. Sunday Quicksearch                                        Leonard Morgenstern
+  42. Gauss probability function  (ACM #209)                    Skip Carter
+  43. Regular spherical Bessel functions jn(x), n=0-9           Julian Noble
+  44. 16-bit Cyclic Redundancy Checksums                        Gordon Charlton
+  45. Simpsons rule and Romberg algorithm Quadrature routines   Marcel Hendrix
+  46. Basic arithmetic and conversions for rational numbers     Gordon Charlton
+  47. BIG -- Arithmetic on big signed magnitude numbers         Len Zettel
+  48. Gauss-Jordan Elimination                                  Marcel Hendrix
+  49. Levenberg-Marquardt nonlinear fit                         Marcel Hendrix
+  50. Fast Walsh Transform                                      Skip Carter
+  51. Generation of Random number distributions                 Pierre Abbat
+  52. ISAAC Random number generator                             Pierre Abbat
+  53. Adaptive Integration using trapezoidal rule with
+     Richardson extrapolation                                   Julian Noble
+  54. Adaptive integration using 3 point Gauss-Legendre         Julian Noble
+    with Richardson extrapolation
+  55. Nonlinear transformation of series (SHANKS) (ACM #215)    Skip Carter
+
+   Currently being reviewed:
+  
+   Basic statistics of a floating point array                Skip Carter
+   Marsaglia random number generation                        Ferren MacIntyre
+   Quasi-Random number generation                            Skip Carter
+   Square roots of big integers                              Pierre Abbat
+   EXPM, matrix exponential via Pade Approximation           Marcel Hendrix
+
+
+   Contributed but not reviewed:
+
+   Simulated Annealing using Cauchy cooling                  Skip Carter
+   Quarternions                                              Pierre Abbat
+   Rootfinder (ACM #2)                                       Skip Carter
+   Stochastic Differential Equation solver (scalar version)  Skip Carter
+   Box-Muller transformation (polar form)                    Skip Carter
+   Quadratic Equation solver                                 Skip Carter
+   Tridiagonal solver, using the Thomas algorithm            Skip Carter
+   First derivative of a function by Richardson extrapolation Skip Carter
+   Reversion of Series (ACM # 193)                           Skip Carter
+   Monte Carlo Row inverse (ACM 166) and related algorithms  Skip Carter
+   Coefficient Determination (ratio of polynomials) (ACM# 131) Skip Carter
+   Weibull PDF and Weibull Random variables                  Skip Carter
+   Linear and Circular (discrete) Convolution                Skip Carter
+   Complex math operations (magnitude, power, multiplication and division)
+                                                             Skip Carter
+   Polynomial transformer (ACM #29)                          Skip Carter
+   Jacobian elliptic functions                               Skip Carter
+   Solution of linear Fredholm equation of the second kind   Skip Carter
+   Solution of a set of Volterra equations of the second kind Skip Carter
+   Square root of a square symmetric matrix                  Skip Carter
+   Adjustment of Matrix inverse when an element is perturbed (ACM #51) Skip Carter
+   Eigenvalues and Eigenvectors of a real symmetric matrix   Skip Carter
+   Permutations and Combinations                             Gordon Charlton
+   Gauss-Seidel iteration solution to linear systems         Skip Carter
+   Solution of banded linear systems                         Skip Carter
+   Tools to use polynomial interpolation with a large table  Marcel Hendrix
+   (weighted) least-squares projection onto orthogonal polynomials Skip Carter
+   Rosenbrock ODE solver for stiff systems of ODEs           Marcel Hendrix
+   Bezier Splines                                            Pierre Abbat
+   Brute Force 1-D Monte Carlo                               Julian Noble
+   1-D Monte Carlo Integration                               Julian Noble
+   GGUBS Pseudo Random number generator (floating point)     Julian Noble
+   Laguerre method for polynomial roots                      Julian Noble
+   
+   
+   
+   Participants:
+
+   c.mccormack@ieee.org                   Chris McCormack
+   erather@forth.com                      Elizabeth Rather
+   ghaydon@theforthsource.com             Glen Haydon
+   JimBrakefd@aol.com                     Jim Brakefield
+   jvn@virginia.edu                       Julian Noble
+   skip@taygeta.com     	          Skip Carter
+   richard.beldyk@mecheng.fullfeed.com    Richard Beldyk
+   tstark@cix.compulink.co.uk             Tony Reid-Anderson
+   chergr@lure.latrobe.edu.au             Richard Rothwell
+   NLeonard@aol.com                       Leonard Morgenstern
+   Gus_Calabrese@onenet-bbs.org           Gus Calabrese
+   gary@forth.org                         Gary Bergstrom
+   munroec@usa.net                        Munroe C. Clayton
+   warren@ross.com                        Warren Bean
+   chihyu@starbase.neosoft.com            ChihYu Jesse Chao
+   cgm@utphya.panet.utoledo.edu           Charles G.Montgomery
+   mhx@iaehv.iaehv.nl                     Marcel Hendrix
+   mumwp1@uxa.ecn.bgu.edu                 Michel W Pelletier
+   gordon@charlton.demon.co.uk            Gordon Charlton
+   andrejs@crl.com                        Andrejs Vanags
+   mlists@digalog.com                     Stephen Sjolander
+   penev@venezia.rockefeller.edu          Penio Penev
+   johns@oslonett.no                      John Svae
+   fabrice.pardo@bagneux.cnet.fr          Fabrice Pardo
+   znmeb@teleport.com                     M. Edward Borasky
+   reaves@pacbell.net                     Richard Reaves
+   bmort@nas.com                          Bob Mortenson
+   ferren.macintyre@ucg.ie                Ferren MacIntyre
+   zettel@acm.org                         Len Zettel
+   billz@inlink.com                       Bill Zimmerly
+   alaric@abwillms.demon.co.uk            Alaric B. Williams 
+   f3meyer@texoma.com                     Fred Meyer
+   mfriesen@sfu.ca                        Merlin Friesen
+   ba075@lafn.org                         Jay Topping
+   luis@cybogen.com                       Luis Commins
+   walden@pawneenet.com                   Bill Walden
+   phma@oltronics.net                     Pierre Abbat
+   watson@engr.usask.ca                   Glen Watson
+   miyshael_gailson@jerusalemail.com
+   dlandown@chroma.med.maimi.edu
+
+
+   Mail to:     scilib@taygeta.com will be automatically
+   distributed to all the participants listed above.
+
+   

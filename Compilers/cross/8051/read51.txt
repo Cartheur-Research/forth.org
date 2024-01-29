@@ -1,0 +1,153 @@
+
+1/15/90
+
+   William H. Payne, the author of "Embedded Controller Forth for the 8051
+Family", has generously sent me all the code for the system described in his
+book, and has encouraged me to make it available for download.  So, here it
+is!  Following this note, there is a more extensive description of what's
+in each of the ZIP files, from Jerry Boutelle, which I received from Bill
+along with the code.  For the sake of getting started, this brief summary
+should be of some help:
+
+
+  FILENAME       SIZE       BRIEF DESCRIPTION
+------------    ------   -----------------------
+READ    .ME       6433   This file
+FORTH86 .ZIP    261962   Files for IBM PC Forth
+F86DOCS .ZIP    269318   Documentation for above
+FORTH51 .ZIP    157861   Files for 8051 Forth
+F51DOCS .ZIP    285426   Documentation for above
+MISCFILE.ZIP     91576   Miscellaneous files
+PCW1    .EXE    184960   PC-Write -- needed to
+PCW2    .EXE    183551   maintain the documen-
+PCW3    .EXE    228608   tation files
+
+
+Notes:
+
+i)    Bill Payne provided me with a few files not present in the book, as
+      well as what appear to be newer versions of some of the files con-
+      tained in FORTH86.ZIP and FORTH51.ZIP.  I have grouped these together
+      in MISCFILE.ZIP.  I'm not sure what all the new stuff is, but Bill
+      says the file LSHOW.SCR is a laser printer utility that shows Forth
+      screens/documentation in compressed print mode (four pages reduced
+      to one).  The file WORDS.DOC is an encyclopedia of all the words in
+      the system, I think.  It may be what Jerry Boutelle refers to in his
+      note below as "documentation that is not in the book."
+
+ii)   PC-Write is only needed if you plan on modifying the documentation.
+      All the documentation is provided both as PC-Write files and as
+      plain ASCII files for dumping to a printer.  If you're not going
+      to make changes to the documentation, you don't need PC-Write.
+      The three files are self-extracting.
+
+iii)  Bill has told me that a company built the machine depicted in his book,
+      and it worked the first time out.  He wants people to know that the
+      schematics "work", and he cites this as evidence.  The company is:
+
+         Metriguard
+         P.O. Box 399
+         Pullman, WA 99163
+         (509) 332-1600  FAX: (509) 332-0485
+
+      They are selling boards based on the book, the book itself, and the
+      code too, the latter for $25.  This may be cheaper than downloading
+      for some people.  I do not know if they have all the stuff I do,
+      though.
+
+If you have any questions, feel free to call, although you will probably be
+better served by either Metriguard or Jerry Boutelle, the signer of the note
+below; I'm just a beginner at Forth.
+
+Good luck!
+
+Tom Schotland
+25 Main Street
+Setauket, NY 11733
+(516) 689-9889
+
+
+-------------------------------------------------------------------------------
+  THE NOTE BELOW CAME WITH THE CODE FROM WILLIAM PAYNE.  READ IT, IT CONTAINS
+  IMPORTANT INFORMATION!
+-------------------------------------------------------------------------------
+
+
+Hello,
+
+Well here you go, it is said Forth is an oral tradition and this is very
+true. What you have here is not a polished product. You will have to do some
+fooling around to figure out what is here.
+
+I have sent you all the files in zip format. I have included the unzip
+program if you don't have a copy.
+
+The files on this disk are:
+
+ASCII.SCR       A simple definiton of an ASCII character defining word
+ASM86.SCR       The 8086 assembler
+BASDIR.SCR      A very simple minded way of looking at directories in Forth
+COMPARE.SCR     A utility used to compare two binary images
+DEFAULT.SYM     The default symbol table used by the meta-compiler
+DOTSTACK.SCR    A stack printing utility
+DUMP.SCR        A memory dump utility
+FLASH.SCR       A utility used to compare two source screen files
+FORTH86.SCR     A the source of Forth that is meta compiled
+IMAGE.COM       The output of the meta-compiler. Load every thing here.
+IMAGE.SYM       The meta-compiler symbol table after meta-compilation
+LAXED.SCR       The source of the editor
+MA8086.SCR      The source of the 8086 meta-assembler
+MC.SCR          The source of the meta-compiler
+MCNOASM.COM     The meta-compiler loaded with no meta-assembler loaded
+MC8086.COM      An executable version of the 8086 meta-compiler
+NCC2BASE.COM    The extensions required before loading the meta-compiler
+NCC2BASE.SCR    The source of the extensions required by the meta-compiler
+NDEBUGR.SCR     The source of a forth debugger
+PRINT.SCR       The source of a screen printing utility, printer specific
+QUAN.SCR        The source of a forth data type used in the meta-compiler
+SYSTEM.SCR      The system screen file used by forth
+P.COM           The forth system with editor and assembler loaded
+
+
+The files on the 8051 disk are:
+
+2VF51.SCR       The source of the 8051 prom image
+DS4.COM         An executable file for talking with the 8051
+DS4.SCR         The source for 8051 communications
+MA8051.SCR      The 8051 meta-assembler
+DEFAULT.SYM     The default symbol table used by the meta-compiler
+SYSTEM.SCR      The system screen file used by forth
+MCNOASM.COM     The meta-compiler loaded with no meta-assembler loaded
+MC8051.COM      An executable version of the 8051 meta-compiler
+IMAGE.COM       The output of the 8051 meta-compiler, ready to prom
+IMAGE.SYM       The meta-compiler symbol table after meta-compilation
+
+
+The documentation disk contains documentation that is not in the book.
+It is about the words in the nucleus and the editor. Also there is a little
+documentation about the meta-compiler.
+
+It is most important to keep the files from the 8051 disk in a seperate
+directory from the files on the forth86 disk!. The meta compiler uses the
+same file names but the contents are very different. If the files are mixed-
+up in the same directory, bad stuff is sure to result.
+
+The source here differs little from the book. There have been a few bug
+fixes here and there.
+
+Bill tells me that the book gives directions about how to use all this stuff
+so I will not include that here.
+
+Please feel free to call me if you have any problems, questions or
+frustrations.
+
+Cheers,
+
+Jerry Boutelle
+542 Blackjack Lane
+Santa Cruz, CA 95062
+
+408-462-9461
+
+
+

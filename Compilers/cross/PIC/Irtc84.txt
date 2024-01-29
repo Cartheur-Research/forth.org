@@ -1,0 +1,51 @@
+
+          Welcome to the world of Interactive Target Compilation
+          ------------------------------------------------------
+
+This is a Public Domain version of RAM Technology Systems IRTC for the
+Microchip PIC16Cxx range of microcontrollers. The host Forth is Tom Zimmers F-PC
+with IRTC built onto that. This is NOT AN ANSII FORTH! and probabley never will
+be as the spec does not allow for stack size switching on the fly and this is
+a Meta Compiler not a native Forth.
+
+This program is limited to the PIC16C84, E2PROM device, and MUST NOT be used
+with any EPROM device, like the 16C71, as the programming algorithm will KILL it.
+
+To use the interactive nature of Forth and IRTC you will need a Smart-ICEPIC
+module to program your 84 and allow development. The circuit for the ICEPIC
+is in the CIRCUIT.GIF file and the parts list in PARTS.TXT. If you have the
+equipment and knowledge to build from this information please feel free to do
+so. If you would like a kit of parts, including PCB, box and all cables
+please use the order form on our Web page,
+
+        http://ourwourld.compuserve.com/homepages/RAMTech
+
+or FAX us on +44 1258 456410
+or write to us at:
+
+        RAM Technology Systems
+        c/o Wyvern InnLeisure
+        Clump Farm Indst. Est.
+        Blandford
+        Dorset
+        DT11 7TD
+        UK
+
+For those without the knowledge, complete kits that need no soldering are
+also available.
+
+We trust that you will find IRTC so benificial that you would like to program
+ALL the serial programmed PICs, from the 61 to 74 and beyond. The full vertion of 
+IRTC is available from the above source ONLY.
+
+Documentation is on-line with IRTC but more complete in the IRTC manual which
+is available in printed form or as a download from the Web.
+
+This compiler is released into the Public Domain. As such you may not earn 
+money out of selling it but you are encouraged to use and distribute copies. 
+RAM Technology Systems has the copywrite to the source code of IRTC and this code 
+is not released, only the executables are.
+
+May the Forth be with you.
+
+Alan M Robertson

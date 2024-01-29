@@ -1,0 +1,17 @@
+L.O.V.E. Forth
+
+        Love Forth is a Forth-83 standard programming language for the
+IBM PC/XT/AT and compatibles. In order to increase available memory
+space over the standard 64k model, it has been designed to operate over
+five segments.  These segments are classified by function: machine code,
+threaded addresses, data, stacks and dictionary heads. This modification
+has been performed without reducing execution speed.
+
+        This version of Forth is shareware - reference LICENSE.DOC for
+further information.
+
+        One of the features of this system is it's ability to utilize
+third party assemblers - MASM, TASM, A86 or any other you might have -
+to process the inline CODE definitions that are then linked into the
+program.
+

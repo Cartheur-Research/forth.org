@@ -1,0 +1,246 @@
+
+ ÖÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ·
+ º                                 XMSLib                                  º
+ ÓÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ½
+
+                              by Timothy Trussell
+
+                      starjock@ycsi.net (current email 4/98)
+
+   module:  XMSLib.EDO v1.01, 12/07/93
+
+   purpose:
+
+     Implementation in FORTH of the interface to the XMS memory routines
+     provided by HIMEM.SYS, QEMM, and other memory managers.
+
+     These routines will allow the FORTH programmer to access the XMS memory
+     that (?) is present on his/her machine - assuming that they have set up
+     the memory manager correctly.
+
+     I have tested these routines with QEMM v6.00, HIMEM.SYS for DOS 5.0,
+     and with v5.21 of the UMB_DRVR.SYS driver by Christopher Blum.
+
+     This is a tool, with which you can better use the resources of your
+     machine to produce the results you require in your programs.  One of
+     the most immediate purposes that I, myself, will be using these for is
+     the implementation of dBASE III+ index file routines.
+
+     I found that the code for reading/writing .DBF files is simple compared
+     to trying to write code that will access what Ashton/Tate did to create
+     the .NDX file format.  So, I am coding my own B+Tree indexing routines,
+     and plan to create the data structures in XMS memory.
+
+     XMSLIB.4TH is included for comparisons sake.  It is functionally the
+     same as XMSLIB.EDO, but takes more code to implement and is much
+     harder to modify.
+
+   Modifications:
+
+     The original version ALLOTted each individual component of a record-type
+     structure one line at a time.  However, I found a really neat program
+     segment put together by G.T. Hawkins in 1987 called Extended Data Objects
+     (EDO) in FORTH, which works with NO modifications on every FORTH system
+     that I currently use.
+
+     This code allows the programmer to easily define and allocate bytes,
+     words and arrays of data.  Arrays of arrays are also easily created.
+
+     It may take a bit of study before you are comfortable with the syntax
+     used, but it is well worth the study.  I have included the files in this
+     package for that purpose, as well as the fact that you need them to load
+     the XMSLib routines.
+
+     Overall, they give FORTH the RECORD construct of Pascal, and the STRUCT
+     construct of C/C++.
+
+   Requirements:
+
+     The L.O.V.E. 4th system allows the use of 3rd party assemblers for the
+     compilation of CODE words when you are loading a file.  You have the
+     option of using the built-in FORTH assembler, or of using MASM, TASM,
+     OPTASM or A86.
+
+     Personally, I am presently using the A86 assembler package by Eric
+     Isaacson, and find it extremely versatile.  As a result, the CODE words
+     in this package are designed to be compiled with A86.
+
+     To use another assembler will require minor rewriting of some of the
+     sections of code.  This should be straightforward and more or less
+     self explanatory in those sections of code.
+
+     Also, it is necessary to copy the correct configuration file to the
+     name ASSEMBLY.CFG in the L.O.V.E. 4th directory.  Reference the docs
+     for the L.O.V.E. 4th system.
+
+     A86 is available on most BBSes, as is the L.O.V.E. 4th system, as
+     shareware.
+
+                      A86          - A86V322.ZIP
+                      L.O.V.E. 4th - LOVE4TH.ZIP
+
+     Added:           A86 is now up to revision 4.02
+                      I haven't seen LOVE 4th since 1993
+
+ ÖÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ·
+ º                            XMS Library                                  º
+ ÓÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ½
+
+      -- means empty or top of stack
+  \ n -- i  : n is on stack before operation, i is left after the operation
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+³ Name                            Parameters/Returns                        ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ detectXMS                     \ --                                        ³
+³                                                                           ³
+³ Determines if an XMS manager is running. Sets variable xmsPresent.        ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ setXMSHandlerAddress          \ --                                        ³
+³                                                                           ³
+³ Sets xmsAddress to the 32-bit address of the XMS manager entry point.     ³
+³ Called during initialization by xmsInit                                   ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ getXMSVersionNumber           \ --                                        ³
+³                                                                           ³
+³ Sets xmsVersion to the version of XMS supported, xmmVersion to the XMM    ³
+³ version number, and hmaPresent to whether the HMA exists or not.          ³
+³ Called during initialization by xmsInit                                   ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ .XMSVersion                   \ -- stradr strlen                          ³
+³                                                                           ³
+³ Converts the xmsVersion to a string value (for printing).                 ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ .XMMVersion                   \ -- stradr strlen                          ³
+³                                                                           ³
+³ Converts the xmmVersion to a string value (for printing).                 ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ RequestHMA                    \ -- 0/1                                    ³
+³                                                                           ³
+³ Attempts to allocate the High Memory Area (HMA) for your use.             ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ ReleaseHMA                    \ -- 0/1                                    ³
+³                                                                           ³
+³ Releases the HMA                                                          ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ GlobalEnableA20               \ -- 0/1                                    ³
+³                                                                           ³
+³ Enables the A20 address line.  Should only be used after the HMA has      ³
+³ SUCCESSFULLY been allocated via RequestHMA.                               ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ GlobalDisableA20              \ -- 0/1                                    ³
+³                                                                           ³
+³ Frees the A20 address line.  Again, should only be used after a successful³
+³ allocation via RequestHMA.                                                ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ LocalEnableA20                \ -- 0/1                                    ³
+³                                                                           ³
+³ Enables the A20 line, allowing direct access to extended memory.          ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ LocalDisableA20               \ -- 0/1                                    ³
+³                                                                           ³
+³ Disables the A20 line, cancelling a previous call to LocalEnableA20.      ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ QueryA20                      \ -- 0/1                                    ³
+³                                                                           ³
+³ Returns the current state of the CPUs A20 line                            ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ ?FreeXMSMemory                \ -- TIK LB                                 ³
+³                                                                           ³
+³ Queries the XMS manager for the largest block available, and total memory ³
+³ available in the system.                                                  ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ xmsLargestBlock               \ -- LB                                     ³
+³                                                                           ³
+³ Returns the Largest Block available after a call to ?FreeXMSMemory.       ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ xmsFree                       \ -- TIK                                    ³
+³                                                                           ³
+³ Returns the total memory available after a call to ?FreeXMSMemory.        ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ AllocateXMB                   \ SizeInK -- Handle 1/0                     ³
+³                                                                           ³
+³ Attempt to allocate [SizeInK] kilobytes of memory from the XMS pool.      ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ freeXMB                       \ handle -- 0/1                             ³
+³                                                                           ³
+³ Release the block of memory assigned to the handle passed.                ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ moveXMBlock                   \ len srcHndl srcOfs dsHndl dstOfs -- 0/1   ³
+³                                                                           ³
+³ Move a block of memory from xms/mem to xms/mem.                           ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ Main->XMB                     \ len srcseg srcofs toHndl toOfs -- 0/1     ³
+³                                                                           ³
+³ Transfer memory from the bottom 640k to your XMS block.                   ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ XMB->Main                     \ len toPTRhi toPTRlo dstseg dstofs -- 0/1  ³
+³                                                                           ³
+³ Transfer memory from XMS to the bottom 640k.                              ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ LockXMB                       \ Handle -- 0/1                             ³
+³                                                                           ³
+³ Locks an EMB, and return the 32-bit linear base address of the block.     ³
+³ Lock calls can be nested.                                                 ³
+³                                                                           ³
+³ Note: Intended for use by programs that enable the A20 line and then      ³
+³       address EMBs directly.  EMBs need not be locked before calls to     ³
+³       move memory.                                                        ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ UnlockXMB                     \ Handle -- 0/1                             ³
+³                                                                           ³
+³ Unlocks the EMB previous locked by a call to LockXMB.                     ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ variable LockCount                                                        ³
+³ variable FreeHandles                                                      ³
+³ variable SizeInK                                                          ³
+³                                                                           ³
+³ GetXMBInformation             \ Handle -- 0/1                             ³
+³                                                                           ³
+³ Returns information about an EMB handle:                                  ³
+³                                                                           ³
+³       LockCount -   0 if block is not locked                              ³
+³       FreeHandles - number of handles still available                     ³
+³       SizeInK -     block size (in KB)                                    ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ ReAllocXMB                    \ NewSizeInK Handle -- 0/1                  ³
+³                                                                           ³
+³ Change the size of a previous allocated EMB.  Fails if block is locked.   ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ variable SAOA                 \ SizeAllocatedOrAvailable                  ³
+³ variable SegUMB               \ Segment of UMB                            ³
+³                                                                           ³
+³ :RequestUMB                   \ SizeInParagraphs -- 0/1                   ³
+³                                                                           ³
+³ Attempts to allocate a UMB, which is below th 1 meg boundary, but above   ³
+³ the conventional memory area controlled by DOS.                           ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ ReleaseUMB                    \ segHandle -- 0/1                          ³
+³                                                                           ³
+³ Releases the UMB previously allocated by RequestUMB.                      ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ xmsErrorStr                   \ -- str len                                ³
+³                                                                           ³
+³ XMS Error handler.                                                        ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ xmsInit                       \ --                                        ³
+³                                                                           ³
+³ Attempts to initialize the XMS memory manager.  Actually, it just checkss ³
+³ to see if it is present, and then sets xmsAddress and the version numbers.³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+ ÖÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ·
+ º                               References                                º
+ ÓÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ½
+
+     MS-DOS Extensions by Ray Duncan
+     ISBN 1-55615-212-4
+
+     Microsoft Press
+     16011 NE 36th Way
+     Box 97017
+     Redmond, Washington 98073-9717
+
+     This book covers Expanded & Extended memory, as well as the Mouse
+     and CDROM interface calls, and is definitely worth the $7.00 price.
+
+

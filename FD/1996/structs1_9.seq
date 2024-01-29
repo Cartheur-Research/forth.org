@@ -1,0 +1,305 @@
+\ structs.fo           An implementation of simple data structures
+
+\ This is an ANS Forth program requiring:
+\      1. The words 'Private:', 'Public:' and 'Reset_Search_Order'
+\         to control the visibility of internal code.
+\      2. The Floating-Point word set
+\      3. The compilation of the test code is controlled by
+\         the VALUE TEST-CODE? and the conditional compilation words
+\         in the Programming-Tools wordset
+\
+\ Note that there are two versions of ]] defined, one for ANS the other
+\      for F-PC V3.6
+ 
+
+\ based heavily upon part of the code described in:
+\ Hayes, J.R., 1992; Objects for Small Systems, Embedded Systems Programming,
+\ V. 5, No. 3(March) pp. 32 - 45
+\
+\ also upon the ideas in:
+\ Pountain, D., 1987; Object-Oriented Forth, Implementation of Data
+\ Structures, Academic Press, New York, 119 pages,  ISBN 0-12-563570-2
+
+\ and communications with Marcel Hendrix
+
+CR .( STRUCTS           V1.9            3 January 1995  EFC )
+
+Private:
+
+0 VALUE fetch-em          \ execution token of a 'struct-@' (temporary)
+
+V: store-em               \ a vector to a ',' type word
+
+FALSE VALUE is-const      \ identifies constant or variable type struct
+
+FALSE VALUE GO-EARLY      \ TRUE when doing early binding
+
+: makevar                 \  allocate memory for a struct of given size
+   CREATE , ALLOT                    ( size id -- )
+   DOES> DUP @ SWAP CELL+            ( -- id addr )
+;
+
+: makeconst       \ allocate memory for a constant-type struct of given size
+                  \ | id | @ | data... |
+   CREATE ,       ( size id -- )
+   DROP           \ don't need the size since fetch-em knows it
+   fetch-em ,
+   store-em       \ lay down the constant structure data
+   FALSE TO is-const
+   DOES>          ( -- value )
+        DUP @ SWAP
+        CELL+ DUP CELL+ SWAP @ EXECUTE      \ executes fetch-em
+;
+
+: makeinstance ( size --- )           \ create a struct of given size
+   is-const IF makeconst
+            ELSE makevar
+            THEN
+;
+
+
+: ?member-error ( m-id s-id -- )       \ raise an error if s-id and m-id
+                                       \ do not match
+         OVER OVER
+
+         <> IF      ." Wrong member of structure, STRUCT = " U.
+                    ." , MEMBER = " U. CR
+               ABORT
+            THEN
+
+         2DROP
+;
+
+\ calculate address of member base for simple scalar data types
+: resolve-scalar-member ( s-id s-addr m-base -- m-addr )
+           ROT >R             \ save s-id
+           2@ SWAP R>
+           ?member-error      \ compare s-id and m-id
+           +
+;
+
+: resolve-structure-member ( s-id s-addr m-base -- m-id m-addr )
+         ROT >R
+         DUP 2@ SWAP R>
+         ?member-error
+         SWAP [ 2 CELLS ] LITERAL + @
+         ROT ROT +
+;
+
+: resolve-array-member ( s-id s-addr m-base -- m-base m-addr )
+           ROT >R
+           DUP 2@ SWAP R>
+           ?member-error
+           ROT +            \ calculate address of array pointer base
+;
+
+
+: aus:          \ Structure member compiler.     | offset | id |
+   CREATE OVER , +     ( id offset size -- id offset' )
+          OVER ,
+   DOES>               \ ( s-id s-addr m-base -- m-addr ) 
+         resolve-scalar-member
+;
+
+: smc:          \ Structure member compiler.     | offset | id | struct-id |
+   CREATE OVER , +     ( id offset size -- id offset' )
+          OVER ,
+          TYPE-ID ,
+   DOES>               ( s-id s-addr m-base -- m-id m-addr )
+        resolve-structure-member
+;
+         
+Public:
+
+: constant-structure ( '@ ', --  )
+
+           DEFINES store-em
+           TO fetch-em
+      TRUE TO is-const
+;
+
+: structure                            \ Start structure declaration.
+   CREATE HERE 0 , 0                   \ ( -- id offset )
+   DOES> DUP @ SWAP makeinstance ;     \ ( -- pfa template )
+
+: attribute   ( offset size -- offset' )           \ same as struct:
+       >R ALIGNED R>
+       STRUCT-ARRAY? IF   smc: FALSE TO STRUCT-ARRAY?
+                     ELSE aus: THEN
+;
+
+: chars:  ( offset n --- offset' )  \ Create n char member.
+   CHARS aus: ;
+
+: char:  ( offset --- offset' )  \ Create 1 char member.
+   1 chars: ;
+
+: cells:   ( offset n --- offset' )  \ Create n cell member.
+   CELLS  attribute ;
+
+: cell:   ( offset --- offset' )  \ Create 1 cell member.
+   1 cells: ;
+
+: struct:  ( offset size --- offset' )  \ Create member of given size.
+    attribute ;
+
+
+: integer: ( offset -- offset' )
+     1 cells: ;
+     
+: double:  ( offset -- offset' )
+     2 cells: ;
+          
+: float:           ( offset -- offset' )
+     FALIGNED 1 FLOATS aus:
+;
+
+
+: endstructure     ( id offset --- )
+   SWAP ! ;
+
+\ =====================================================================
+\ Words for creating STATICALLY declared arrays WITHIN a structure
+
+Private:
+
+\ For arrays of SCALAR types
+: MARRAY:              \    | offset | id | cell_size |
+        CREATE              ( id offset n cell_size -- id offset' )
+           2 PICK ,  3 PICK ,
+           DUP ,
+           *
+           + CELL+
+
+        DOES>               ( s-id s-addr m-base -- m-addr )
+           resolve-array-member
+
+           \ get cell size and store it in the instance
+           SWAP [ 2 CELLS ] LITERAL + @ OVER !
+           CELL+
+;
+
+\ For arrays of structure types
+: SARRAY:              \    | offset | id | t-id | cell_size |
+        CREATE              ( id offset n cell_size -- id offset' )
+           2 PICK , 3 PICK ,
+           TYPE-ID ,
+           DUP ,
+           *
+           + CELL+
+
+        DOES>               ( s-id s-addr m-base -- m-id m-addr )
+           resolve-array-member
+
+           \ get cell size and store it in the instance
+           SWAP [ 2 CELLS ] LITERAL + 2@ >R OVER !
+
+           CELL+
+           R> SWAP
+;
+
+Public:
+
+: ARRAY:       ( id offset size -- id offset' )
+       >R ALIGNED R>
+       STRUCT-ARRAY? IF SARRAY: FALSE TO STRUCT-ARRAY?
+                     ELSE MARRAY: THEN
+;
+
+\ =====================================================================
+\ Words for creating array pointers WITHIN a structure
+\ These ARE NOT dynamic arrays but are general purpose pointers
+\ ( does cell_size need to be stored ? )
+
+Private:
+
+: dmpointer:       \ pointer member compiler.     | offset | id | cellsize |
+   CREATE OVER ,          ( id offset csize -- id offset' )
+          2 PICK ,
+          ,          \ store cellsize, but its not being used by anything yet
+          CELL+
+   DOES>               \ ( s-id s-addr m-base -- m-addr )
+         resolve-scalar-member
+         @ CELL+
+;
+
+
+: dspointer:       \ pointer member compiler.   | offset | id | struct-id | cs |
+   CREATE OVER ,      ( id offset csize -- id offset' )
+          2 PICK ,
+          TYPE-ID ,
+          ,
+          CELL+
+   DOES>               ( s-id s-addr m-base -- m-id m-addr )
+         resolve-structure-member
+         @ CELL+
+;
+
+Public:
+
+: POINTER: ( id offset cell_size -- id offset' )
+       >R ALIGNED R>
+       STRUCT-ARRAY? IF DSPOINTER: FALSE TO STRUCT-ARRAY?
+                     ELSE DMPOINTER: THEN
+;
+
+\ =====================================================================
+
+
+\ for building arrays of structures and nested structures
+: sizeof ( -- n )                \ returns size of a structure, APPLY TO TYPES!!!
+    ' >BODY DUP TO TYPE-ID @
+    STATE @ IF POSTPONE LITERAL THEN
+    TRUE TO STRUCT-ARRAY?
+; IMMEDIATE
+
+
+: typeof ( -- id )               \ returns the type id, APPLY TO TYPES!!!
+    ' >BODY
+    STATE @ IF POSTPONE LITERAL THEN
+; IMMEDIATE
+
+
+: addrof ( -- addr )             \ return base address, APPLY TO INSTANCES!!!
+    ' >BODY @
+    STATE @ IF POSTPONE LITERAL THEN
+; IMMEDIATE
+
+\ Word to get base address of pointer instance
+\ example usage:      pix -> .x{
+
+: ->  ( s-id s-addr -- addr )
+      ' >BODY STATE @ IF POSTPONE LITERAL POSTPONE resolve-scalar-member
+                      ELSE resolve-scalar-member THEN ; IMMEDIATE
+
+\  usage:   a{ pix -> .x{ ->!
+: ->!     ( ar-base addr -- )  SWAP CELL- SWAP ! ;
+
+
+\ For forcing early binding.
+\ These words are written so that they are harmless to invoke at runtime
+: [[    STATE @ IF TRUE TO GO-EARLY POSTPONE [
+                ELSE FALSE TO GO-EARLY THEN ; IMMEDIATE
+
+\ F-PC V3.6 version
+: ]]    GO-EARLY IF POSTPONE ] POSTPONE LITERAL FALSE TO GO-EARLY THEN
+; IMMEDIATE
+
+\ ANS version
+\ : ]]    GO-EARLY IF ] POSTPONE LITERAL FALSE TO GO-EARLY THEN ; IMMEDIATE
+
+
+
+structure STRUCT-HANDLE              \ useful for saving structure instances
+        1 CELLS attribute .type
+        1 CELLS attribute .addr
+endstructure
+
+: h@   ( hdl1 -- hdl2 )  2DUP .type @ ROT ROT .addr @ ;
+: h!   ( hdl1 hdl2 -- )  2OVER 2OVER .addr ! DROP ROT DROP .type ! ;
+
+
+ 
+Reset_Search_Order
+
+\ =======================================================================

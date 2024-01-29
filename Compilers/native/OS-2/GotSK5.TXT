@@ -1,0 +1,171 @@
+---[ Graphics of the Second Kind, Part V ]------------[12/19/2006]---
+
+                         by Timothy Trussell
+
+---[ Where We Are ]--------------------------------------------------
+
+The last type of sprites that I want to cover concerns the displaying
+of text characters, using the DrawSprite routines to create a HiRes
+Character Generator.
+
+Now, we are still using the 320x200x256 mode, so in order to use the
+font data that is already on your machine (in BIOS at F000h:FA6Eh)
+which is in an 8x8 pixel format, our displayable text resolution will
+be cut down to a 40x25 matrix.
+
+By creating your own font tables, and modifying the DrawSprite words
+to utilize them, you can easily implement different font types and
+sizes.
+
+---[ Sprites VI ]----------------------------------------------------
+
+For this column, we only need a couple of the library modules from
+previous columns, specifically the SetMode and WaitRetrace words.
+
+Additionally, I introduce a simple enumeration wordset, that allows
+the creation of a series of constants, each with an incrementing
+value one greater than the previous.  This is used to define a subset
+of the available colors that we will use.
+
+        : ENUM+ ( n -- )
+          create ,
+          does> ( -- n ) dup @ constant 1 swap +! ;
+
+        : ENUM  ( -- )
+          0 ENUM+ ;
+
+        enum [color]
+        [color] Black
+        [color] Blue
+        [color] Green
+        [color] Cyan
+        [color] Red
+        [color] Magenta
+        [color] Brown
+        [color] LightGray
+        [color] DarkGray
+        [color] LightBlue
+        [color] LightGreen
+        [color] LightCyan
+        [color] LightRed
+        [color] LightMagenta
+        [color] Yellow
+        [color] White
+
+These colors cover the basic 16 text colors that are available from
+DOS.  Since we are in a 256 color mode, all 256 colors in the palette
+are available for use, but these cover what you normally see in the
+regular text modes.
+
+---[ Nuts and Bolts ]------------------------------------------------
+
+I originally coded this to utilize the font image that is located at
+F000h:FA6Eh in the BIOS, but later found that not all computers have
+this font set available.  My main machine does, but my laptop doesn't
+so I have included a listing of a typical font image to allow the
+demo to run on all machines.
+
+The format of the data in this font set is like the Packed Pixel
+sprites I used in GotSK2 Column, arranged in an 8x8 matrix.  In the
+320x200x256 mode, this will give us 40 rows by 25 columns of text.
+
+The LoadBIOSFontData word is used to access the 1024 byte array of
+data that is supposed to be present on 100% compatible PCs, and puts
+the data into the SystemFont[] array.
+
+Feel free to run the LoadBIOSFontData word from the ok prompt, to see
+if the data is present on your machine.  Running the demo will show
+if it is or not.  If it isn't - if all you get is garbage displayed
+to the screen, then just recompile the program again, and DON'T run
+the LoadBIOSFontData word before running the demo again.
+
+The GPutPixel word is the same FastPlot word we've used in previous
+columns.  It plots a pixel at the x/y coordinates in the given color.
+This is the only hardware dependant portion of this code, with all of
+the other words in the package calling it to display data, so if you
+can convert it to the version of Forth you are using, this module
+will (should) work correctly with no other changes that I can think
+of.
+
+---[ Plotting Characters ]-------------------------------------------
+
+The core of this module is the GFastC word, which draws the character
+to the screen at the given x/y coordinates.
+
+This word will plot a character at any x/y position on the screen, in
+the normal 0..319/0..199 pixel range of the display.
+
+This enables the programmer full control over where a character can
+be placed.  This also allows the characters to be moved around like I
+did in the previous two columns with the Bolls and bouncing sprites.
+
+Scrolling messages across the screen can also be easily implemented.
+
+I have added the capability of drawing the character onto the
+existing background, by specifying the background color parameter
+(BG) to be -1.  When the code detects that a zero is the next pixel
+to plot, it checks to see if the BG parameter is -1, and if so, will
+skip the pixel position leaving the previous background color in
+place.
+
+---[ Plotting Strings ]----------------------------------------------
+
+The GFastS word is used to display a string to the screen.  It can be
+viewed as a wrapper for the GFastC word, as what it does is feed the
+characters one a a time to GFastC, and increment the X coordinate
+positioning.
+
+GFastS scales the x/y coordinates that are sent to the GFastC by a
+factor of 8, so that GFastC gets the correct pixel position to draw
+the characters at.
+
+---[ The Glue ]------------------------------------------------------
+
+The remaining words in this module,
+
+        GClearText
+        GClearLine
+        GWriteAt
+        GWriteCenter
+
+all call GFastS to perform their functions.
+
+GClearText clears a rectangle on the screen to the specified color.
+
+GClearLine clears the specified line (y coordinate).
+
+GWriteAt is an alias for GFastS.
+
+GWriteCenter calculates the length of the string, and centers it on
+the display.
+
+The demo program, ShowCharset, uses all of these functions while it
+displays the text to the screen.
+
+---[ Wrapping Up ]---------------------------------------------------
+
+As you can see, this is a pretty simple implementation of sprites to
+perform a specific function - that of displaying text characters.
+
+By creating custom font sets, you can use any kind of font that you
+can think of.  It may also be possible to convert other fonts for
+use, such as the TrueType fonts, but I haven't tried to do so.
+
+Additional aspects, such as converting data from numbers to strings
+so that they can also be displayed, are also fairly simple to do.
+
+When we get to using higher resolutions, this module will only need
+to have a couple of minor modifications to let it write to those
+modes as easily as it does to the 320x200x256 mode.
+
+The slight modification to have it write to a double buffer is also a
+very simple modification of the GPutPixel word.
+
+---[ A new beginning ]-----------------------------------------------
+
+That is about it for my Graphics of the Second Kind.
+
+From here, we will start working with elements of three dimensional
+representations, Polygons, Filled Polygons, texture mapping, and
+other concepts as they come up.
+

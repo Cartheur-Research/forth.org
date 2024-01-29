@@ -1,0 +1,73 @@
+
+\ CINFO.MFP
+{ Utility words to display values of some of the color structures
+  on the Mac II.  Requires MacForth Mac II extensions.
+  This isn't all of the structures yet.  I'll post more as time permits.
+                                        -S.W.SQUIRES }
+\ Last Revision: 07/27/88  11:10:01 PM  sws
+hex
+anew --color.info--
+: .rgb  ( addr -- | displays rgb values )
+    @rgb ." RGB= " rot . swap . . cr ;
+: .colorspec ( addr -- | displays color spec values )
+    locals| addr |
+    addr dup +csvalue w@ ." Index= " . 3 spaces +csrgbcolor .rgb ;
+: (.colortable) ( addr -- | displays color table values )
+    locals| addr |
+    addr +ctseed @ ." Seed= " . cr
+    addr +transindex w@ ." Transparent index= " . cr
+    addr +ctsize w@  ." Actual Size= " 1+ . ." Stored 1- " cr
+    addr +cttable   addr +ctsize w@  1+  colorspec * +
+    addr +cttable 
+    do i .colorspec colorspec +loop ;
+: .colortable   ( wptr -- | displays color table values )
+        +portpixmap @@ +pmtable @@ (.colortable) ;
+: (.pixmap) ( addr -- | display pixMap values )
+    locals| addr |
+    addr +baseaddr @ ." Pointer= " . cr
+    addr +rowbytes w@ dup ." Row bytes=" . 7fff and . cr
+    addr +bounds @rect ." Bounds=" 2swap swap . . swap . . cr
+    addr +pmversion w@ ." Version= " . cr
+    addr +packtype w@ ." Pack type= " . cr
+    addr +packsize @ ." Pack size= " . cr
+    addr +hres w@ ." Horz. res= " . cr
+    addr +vres w@ ." Vert. res= " . cr
+    addr +pixeltype w@ ." Pixel type= " . cr 
+    addr +pixelsize w@ ." Bits per pixel= " . cr
+    addr +cmpcount w@ ." Component in pixel " . cr
+    addr +cmpsize w@ ." Bits per component= " . cr 
+    addr +planebytes @ ." Offset to next plane= " . cr
+    addr +pmtable @ ." Color map addr= " . cr
+    addr +pmreserved @ ." reserved (0) " . cr ;
+: .pixmap  ( wptr -- | display pixMap values ) )
+    +portpixmap @@ (.pixmap) ;
+decimal
+: .port  ( wptr -- | NOT finsished, doesn't show everything )
+            locals| addr |
+        addr        +device w@ ." Device= " . cr
+        addr        +portPixMap @  ." Pixmap= " . cr
+        addr        +portVersion    w@  ." Version= " . cr
+        addr        +grafVars       @  ." Vars= " . cr
+        addr        +chExtra        w@ ." Character extra= " . cr
+        addr        +pnLocHFrac     w@ ." pen fraction= " . cr
+        addr        +portRect   @rect ." Rect= " 2swap swap . . swap . . cr
+        addr        +visRgn     @ ." Vis RgnHandle= " . cr
+        addr        +clipRgn    @   ." Clip RgnHandle= " . cr
+        addr        +bkPixPat   @  ." background pattern handle= " . cr 
+        addr        +RGBFgColor:    ." Fgcolor = " .rgb cr
+        addr        +RGBBkColor:    ." Bkcolor = " .rgb cr
+ ;
+: (.Grafvars)  ( addr -- | displays GrafVars, which is an auxillary )
+                ( record to color graphics ports )
+    locals| addr |  cr
+    addr +rgbOpColor ." Op color  " .rgb 
+    addr +rgbHiliteColor  ." Hilite color  " .rgb 
+    addr +pmFgColor  @  ." Palette handle for foreground " . cr 
+    addr +pmFgIndex w@ ." Index for foreground = " . cr
+    addr +pmBkColor @  ." Palette handle for background " . cr 
+    addr +pmBkIndex w@ ." Index for background = " . cr
+    addr +pmFlags   w@  ." flags for Palette Manager = " . cr  ;
+: .grafvars ( wptr -- | displays GrafVars, which is an auxillary )
+    +grafVars @@  (.grafvars) ;
+
+

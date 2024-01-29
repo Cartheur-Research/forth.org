@@ -1,0 +1,164 @@
+
+                Notes on the Congenial Screen Editor
+                    in Wil Baden &al's F83S6
+                      Public Domain Forth
+
+
+        Wil Baden, Roland Koluvek and others combined forces at various
+times in 1985-1987 to produce an upgrade of the original Laxen & Perry
+F83 public domain impelementation of the Forth 83-STANDARD. Successive
+revisions of this system were called F83X, F83Y and later, F83S for
+S-eparated headers.
+
+        One of the noteworthy features of the Baden &al system F83S6
+is the Congenial Screen File Editor. This editor has never been, to 
+my knowledge, documented in any fashion. Increasingly I find myself
+on the phone explaining to friends who have download F83S6.ARC from
+the RealTime Control & Forth Board ( 303-278-0364 3/12/24 24 hours)
+how to work the screen editor.
+
+        This file will hopefully reduce my phone time!
+
+        I. Invoking the Congenial Editor
+
+        Open or create a Forth BLOCK file using OPEN <existing-file-name>
+        or CREATE-FILE <new-file-name>.
+
+        List a screen, for instance screen zero, with 0 LIST.
+
+        Type  V <cr>  at the Forth  ok  prompt. Your cursor will hop up
+        to inside the edit screen and you will be in type-over mode.
+
+                A. Key Presses
+
+                Esc will leave the Congenial Editor. In Forth, the Escape
+                key will repeat the last command issued. Therefore, if
+                you type V to enter the editor, hit Esc to leave it, and
+                keep hitting Esc, you will hop into and out of the editor.
+
+                The Ins key will toggle between insert and typeover mode
+                All the arrow keys will work.
+
+                PgUp will list the previous screen.
+
+                PgDn will list the next screen.
+
+                Home will toggle between the top left corner of the screen
+                and the end of text on the screen.
+
+                End will toggle between the front of the current line and
+                the end of text on the current line.
+
+                <CR> will advance to the next line. If the current line is
+                indented from the left edge, the cursor will appear on the
+                next line at the same indentation; otherwise, it will appear
+                in the far left column
+
+                Del will backspace the cursor destructively over text to the
+                left of the cursor, drawing back all text on the current line
+                which is to the right of the cursor.
+
+                The Backspace key in type-over mode destructively backs over
+                the text to the left of the cursor. In insert mode, it will
+                also draw the text to the right of the cursor back, just as
+                the Del key.
+
+                B. Control Keys ( described here as ^A, ^B, etc.)
+
+                Definition of terms: a "Lexical Unit" is a blank-delimited
+                character string of one or more non-blank characters.
+
+                In the Congenial Editor, the following control-keys have
+                the following effects:
+
+                ^A Retreat to first character of previous lexical unit.
+
+                ^C List next screen.
+
+                ^F Advance cursor to first char of next complete lexical unit.
+
+                ^G "Suck up" the next character on the line, drawing the
+                   rest of the line to right of cursor back to the left.
+
+                ^H Same as the Backspace key.
+
+                ^M Same as <CR>.
+
+                ^N Split line at cursor. Line 15 of the screen is discarded.
+
+                ^Q Move cursor out of screen to top left awaiting a second
+                   key stroke. Execute the QMENU command indicated by second
+                   key stroke. For a full listing of these commands, type
+                   QMENU while in Forth. Example: ^Q1 makes the lexical unit
+                   at the cursor lowercase, ^Q2 makes it uppercase.
+
+                ^R List previous screen.
+
+                ^T Delete next lexical unit from the current line disregarding
+                   leading spaces. Draw back rest of line left towards the
+                   cursor. If executed at the end of text on a line, or on
+                   a blank line, draw up as many complete lexical units from
+                   the next non-blank line as will fit to the right of the
+                   cursor on the current line, while drawing back the "robbed"
+                   line to the left. Deleted unit is kept at an edit pad. See
+                   function key notes.
+
+                ^Y Delete current line. Deleted line is kept at edit pad. See
+                   function-key notes.
+
+                C. Function keys.
+
+                F1 Gives a menu of F-keys and control-key commands. You may
+                   wish to view the source for these Forth words to understand
+                   what they do.
+
+                F2 Updates and saves currently-listed screen to disk.
+
+                F4 Inserts previously deleted text currently residing in
+                   edit buffer at cursor.
+
+                F5 Toggles between the last two screens upon which LIST has
+                   been invoked, either by explicitly typing <n> LIST from
+                   Forth, or by various Congenial Editor operations.
+
+                F6 Copies a line from remembered cursor position on previously
+                   listed screen to cursor position on currently listed 
+                   screen, pushing rest of screen down ond line. Line 15 of
+                   the current screen is lost. The line being copied is not
+                   disturbed on its screen of origin. The F5 key is used
+                   in conjunction with this key to toggle between the two
+                   screens in order to set the cursor positions.
+
+                F7 Toggles between the current screen and the corresponding
+                   shadow screen, traditionally reserved for comments.
+
+                F8 Datestamps the current screen. To change the user ID, from
+                   within Forth type NEW-ID. You will be prompted for a three-
+                   letter ID. The time will be obtained from DOS.
+
+        II. Help with the Congenial Editor.
+
+        This has not been an exhaustive exposition of the power of the
+        Congenial Screen Editor, but it should be enough to get you
+        started. Here are some suggestions if you find you are puzzled.
+
+        - Read the Source Code, it's there in the F83S6.ARC file.
+
+        - Type QMENU <cr> for a list of the ^Q-and-key sequences
+          supported from within the Congenial Editor.
+
+        - Press F1 from within the Congenial Editor for a list of
+          the Forth words executed by various F-key and ^-key combinations.
+          You will then perhaps wish to use SEE <wordname> from the
+          regular Forth command line to try to discern just what
+          these various words do.
+
+        - Open or create a test file and play with it for a while! The
+          Congenial Editor is fun! I find new functionality in it as
+          I explore it still, and I been using it for two years! 
+
+        Good luck!
+
+                        Jack Woehr
+
+

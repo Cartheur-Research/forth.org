@@ -1,0 +1,75 @@
+Wincon.dll is a Win32 DLL that provides access to almose 8000 Windows
+constants. These constants are needed to write Win32 programs, but
+adding them to the Forth dictionary as constants takes up considerable
+space and slows down the interpreter. Also, it would be very tedious to
+type in all 8000 of them.
+
+So what I did was create a DLL that has all of the Windows constants
+and a single exported function:
+
+   BOOL FindConstant(char *addr, int len, int *value)
+
+FindConstant takes the address and length of a string with the name
+of the constant and searches its internal dictionary (hashed for
+speed). If the constant is found, the function returns TRUE (1) and
+the constant value is stored at the pointer passed as the third
+argument. If the constant is not found, the function returns FALSE
+(0).
+
+What Tom Zimmer did for Win32Forth was to vector number and replace
+it with a new function as follows:
+
+: newnumber  ( string -- number flag )
+	<is this a valid number?>
+	if	<return number and true>
+	else	<find constant in windon.dll)
+		if	<return value and true>
+		else	<return false>
+		then
+	then ;
+
+This makes all of the constants available to the programmer and they
+are treated just like numbers. There is no dictionary overhead and the
+DLL is not needed for a turnkeyed program.
+
+======================================================================
+
+I created wincon.dll with Visual C++ 4.2 and the modified source for
+the C preprocessor supplied with the C compiler "lcc". When I run the
+C preprocessor on windows.h, it produces a list of all the numeric
+#defines it finds. I then compile this into a DLL.
+
+Building wincon.dll:
+
+ 1. modify build.bat to point to your include directory
+ 2. type "build" at the command prompt
+
+Files in this zip:
+
+ BUILD.BAT		batch file to build wincon.dll
+ BUILD.C		intput to preprocessor
+ CPP.EXE		modified preprocessor (from lcc)
+ CPP.ZIP		cpp source
+ LCC.TXT		lcc copyright notice
+ README.TXT		this file
+ TEST.FTH		test file
+ WINCON.C		source to wincon.dll
+ WINCON.DEF		definition of export functions
+ WINCON.DLL		the dll itself (release build)
+ WINCON.LIB		import library
+ WINCON.MAK		make file
+ WINCON.MDP		Visual C++ 4.2 project file
+
+======================================================================
+
+The source to cpp.exe was found in the source distribution
+for the c-compiler "lcc". The source was attributed to
+Dennis Ritchie, but I cannot find any credits in it.
+The lcc copyright notice is in the file lcc.txt.
+
+The small amount of code I have added to cpp and the source
+for wincon.dll is released to the public domain.
+
+Andrew McKewan, August 1996
+
+======================================================================

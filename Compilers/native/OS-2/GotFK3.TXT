@@ -1,0 +1,252 @@
+---[ Graphics of the First Kind, Part III ]-----------[12/06/2006]---
+
+                         by Timothy Trussell
+
+---[ Where We Are ]--------------------------------------------------
+
+In the second column, I coded assembly language versions of the words
+given in the first column:
+
+    From GotFK:
+
+        code SetMode    ( mode -- )
+        : InitGraph     ( mode# -- )
+        : CloseGraph    ( -- )
+        code Plot       ( x y c -- )
+        : VLine         ( x y1 y2 c -- )
+        : HLine         ( x1 x2 y c -- )
+        : Box           ( x1 y1 x2 y2 c -- )
+        : FBox          ( x1 y1 x2 y2 c -- )
+
+    From GotFK Part II;
+
+        code Plot1      ( c ofs -- )
+        code Y*320      ( y -- y*320 )
+        code FastPlot   ( x y c -- )
+        code FastVLine  ( x y1 y2 c -- )
+        code FastHLine  ( x1 x2 y c -- )
+
+---[ Bresenham Line Algorithm ]--------------------------------------
+
+Here is a good place to put a standard line drawing unit that
+implements the Bresenham Algorithms.
+
+Now, as I said in the first column, what I am writing is a series of
+programming concepts and constructs that I have come across during my
+research into graphics programming.
+
+One of my prize finds was this file that was a modification of code
+that Phil Koopman Jr. had done for Forth Dimensions Volume 8 # 6, and
+which was modified by D Brown and J Brown for use with Laxen and
+Perry FORTH.
+
+The date of the file this was taken from is 06/24/1987.
+
+---[Start of Article]------------------------------------------------
+
+                 BRESENHAM LINE-DRAWING ALGORITHM
+
+                        Phil Koopman, Jr.
+                  North Kingstown, Rhode Island
+
+
+The  task  of  drawing a  straight  line on a graphics screen is a
+fundamental   building   block   for    most   computer   graphics
+applications. Unfortunately,   this  capability  is  not  included
+in  many  Forth implementations  and,  for that  matter,   is  not
+included in the  ROM support programs for many personal computers.
+This article will show you how  to  draw   lines  on   almost  any
+graphics  display,  and gives complete listings in L&P FORTH.
+
+
+The CRT Display Layout
+
+First,  let's  establish  some conventions.  I  will  assume  that
+the graphics display on your computer  is addressed  using   (X,Y)
+Cartesian coordinate pairs, where X and Y  are  both  non-negative
+integers.  The point (0,0)  -- also called the origin --   is  the
+upper-left corner of the computer screen.  Each addressable  point
+on the screen is called a pixel  (short  for  'picture  element').
+The   X   coordinates  represent  rows  of    pixels   (horizontal
+distance from  the  origin),  and  the  Y  coordinates   represent
+columns  of pixels (vertical distance from the origin).
+
+The exact number of  pixels  on  your  computer's  display  screen
+is   hardware-dependent.      However,     some     representative
+values  are: 320 x 200 pixels (320  horizontal  and  200  vertical
+pixels)   for   a  PC-style,  four-color  graphics  adapter  (CGA)
+display;  640  x  200  pixels  for  a  PC-style,   two-color   CGA
+display;  and 640  x  350   pixels  for  aPC-style  sixteen  color
+enhanced graphics adapter (EGA) display. The mechanics of  setting
+the graphics  display  mode  desired  and plotting a single  point
+on the  display  are  hardware-dependent, and will be left to  the
+user to  determine.   Screens  3  and   4   of   the  accompanying
+listing contain all the machine specific  primitives for  PCs  and
+clones with compatible BIOS ROM chips.  They are formatted to  use
+the public-domain  8088 Laxen & Perry  assembler.   These  screens
+will obviously have to be modified for use on other machines.
+
+Straightforward Line-Drawing Algorithms
+
+Now that we can assume the availability of a point-plotting  word,
+how  can  we  draw  lines?   Horizontal  and  vertical  lines  are
+relatively straightforward.  For example:
+
+  : HORIZONTAL-TEST  ( -- )
+     100 0 DO I 10 POINT LOOP ;
+
+shows that  horizontal  lines are  drawn by  merely   incrementing
+an X value for a constant Y value.   Similarly,  forty-five-degree
+lines may be draw  by  using a word that simultaneously increments
+both X and Y values, such as:
+
+  : DIAGONAL-TEST ( -- )
+      100 0 DO I I POINT LOOP ;
+
+But what about lines that are inbetween?  A line which spans twice
+as many X points as Y points would be drawn by:
+
+  : X=2*Y  ( -- )
+      0 100 0 DO
+      DUP I POINT 1+
+      DUP I POINT 1+
+      LOOP
+      DROP ;
+
+For a generalized line-drawing words with a slope between zero and
+one  (meaning that the   X  distance   is  greater   than  the   Y
+distance, and that both distances  are  drawn  from   smaller   to
+larger  numbers),
+we would have:
+
+   : GENERAL-LINE  ( X1 Y1 X2 Y2 -- )
+      SWAP 4 PICK - SWAP
+      3 PICK - >R >R 100 * R> R>
+      100 3 PICK */  SWAP 1+ 0
+      DO  3 PICK 3 PICK 100 / POINT
+      SWAP OVER +
+      ROT 1+ SWAP ROT LOOP
+      DROP  100 / POINT ;
+
+The above word takes two (X,Y) coordinate pairs as an  input,  and
+scales all Y values by 100  to allow  for  non-integer  increments
+of  Y.      While      this      line-drawing     algorithm     is
+conceptually  straightforward,  it   does   require   a   lot   of
+arithmetic.  Even if clever scaling factors were chosen to replace
+most  mutiplies  and  divides  with  shifts  and  byte-moves,  the
+initial  division  of  the difference between X1 and X2 (sometimes
+called  "delta X"  or  just  plain   "DX")   by   the   difference
+between  Y1  and  Y2  ("DY")  is unavoidable.    Another   problem
+is that sixteen-bit scaled integers are not big enough for use  on
+high-resolution  screens.   In  this example, lines that span more
+than  100  pixels  horizontally  are improperly drawn.
+
+The Bresenham Algorithm
+
+The   Bresenham    line-drawing    algorithm    ("Algorithm    for
+Computer Control of a Digital  Plotter,"   J.E.   Bresenham,   IBM
+Systems Journal, Vol. 4, No. 1, pp. 25-30, 1965.)  requires   only
+sixteen-bit integers with addition, subtraction and multiplication
+by  two  (shift  left)  to  draw  lines.   Instead  of  a  scaled,
+non-integer Y value,  the  algorithm shown on the  screen  7  uses
+the  error  accumulation   term   DELTA   and  interger  X  and  Y
+values.  For  lines  with  a  slope  between  zero  and  one,  the
+algorithm  increments  the X value for each point, and  increments
+the Y  value  only  if  the   DELTA   value   is   negative.    If
+DELTA is negative, a positive value of DY is added to form the new
+DELTA value. If DELTA is positive, a negative value based on  both
+DX and DY is used to form a new DELTA value.
+
+Of course, slight variations of this algorithm   are   needed   to
+account for lines with slopes that are  not  between zero and one.
+Screens 5 tyhrough 13 contain a  complete  Bresenham  line-drawing
+vocabulary for all line slopes.  Horizontal and vertical lines are
+treated as special cases for greater  speed  and  simplicity.
+
+The vocabulary for using this drawing package is:
+
+    PLOT-POINT   ( X Y color -- )
+
+Plots a single point on the graphics screen.  This word may be
+redefined as appropriate for your computer.
+
+    POINT        ( X Y  -- )
+
+Same as PLOT-POINT, but without a color value for consistency with
+LINE.
+
+    MOVE-CURSOR  ( X Y -- )
+
+Move the current drawing cursor laction to the point (X,Y).  This
+word is not called MOVE because of possible naming conflicts in
+some FORTH dialects.
+
+    LINE      ( X Y -- )
+
+Draw  a  line  from  the  last  cursor  position  (set  by  either
+MOVE-CURSOR or a LINE word) to the point (X,Y).  The color of  the
+line is determined  by  the  value  of  the  variable  COLOR.  The
+demonstartion program GODSEYE not only draws a pretty picture, but
+is a good test for the line-drawing algorithm, since it uses lines
+from each of the different slope-range cases of the  line  drawing
+program.
+
+Conclusion
+
+The Bresenham line-drawing algorithm is an efficient way  to  draw
+straight lines.  The lines can be drawn even faster than with  the
+example programs by using techniques such as direct  screen-memory
+access  instead  of  BIOS  ROM  function  calls,  and  by  writing
+optimized  assembly  language  programs  that  keep  variables  in
+registers insted of in memory.  For more information  on  computer
+graphics (including  mathematical  derivations  of  the  Bresenham
+algorithm), please see the recommended reading list.
+--------------------------------------------------[End of article]---
+
+---[ Switch channels back to GotFK Part III ]------------------------
+
+By replacing the call in Point to use FastPlot
+
+        : POINT   ( X Y -> )
+          COLOR @               \ x y c
+          FastPlot              \ --
+        ;
+
+the speed of line drawing is greatly enhanced.
+
+The calling convention is something that I would prefer to change,
+as the Line word is currently set to draw from the present "cursor"
+position to the (X,Y) coordinates passed to it, ie.,
+
+        Line ( x2 y2 -- )
+
+and I prefer the calling convention of
+
+        Line ( x1 y1 x2 y2 c -- )
+
+I have therefore changed the name of Line to (Line) and added the
+following additional word to the listing:
+
+        : Line ( x1 y1 x2 y2 c -- )
+          Color !               \ x1 y1 x2 y2
+          >R >R                 \ x1 y1
+          Move-Cursor           \ --
+          R> R>                 \ x2 y2
+          (Line)                \ --
+        ;
+
+---[ Wrapping Up ]---------------------------------------------------
+
+With the code in this column, we now have a full set of words for the
+Graphics of the First Kind.  We can now plot individual pixels,
+horizontal, vertical and any-angle of line, and have included words
+for doing rectangles as well.
+
+I'm almost ready to move on to the Graphics of the Second Kind, but I
+think I will do at least one more column on GotFK, with a tutorial I
+have on Palette Manipulations, that also combines the use of the line
+drawing that we have just seen here.  It will show examples of how to
+do Palette fading and rotations.
+
+Time to send this to the printers...
+

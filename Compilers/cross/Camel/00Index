@@ -1,0 +1,18 @@
+Last updated 11/12/97
+
+00Index       - Index file for ftp://ftp.taygeta.com/pub/Forth/Camel 
+
+cam09-10.zip  - ALPHA TEST version of CamelForth/09, an ANSI Standard Forth for the 
+                Motorola 6809 microprocessor
+		  
+cam51-11.zip  - This release of CamelForth/51 includes an 8051 multitasker which is
+                IN DEVELOPMENT
+		
+cam51-13.zip  - Updated version of file listed above
+
+cam51-15.zip  - Latest release for the 8051 
+
+cam80-12.zip  - BETA TEST version of CamelForth/80, an ANSI Standard Forth for
+                the Zilog Z80 microprocessor and the CP/M operating system
+		
+ (Camel Forth is provided by Brad Rodriguez, any questions should go to: bj@forth.org)

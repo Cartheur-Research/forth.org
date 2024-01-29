@@ -1,0 +1,16 @@
+\ usec.seq                 Pause for a specified number of microseconds
+
+code delay ( dus -- )      \ specified delay is a DOUBLE
+     mov ax, # $8600
+     pop cx
+     pop dx
+     int $15
+     next
+     end-code
+
+: usec ( us -- )
+    S>D delay
+;
+
+
+

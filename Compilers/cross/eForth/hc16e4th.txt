@@ -1,0 +1,25 @@
+Readme file for HC16E4th.ASM
+
+
+        68HC16 eForth is a direct threaded eforth meant to be
+        assembled with the Motorola ToolWare M68HC16 Macro Assembler
+        and used on the Motorola M68HC16EVB.
+
+        The M68HC16EVB used for this example of eForth has additional
+        RAM installed in sockets U1 and U3. The RAM in these sockets
+        is both byte and word addressable in contrast to Pseudo ROM
+        in sockets U2 and U4 which are wired for word reads/writes
+        but only byte reads.
+
+        Most of the words have been tested. There still may be a bug
+        or two in this version of HC16E4TH.ASM, but it has been working.
+
+        Add interrupts and DSP code and have fun.
+
+        by Pete Zawasky
+                PZEF Company
+                518 Hamden RD
+                Annandale, NJ 08801
+                (908) 735-2165
+
+

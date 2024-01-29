@@ -1,0 +1,54 @@
+This is Mops 3.5, of December 1999.
+
+This package contains the full Mops system.  There are two
+distribution files, which are equivalent, except that one has
+the Mops system already fully compiled up and ready to run.
+The other only has the 68k nucleus, and you have to go through
+a series of steps to compile up the full system from the source
+files which are included -- just as you had to do with earlier 
+Mops releases.
+
+The fully built up version is Mops350buit.sea.bin, and is about
+2.3 megs.  The "basic" version is Mops350.sea.bin, and is about
+1.3 megs.  (I use "350" rather than just "35" in case I need
+to do 3.4.1, 3.4.2 etc. releases later..)
+
+Earlier Mops releases were all in "basic" form.  However net and
+modem speeds are now so fast that the extra download time for
+the built up version won't bother a lot of people, and will save
+them any hassle involved in compiling the system up.
+
+The distribution files are in binary format, which shouldn't present 
+any problems to current Mac network software.  They are self-extracting
+archives, so on a Mac, just double-click the file and it will expand
+itself.  (If you only have a Windows machine, bad luck.)
+
+When you expand the file, please read the files "ReadMe.1st" and
+"Mops 3.5 release notes" first.  They'll tell you what to do next.
+
+The manual is not included, but it should be available from the same
+location you got this.  It is still in version 3.4.  The changes
+from 3.4 to 3.5 are given in the release notes.
+
+It should be called Mops34Wrd.sea.bin or Mops34PDF.sea.bin (Word 
+or PDF format).
+
+You will really need the manual if you're going to do anything with 
+Mops.
+
+
+
+I hope you enjoy it!
+
+
+------------------------------------------------------------------------
+Mike Hore        email:          mikehore@bigpond.com
+								 mike@jamsoft.com.au   (either will do)
+
+                 Mops web page:  http://www.netaxs.com/~jayfar/mops.html
+snail-mail:                                                      _*-_|\
+        Michael Hore                                            /      \
+        1/14 Donaldson Court,                                   \_.--._/
+		Karama  NT  0812,                                             v
+		AUSTRALIA.
+------------------------------------------------------------------------

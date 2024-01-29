@@ -1,0 +1,210 @@
+This is a history file of what I've been doing. One should browse 
+through it. There is a file, HOWTO.TXT, that should be read by 
+all. ASM2100.HLP is good to look at if you intend to make your 
+own code definitions. This Forth uses a subset of the Forth 
+language. You may not find every word you'd like. Many words not 
+included can be simply defined in your code. 
+  Example : * ( n n - n ) M* DROP ;
+See the file 4THWORDS.TXT to see what words were put in the 
+built-in library. 
+ This is a freeware release. I do not guarentee this code to do 
+anything specified or otherwise. You are the only one to deside 
+if this code is of any use. 2K1FORTH is released to public 
+domain. It may not be sold as a product. It may be include as 
+long as a statement clearly states that it is in public domain 
+and not considered as part of that products value. 
+ If you do find use for this compiler, please let me know so that 
+I'll know it was worth going. My address and Email are at the 
+end of the HOWTO.TXT file. This includes those that use a piece of 
+my code to do their own impementation. 
+ You should have about 425K of free memory. Please run MEM first 
+to verify. If you don't have enough free memory, your machine will 
+rudely hang. 
+Thank You
+Dwight
+
+12/10/97
+  Got two .options line options working that may be needed.
+   /code-start and /data-start can now be used.
+  Fixed it so that if there isn't enough memory, it prints
+   an error message and returns to DOS without hanging the
+   system.
+  Re-Re-Released Beta
+  Removed more unneeded memory. Now works down to 425K. A
+   little more could be squeezed out but not a great deal.
+12/09/97
+  This is Beta Release.
+  Found that system memory requirements were a little on the
+   large size. Looks like it needed 570K or so. I've changed
+   it so that about 540K is OK. This seems to be the magic
+   number for most people.
+  Modified SYMCONV to include some missing numbers. Also
+   noticed that it tends to generate extra labels in program
+   memory. I know why and it would require a new defining
+   word to deal with it. When I use the word CONSTANT, it
+   can't distinguish between a location or a just a numeric
+   constant. I intend to leave it for now because it is
+   just an annoyance.
+12/08/97
+  Made a program called SYMCONV that translates the 2K1FORTH
+   *.SYM file to ADI's format. It only shows one file module
+   name for all symbols. I expect to fix this at a latter
+   date.
+  Increased the header space.
+12/07/97
+\\  Fixed: Get Warning message when using BEGIN UNTIL in ASM2100????
+  Change IMAGE-INIT to include Init of SCR ( System control reg )
+  Added 0<> to library
+  Change IMAGE-INIT to include JMP $30 at location zero.
+12/06/97
+  Added 2* and 2/.
+  Found that the 1 on the data stack was an artifact of using
+   AR as TOS. As soon as I put another value on the data
+   stack, whatever value that happen to be in AR would be
+   pushed. This is not an error. I needed to move the stack
+   pointer back one more because the first location isn't used.
+  Modified the library in a number of places to take advantage
+   of being able to combine various instruction sequences. I
+   also came up with a trick to premodify the RStack pointer,
+   I7, by doing a dummy read into an unused register while doing
+   a data memory read. This gets a two for one, using both
+   address units.
+  Fixed various combine problems in the assembler.
+  Added literal optimizer for various inline code. This had
+   a significant effect on the speed of the sort program.
+   The sort program used a lot of sequences "<lit> +".
+   Combining the two reduced from 5 opcodes to 2. Speed
+   increased also to 5.8 ms.
+  Fixed a couple of problems in the library caused by changing
+   some words from code to lmacro.
+  UM/MOD is now functional. Besides the normal restrictions on
+   values, such as divide by zero, It also has the restriction
+   that the MSB of both divisor and dividen must be zero. For
+   most purposes this is OK. It does only integer divide now
+   but I expect to add the ability to notice the multipler
+   mode and do integer or fractional as selected.
+11/30/97
+  Added code to allow true call threading. This is done with
+   the /CallThread word. Unlike normal option words, this can
+   be used anytime while not compiling a definition. It has
+   the complementary word /CallThreadOff. I started on a way
+   to cause a warning error if a set limit on stack is exceded
+   but still haven't got it figured out. In order to have this
+   automatically switch would require a two pass system. You'll
+   have to manually count depth for now and be careful. Most
+   code words count as one except, FILL, MOVE and UM/MODE. They
+   count as two levels. Speed test showed only about 5% increase
+   in speed so this isn't a biggy.
+  Modified I to return the old I minus 1. This works better for indexing
+   arrays. If you need the old I, use R@. Example:
+    5 FOR I LOOP
+    returns  4 3 2 1 0      0 being TOS
+  Converted my basket sort routine to 2K1Forth ( What I'm calling it ).
+   Time runs show speeds of 8.7 ms per 1K data. Not too bad when
+   compared to a NC4000 with optimize native CMForth running at
+   4 MHz does 19.1 ms per 1K data. I'm not real happy with the
+   code size. May make another version with less bulk and maybe a
+   little slower.
+11/25/97
+\\  Checked entire library except UM/MOD that needs some work yet
+  Added NIP and TUCK to library
+\\  1st problem. valid sequence NOP | RPM AY0 $75 IM | RDM AR $32 IM
+\\   gives message can't combine.
+\\  2nd problem. Valid sequence RPM AY0 $75 IM | RDM AR $32 IM | NOP
+\\   gives message wrong register.
+11/24/97
+  Fixed FOR NEXT. The code   3 FOR I NEXT will leave the sequence
+   3 2 1 on the stack.
+  As note earlier, 2@P and 2!P are to fetch and store into program
+   memory. When storing in the assembler, the lsb and msb are
+   straight. When using 2@P the msb will be the 8 lsb's from
+   program space and the 16 lsb's will be the 16 msb's. This
+   is done because the most natural item to fetch or store in
+   program space is a 16 bit value, like a coeficient to be
+   read by something like a FIR. This means no shifting is
+   need to store or read these values. Example, to set a
+   value to 50 in program space but you don't care about 8
+   lsb's as this is a coeficient:    50 0 Addr 2!P
+  Fixed RP@  2@P 2!P
+\\  When the code starts there is a 1 on the stack. I don't know
+\\   where this comes from. This is low priority but needs investigation.
+  Refixed < corectly
+  Fixed MIN and MAX
+  Made file: 4thwords.txt. Words with # have been tested.
+11/23/97
+  Verified: : ; CODE END-CODE BEGIN UNTIL 0= = < 0< = U< >
+  Fixed 0= finally.
+  Still having troubles with 0= it looks like all of the
+    comparision operations need to be looked at again I missed
+    the fact that conditional operations also effect the condition
+    flags.
+  Made some batch files to read stacks when code returns
+    to monitor successfully. RDSTK.BAT makes RSTACK.EXE,
+    DSTACK.EXE and BCODE.EXE. I do BCODE to make sure that
+    the code didn't crash and just restart the monitor. If
+    this happened, the monitor writes its RAM test values.
+    This batch file needs EZUP.COM. Users may need to change
+    the com port used.
+  Made a batch file to convert and load TCOM2100's output.
+    This requires EZLD.COM. Users may need to change the
+    com port used.
+  Modified init code so that it returns to monitor. This
+    helps in debugging code.
+  Fixed 0=  bad coding
+11/22/97
+\\  Why doesn't the combined operation 'Y ZERO | WDM #30 IM AR'
+\\   not combine. This looks like a legal combine.
+  Fixed - and + in lib
+  I will put latest notes with dates at the top of this
+   file. This makes it easier to read. I will put \\ in
+   front of older comments that are no longer relevent.
+  Do not try to run TEST.SEQ generated code on the EZKIT.
+   This code is jumbled code to test compiler functioning
+   only and will surely crash.
+  Fixed BIN2EXE to include data memory
+  Got segment working for code and data memory. I'm
+   not happy with TCOM's method but it does work with some
+   difficulties.
+  Wrote help for assmembler ASM2100.HLP
+   Noticed that newer 217/8x istructions are not there will
+   put that on 'to do list'.
+  Fixed COEFS to load from source or external file and
+   works with either program or data memory.
+  Noticed that the Targets Forth puts the 8 LSB's of the
+   program memory in the MSB's position in the double
+   word read or written with 2@P and 2!P. This may cause
+   confusion when using I, and I! of the compiler and
+   expecting the same order. I'll leave this as is for
+   now because I not sure it needs changing as long as
+   every one is aware. This is a more natural operation
+   for the 2100 and the compiler would require extensive
+   changes that might still cause confusion.
+
+11/20/97
+
+TCOM2100.EXE can be use to make files for ADSP2100 EZKITLITE board.
+  Used: TCOM2100 TEST.SEQ
+  TEST.SEQ is a test source file. Use your own source file.
+MK2100.BAT needs TCOM and FPC loaded. Makes new TCOM2100
+  from files ASM2100.SEQ,LIB2100.SEQ and OPT2100.SEQ.
+BIN2EXE.COM is used to convert *.PRG and *.PRX into a
+  ADI format *.EXE. Note!!!!!! It doesn't yet do anything
+  with the *.DAT files. This will be in the next release.
+
+\\ Note: I haven't looked at the data memory functions yet
+\\  so put everything into program memory until I get a
+\\  chance to add the needed code and move anything that
+\\  is needed to data into program until I make needed changes.
+   I will make a list of Forth words in the library and
+  useage of any non-standard words. Also a help for the
+  assembler. For now, look at LIB2100.SEQ and TEST.SEQ
+
+Thanks
+Send Questions, Problems, Bugs or Kudos to:
+Dwight Elvey
+1300 Warren Dr
+Santa Cruz, Ca 95060
+or EMail:  elvey@hal.com
+
+
+

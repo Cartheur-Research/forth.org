@@ -1,0 +1,198 @@
+
+
+
+
+Minutes of the GEnie Forth RT Guest Conference.
+with special guest, Frank Sergeant, author of
+the minimalist Forth for ms-dos, 'Pygmy'. 
+Frank discusses many of his reasons for creating
+Pygmy and shares other views regarding Forth.
+  Contents  of this transcript Copyright (c)
+ 1990, GEnie Forth RoundTable. Released for
+ duplication and redistribution in whole or
+ in part, provided all origination credit is
+ included.
+  
+Please note: There is a pre-conference file titled
+             pre-pyg.txt. It is recommended you also
+             capture it to concatenate to the head
+             of this transcript. It is short, yet
+             lends insight into Frank's views.
+
+Date: 06/21/90   Time: 22:28EDT
+
+Attendees:
+[GARY-S]
+[[Kent] K.PETERSON5]
+[[Frank] FIGGUEST]
+[[jax4figboard] JAX]
+[[Len] NMORGENSTERN]
+[[Wil] W.BADEN1]
+[[Doug] D.PHILIPS3]
+[[Dennis] D.RUFFER]
+[[Robert] R.BERKEY]
+[[john] JDHALL]
+[T.GUIDMOND]
+[[paul] P.THUTT]
+
+Minutes:
+<[Kent] K.PETERSON5> is here.
+<FIGGUEST> is here.
+<[Kent] K.PETERSON5> This is my first conference. I just joined GEnie this week.
+<GARY-S> welcome - you have an interesting first conference to participate in
+<JAX> is here.
+<NMORGENSTERN> is here.
+<GARY-S> 2 minutes to show time folks
+<[Kent] K.PETERSON5> Jax, are you still suspended?
+<[Len] NMORGENSTERN> I am firing up Pygmy on my other machine
+<[Wil] W.BADEN1> is here.
+<[Frank] FIGGUEST> good idea - I wish I could do that also!
+<[Len] NMORGENSTERN> I will be able to compile stuff if there is a question
+<GARY-S> what a super idea len !
+<[jax4figboard] JAX> Fired, Kent.
+<[Kent] K.PETERSON5> bummer
+<GARY-S> what a super idea len !
+<[jax4figboard] JAX> you lose some battles on the way to winning the war.
+<D.PHILIPS3> is here.
+<[jax4figboard] JAX> They proved their lack of imagination in canning me.
+<[Kent] K.PETERSON5> How do you guys keep track of all the conversation threads?
+<GARY-S> 30 seconds - then we go formal
+<GARY-S> PARTY TIME - so cool it
+<GARY-S>    The GEnie Forth RoundTable is very pleased to welcome this ...
+<GARY-S>  evening's special guest, Frank Sergeant, a computer hardware ...
+<GARY-S>  and software enthusiast who has programmed in a variety of high- ..
+<GARY-S>  level and assembly languages on mainframes and micros.  ...
+<GARY-S>  His first hardware design was a tiny 1802 system with a 32 byte ..
+<GARY-S>  cassette loader he taught to play 'Someone to Watch Over Me' ...
+<GARY-S>  and to read punched cards. Recent projects have included a ...
+<GARY-S>  Zilog Super-8 system with a version of Pygmy in ROM and a ...
+<GARY-S>  floppy disk drive aligner on a RTX2001A for the RTX design ...
+<GARY-S>  contest sponsored by Harris. Frank has implemented Forths ...
+<GARY-S>  for the 6809, 68000, 8088/8086, and Super-8, including ...
+<GARY-S>  the famous Armadillo Int'l Color Forth. He is here tonight ...
+<GARY-S>  to discuss his excellent, public domain, minimalist Forth...
+<GARY-S>  for I-clones, Pygmy, initially based on cm-Forth. ...
+<GARY-S>   - Please help welcome Frank Sergeant ...
+<GARY-S>   .. .. .. .. .. ga Frank
+<D.RUFFER> is here.
+<[Frank] FIGGUEST> Today, I wrote Pygmy Forth for 3 reasons:
+<[Frank] FIGGUEST>      1. I was unhappy with certain aspects
+<[Frank] FIGGUEST>         of L&P's F83:
+<[Frank] FIGGUEST>           a. The slow & awkward editor
+<[Frank] FIGGUEST>           b. The size & complexity
+<[Frank] FIGGUEST>              (then what must I think of F-PC?)
+<[Frank] FIGGUEST>      2. Certain ideas from cmFORTH appealed to
+<[Frank] FIGGUEST>         me very strongly:
+<[Frank] FIGGUEST>           a. PUSH POP (instead of >R R>)
+<[Frank] FIGGUEST>           b. FOR NEXT
+<[Frank] FIGGUEST>           c. no IMMEDIATE word
+<[Frank] FIGGUEST>              (but it does have immediate words)
+<[Frank] FIGGUEST>           d. simple Meta-Compilation
+<[Frank] FIGGUEST>      3. I wanted my Forth to be under my
+<[Frank] FIGGUEST>         complete control.
+<[Frank] FIGGUEST> Tomorrow, I may have written it for other reasons.
+<[Frank] FIGGUEST> Clarifications:
+<[Frank] FIGGUEST>      1. 'Pygmy' is short for 'Pygmy Forth'.  It is NOT
+<[Frank] FIGGUEST>          a new language.  It is Forth (as I see it) all
+<[Frank] FIGGUEST>          the way.
+<[Frank] FIGGUEST>      2. Pygmy is NOT Public Domain.  It is shareware.
+<[Frank] FIGGUEST>         The fee is reasonable hjzUJ
+<[Frank] FIGGUEST>         The fee is reasonable (from a minimum of ZERO to
+<[Frank] FIGGUEST>         a maximum of all you have - your choice).
+<[Frank] FIGGUEST>      3. Is Pygmy perfect?  Of course not.
+<R.Berkey> is here
+<[jax4figboard] JAX> Frank, reading back over your "checkered career" :-) ...
+<[jax4figboard] JAX> makes me think of Zimmer and the "Forth of the MOnth Club" 
+...
+<[jax4figboard] JAX> to what extent do you feel you share an approach to Forth 
+with TZ?
+<[Frank] FIGGUEST> I think our philosophies are quite different ...
+<[Frank] FIGGUEST> but we both seem to be willing to do a lot of work ...
+<[Frank] FIGGUEST> on our Forths.  His is a massive project and mine is much ...
+<[Frank] FIGGUEST> smaller.  I think a Forth should be small ...
+<[Frank] FIGGUEST> Wil's recent postings said a lot that I feel about it.
+<[Wil] W.BADEN1> I like your concept so much, I have put Ed Forth on a back 
+burner.  Pygmy may be the better way to go.  I have one reservation -- it'
+s not classical Forth.  
+<[Frank] FIGGUEST> In what way ? 
+<[Wil] W.BADEN1> Classical Forth does not have the things you like most about 
+cmForth.
+<[Frank] FIGGUEST> Yes, ...
+<[Frank] FIGGUEST> I see your point.  My feeling is that Pygmy is fairly true 
+to the ...
+<[Frank] FIGGUEST> deeper, underlying spirit of Forth. ...
+<[Frank] FIGGUEST> I but it has certain differences from what we have been used 
+to.  ga
+<[Wil] W.BADEN1> I think that cmForth and Pygmy may be better than classical 
+Forth, but Chuck is 18 years too late. (All verbs regular in English would
+be an impprovement.)
+<[Doug] D.PHILIPS3> I have a few questions ...
+<[Doug] D.PHILIPS3> so answer as many is appropriate or that you think are 
+interesting...
+<[Doug] D.PHILIPS3> a)  If you register for Pygmy do you get any printed 
+material?
+<[Doug] D.PHILIPS3> b)  Do you have a quick reference card?
+<[Doug] D.PHILIPS3> c)  Do you like the current state of documentation?
+<[Doug] D.PHILIPS3> d)  Do you do more *to* Pygmy than *with* it?
+<[Frank] FIGGUEST> a: no ...
+<[Frank] FIGGUEST> b: no
+<[Frank] FIGGUEST> c: Yes & No ...
+<[Frank] FIGGUEST> The documentation can always be clearer and I will almost ...
+<[Frank] FIGGUEST> certainly make some improvements.  As I mentioned in the 
+Pre-Pyg posting ...
+<[Frank] FIGGUEST> I am interested in how to put someone smoothly into the 
+driver's seat with ...
+<[Frank] FIGGUEST> a new software pkg. ...
+<[Frank] FIGGUEST> On the other hand, it is all there and accessible and of a 
+size ...
+<[Frank] FIGGUEST> that I think people can face without overwhelm.  I hope to 
+do better though ...
+<[Frank] FIGGUEST> d: yes & no ...
+<[Frank] FIGGUEST> I really use Pygmy.  I have done some extensive financial 
+calculations ...
+<[Frank] FIGGUEST> bond & money-mkt type work for clients, pop-up menus, etc. 
+and have ...
+<[Frank] FIGGUEST> been pretty happy with it.  So, I have been using more for 
+real work ...
+<[Frank] FIGGUEST> lately than I have been working on it. ga
+<JDHALL> is here.
+<[Kent] K.PETERSON5> Frank, I came over to Pygmy from Zen and had no great 
+culture shock...
+<[Kent] K.PETERSON5> the for - next did take a bit of getting used to but now I 
+prefer it...
+<T.GUIMOND> is here.
+<[Kent] K.PETERSON5> I see by the BBS postings that you've gone to a ?FOR which 
+looks good...
+<[Kent] K.PETERSON5> my question is, will we see a Pygmy 1.3 soon or should we 
+patch our own systems?
+<[Frank] FIGGUEST> Pygmy goes out into the ether and I don't know what happens 
+to it.  I see numerous downloads of it ...
+<[Frank] FIGGUEST> from GEnie.  I gather it is distri. by Compserve and one or .
+..
+<[Frank] FIGGUEST> more shareware houses, but I never hear any details. ...
+<[Frank] FIGGUEST> Why change the water in the gold fish bowl when they haven't 
+drunk ...
+<[Frank] FIGGUEST> all I gave them last time? ...
+<[Frank] FIGGUEST> So, hearing from people who either like or usePygmy or both .
+..
+<[Frank] FIGGUEST> (such as yourself) has really lifted my spirits and I do now 
+plan on ...
+<[Frank] FIGGUEST> releasing a v1.3.  My current "in house" version has some 
+improvements ...
+<[Frank] FIGGUEST> already - such as the editor knowing where the end of the 
+file is ...
+<[Frank] FIGGUEST> and search across screens not needing to be given an ending 
+scr # ...
+<[Frank] FIGGUEST> and HOLES to make opening up a file to add screens in the 
+middle easy ...
+<[Frank] FIGGUEST> In addition, I want to tend to as many of the "little" 
+things as possible ...
+<[Frank] FIGGUEST> which is one reason I want to hear the troubles everyone has 
+had getting ...
+<[Frank] FIGGUEST> started with it.
+<[jax4figboard] JAX> Frank, speaking of "different than classical Forth", what 
+do you think of ANS Forth proceedings and the BASIS? ga
+<[Frank] FIGGUEST> ha ha ha ...
+<[Frank] FIGGUEST> That's a favorite topic of mine at the moment ...
+<[Frank] FIGGUEST> I think that the committee has an impossible job to do and ..
+

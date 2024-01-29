@@ -1,0 +1,12 @@
+Wink is a simple, mouseless DOS word processor written in Pygmy Forth.  
+
+Wink v0.0k, with faster formatting and searching than previous versions
+of Wink, is dated March 31, 1997.
+
+winkk.zip contains:
+
+     wink.com, the executable
+     winkk.scr, the source
+     think.wnk, the manual
+
+     

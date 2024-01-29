@@ -1,0 +1,26 @@
+
+\ Command line parameter handling by Bill McCarthy
+\
+\ PCOUNT is a VAR that holds the number of SPACE delimeted parameters
+\ n PARAM fetches nth parameter to PAD, leaving PAD's address on stack
+
+0 var pcount   18 allot   hex   \ room for 9 parameters
+
+: param ( n - addr$ )  \ fetches nth parameter to PAD as counted string
+	dup 1 < over pcount > or abort" Invalid parm #"
+	2* at pcount + @ split dup>r pad c! 80 + codes @ swap lists @
+	pad 1+ r> cmoveL pad ;
+
+: getparms  \ finds pcount and stores offsets with lenths of parameters
+	0 is pcount   codes @ 80 c@L ?dup
+	if 81 + 81
+		begin ddup >
+		while pcount 9 = abort" More than 9 parameters"
+			bl swap codes @ swap enclose >r over - at pcount 1+!
+			-rot over + 80 - rot 256* + at pcount pcount 2* + ! r> +
+		repeat ddrop
+	then ;
+
+getparms   forget getparms   decimal
+
+

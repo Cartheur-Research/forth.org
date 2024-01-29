@@ -1,0 +1,104 @@
+
+In the modifications file with Yerk, I had a rather obscure reference
+to the install procedure. Here is a rewritten paragraph.
+
+Install now works well. You have to think about how the application is
+going to work as opposed to how it worked as a development
+environment.  Eliminate all openrsrc calls (I patch the old ones [to
+null]), use menus in resources (see the folder supplied with Yerk
+sources ‘menus in resource’, don't read in a path file, and get rid of
+some of the unnecessary words in your development startup word. Then
+run the install module, setting the various words appropriately.
+Certain modules will load as Code resources, and you may delete those
+you don't need with ResEdit.  Add any other resources you need from
+the development resource files, and you are ready to go.
+
+The key is to think of how a real application will work as opposed to
+the development document.
+
+Taking the original startup word, yerk, from the frontend source (with
+line numbers):
+
+\ system startup word
+1 : yerk
+2 	sysInit	\ Initialize nucleus objects - fFcb, fEvent, fpRect, fWind
+3 	" fpInit" sFind IF drop cfa execute THEN	\ Initialize FP system
+4 	0 ?event drop abs: fWind call BeginUpdate
+5 	getVrect: fWind 14 + put: tempRect update: tempRect
+6 	abs: fWind call EndUpdate
+7 	initNewWindow: fwind show: fwind
+8 	<[ 2 ]> 'cfas enfW disfW setAct: fWind	\ fWind activate activities
+9 	'c restfw setDraw: fWind
+10 	new: imageName  new: parmStr
+11 	nPath
+12 	nMenu dispose> mLoad					\ get Yerk menu bar
+13 	OpenNR
+14 	myDoc 2dup put: imageName title: fWind	\ fWind title bar
+15 	?yerkFlgs release ;
+16 
+17 'c yerk -> objInit
+
+
+Here are the changes I would make:
+
+1. eliminate line 2, since sysinit has already done its job and the application will
+  store the nucleus as it is.
+
+2. if you use floating point, substitue line 3 with "fpInit"..just execute it, since
+  you know it's there.
+
+3. Drop the update stuff in lines 4-6 (doesn't hurt to leave them in, just unecessary)
+
+4. eliminate lines 8-9 for the same reason as point 1.
+
+5. Eliminate line 11, unless you want to include the npath.txt file in the yerk folder
+  and have the yerk folder around..If you distribute the application, you don't
+  want to do this. In fact, a path file for an application is unnecessary. The
+  user will always use the std file dialogs.
+
+6. Redefine 'nmenu' in line 12 to read menus from the resource file. For an
+  application, you should include your menues as rsrcs. (See the example in
+  the folder ‘menus in resource’.  However, to test the install, you could
+  leave 'nmenu' alone as long as the yerk  folder is available as in point 5.
+
+7. Really eliminate line 13, since your resource file is now the resource fork
+  of the application. If your program has references to openNr, or your own
+  word to open your development resource file, patch them as:
+     patch openNr null
+     path  MyRsrcOpen null
+  I use resedit to copy all resources I need in an application to the rsrc fork.
+  This can mean the STR rsrcs from Yerk.rsrc also.
+
+8.  eliminate line 14 since there is no longer a document. The name of
+  the fwind is in the rsrc file.
+
+So, the resultant startup word should look like:
+
+
+\ system startup word
+1 : yerk
+2
+3 	fpInit \ Initialize FP system
+4 	0 ?event drop 
+5 	
+6 	
+7 	initNewWindow: fwind show: fwind
+8 	
+9 
+10 	new: imageName  new: parmStr
+11 	
+12 	OpenMyRsrcMenus
+13 
+14
+15 	?yerkFlgs release ;
+16 
+17 'c yerk -> objInit
+
+
+-----------------------
+
+The install module is modified so that you may select those modules
+you want installed within your application. You may want some standard
+Yerk ones, your own, or none at all.
+
+

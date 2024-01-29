@@ -1,0 +1,22 @@
+
+What's in M16PC.ARC
+- wmf 12/11/90
+
+M16PC is a modified version of the Laxen & Perry F83 metacompiler.  It
+runs on MS-DOS machines but produces Forth kernels for 68000-based
+systems.  The archive includes:
+
+M16PC.COM  -- the executable "cross-metacompiler"
+
+M16PC.BLK  -- source for the metacompiler, to load onto F83
+ASM68K.BLK  -- source for the target assembler
+EX16PC.BLK   -- some extensions needed by F83
+
+F.COM  -- the specific version of MS-DOS F83 used to make M16PC.COM
+
+MSTP.BLK  -- for testing, source for a 68000 F83 kernel for Atari ST
+MSTP.HEX  -- resulting object code (Motorola hex records)
+
+README -- a few notes
+
+

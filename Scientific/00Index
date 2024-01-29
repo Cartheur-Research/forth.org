@@ -1,0 +1,63 @@
+00Index		This file
+Version.num     The current version numbers of each file
+Library.tgz     The current library in GNU-zipped tar format
+adaptint.seq    Adaptive Integration using Trapezoid rule
+aitken.seq      Aitken interpolation
+amoeba          Amoeba -- Multidimensional Simplex minimization of a function
+backsub.seq     Back-substitution solution for LU factored linear systems
+complex.seq     Specification and example implementation of complex numbers for
+                 the Forth Scientific Library
+complex2.seq    A second example of the implementation of complex numbers
+cube_rt.seq     Cube root of real number by Newton's method
+cubic.seq       Solution of cubic equations with real coefficients
+dates.seq       Conversion between calendar date and Julian day (ACM 199)
+dets.seq        Determinant of an LU factored matrix
+dfourier.seq    Four methods for Direct Fourier Transforms
+divdiffs.seq    Forward and Backward divided differences
+dynmem.seq      An ANS compatible dynamic memory package
+elip.seq        Complete Elliptic Integral (ACM #149)
+elip12.seq      Complete Elliptic Integrals of the first and second kinds
+expint.seq      Real Exponential Integral (ACM #20)
+factorl.seq     Factorial function
+ffourier.seq    Radix-2 Fast Fourier Transform routines
+fsl-util.fo     Forth Scientific Library utilities for ThisForth
+fsl-util.fth    Forth Scientific Library utilities for PFE (V0.9.9)
+fsl_util.seq    Forth Scientific Library utilities for F-PC
+gamma.seq       The Gamma, LogGamma and reciprocal Gamma functions
+gauleg.seq      Gauss-Legendre Integration
+guidelines.txt  Forth Scientific Library coding guidelines
+hartley.seq     Fast Hartley (Bracewell) Transform
+hartley.tst     Supplemental Hartley transform utilities and tests
+hermite.seq     Hermite interpolation
+hilbert.seq     Finite segment of Hilbert Matrices, their inverses and determinants
+horner.seq      Polynomial evaluation by the Horner method
+invm.seq        Inverse of an LU factored matrix
+jvn-util.fo     Forth Scientific Library utilities for Julian Noble's contributions
+kande.seq       Complete Elliptic Integrals of 1st and 2nd kinds (ACM #165)
+lagrange.seq    Lagrangian interpolation
+logistic.seq    Logistic function and its first derivative
+lufact.seq      LU Factorization of square matrices
+newton.seq      Newton interpolation
+pcylfun.seq     Parabolic Cylinder functions and related Confluent
+                 Hypergeometric functions
+polrat.seq      Polynomial and Rational function interpolation and extrapolation
+polys.seq       Special Polynomial ( Chebyshev, Hermite, Laguerre,
+		 Generalized Laguerre, Legendre and Bessel) evaluation.
+r250.seq        R250 Pseudo-random number generator
+ran4.seq        RAN4 Pseudo-random number generator
+regfalsi.seq    Regula Falsi root finder
+runge4.seq      4th order and adaptive Runge-Kutta solvers for systems of ODEs
+seriespw.seq    Exponentiation of a series  (ACM # 158)
+shellsrt.seq    Shell sort for floating point arrays
+status.txt      Current status of the Scientific library project
+sunday.seq      Sunday Quicksearch
+svd.seq         Singular Value decomposition
+telscop1.seq    Telescope 1 (ACM 37) (reduction of degree of polynomial
+                  approximations)
+telscop2.seq    Telescope 2 (ACM 38)
+umd.fo          Extended double integer words for ThisForth
+
+
+
+
+

@@ -1,0 +1,21 @@
+The file Mops30PDF.sit is a Stuffit archive containing the manual for
+Mops version 3.0, dated February 1998. Versions of the free program
+Stuffit Expander, which can decode and de-archive the file are available
+for MacOS and Windows.
+
+The contents are:
+Roadmap.pdf
+Part_I.pdf
+Part_II.pdf
+Part_III.pdf
+Part_IV.pdf
+Readme.1st
+
+The ReadMe.1st file is a plain text file, and all the others are in Adobe
+Acrobat PDF format. These should be readable by Acrobat on any platform.
+Another file, Mops30Wrd.sit, contains the same documents in Microsoft
+Word v4/5 format. Many word processors on both MacOS and Windows 
+platforms can open this format.
+
+Michael D. Baron, February 4th 1998
+(michael.baron@bbsrc.ac.uk)

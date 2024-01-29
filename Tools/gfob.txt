@@ -1,0 +1,29 @@
+This program is an obfuscator for Forth source code. All comments
+(including dot-banana printing comments) are removed, and all words
+defined in the file are replaced with tokens consisting of ~ and some
+characters, unless they are declared public, in which case they are passed
+through unchanged.
+
+The test code is a slightly modified version of the ISAAC random number
+generator. This is provided as an example; if you want to actually use
+ISAAC, get it from the Forth Scientific Library at
+http://www.taygeta.com . The test routines are always compiled in this
+version here; in the version in FSL they are conditionally compiled.
+
+The source gets harder to read toward the end. After redefining the
+comment words, I could no longer make comments.
+
+The Makefile contains the following targets:
+gfob	The default. Compiles the program.
+install	Installs the program in /usr/local/bin , or if that fails, in
+	~/bin .
+test	Obfuscates isaac and checks that the original minus the PUBLIC
+	statements and the obfuscated code output the same output.
+clean	Removes files produced by compiling and testing.
+
+This program requires Gforth.
+
+This is a barely working version. If it doesn't work on your program, but
+you can make it work, please send me the fixes.
+
+Please send all improvements, comments, etc. to phma@trellis.net . 

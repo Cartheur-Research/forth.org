@@ -1,0 +1,53 @@
+
+Forth at Your Service
+
+
+    Forth is an unusual language, the only thing like it is Postscript.  Both are well designed for direct control of the hardware they reside on.
+
+    As a rule, Forth is not particularly popular with "programmers".  On the other hand, it tends to be very well accepted by engineers like myself.  This is probably due to the sense of hands-on control afforded, and the immediacy of the system response.
+
+    In the short time we have, I can not teach you how to use Forth.  Rather, I hope to show what Forth is like, what it is used for, and why you might be interested in learning more about it.
+
+    Forth was created by Charles Moore in 1969 to control equipment at the National Radio Astronomy Observatory.  Since then it has been used in a wide variety of applications.   Sun Microsystems uses it for the boot ROM.  The hand-held terminals used by Fed Ex drivers are programmed in Forth.  Orion Instruments uses Forth in their development systems.  Opto 22 uses it in some of their control systems.   Forth is particularly popular for laboratory automation applications.
+
+    The characteristics that make Forth popular in control applications are varied.  The premier feature is compactness.  A full Forth system, including I/O, compiler, assembler and editor can be built in less than 16K of memory.  There are several single chip microcomputers with a full Forth system on board.   Because assembly code is supported, Forth can provide as much speed as an application needs.
+
+    One of the unique properties of Forth is what is called incremental compilation.  This means that an application is compiled piecemeal, one "word" at a time.  This provides two advantages.  First, a new piece of code can be created and tested immediately and interactively.  Secondly, all of the intermediate code is usually available for use.
+
+    Perhaps the characteristic that has the most to do with Forth's popularity is it's simplicity.  With a little effort, a user can fully understand the inner workings of the system and even create a new version from scratch.  
+
+    Among Forth's biggest problems is the almost total lack of syntax.  What little there is is different from most programming languages.  Foremost among these differences is the use of "Reverse Polish".  If you are familiar with the HP calculators this will not seem strange, but most people have trouble with putting the operators after the operands.  ie  443 345 + 
+
+    Another problem with Forth is more "political" then technical.  Many Forth programmers become rather zealous for their particular version.  This leads to a lot of "noise" which can confuse the newcomer.  While there are a number of dialects of Forth, and at least three different standards, for most purposes the variations are not terribly critical.  Again, since the Forth system is so simple, variations are relatively easy to understand and work around.
+
+    Next, I would like to briefly show you what a Forth program looks like.  As I indicated earlier, Forth is a highly modular language.  In Forth, the modules are called "words" and are essentially subroutines that communicate through a parameter stack.  A word to do a proportional-integral-derivative function  and its support words might look like this:
+
+
+       : PROPORTIONAL ( in - out)  SETPOINT @ -  GAIN  2@  */ ;
+
+       : INTEGRAL ( in - out)  SETPOINT @ -  ACCUM +!  ACCUM @
+                               PGAIN 2@  */ ;
+
+       : DERIVATIVE ( in - out)  LAST-IN  2DUP @  -  ROT ROT ! 
+                                 DGAIN 2@  */ ;
+
+       : PID ( in - out)  DUP PROPORTIONAL
+                         OVER INTEGRAL   +
+                         SWAP DERIVATIVE + ;
+
+
+    These definitions are not guaranteed to work, a real PID would probably be a bit more involved.  However, this gives the idea of how Forth code is structured.
+
+    Included on the disk is code for a printer control driver written in both Forth and Basic.  The main word in the Forth code looks like this:
+
+     : RUN  GETARG$    COUNT   ?DUP    ( addr cnt cnt )
+            IF   OVER  C@    '?  =
+               IF  .HELP
+                 ELSE  INTERP   THEN
+               ELSE   .HELP   THEN       BYE ; 
+
+
+    One of Forth's greatest strengths is provided with a different kind of word, the CODE word.  This allows direct access to the machine and all its resources.  It also allows maximum speed for critical operations.  A code word is written in assembler, but is used just like any other word in the system.  Therefor, any function that is not immediately available, can be created.
+
+    In conclusion, I recommend you explore the abilities of Forth to give you direct control of what ever machine you are working on.  This will put both Forth and your machine at your service.
+    

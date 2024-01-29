@@ -1,0 +1,235 @@
+\ sdeint.seq    A function to integrate SDEs, using the 3rd order method of
+\               Milshtein, G.N., 1978; "A Method of second-order accuracy
+\               integration of stochastic differential equations",
+\               Theory Prob. Appl., Vol. 23, No. 2, pp. 396 - 401
+\ SCALAR VERSION
+
+\ The equation being solved is the Ito SDE:
+\ 
+\              du = a(t,u) dt + s(t,u) dw
+\ 
+\  where dw is a Wiener process
+\ 
+\  requires h (delta t), and ds(t,u)/du(t,u)
+\                in addition to a(t,u) and s(t,u)
+
+\ This code conforms with ANS requiring:
+\      1. The Floating-Point word set
+\      2. The immediate word '%' which takes the next token
+\         and converts it to a floating-point literal
+\      3. Uses words 'Private:', 'Public:' and 'Reset_Search_Order'
+\         to control visibility of internal code
+\      4. Uses the word 'Box_Muller' which returns a Gaussian Random number
+\         with zero mean and standard deviation of one.
+\      5. The word 'v:' defines function vectors for execution.
+\      6. The immediate words 'use(' and '&' to get function addresses
+\
+\     (c) Copyright 1994  Everett F. Carter.     Permission is granted
+\     by the author to use this software for any application provided
+\     the copyright notice is preserved.
+
+
+
+cr .( SDEINT.SEQ    V1.1               11 August 1994   EFC )
+
+
+\ needs fpc2ans.seq
+\ needs fsl_util.seq
+\ needs r250.seq
+\ needs boxmul.seq
+
+\ needs fileio.seq
+
+Private:
+
+v: ak()
+v: sig()
+v: dsdx()
+
+fvariable sqh
+fvariable un
+fvariable th
+fvariable ak
+fvariable sk
+fvariable fact1
+fvariable fact2
+fvariable fact3
+fvariable xp
+fvariable xm
+
+Public:
+
+fvariable w
+
+: )sde_init ( ak sig dsdx  -- , f: dt -- )
+     ['] dsdx() >BODY !
+     ['] sig()  >BODY !
+     ['] ak()   >BODY !
+
+     fsqrt sqh f!
+;
+
+Private:
+
+: sde_step1 ( -- , f: u t dt -- u2 t2 dt )      \ low order version
+
+      ranf w f!
+
+      f-rot fover fover
+      sig() sqh f@ f* w f@ f*    un f!      \ un = sig(t,u) * sqh * w
+
+      fover fover ak()
+      frot  un f@ f+ un f!                   \ un = un + u
+
+      fswap f-rot fover f*                  \ tofs = dt * ak()
+      un f@ f+  un f!
+
+      fswap fover f+ fswap                  \ form t2 = t + dt
+      un f@ f-rot                           \ put un 3rd on fstack
+
+;
+
+: sde_step ( --, f: u t dt -- u2 t2 dt )     \ high order version
+
+         box_muller w f!
+
+         fover fover f+ th f!               \ th = t + dt
+         f-rot fover fover ak() ak f!       \ ak = ak(t,u)
+         fover fover sig()      sk f!       \ sk = sig(t,u)
+         fover fover dsdx()  % 0.5 f* sk f@ f* fact2 f!
+
+         frot          \ stack is now the way it started
+         fswap fdrop   \ drop t, wont need it anymore
+
+         % 0.5 ak f@ f* fact2 f@ f- fover f* fact1 f!
+
+         fover fover ak f@ f* f+ fact3 f!
+         w f@ fdup f* fover f*   fact2 f@ f* fact2 f!
+         sqh f@ w f@ f* sk f@ f* fdup fdup sk f!
+
+         fact3 f@ f+ un f!
+
+         % 3.0 fsqrt f/ fdup
+         fact3 f@ f+   xp f!
+         fact3 f@ fswap f- xm f!
+
+         % 0.5 sk f@ f* sk f!
+
+         xp f@ th f@ sig()
+         xm f@ th f@ sig()
+         f+ sqh f@ f* % 0.25 f*   xp f!
+
+         un f@ th f@ ak() fover f* % 0.5 f*  xm f!
+
+         fswap
+         sk f@ f+ fact1 f@ f+ fact2 f@ f+ xm f@ f+
+         xp f@ w f@ f* f+
+
+         fswap
+
+         th f@ fswap
+
+
+;
+
+Public:
+
+: sde_integrate() ( steps -- , f: u t dt -- u t2 )
+
+     0 do sde_step loop
+
+     fdrop
+;
+
+Reset_Search_Order
+
+\ test code, Ito's equation
+
+fvariable aparam
+fvariable bparam
+fvariable dt
+fvariable wsum
+
+\ the three required functions that describe the equation
+
+: afunc() ( f: u t -- a )
+     fdrop
+     aparam f@ f*
+;
+
+: sigfunc() ( f: u t -- sig )
+    fdrop
+    bparam f@ f*
+;
+
+: dsigdx() ( f: u t -- dsdx )
+    fdrop fdrop
+    bparam f@
+;
+
+\ initialize and set up
+: ito_init ( -- ; f: -- x0 )
+
+    f0.0 wsum f!
+    f0.0 w f!
+
+    % 1.5 aparam f!
+    % 1.0 bparam f!
+    % 0.03125 dt f!
+
+    % 1.0
+;
+
+\ the analytic solution
+: ito_actual ( f: x0 t w -- z )
+
+      bparam f@ f*   dt f@ fsqrt f*
+
+      aparam f@ bparam f@ fdup f* % -0.5 f* f+ f*
+      f+ fexp
+      f*
+;
+
+: ito_test ( n -- )               \ n is the number of time steps to run
+
+     \ open an output file and redirect output to it
+     \ seqhandle+ !hcb
+     \ seqhandle+ hcreate abort" file creation error"
+     \ ['] htype is type
+     \ ['] hcrlf is cr
+     
+
+     1 s>d r250d_init
+
+     ito_init
+
+     f0.0
+
+     use( afunc() & sigfunc() & dsigdx() dt f@ )sde_init
+     
+     cr
+     ." # Time     Numerical    Analytic" cr
+          
+     1-
+     0 do
+        fover fover f. f.
+        f1.0 fover w f@ wsum f@ f+ fdup wsum f!
+        ito_actual f.
+        cr
+
+        dt f@ 1 sde_integrate()
+               
+       loop
+
+       fswap fover f. f.
+       f1.0 fswap w f@ wsum f@ f+ fdup wsum f!
+       ito_actual f.
+       cr
+
+       \ restore I/O to normal
+       \ ['] (type) is type
+       \ ['] crlf   is cr
+       \ seqhandle+ hclose abort" file close error"
+       
+;
+

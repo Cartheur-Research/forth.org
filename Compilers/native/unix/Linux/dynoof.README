@@ -1,0 +1,131 @@
+Dynamic Object-oriented Forth Version 0.1.6
+Copyright (C) ZSOTER, Andras 1996, 1997.
+Not fully finished release.
+WARNING: The program may contain serions bugs!
+
+This release is contains bug fixes to correct some discrepancies
+in version 0.1.5.
+For details see the file CHANGES.
+At the moment I am too busy to make a real new release with
+new features but I intend to do so.
+
+
+This release of the program is intended for application
+development. The system is still experimental but some features are
+settled enough to be useful for more serious programming.
+
+As there are a lot of Forthes out there (and many of them are free)
+you have to consider your needs in order to find the proper
+Forth dialect for you.
+Forth dialects other than DynOOF can be more appropriate for
+your task (e.g. gforth has excellent features and full ANS-Forth
+support). On the other hand none of the Forth systems I have
+tested on Linux was faster than DynOOF (actually they were a couple
+of times slower because DynOOF generates machine code).
+Also, while DynOOF does not have a fancy user interface, or lots
+of debugging tools (e.g. there is no "decompiler", because DynOOF
+lays down machine code you have to use a standard debugger in your
+OS) it has an Object-oriented kernel which is fast, and more
+flexible than any other Forth kernel I have ever seen.
+(I think this claim will be food for a flame war, but I believe that
+I can do more with my object-oriented kernel in an orderly and
+documented manner than with a bunch of DEFER-ed words.)
+
+The new standard method Restart and the ability to save and reload
+the dictionary support incremental development.
+Some objects have been built to provide proper connection to the
+operating systems facilities, first of all to shared libraries.
+
+See README.Restart for details, and the examples (libc.4th etc.).
+
+ DynOOF is currently running on Linux (only on Intel x86 machines)
+and there is a "quick and dirty" port to Solaris (running on a Sun Sparc).
+
+ DynOOF is an Object-oriented Forth dialect based on my OOF but not a direct
+port of it. DynOOF is designed with ANS-Forth concepts in mind but some
+features of the STANDARD would prevent me from implementing classes
+as special vocabularies. To satisfy both requirements DynOOF still has
+ANS-Forth compatible mode and OOF mode.
+(Although I cannot CLAIM ANS-Forth compliance, first of all for legal
+reasons: I did not buy the official standard.)
+
+Basically if started with the -A option or after executing the word
+ANS-Forth DynOOF uses ANS-Forth style search order.
+In OOF mode a hierarchical search order is used, also : and ; make
+CONTEXT equal to CURRENT.
+(See the documentation for further details.)
+DynOOF provides all the words from the the ANS-Forth standard except
+the two floating point wordsets (I have to figure out what kind of
+implementation will be the most efficient). Some words do not behave
+exactly as one might expect after reading the standard. E.g. KEY
+has a more conservative behavior and returns whatever is generated
+by a pressing a KEY on the keyboard, not just certain characters
+from a limited character set.
+(As far as I understand this behaviour is not illegal but and
+environmental dependency.)
+
+DynOOF has some documentation (but only in HTML format) which does not
+cover too much about the program, so sometimes you have to figure out
+things yourself or at least read the ANS-Forth standard.
+
+System requirements: Linux 1.3.xx (DynOOF will run on the 1.2.xx series
+but the BLOCK wordset will not work).
+Now the 2.0.x kernel series is out, so getting a good stable, up-to-date
+kernel should not be a problem.
+The GNU C++ compiler (g++)  I have compiled DynOOF with g++ 2.7.0 
+(and the older version even with 2.6.3) on Linux, and with g++ 2.5.8
+on Solaris, so the version does not matter but you should have an ELF
+system.
+
+I am no expert on Sun (four weeks before I ported DynOOF, and I did not have 
+time ever since to revise the port)
+In the port
+I used ideas which I got from reading C compiler output, due to the lack
+of accessible documentation. So some techniques might look horrible
+for a real expert.
+The machine I used for the port is a 12xSuperSPARC RISC multiprocessor
+and runs Solaris 2.4 (as I was told -- I only have a user account on it
+so I might be wrong).
+
+
+On either system you need GNU awk (gawk) to prepare some of the C++ source
+code (in the distribution there should be a complete C++ source so you
+do not need gawk to make DynOOF, you only need it if you want to modify
+the source).
+
+Some make utility (preferably GNU make).
+
+
+----------------------------------------------------------------------------
+Warning! doof-0.0.1 had a bug in the implementation of Size@.
+It should return and (now returns) the defult size of an object
+of the class of the active object.
+----------------------------------------------------------------------------
+
+DynOOF now has a manual page (if you do do_install it will be installed
+for you) and the documentation in HTML format.
+The latter is still not satisfactory but as soon as I can I will provide
+more. (Actually I have to write a manual because I used DynOOF in my present
+project.)
+
+What I need is FEEDBACK!
+Please, tell me what you think about DynOOF and how could I improve it!
+
+BTW: I was told that the non-standard word PERFORM has a different
+meaning from the one in DynOOF ( the commonly used one
+means @EXECUTE ), so I think I should change it to something else.
+If anyone has any good idea what would be a good name for the word
+which is now called PERFORM in DynOOF, please let me know.
+
+Also it is a good time to start hacking something serious like an X-based
+graphical interface. Any volunteers? (I rarely use X, I prefer a couple
+of text-based virtual consols.)
+
+See README.Linux and README.Sun for system specific details.
+
+Andras
+______________
+
+Andras ZSOTER
+(zsa@forth.org)
+

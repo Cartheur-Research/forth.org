@@ -1,0 +1,276 @@
+Preface
+
+This text is a first course in computer programming for future
+engineers and scientists. For these professions, in contrast to
+Computer Science, the computer is a tool rather than an end in
+itself. This protean tool serves needs as mundane as controlling
+machinery--robots, power tools, fuel injectors--or as
+breathtaking as simulating hypersonic re-entry vehicles.
+
+But all tools have inherent limitations, and computers and their
+marvelous programs are no exception. Too often universities
+train students to use computers without adequately stressing
+their limits. The result has been widespread misuse of computers
+in virtually every area of application. How many insurance
+companies went bankrupt because their Lotus 1-2-3's and Quattro
+Pro's predicted vast profits from junk bonds? Their MBAs forgot
+the basic lesson of Spreadsheet 101: Garbage In, Garbage Out..
+
+The journal Communications of the Association for Computing
+Machinery offers a monthly feature, `Inside RISKs' that analyzes
+computer-related, catastrophic engineering failures. One of the
+more spectacular involved simulation of an aircraft design on a
+supercomputer. Simulations and wind-tunnel tests agreed that
+vibrations of the tail section would be too mild to cause
+failure. 
+
+Nevertheless the tail fell off during the first test flight,
+crashing the plane and killing the crew. Post mortem analysis
+found the program that analyzed the wind-tunnel data to be
+incorrect; the simulation program was incorrect too; and--sadly
+for the test crew--the independent mistakes produced results
+that agreed.
+
+The authors of this book view with alarm another recent trend:
+the wholesale dissemination of bloated code. Companies are
+marketing programs that require vastly more resources--memory,
+disk space, machine speed--than by rights they should,
+considering what they actually do. The common justifications for
+such programs are `you need a bigger hard disk anyway'; `you
+should always use the biggest, fastest computer you can,
+otherwise you're wasting your time'; and `memory is cheaper than
+programmer time'.
+
+Well, we do not agree. Memory for one computer may be cheaper
+than slimming a corpulent program; but memory for ten thousand
+machines is not. Code bloat also erodes the aesthetic side of
+software engineering. As they master their crafts, artists--
+painters, poets, and some engineers--learn to discard, to prune
+ruthlessly work that already appears minimal. They discover that
+no matter how they strive, something inessential always remains.
+But they strive nevertheless. We feel strongly that the
+availability of large computers does not entitle programmers to
+churn out blivets of code. If there is one thing we hope this
+book will convey, it is an appreciation for simplicity.
+
+We cannot realistically expect students to master the KISS
+philosophy (KISS = "Keep It Short and Simple"--occasionally
+"Keep It Simple, Stupid!") in a first programming course. But
+perhaps we can provide the foundations by stressing simplicity
+of form, tools, and function. What we are striving for is
+illustrated by a true story:
+
+
+Long ago a seasoned engineer at an aircraft factory was asked to
+design a counter to tally aluminum sheets as they were unloaded.
+A brash summer intern bet a case of beer he could create a
+simpler design.
+
+Engineer and intern agreed to test their gizmos for a week. The
+winner--if both worked equaly well--would be the simpler. The
+entries appeared functionally similar: Each had a dial and
+trailed an AC cord; each was heavy; and each had a hole in the
+front. There the resemblances ceased: the engineer's dingus was
+sleek in its metal box; the student's cigar box seemed heavier
+and cruder. The engineer smiled as he hefted the rival entry.
+
+In the test both designs worked perfectly, agreeing with each
+other as well as with the human they would replace.
+
+The moment of truth: the boxes were opened, their secrets laid
+bare. The engineer's employed a photocell diode, seven tetrode
+vacuum tubes and a power supply. It could discriminate, from
+light flashes of random origin, the characteristic pulse shape
+of light reflected from a falling aluminum sheet.
+
+The cigar box was a shock: it held a quill feather glued to a
+microswitch, the dial, and a brick! A puff of air through the
+hole, from a falling metal sheet, moved the feather, depressed
+the switch and activated the counter. 
+
+`What about the brick?' we demanded. The student demurely
+replied, `The brick? That's the most important part: it made the
+box heavy, so the engineer would be too confident to sabotage
+the test before the judging.'
+
+
+
+What does this tale have to do with programming (aside, that is,
+from the obvious moral that students must not be underestimated)?
+
+Writing computer programs is a form of engineering: a program
+exists to solve a problem. If it fails to solve the problem, it
+is useless. If it is incorrect, or only occasionally correct,
+or if it cannot be modified and improved as conditions change,
+then it is doubly useless. In the end, we feel, simpler is
+better.
+
+Of course, it is impossible to condense a program that navigates
+a spaceship to just a few lines. Conversely, programs are often
+ten or a hundred times larger than they need to be. Part of the
+art of programming consists of learning to estimate how much
+code a given task should require. The inclusion of this issue
+distinguishes this from other introductory programming texts.
+
+
+
+The other trait distinguishing this book from its peers is the
+use of Forth as the illustration programming language. Here are
+some reasons we chose Forth over more ubiquitous modern
+languages: 
+
+
+Forth is simple: it lets us introduce major ideas without the
+distractions of complex languages like Ada or C++. 
+
+Forth is interactive and incrementally compiled. Each new
+fragment of code can be tested as it is entered. This simplifies
+debugging, and facilitates sound learning through immediate
+reinforcement and a minimum of formal abstraction.
+
+Forth is quite rudimentary: it provides few of the components of
+other languages; rather it supplies tools to add such components
+to itself. We feel students learn more by constructing linked
+lists from scratch than by mastering rules for black boxes
+supplied by language providers.
+
+Forth interacts directly with the computer. Hence some detractors
+call Forth `... a glorified assembly language'. But this
+directness makes it easy to explain how programming languages are
+
+translated into fundamental operations: opening and closing
+electronic switches.
+
+Forth's access to the `bare silicon' helps when we interface the
+computer with the outside world of relays, controls, robot arms,
+etc. as well as with the interior world of mathematical co-
+processors and other specialized devices found in a complete
+system.
+
+Calling Forth `a glorified assembler' misses a key point: Forth
+is capable of all the abstraction and indirection of any other
+high level language (in many ways it is like Lisp but simpler).
+Therefore Forth provides direct paths to the most advanced
+concepts of computer science, again without the frills that
+obscure matters in other languages.
+
+Forth is small, universal and efficient: it requires little
+memory and runs on virtually any computer ever constructed. In
+fact several extremely fast microprocessors have been designed
+with Forth as the machine language.
+
+Forth differs from other languages both in structure (postfix
+notation, intrinsic compiler, interactivity) and in philosophy
+(short subroutines and fine-grained decomposition). This makes
+Forth easy to learn as a first language but hard to learn as a
+second language (because there is so much unlearning to do).
+Most other languages are straightforward to learn after Forth,
+mainly because learning Forth provides, in the most direct and
+pedagogical manner, a clear understanding of the innards of a
+computer. 
+
+Finally, we employ Forth for sound commercial reasons. It is a
+valuable language in any programmer's toolkit--in fact, Forth
+was designed to be a toolkit.
+
+Although found most often in embedded control applications, Forth
+has been widely applied in aerospace (data acquisition and
+analysis), number crunching (NASA Massively Parallel Computer,
+MIT Cellular Automaton Machine), medical instrumentation, music
+and business applications. 
+
+Most convincing, perhaps, are the literally hundreds of thousands
+of advanced workstations containing embedded Forth. Abort the
+Unix boot procedure on any recent Sun workstation and you will
+find the Open Firmware ROM Monitor--Forth!
+
+
+
+We now briefly summarize the matter of this book. As the Table of
+Contents makes clear, Chapter 1 begins at the most basic level
+to explain the structure of a modern digital computer, how it
+performs logical and arithmetic operations, and how these
+operations are expressed as sequential transitions of switching
+circuits.
+
+From this beginning we introduce the concept of high level
+computer language. Chapters 2-4 systematically develop the key
+elements of programming languages: data structures, control
+structures, and operations, using Forth as the illustration
+language. Chapter 4 also discusses good programming practices--
+organizing, commenting and documenting programs to make them
+readable and maintainable.
+
+Chapter 5 embarks on programming fundamentals with a discussion
+of several important algorithms and more complex data structures.
+
+
+Chapter 6 extends the discussion of algorithms to searching and
+sorting methods and their classification.
+
+In Chapter 7 we introduce the student to the important area of
+text operations: representing text, operations on strings,
+string-search algorithms, and pattern recognition. We introduce
+the concept of finite state machine in the latter context, and
+apply it also to data encryption.
+
+
+
+Real-time programming is too often neglected in introductory
+texts. But scientists and engineers need to learn as early as
+possible how to interface computers with other machines, whether
+external controllers and instruments or specialized components
+in a complete computer system. Chapter 8 illustrates with direct
+control of the system timer and math coprocessor, as well as
+with input and output via serial and parallel ports. Chapter 8
+also introduces the student to assembly language using the
+intrinsic assembler contained in most Forths. We feel that by
+avoiding the tedious assembling and linking steps, needed to
+interface assembler subroutines with most high level languages,
+we further the pedagogical goal of immediate trial and
+reinforcement.
+
+Some problems may be attacked indirectly, via specialized
+languages. Chapter 9 illustrates `little languages' with a
+simple text formatter, expert system, and circuit simulator.
+
+Computers were first built to `crunch numbers'--to perform in
+finite time vast quantities of arithmetic that would require
+many lifetimes of human calculators. Although subsequently
+applied to vastly different tasks, number crunching
+nevertheless remains one of the most significant areas of
+computer application. Chapter 10 introduces issues connected
+with numerical computation. These include long integers (that
+is, longer than the machine registers and memory cells can hold.
+We are grateful to Leonard Zettel for allowing us to reproduce
+his long-integer system here.) and their arithmetic; and
+floating point numbers and their arithmetic operations. We
+illustrate with several useful numerical algorithms: solving
+transcendental equations, ordinary differential equations,
+relaxation solution of the Laplace equation, and systems of
+linear algebraic equations.
+
+Optimization represents one of the most economically significant
+areas of computer application. For example, an engineer designs a
+circuit using standard components, and tests it in wire-wrapped
+prototype. Now the device must be put into production as a
+printed circuit. What are the optimum paths that the `wires'
+should trace between discrete components? What paths minimize
+the number of layers of etched conductor, or the number of
+jumpers (to allow traces to cross over each other)? These are
+questions that seriously affect the manufacturing cost of
+electronic equipment, and can determine whether a device can
+compete with similar products in an open market. Comparable
+problems arise in areas as diverse as optical design and
+particle physics. Chapter 11 therefore introduces two
+optimization methods in current use: linear programming and
+simulated annealing.
+
+For completeness we include Chapter 12, a look into the Forth
+`engine room' for students seeking deeper understanding of this
+deceptively simple language. Chapter 12 describes the Forth
+compilation mechanism, the inner interpreter, and various
+threading methods. Finally, we touch briefly on metacompilation,
+the remarkable ability of Forth to transport itself from one
+machine to another of quite different structure.
+

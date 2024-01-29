@@ -1,0 +1,122 @@
+
+    A tiny OS/2 program is presented in three different languages --
+a programmer's Rosetta Stone.
+
+    All the program does is loop through all possible module handles,
+printing out the names of all currently-loaded executables and
+dynamic-link libraries in all sessions.  It takes a long time to
+run, no matter what language is used.   
+
+    The following comparison does not capture the fact that both
+UR/Forth and OS2XLISP allow you to run OS/2 programs immediately, 
+without having to compile and link them.
+
+......................................................................
+in Forth (using Laboratory Microsystems 80286 UR/Forth 1.1 for OS/2):
+
+    CREATE BUF 128 ALLOT                        \ make a buffer
+
+    : ENUMDLL                                   \ define a word
+        65535 0 DO                              \ for i=0 to 65,535 do
+            I 128 DS0 BUF DOSGETMODNAME         \ DosGetModName(i,128,ds:buf)
+            0= IF                               \ if no error code
+                CR                              \ carriage return
+                I 5 U.R 3 SPACES                \ display i nicely
+                BUF -ASCIIZ COUNT TYPE          \ display module name
+            THEN                                
+        LOOP                                    \ next i
+    ;                                               
+
+    ENUMDLL                                     \ invoke the word
+
+......................................................................
+in Lisp (using OS2XLISP, version 1.10):
+
+    (define buf (make-string 32 128))           ; string of 128 spaces
+    (define dosgetmodname (getprocaddr doscalls 48))    ; entry point
+    
+    (dotimes
+        (i #xFFFF)
+        (if
+            (call dosgetmodname (word i) (word 128) buf t)
+        ; then
+            (format stdout "~A\t~A\n" i buf)))
+                
+......................................................................
+in C (using Microsoft C 5.1):
+
+    char buf[128];
+    register int i;
+    
+    for (i=0; i<=0xFFFF; i++)
+        if (! DosGetModName(i, 128, (char far *)buf))
+            printf("%u\t%s\n", i, buf);
+        
+......................................................................
+sample output:
+
+  140   A:\HARDERR.EXE
+  220   D:\OS2\DLL\BMSCALLS.DLL
+  380   D:\OS2\SYS\SHELL.EXE
+  600   E:\XLISP\NEW\OS2XLISP.EXE
+  630   A:\SWAPPER.EXE
+  750   D:\OS2\DLL\BKSCALLS.DLL
+  930   D:\OS2\DLL\ANSICALL.DLL
+ 1230   D:\OS2\DLL\MOUCALLS.DLL
+ 1240   D:\OS2\DLL\QUECALLS.DLL
+ 1330   D:\OS2\DLL\SESMGR.DLL
+ 1340   D:\OS2\DLL\BVSCALLS.DLL
+ 1380   D:\OS2\DLL\VIOCALLS.DLL
+ 1390   D:\OS2\DLL\KBDCALLS.DLL
+ 1480   D:\OS2\DLL\DOSCALL1.DLL
+ 1490   D:\OS2\DLL\NLS.DLL
+ 1550   D:\OS2\DLL\MSG.DLL
+ 2230   D:\OS2\DLL\CRTLIB.DLL
+ 3010   D:\URFOS2\FORTH.EXE
+ 3150   D:\OS2\DLL\MONCALLS.DLL
+ 3190   D:\OS2\DLL\ALIAS.DLL
+ 3630   D:\OS2\SYS\CMD.EXE
+
+......................................................................
+to time the loop, examine the elapsed-time field of the GDT InfoSeg;
+this field is a long at offset 4 in the GDT InfoSeg.
+
+in Forth:
+
+VARIABLE GDT
+VARIABLE LDT
+
+DS0 GDT DS0 LDT DOSGETINFOSEG
+
+: ELAPSED-TIME   GDT @ 4 2@L ;
+
+......................................................................
+in Lisp:
+
+(define gdt 0)
+(define ldt 0)
+(define dosgetinfoseg (getprocaddr doscalls 8))
+(call dosgetinfoseg ^gdt ^ldt)
+
+(define (elapsed-time)
+    (peek (mk-fp gdt 4) 'long))              ; milliseconds since IPL
+    
+......................................................................
+in C:
+
+    unsigned gdt, ldt;
+    
+    DosGetInfoSeg((unsigned far *) &gdt, (unsigned far *) &ldt);
+
+#define MK_FP(a,b)      ((void far*)(((unsigned long)(a) << 16) | (b)))
+#define peekl(a,b)      (unsigned long)(*((unsigned long far*)MK_FP((a),(b))))
+#define elapsed_time()  (peekl(gdt,4))
+
+......................................................................
+presented for your edification and amusement by:
+
+    Andrew Schulman
+    29 May 1988
+
+
+

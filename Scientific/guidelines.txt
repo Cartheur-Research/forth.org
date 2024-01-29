@@ -1,0 +1,143 @@
+
+          Scientific ANS Forth Library Coding Guidelines     October 1994
+
+
+
+	1. The source code should be declared public in some manner.
+	   This can include: public domain, Gnu style copyleft, or copy-
+	   right with permission to use. Use whatever form your
+	   conscience or employer dictates.
+
+	2. The code should document the description of the algorithm so that
+	   a user who needed to could look up the source of the algorithm.
+
+	3. Assume a separate floating point stack. That is, no fp
+	   numbers go on the data stack.
+
+
+	4. Use the array and matrix notational convention from
+
+	   Noble, "Scientific FORTH: a modern language for scientific
+	   computing" (Mechum Banks Publishing, Ivy, VA 1992)
+	   ISBN 0-9632775-0-2, p. 105ff.
+
+	   Implementational details will be presumed machine-dependent and
+	   left to the user. Here is a description of the notation:
+
+		> array names end with {, {{, {{{ etc. depending on whether
+		  they are 1-, 2- or 3-dimensional.
+
+		> }, }}, etc. are FORTH words.
+
+		> The resulting notation looks like:
+
+			A{ I }		( adr of I'th element of A{ )
+			M{{ I J }}	( adr I,J'th elt of M{{ )
+			etc.
+
+	   Arrays are ZERO based.
+
+
+	5. The code is to be in ANS Forth and assume the operators given
+	   in the FLOATING POINT extension wordset of the dp-ANS-6 proposal.
+
+
+	6. A naming convention for COMPLEX operators and functions
+	   has been proposed but not adopted. The convention starts 
+	   such names with Z, as in
+
+		ZEXP, ZSIN, Z*, SZ@, DZ@, etc.
+
+	   The actual IMPLEMENTATION of the complex data type is unspecfied,
+	   but the SYNTAX to be used is defined in the FSL file 'complex'.
+           (The implementation given there should be taken to be one example
+           of how to implement the syntax and not as the FSL standard.  An
+           alternative implementation is given in 'complex2').
+
+
+	7. A convention for passing function or subroutine names has been
+	   suggested in Noble's book (p. 162 ff). Basically, suppose one
+	   wants to integrate a function g(x) = sin( 1 / x ) from 0.01
+	   to 10^4. Then one might say ( :: signifies the fp stack)
+
+		: g(x)	 ( :: x -- sin[1/x] )  1/F  FSIN  ;
+		USE( g(x)  % 0.01  % 1.E4  % 1.E-5 )INTEGRAL
+
+	   One needn't make assumptions about how to implement USE( ,
+	   but one possible definition is
+
+		: USE(   '   ; 
+
+	   Used interactively, USE( leaves the execution token of the
+	   following word on the data stack. It is then available for
+	   the subsequent words to employ.
+
+           For multiple function arguments USE( could be extended as,
+
+           ' use(  alias  &
+
+           Thus,     use( fn1 & fn2 & fn3 % numerical args )function
+
+
+	   Since we feel SOME convention for passing names as arguments
+	   is necesssary, please voice your opinions on this matter.
+
+
+	8. Acceptable library routines are not allowed to modify the system;
+	   that is, after loading your files the system should still
+	   compile ANS-compliant FORTH code.
+
+	9. The code should contain a version number and date within the
+	   comments section.
+
+        10. All submissions should include a test driver and some means of
+	   verifying that a local compilation ran properly.
+
+
+ 	11. Any environmental dependencies must be stated in the header. For
+	   example
+
+		\ Employs the file array.seq to implement }, }}, etc.
+		\ Assumes segmented (PC-style) addressing with long-
+		\ form addresses.
+
+
+The aim of using such conventions is to provide code that can be read
+with moderate effort by FORTRAN programmers.
+
+Remember: SHORT definitions, well chosen names and thorough documentation
+	  help enormously.
+
+
+Submit code to the Forth FTP archive on ftp.taygeta.com
+connect as anonymous, and place the code in the pub/incoming directory.
+The code will be submitted to peer review and then indexed and placed
+in pub/Forth/Scientific directory when it is accepted.
+
+Note: since we intend to have the code peer-reviewed, please let
+Skip Carter (skip@taygeta.com) know of your specialties
+so that we can attempt a reasonable match of code and reviewers.
+
+
+
+ Everett (Skip) Carter          Phone: 831-641-0645 FAX:  831-641-0647
+ Taygeta Scientific Inc.        INTERNET: skip@taygeta.com
+ 1340 Munras Ave, Suite 314     WWW: http://www.taygeta.com/     
+ Monterey, CA. 93940       
+
+
+    
+PS: Noble will make an abbreviated version of his FORmula TRANslator
+    available to anyone willing to submit programs to this project, in a
+    form compatible with F-PC and respecting the ANS FLOATING POINT
+    extension wordset. Only the translation function will be included, since
+    the idea is to facilitate turning formulas into ANS FORTH, rather
+    than to compile formulas themselves (in any event, the latter would
+    impose too much environmental dependence for good portability).
+
+ 
+
+
+
+
+

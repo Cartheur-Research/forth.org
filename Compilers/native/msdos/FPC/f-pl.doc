@@ -1,0 +1,10 @@
+	Traditional record and independence
+	of datatypes in the frameworks FORTH of a system.
+
+For types independence is used types stack.
+The action of a command is set in dependence
+on contents of this stack. ( v_st.seq  v_st1.seq )
+For bracket  record is used  priority operation stack.
+ ( inf.seq f-pl.seq )
+                                      Mak@informix.rtc.neva.ru
+                                      Mak@xperts1.rtc.neva.ru

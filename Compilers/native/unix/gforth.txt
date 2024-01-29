@@ -1,0 +1,43 @@
+Gforth is a fast and portable implementation of the ANS Forth
+language. It works nicely with the Emacs editor, offers some nice
+features such as input completion and history and a powerful locals
+facility, and it even has (the beginnings of) a manual. Gforth employs
+traditional implementation techniques: its inner innerpreter is
+indirect or direct threaded.  Gforth is distributed under the GNU
+General Public license (see COPYING).
+
+Gforth runs under Unix and DOS and should not be hard to port to other
+systems supported by GCC. This version has been tested successfully on
+Linux (for Intel), SunOS (SPARC) and Ultrix (MIPS).
+
+Read INSTALL for installation instructions. Mail
+gforth-bugs@mips.complang.tuwien.ac.at if you have problems.  To start
+the system, just say `gforth' (after installing it).
+
+You can find new versions of Gforth at
+
+http://www.complang.tuwien.ac.at/forth
+or
+ftp://ftp.complang.tuwien.ac.at/pub/forth
+
+This site will also contain binary distributions of Gforth for some
+popular platforms when it has proved stable.
+
+If you want to work on Gforth, mail me. Tasks to be done can be found
+in ToDo; but if you would like to do something not mentioned there,
+it's ok, too. In any case, we would like to hear what you are
+doing. The most important tasks IMO are the missing ANS Forth words,
+the documentation and the foreign language interface for C.
+
+On popular request, here are the meanings of unusual file extensions:
+
+*.fs	Forth stream source file
+*.fi	Forth image files
+*.fb	Forth blocks file
+*.i	C include files
+*.ds	documenation source
+*TAGS	etags files
+
+- anton
+anton@mips.complang.tuwien.ac.at
+http://www.complang.tuwien.ac.at/anton/home.html

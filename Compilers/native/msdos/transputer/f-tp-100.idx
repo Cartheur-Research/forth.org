@@ -1,0 +1,124 @@
+Package-Name:		/pub/forth/compilers/native/dos/transputer/f-tp-100.zip
+Title:                  F-TP : Forth for the Transputer T80x
+Version:		1.00
+Author:                 Fred Behringer
+Author-Telephone:       
+Author-Fax:             
+Author-Postal:          Planegger Strasse 24, 81241 Muenchen/Germany
+Author-Email:           behringe@mathematik.tu-muenchen.de
+Maintained-by:          
+Postal-Address:         
+Telephone:              
+Fax:                    
+Electronic-Address:     
+Maintained-At:		
+Distribution-Type:      
+Restrictions:           DOS, German (a certain number of doc files in English)
+Discussion-Groups:      
+Copying-Policy:         Freeware
+Modified-by:
+Keywords:               msdos, programming, transputer, Forth, Turbo-Forth, compiler, metacompiler
+URI:                    
+X-Posting-Id:           
+Description:
+
+Main features:
+- Forth 83, with almost all of the ANS Forth core words integrated,
+- Trigonometric functions,
+- Metacompiler (written in Turbo-Forth, operating from the DOS host as a
+  cross-metacompiler); Turbo-Forth is a DOS-file-based 16-bit Forth for
+  IBM compatibles developed by Marc Petremann and the French Forth Group 
+  in 1989,
+- Fully automatic metacompilation, also for generating multisystems,
+- Parallel processing similar to the method employed with OCCAM2, 
+  adapted to Forth,
+- Multisystem option (several transputer Forth systems kept in the same 
+  transputer RAM, with access to the respective stacks from any 
+  subsystem),
+- DOSKEY emulation (FORTHKEY, invoked by hotkeys),
+- Collecting characters and character strings from screen via hotkeys,
+- Debugger DEBUG (step by step tracing),
+- Disassembler DIS (can also be used for disassembling any transputer 
+  code fragments residing in transputer RAM such as OCCAM object code),
+- Decompiler SEE (with integrated disassembler DIS for code 
+  definitions),
+- Assembler in postfix notation, fully Forth-like usage, structured (IF-THEN-ELSE 
+  etc.),
+- Easy calling, from transputer Forth, of any DOS command or programme: 
+  DOS [name] ,
+- All sources,
+- Server from PC DOS host, written in Turbo-Forth,
+- Assembling, PEEKing, POKEing, disassembling, DUMPing, also from server 
+  (in case the transputer Forth system breaks down),
+- Easy interactive menu-driven modification of link adapter port 
+  addresses: CONFIG.BAT ,
+- Online modification of end-of-system (EOS) address (increasing or 
+  decreasing the size of a running transputer Forth system),
+- Saving a modified transputer Forth system to the current DOS drive via 
+  SAVE-SYSTEM TFORTH.FYS ,
+- Saving a modified transputer Forth multisystem to the current DOS 
+  drive via SAVE-MULTI TFORTH.FYM ,
+- Online help for all vocabularies: HELP
+- Rich documentation in various DOC files, a certain number of them in 
+  English,
+- Saving any transputer Forth RAM area as a DOS file,
+- Loading the contents of any DOS file to any transputer Forth RAM area,
+- Breaking a transputer Forth programme any time via [ESC], thereby 
+  jumping to server in host,
+- Resuming such a programme at point of leaving via START ,
+- Or else immediately leaving to DOS level by way of BYE-FOR-DOS or 
+  [ESC] BYE ,
+- Resuming transputer Forth operation from DOS level via TRESUME (DOS 
+  batch file), the data stack contents will thereby be preserved,
+- New loading of the transputer Forth system via LOAD-FTP , the data 
+  stack contents will thereby get lost,
+- New loading of a previously saved multisystem via LOAD-FTP M , the 
+  data stack contents will get lost,
+- DUMPing with screen forward and screen back option on key stroke,
+- LEARN [RET] is a setup procedure which binds the online help system 
+  ( HELP ) to the respective CONTEXT vocabulary; LEARN comes with some 
+  statistics on the words actually documented, the words not found in 
+  the documentation file FORTH.VOK, and those words which were defined
+  more than once,
+- Keyboard buffer extension facility KEYBUF128!
+- String input into keyboard buffer (so that parameters to DOS command 
+  calls can be easily transferred),
+- Loading any transputer Forth programme (source code) via INCLUDE ,
+- 25% of the system gets metacompiled, the remaining part will simply be 
+  loaded by INCLUDE TCORE [RET] ,
+- KERNEL [RET] reduces system to base part of said 25%,
+- Easy modification of remaining 75% of transputer Forth system by 
+  modifying the source file TCORE.FTH and inputting KERNEL INCLUDE TCORE 
+  [RET] ,
+- Easy inclusion of non-ASCII characters in the word names by switching 
+  from ENGLISH [RET] to GERMAN [RET] and vice versa - to achieve this, 
+  the length of a word name, during compilation, will also be placed at 
+  the end of the name field,
+- TASSEMBLER acts as cross-assembler in host-resident server,
+- Assembling and disassembling (e.g. of OCCAM object code) also from 
+  server in host,
+- DUMPing also from server in host: TDUMP ,
+- Access to any editor of one's choice via DOS (e.g. DOS EDIT or DOS 
+  EDLIN ...),
+- Calling an additional host (Turbo-) Forth system from inside F-TP : 
+  DOS FORTH [RET] ,
+- Calling e.g. PCTOOLS from inside F-TP : DOS PCTOOLS [RET] , etc.,
+- Improved version of LIST also allowing to move back to previous 
+  screen,
+- Facility of mixing high level and low level words any number of times 
+  while compiling a word,
+- 32 bit data and return stacks,
+- 32 bit addresses,
+- 32 bit single precision integers,
+- 32 bit single precision floating point numbers, in compliance with the 
+  IEEE 754 specifications,
+- 64 bit double precision integers,
+- 64 bit double precision floating point numbers, in compliance with the 
+  IEEE 754 specifications,
+- One could even think of using F-TP 1.00 as a "WIN32Forth" system by 
+  simply mouse clicking on the appropriate icon on the desktop of either 
+  Windows 3.11 or Windows 95. However, there is no use doing so since 
+  e.g. the list of words invoked by calling WORDS will creep extremly 
+  slowly over the screen as compared with the enormous speed achieved by 
+  operating F-TP 1.00 from the DOS level.
+

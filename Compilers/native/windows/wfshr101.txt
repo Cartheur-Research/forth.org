@@ -1,0 +1,61 @@
+         Release Notes, WinForth Shareware Version 1.01
+
+--------------------------------------------------------------------
+
+INSTALLATION
+
+WinForth Shareware Version 1.01 is distributed in the self-extracting
+archive file WFSHR101.EXE.
+
+All documentation for WinForth is in the form of on-line
+Windows Help files.
+
+To install WinForth Shareware version, create a new directory on your
+hard disk, then use CD to select that directory:
+
+   C>C:
+   C>MD \WINFORTH
+   C>CD \WINFORTH
+
+Copy the WinForth distribution file (WFSHR101.EXE) into the new
+directory, then execute the file.  E.g.:
+
+   C>WFSHR101 <Enter>
+
+The file will unpack itself to yield the WinForth executable system, 
+utilities, and demonstration programs in the current directory.
+
+Add the statement
+
+  SET WINFORTH=C:\WINFORTH
+
+to your AUTOEXEC.BAT file, then restart your system.
+
+Start Windows, go into the Program Manager, and use File-New-Program
+to add WinForth to the program group of your choice.  Specify 
+C:\WINFORTH as the "current directory" and FORTH.EXE as the program
+name.
+
+That's all there is to it!  Read the on-line documentation (reached
+via the WinForth "Help" menu) for further information on the use of
+WinForth. "Registration" procedures are also explained in the on-line
+documentation.
+
+Note: WinForth does not have to be installed in any particular
+location or even on drive C:.  The directory does not have to be
+named WINFORTH either.  However it is important that the WINFORTH=
+environment variable point properly to the actual location of
+WinForth.
+
+Updates to WinForth are posted frequently on the LMI BBS
+as new features are added and bugs are fixed.
+
+--------------------------------------------------------------------
+
+Known Bugs and Errata:
+
+See "Bugs and Limitations" under "Technical Information" 
+in the on-line documentation.
+
+--------------------------------------------------------------------
+

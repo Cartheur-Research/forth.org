@@ -1,0 +1,173 @@
+
+\ RCPICT.MFP
+\  read color pict files
+\ Last Revision: 07/28/88  11:01:13 PM  sws
+{ Program to read in color PICT files from color paint programs and display
+  them on a Mac II.  One word displays picture and then removes the actual
+  data and one word keeps the picture in an offscreen pixmap so the image
+  will always be displayed in the window.  I've just finished this so
+  I'm sure there are a few areas that could use some sanitizing but it
+  works.   Requires Mac II and MacForth Mac II extensions.
+                                -S.W.SQUIRES }
+{ Usage -
+    SHOW.PICT will put up a standard file dialog and then display the
+    image in the 'cw' window.  Could be modified to supply file name
+    as window title.
+    
+    SHOW.OFF.PICT will do the same but keeps a copy in an offscreen
+    pixmap so the image will be displayed even after another window
+    has covered it.   This takes more memory so larger images may be
+    viewable with SHOW.PICT but not SHOW.OFF.PICT.
+    
+}
+forth definitions decimal
+ anew --read.pict--
+10000 minimum.object
+create myWhite  -1 w, -1 w, -1 w,
+create myBlack   0 w,  0 w,  0 w,
+0 0 30 30 rect temp.rect^
+0 0 30 30 rect srcRect
+0 0 30 30 rect destRect
+0 0 10 0 rect fake.rect
+global pict.handle          \ handle to PICT data from file
+global pixMapHandle         \ handle to pixmap structure
+global off.picthandle       \ handle to actual bits for offscreen pixmap
+hex
+A8A2 mt PaintRect
+A8A3 mt EraseRect
+AA06 mt SetPortPix
+decimal
+new.window cw                   \ color window for display
+    " cw " cw w.title
+50 50 300 400                       cw w.bounds
+size.box close.box  + w/color +   cw w.attributes  \ could add a zoom box
+sys.window cw w.behind
+cw add.window 
+create myCport 258 allot        \ Color GrafPort for offscreen pixmap
+    mycport 170 erase
+    dflt.window.tail  mycport 170 +  88 cmove  \ add MacForth window tail
+create pict.header  512 allot
+pict.header 512 erase
+: Open.pict   ( -- file# or false )
+    dflt.file.type @
+    "PICT dflt.file.type !
+    ezopen  swap dflt.file.type ! ;
+: read.pict.header   ( file# -- | pict header is application specific )
+                     ( so it's ignored most of the time )
+    locals| file# |
+      pict.header  512  0 file#  read.virtual  fileError? ;
+: read.pict.data  ( -- bytes read )
+     locals| file# |   
+    file# filesize?     from.heap   \ make space in heap for data
+    dup -> pict.handle
+                        ( could  subtract 512 but let's have some buffer )
+     not abort" Not enough room for picture! "
+     pict.handle lock.handle
+    pict.handle @  
+    file# filesize? 512 -       \ get size of picture - header
+     512  file# read.virtual    \ start read after header
+     fileError?  iocount @ ;
+: read.pict ( -- | open PICT file and read into memory )
+    Open.pict locals| file# |
+    file# not abort" File open error! "
+      file# read.pict.header   
+    file# read.pict.data   drop     \  byte count not needed
+    file# close ;
+: .pict.info  ( pict addr -- | display PICT size and rectangle )
+    cr 
+    dup w@ ." Size = " . cr
+    2+ @rect ." Rect = " 2swap swap . . swap . . cr ;
+: adjust.rect  ( rect -- | make rectangle start from upper left )
+               ( this is from the color pict demo in Mac II extensions )
+     1 needed  locals| Trect |
+     Trect @rect 2swap -point     \ adjust the end points
+     0 Trect !                    \ zero out the upper left  
+      Trect 6+ W!                 \ put adjusted values back
+      Trect 4+ W!    ;
+: show.it   ( -- | display picture in cw window )
+    get.window
+    cw window page  pict.handle             
+    dup @ 2+ temp.rect^ 8 cmove    \ copy the pict rect to temp
+          temp.rect^  adjust.rect        \ move upper left to 0 0
+          temp.rect^  draw.picture       \ let us see it
+  window ;
+: SHOW.PICT  ( -- | let user choose a file, read it in to heap, )
+             ( display it in cw window, and return heap )
+    read.pict  pict.handle @        
+    if
+        show.it  pict.handle unlock.handle
+        pict.handle to.heap 0 -> pict.handle 
+    then ;
+: make.pixmap  ( -- | creates actual pixmap area for bits )
+    pict.handle @ 2+ @rect
+    rot - >r swap - r> *            \ calc mem size from rectangle
+      from.heap dup -> off.picthandle
+     not abort" Not enough room to create pixmap! "
+     off.picthandle lock.handle  ;
+: get.rowbytes ( handle -- size )
+    @ 2+ @rect  swap drop   swap -  swap drop ;
+: createPixMap   ( -- | makes pixmap structure and pointers )
+    NewPixMap dup -> pixMapHandle
+    dup not abort" Out of memory for NewPixMap"
+    @   cw +portpixmap @@       
+    locals| cwpm pm |
+    cwpm pm pixmap cmove                        \ duplicate cw structure
+    off.picthandle @    pm +baseAddr !
+    pict.handle get.rowbytes    hex# 8000 +     pm +rowBytes w!
+     pict.handle @ 2+  @rect  pm +bounds !rect 
+    pict.handle @ 2+  @rect srcrect !rect       \ make other rects same size
+    pict.handle @ 2+  @rect destrect !rect  ;
+\ Can probably loose these last two lines since I've changed later code.
+\ Didn't DUP in this case so it could be clearer while testing
+: clean.up  ( -- | return memory to heap, remove handles )
+    pixMapHandle  dup unlock.handle to.heap
+    pict.handle dup unlock.handle to.heap
+     off.picthandle dup unlock.handle to.heap 
+    0 -> pixMapHandle 
+    0 -> pict.handle
+    0 -> off.picthandle ;
+: valid.pixmap?   ( -- flag | are Handles valid? )
+    pixMapHandle  SafeHandle?
+    pict.handle SafeHandle?
+    off.picthandle  SafeHandle?     and and  ;
+: copy>window   ( -- | move offscreen pixmap to cw window )
+    valid.pixmap?       \ don't try if no image in offscreen pixmp
+    if   myCport  2+  cw 2+ 
+         srcrect cw +wcbounds  fake.rect and.rects
+                ( calculate intersection of rectangles )
+                if  fake.rect dup
+                    srcCopy  0  OnQDStack> copy.bits 
+                then
+    then  ;
+: draw.pict.off  ( -- | draw PICT data to offscreen pixmap )
+     get.window     locals| oldPort |
+    myCport OpenCport                           \ opens and sets port
+    pixMapHandle  SetPortPix                    \ install our pixmap
+            mywhite rgbbackcolor  
+            myblack rgbforecolor
+        srcrect eraserect                       \ clear old graphics
+        pict.handle  dup @ 2+  draw.picture     
+    oldPort (window) ;
+: SHOW.OFF.PICT   ( -- | read in PICT file, init offscreen pixmap, )
+                  (      and copy to offscreen pixmap )
+                  (      on update takes care of actual display )
+    clean.up 
+    read.pict 
+    make.pixmap 
+    createpixmap 
+    draw.pict.off  ;
+: update.cw    ( -- | display offscreen pixmap on an window update  )
+    valid.pixmap?  
+    if
+        get.window  cw window   page copy>window
+        window 
+    then ;
+: do.cw  ( -- | simple routine to allow user to change size )
+    if 
+        begin do.events drop again
+    then ;
+on.forget clean.up   ( return heap memory and remove handles on a Forget )
+cw on.update update.cw
+cw on.activate do.cw
+
+

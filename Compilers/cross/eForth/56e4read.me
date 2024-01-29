@@ -1,0 +1,574 @@
+This is an initial port of eForth for the Motorola 56002 DSP, and will run as
+is on the 56002 EVM.
+
+
+port by : Dave Taliaferro
+          42 Edmundo Rd.
+          Belen, NM 87002
+          TPL, Inc. Albuquerque, NM
+          dtaliaf@Rt66.com
+
+
+Full credit for this belongs to C.H. Ting and others; I merely did the grunt
+work to port the model. This demonstrates the genius of Forth and the
+accessability of eForth - I merely recoded the primitives and modified the
+model slightly to generate a working version for the 56k. Well, actually it
+was a bit of work; were it not for the Domain debugger supplied with the EVM
+it may never have happened. The amazing thing is that I am a raw Forth
+beginner and was able to implement eForth due to its design for porting.
+If you are interested in trying it on your favorite chip I suggest that you
+buy a copy of the eForth implementation guide from Dr.Ting or from
+FIG - most of my simple-minded questions were answered there.
+
+This version is based on eForth 1.00 for the 8086 eForth 1.0 by Bill Muench
+and C. H. Ting, 1990
+
+              Dr. C. H. Ting
+              156 14th Avenue
+              San Mateo, CA 94402
+              (415) 571-7639
+
+Included in this distribution is a copy of dspbug.asm - Motorola's debug
+monitor for the 56k. I borrowed some routines and ideas from this code,
+you may find it useful as well. See dspbug.zip.
+
+This code is distributed as is - I accept no responsibilities for the use of
+this implementation of eForth, and no warranties are made in any way. This
+code is strictly for educational and hacking use only - user beware! Since
+the eForth model is in the public domain this implementation is also. My
+only restriction is that I retain chief bragging rights to this port and
+maintain the on-line source code. Contributions and questions are encouraged
+and should be sent to my attention at dtaliaf@Rt66.com.
+
+
+Internet Sources :
+--------------------
+
+The best place to find an update for this code is at :
+
+ftp://taygeta.com/pub/Forth/Archive/eForth
+
+www.taygeta.com also has a vast repository of Forth related code and text
+
+
+1. Domain Technologies Inc.
+
+    ftp.domaintec.com/domtech/      ... e303_166.zip
+                                        e56k_169.zip
+                                        linkdll1.zip
+                                        linkdll2.zip
+                                        linkhlp.zip  now not pressent
+        for EVM56KW on Windows 3.1 platform.
+                                                    Tested and OK.
+
+                                    ... evm10601.zip
+        new version of EVM56K for MS-DOS Version 1.06.01
+                                                    Tested and OK.
+
+2. Motorola DSP
+    ftp.motorola-dsp.com/bub/56000  ... many useful sources for 56002
+
+3. Crystal Semiconductor
+    www.crystal-semi.com/pub/pdf    ... C4215 *.pdf data sheets for CODEC
+
+
+
+
+
+56k eForth INSTALLATION ON THE 56002 EVM :
+-------------------------------
+
+
+TERMINAL I/O :
+--------------
+
+Use the SCI port on the EVM for communication with the forth kernel. The PLL
+register is set for 40MHz at COLD reset; the corresponding sci baud rate
+values are set by commmand line options or set to default 9600.
+
+COMMAND LINE ASSEMBLY OPTIONS :
+-------------------------------
+
+You will need to take a quick look at these -see INIT56E4.ASM; also check "Conditional
+Assembly" in your asm_man.txt supplied with the asm56000 assembler.
+
+
+LOADING THE OBJECT CODE ON THE EVM :
+------------------------------------
+
+You can load the resulting e4th56k2.cld object code through your Domain debugger
+interface. It will take about 3 to 5 minutes.
+
+A faster way to load eForth :
+-----------------------------
+
+Waiting for the .cld file to load through the Domain debugger is a pain - you
+can get around this by converting the .cld to an .lod file for fast sci
+upload. The steps for this  :
+
+note : omit the apostrophes when entering commands ex.'WORD' should be entered as
+       WORD
+
+1. assemble e4th56k2.asm using evm.bat (or command line) - this will produce a
+   .cld file
+
+2. run fix.bat (modify it according to your hard drive directories), this runs
+   cldlod.exe (included with your evm software distribution), which converts a
+   .cld to a .lod file. The strip.exe may not be freeware, it strips debug info
+   out of the file, not an absolute necessity. Get around this by assembling without
+   debug info, otherwise it will load a little slower.
+
+3. Run boot.bat from the dos prompt, this will start evm56k and load evmboot.cld,
+   which runs a bootstrap loader from 7500h. On your sci terminal you should see
+   an ascii character set with a '>' character. Now transmit the ascii e4th56k2.lod
+   file to the evm. I use Procomm for Windows for this (my batch file renames
+   e4th56k2.lod to 000aaa.lod to put it at the top of the pick list). You can use
+   straight ascii upload with no handshaking - the entire .lod file should upload
+   in about 10 seconds.
+
+4. Once the .lod file has been successfully loaded on the evm you will see the
+   "56002 DSP eForth v1.0" prompt. Type WORDS at your terminal for a dump of all
+   the eForth system words. Now start writing fabulously useful programs in eForth.
+
+5. Now you can modify the kernel without reloading the boot.cld - at the Forth prompt
+   type 'HEX 7500 LEAVE' - the bootload prompt will re-appear and you can reload your
+   new .lod file. LEAVE is a poor name for this routine (it LEAVEs the kernel using
+   the address on the stack) since it is used by other Forths for something else, I
+   will change it in the future.
+
+
+LOADING HIGH-LEVEL FORTH DEFINITIONS TO THE EFORTH KERNEL :
+-----------------------------------------------------------
+
+Now, to write high-level eForth code :
+
+This sounds complicated but after you do it a few times you will get the idea.
+
+Included in the distribution is "brkpoint.fth", my very crude attempt to write an
+assembly language breakpoint debugger in Forth using ideas from dspbug. This may be
+useful for you to play around with so you can get an idea of how to write Forth code
+using your editor. I did not have time to add a TRACE instruction for single
+stepping. It will allow you to set a breakpoint at an address in the asm object code
+and run to it, dumping the 56k regs when stopped. Study the .fth listing and
+util56e4.asm to get an idea of how it works. I probably cannot give a good
+explanation since I wrote it so send any questions email and I will try to help you.
+
+The steps :
+
+1. Firstly, to set up your asm code to run under eForth, you will need to assemble
+   it with a directive that sets up a return pointer to eForth after execution. To
+   get this pointer type 'HEX POPA .' at the eForth prompt. The address for the
+   return will be displayed, in this example 448 hex.
+
+2. Now assemble your asm source :
+
+   asm56000 -a -b -l -Dreturn 448 testprn.asm
+
+  This will assemble your file to be run under eForth - take a look at the
+  testprn.asm source file.
+
+3. At the eForth prompt type LOAD, this will run the SLO routine (see util56e4.asm),
+   which waits for a .lod file to be uploaded.
+
+4. Using your terminal program, upload the testprn.lod file (create it using the same
+   steps as above) thru the sci. When it is done the 'ok' prompt should come back.
+
+5. Type 'USERVEC @ .' to eForth. The starting vector for the asm program will be
+   displayed. In this case 3000 hex. Load the asm program .lst file into your editor
+   so you can see the routine addresses that you would like to breapoint. If you are
+   using Windows you can task switch between your editor and the eForth terminal
+   prompt.
+
+6. By typing 'RUN' at the eForth prompt your asm object code will execute, in this
+   case the ascii character set will be dumped forward and reverse, and the 56k
+   register contents will be displayed, along with the 'ok' prompt, indicating that
+   you have returned to the eForth interpreter.
+
+7. Now you need to load your eForth source code (the breakpoint debugger example -
+   brkpoint.fth). The terminal program must be set up for handshaking with the eForth
+   kernel. Set your terminal program to use ascii 11 (0B hex) as a pace character.
+   Also a delay of 15 msec between characters is advised.
+
+8. Type 'FILE' at the eForth prompt, it will now wait for your .fth upload. (This is
+   rather slow and I will try to improve on it.) When done the 'ok' prompt will
+   re-appear. If you type 'WORDS' again you will see that the new words have been
+   added to the dictionary. Now you can play with the debugger.
+
+Here's how to use the crude debugger :
+
+1. Type 'INIT_BP' - this will initialize the breakpoint table.
+
+2. Type '.T' - this will dump the breakpoint table, it should be all FFFFFFs.
+
+3. Now, to set a breakpoint, look at your .lst file for a place to stop at (make
+   sure you are in HEX mode in eForth). In this example we will use p:3032 -
+   at the 'ok' prompt type '3032 SETBP'. This sets up a breakpoint at 3032 hex.
+
+4. Type '.B' to display the current breakpoints.
+
+5. Type 'R2B' this will run to your breakpoint and dump the registers. It will
+   also restore the original breakpoint(s).
+
+6. GOB will run from start and hit the breakpoints.
+
+Obviously this code needs a little work to be useful. The trace facility should be
+implemented.
+
+I would like to add Once port support for break-point debugging. Can anyone tell me if
+the Once port can be linked directly to rs232 without an external microcontroller as
+in the EVM? The new motorola evm file distribution includes the source for the evm
+on-board 6805 rs232-Once interface - if I find the time I would like to put it to
+use for eForth.
+
+
+FRACTIONAL MATH :
+-----------------
+
+I added a few routines to perform fractional binary conversion - see
+"Fractional number I/O" in modl56e4.asm. I need to modify the text interpreter to
+recognize fractional input - a necessity on the 56k. My next endeavor is to improve
+the math routines and extend the kernel for filtering operations.
+
+If you have a fractional binary number on the stack OUTFRAC will print it on
+the screen in decimal fraction notation. I borrowed this from dspbug - see
+OUTFRAC in util56e4.asm.
+
+=========================
+
+DOES> has been added but not tested.
+
+Change prnmsgs (see below) to 1 if you want to have the assembler print out
+the CODE and NAME addresses.
+
+This code needs to be tested and cleaned up a bit, I am releasing it as a
+"beta" version for others to take a look at. I will release a cleaner version in a few
+weeks. There are many features of the 56000 that need to be supported by the
+kernel; I look forward to contributions from others. This version has no
+optimizations of the high-level colon words.
+
+Recently Wonyong Koh of Korea improved the eForth model to comply with the new
+ANSI standard. After looking at his work I believe I can port my code to it. If time
+permits an ANSI hForth for the 56k should appear. I am interested in integrating
+his hForth 86 with the 56k to develop a useful cross-development system for DSP.
+Watch this space closely for progress on this.
+
+=========================
+
+
+User feedback : (I will put discussions here)
+---------------
+
+=========================
+
+One reviewer had trouble with the Name dictionary and character handling when trying
+to port his own Forth to the 56k :
+
+I have tried several times to port my *-FORTH to the 56002, but have
+always been thwarted by character handling, name lookup, and byte access.
+
+my response :
+
+eForth uses one cell to hold an ascii character. The 56k is a word addressed machine
+and in 56k2 eForth a word equals 1 cell - see CELLL in equ-56ke4.asm.
+The high-level eForth words for character handling, byte handling, etc operate on
+single cells. This could potentially be optimized to utilize the packed ascii
+representation and save on name memory space (at a speed penalty).
+
+I suppose your problems related to how ascii strings are represented in data space
+- the assembler will pack three characters in a word with leftmost characters in the
+high bytes. To get the 56k to work with eForth I used the NOPS directive to expand DC
+strings in word alignment (after writing an ugly macro to do it!).
+
+=========================
+
+Regarding the seperate p/x/y memory space bug :
+
+I have had a problem trying to get eForth running on our board
+when we have seperate p/x memory mapping. The colon interpreter seems to
+get lost when executing high-level Forth. When we set up p and x to
+act as shared memory it runs fine. Let me know if you hit this bug.
+
+A similar problem occured when the start of the code was org'd above 900h -
+this turned out to require an extra move r4+ (see doLIST in prim56e4) because
+a jmp instruction uses two memory words above 900. Also had to modify CALL
+because of it.
+
+=========================
+
+One user had installation problems :
+
+>The problems are in installation of eForth. The HW and Motorola SW are
+>OK.
+
+        Are you able to assemble the file without errors and get a .cld
+        file for loading onto the evm?
+
+
+>Please, can you describe the installation procedure for an
+>user who has little or no experience with the DSP.
+
+>- memory model
+
+        Make sure mem jumper for 16/32k is on 16k - this is using p/x
+        as shared memory.
+
+>- RS232 connection and protocol
+
+        The rs232 baud rate is set up at assembly time - see the examples
+        in init56e4.asm. You may have to fool around with your
+        sci port <--> computer rs232 port to get the rx/tx signals right.
+        Also look at your evm schematic - jumpers are used to route the
+        signals from the sci port to the 9 pin connector.
+
+
+>- HW changes (if any) etc.
+
+        There are no hardware changes needed for eForth to work. Any problems
+        are likely with the sci <-> host computer conection. This is usually
+        minor but can be pretty frustrating if you've never done it. A good
+        way to verify your connection is to put an endless loop at the
+        beginning of the code that sends a stream of ascii characters to the           screen. If this is too difficult for you let me know and I will
+        show you how to do it.
+
+
+
+
+> many thanks for your e-mail. I am a beginner in the DSP area and I have
+made 5 errors.
+
+>    1. The SRAM 32k - 15 ns partitioning was wrong.
+>       Motorola default setting was 32k. -> Corrected.
+
+>    2. The two SCI TX and RX jumpers on port PC were missing. -> Corrected.
+
+>    3. The two jumpers to auxiliary terminal from MAX232 were missing.
+>       -> Corrected.
+
+>    After changes your eForth is running. Many thanks for your help.
+
+>    After changes your eForth is running. Many thanks for your help.
+
+
+>a.  Please can You describe for me and for others the reasons WHY you are
+>using CPU internel register as you are using it.
+
+I chose the r4,r5,r6,r7 registers arbitrarily - they can be changed to use
+the other address registers if desired. The primitives would have to be
+changed to reflect this. A typical dsp application would be written in
+assembler for speed and might need all the address registers - the forth
+registers would have to be pushed on a user defined stack before executing the
+assembly code and restored after execution - see CODE word LEAVE in util56e4.
+
+I did not document very well how to load assembly language object code for
+execution thru the eForth kernel; I will take a look and explain it for you.
+Basically you execute the word LOAD, which will load an assembly .LOD file
+through the sci and store the starting address of the routine in USERVEC.
+Upload the asm code as ASCII from your host computer. To execute the asm
+code from eForth use RUN - this will fetch USERVEC, leave eForth, execute the
+asm code and return to eForth. I started a simple debugger for asm code that
+runs in high-level eForth - needs more work.
+
+Again, I need to document this procedure.  (note : documented in this readme)
+
+(let me know if my English is too difficult for you)
+
+
+>b.  Please can You desribe the criteria for implementing eForth for this
+>platform.
+
+
+Right now the port is a straight implementation of eForth and needs a lot of
+work to be useful for dsp. It is too slow for high-level Forth code to do dsp
+until I have optimized the math words. It is useful at this point as a
+debugger/operating system for a target board that does not have the benefit of
+the Domain/Once debugger.
+
+I also need to fix CODE word uploading, whereby you can write an assembly
+language program and link it into the eForth dictionary as a CODE word. Thus
+you could define your filter routine as a high-level eForth word and execute
+thru the interpreter. Right now I am looking at fractional math i/o for the
+kernel which would make filter use thru eForth possible.
+
+Eforth is simple enough for a beginner to understand and is well documented.
+It is meant as a starting point for development of a useful Forth system for a
+given processor. Recently Wonyong Koh, Ph.D., South Korea has improved the
+eForth model to implement the proposed ANSI Forth standard. I will attempt to
+port his work to the 56k since it is very close to what I have already done.
+You can find a copy of his hForth at www.taygeta.com
+
+>c.  Please can You describe you HW and SW plans in the future.
+
+I am currently working under contract to develop dsp code for an acoustic
+noise suppression device. The prototype hardware has been designed - I will
+have to get the dsp algorithms working on it soon. The contract will end
+around December '96 - with luck more work will come in. The company I am
+working for plans to standardize on the 56k - if there is continued work the
+Forth system should develop into a useful tool. I hope to make as many
+improvements as I can before this job is finished.
+
+>d.  The idea implemented as EVMBOOT.ASM is good. But incomplete and not
+> documented. Please, can you describe the PC site of this idea?
+
+The boot code was copied from Motorola's bootload.asm (I think). It is very
+crude  - I will clean it up and document it. Basically it would be used in an
+eprom at $C000 to execute on processor reset. It simply prints out the ASCII
+character set and waits for the user to upload an ASCII .lod file - when the
+file is loaded it jumps to the starting address of the .lod code. Try it on
+the evm by loading it as a cld file @ $7500 and executing it - you should see
+the ascii set printed out thru the sci; at this point you can upload the
+56ke4th file which has been converted from .cld to .lod by the STRIP and
+CLDLOD utilities from Motorola.
+
+The original Motorola file does not seem to be on my hard disk - I will look
+for it. The 56002 data book explains the various booting options regarding
+this.
+
+>    As I see now we can colaborate. I need quick, small, easy maintained
+>system for 66MHz 56002 for AC stimulated bridge measurements. Assembler/Forth
+>is ideal for my optimisations. Amount of data transfer is small. Till 100 or
+>200 measurements each second. But the amount of filtering, FFT and signal
+>processing on DSP is great.
+
+Until the model is optimized I would suggest that you write your dsp code in
+assembly and run it from eForth. It is possible that the current model could
+be fast enough to collect the data at 200 Hz - I have not benchmarked it yet.
+Try using eForth for your non-critical code and assembly where speed is
+required. EForth should be useful for organizing your work - this is the point
+I am at now. Keep working with it and I will help you get past the conceptual
+hurdles for program development; your experiences will help improve the model.
+
+
+Thanks for the net resources. I don't have any to add right now. Did you find
+my code at www.taygeta.com or somewhere else. I would like to put it on
+Motorola'a bbs but haven't had a chance.
+
+
+=========================
+
+From Julian Noble, author of "Scientific Forth" (avail. from FIG)
+-----------------------------------------------------------------
+
+>I will say the following: eForth is simple, but it is awfully sparse
+>and I have never found it very good for much. I do not favor subroutine
+>threading except on chips specially designed for that method. Since yours
+>is a commercial app I really recommend popping for MPE or Forth, Inc.
+>products--assuming they have them for the DSP you used. The cost is steep
+>on the hobbyist scale, but probably worth less than the time you needed to
+>port eForth.
+
+I agree. I own a copy of chipForth for the 6811, having paid considerable
+personal $ for it. When I started my present contract with TPL I investigated
+Forth Inc's 56k product - the cost was much steeper than the 6811 version. It
+was unlikely that TPL would pay for it; they already had a C compiler and
+simulator. When tasked with developing an interactive operating system for the
+56k I toyed with eForth as a model, then was slowly drawn in to actually
+porting it. A few months later out popped eForth for the 56k.
+
+I learned quite a bit about Forth in the process, and I'm still a beginner.
+I hope to improve the system by optimizing the math words and adding a target
+compiler, among other features. Frankly, until this is done it will not be of
+much use for DSP. At the moment I plan to call assembly language routines for
+actual signal processing. The C compiler I have access to looks like as much
+work to be useful, and isn't half the fun.
+
+I would suggest to anyone doing serious development to purchase a commercial
+Forth system. Until I rise up a few more levels of incompetency I will not be
+able to boldly specify Forth as a project development environment. It probably
+took an R&D oriented organization like TPL to foster this, as opposed to the
+more rigid industrial control type companies I have worked for in the past.
+
+Perhaps my small contribution will broaden the use of Forth. Motorola sells a
+lot of evaluation boards for their 56k series; hopefully some of the users
+will be compelled to try the free eForth system on it. I will keep adding to
+its functionality as a cross development system so that installation and use
+of it is easy for the uninitiated.
+
+eForth 56 is direct-threaded code - is this more efficient than subroutine
+threading? I suppose it depends on the processor. In 56k eForth each colon
+word has a jump to the DoList interpreter, which in turn sets up jumps to the
+code addresses in the colon word. The 56k can perform a jump to anywhere in
+the address space.
+
+I have only read the first chapters of your book, for a math oriented text it
+is very readable. I intend to use it more when I am implementing complex
+number functions and matrices on the 56k. Much of it seems to assumes a math
+co-processor, I will have to work around this for embedded systems use.
+Math has always been a struggle for me - I was a biology major in college.
+
+>Well, I thought DSPs had built-in floating point arithmetic-- F*, F+, F/
+>etc. If so, math ought not be a hard problem. All you have left is
+>trig, log and exponential functions. These can be computed with either
+>polynomial approximations or rational approximations. The book by M.
+>Abramowitz & I. Stegun has pages of these, to various accuracies. Or,
+>if memory is not an issue, they can be done in lookup tables cum
+>interpolation.
+
+
+=========================
+
+Regarding the high mem bug, I posted this message to comp.dsp :
+---------------------------------------------------------------
+
+The code runs fine on the 56002 EVM when the memory is set up as 16k with
+seperate y and x/p mapping (p and x shared). When I try to run the code on our
+target board, which has seperate x, y, and p memory mapping (p and x seperate)
+the code hangs after about three or four interpreter executions. When the
+mapping is changed to p/x shared it runs ok as on the evm.
+
+Can't seem to get a handle on this - I suspect that the opcodes generated for
+move and jmp instructions are slightly different but havn't found any. When I
+originally ported the kernel I discovered a similar feature when jmp
+instructions are located above 1000h - an additional opcode is used, which
+bombed my interpreter code. I was able to fix this thru conditional assembly
+directives.
+
+If anyone has intimate knowledge of the 56k instruction set and opcodes
+regarding memory mapping I would appreciate any suggestions toward my problem.
+
+Here are two typical interpreter routines that may be affected :
+
+
+You do not have to understand Forth to help me here. Note the additional
+move (r4)+ in the following routine.
+
+
+;; -    doLIST      ( a -- )
+;		Process colon list.
+
+                CODE    COMPO+6,doLIST,DOLST    ; a macro call
+
+                move    r5,y:-(r6)              ; push IP (next token) on RP
+                move    (r4)+
+
+                ; if COLD > 1000h then need another move (r4)+
+                ; due to jmp instruction taking two p words
+
+        if      CPU_INIT>=$1000
+                move    (r4)+
+        endif
+
+                move    r4,r5                   ; copy next token into IP
+                nop
+
+doL1            move    p:(r5)+,r4              ; NEXT
+                nop
+doL2           	jmp     (r4)
+
+
+
+
+...here is another routine
+
+
+;; -    EXIT        ( -- )
+;		Terminate a colon definition.
+
+                CODE    4,EXIT,EXIT             ; a macro call
+                move    y:(r6)+,r5
+
+                nop
+                move    p:(r5)+,r4              ; NEXT
+                nop
+EXIT1           jmp    (r4)
+
+

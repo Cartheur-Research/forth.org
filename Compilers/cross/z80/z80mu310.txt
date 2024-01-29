@@ -1,0 +1,62 @@
+Return-Path: fetchpop
+X-POP3-Rcpt: skip@aludra
+Return-Path: office@forth.org
+Received: from alcyone.taygeta.com (alcyone.taygeta.com [206.55.232.165]) by aludra.taygeta.com (8.8.7/8.6.9) with SMTP id IAA06532 for <skip@taygeta.com>; Thu, 30 Apr 1998 08:53:16 -0700
+Received: by alcyone.taygeta.com with Microsoft Mail
+	id <01BD7415.23DE5330@alcyone.taygeta.com>; Thu, 30 Apr 1998 08:51:18 -0700
+Message-ID: <01BD7415.23DE5330@alcyone.taygeta.com>
+From: Forth Interest Group <office@forth.org>
+To: "'skip@taygeta.com'" <skip@taygeta.com>
+Subject: FW: fig-FORTH listing fo the Z-80 in TDL assembler - z80mu310.zip (0/1)
+Date: Thu, 30 Apr 1998 08:49:41 -0700
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+
+
+----------
+From: 	msimon@tefbbs.com
+Sent: 	Tuesday, April 28, 1998 4:41 PM
+To: 	office@forth.org
+Cc: 	msimon@tefbbs.com
+Subject: 	fig-FORTH listing fo the Z-80 in TDL assembler - z80mu310.zip (0/1)
+
+Please send the enclosed files to Skip Carter.
+
+
+This is a CP/M emulator
+
+
+
+---------------------------------------------------------------------------------------------
+
+This FORTH software is released by me (M. Simon/Space-Time
+Productions)
+copy left rules (GNU) apply.
+
+If you use it mention where you got it.
+msimon@tefbbs.com
+Space-Time Productions - which can be found by Infoseek.
+http://www.tefbbs.com/spacetime/index.htm
+
+The FORTH software assembles under the TDL assembler
+
+the TDL assembler has been made freely available.
+contact Rodger Amidon   www.dxcc.com
+
+The CP/M emulator that the TDL assembler runs under is freeware.
+The notice by Joan Riff is freely available in the zip file.
+
+have fun
+
+Simon
+
+
+
+
+Opinions expressed herein are solely my own and may or may not reflect my opinion at this particular time or any other.
+
+
+
+

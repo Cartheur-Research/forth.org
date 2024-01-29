@@ -1,0 +1,16 @@
+FORTH-79 STANDARD DOCUMENT
+
+The attached document is the complete text of the FORTH-79
+STANDARD (except for the FORTH-79 HANDY REFERENCE CARD) as
+distributed by the Forth Interest Group.
+
+Note: Though all care has been taken to ensure accuracy,
+transcription errors may exist.  Should you find an error,
+please correct it and send the updated copy to the Taygeta
+Forth FTP archive.
+
+
+17-Jun-03   First release
+
+27-Mar-13   Corrected missing entry for EXECUTE
+

@@ -1,0 +1,146 @@
+
+\ Turing Machine Simulator Kernel for Mitch Bradley's PD F83
+\                    written by David Weinstein
+\              copyright July 27, 1988 by the author
+\              released for public distribution with
+\              no restrictions other than credit being
+\              given to the author
+\
+vocabulary turing-machine
+turing-machine definitions
+\                       Constants used in the System
+\ Null pointer
+ 0 constant nil
+\ System cell size
+ 4 constant cell
+\  For movement on the "tape"
+-1 constant left
+ 1 constant right
+\  For offsets into the state structure
+ 4 constant state-movement-offset
+\  For offsets into the rule structure
+ 4 constant pattern-char-offset
+ 5 constant replacement-char-offset
+ 6 constant new-state-offset
+10 constant rule-movement-offset
+14 constant rule-length
+\                        Linked List Words
+: next-rule     (s ( ptr-to-rule-list -- ptr-to-next-rule )
+        dup if @ then ; \ return the next rule address or nil
+                        \ if the original ptr was nil
+: prepend       (s ( state-adress rule-address -- ) 
+                ( links rule onto the start of the rule list ) 
+        over @  \ get the address of the rules list for the state
+        over !  \ link the rule to the beginning of the rules list
+        swap !  \ and update the link address in the state
+        ;
+\                        Turing Machine Kernel
+\               Turing Machine "Registers" (i.e. variables)
+variable tape   \ "Tape Read/Write head"...the pointer into the tape string
+variable current-state  \ Pointer to the current system state
+\                     Turing Machine Constants
+nil constant halt       \ the last (exit) state of a Turing machine program
+\                    Turing Machine Kernel Code
+: state    (s ( -- )
+           ( input stream: <name> )
+           ( runtime stack description: ( -- state-address )
+           ( state creates a state variable with no rules, which )
+           ( by default moves right. To change the default, use  )
+           ( the word "moves" [see below]                        )
+        create nil , right , ;
+: movement (s ( state-address -- movement-direction-of-state )
+           ( returns the default direction of movement for   )
+           ( the given state                                 )
+        [ state-movement-offset ] literal + ;
+: rule-movement         (s (rule-address -- movement-direction-of-rule)
+                        ( returns the direction of the rule           )
+        [ rule-movement-offset ] literal + ;
+: ->       (s ( -- )
+           ( this is a semantically null word, which merely serves )
+           ( to make Turing machine rules more readable:           )
+           ( starting-state pattern-char -> replacement-char end-state rule)
+           ( as opposed to:                                        )
+           ( starting-state pattern-char replacement-char end-state rule)
+        ;
+: moves    (s ( direction -- )
+           ( sets the direction of the most recently defined state )
+           ( or rule. It must be invoked before anything is done   )
+           ( to alter the position of "here". (much like immediate )
+        here cell - ! ;
+: this-rule     (s ( -- address-of-rule )
+                ( to be used only *inside* the defining word "rule", this )
+                ( provides a way to refer to the defined rule itself      )
+        here [ rule-length ] literal - ;
+: new-state     (s ( address-of-rule -- address-of-state-for-rule )
+                ( returns the address of the new state in the rule)
+        [ new-state-offset ] literal + ;
+: replacement-character
+                (s ( address-of-rule -- address-of-replace-char-for-rule )
+                ( returns the address of the replacement char in the rule)
+        [ replacement-char-offset ] literal + ;
+: pattern-character
+                (s ( address-of-rule -- address-of-pattern-char-for-rule )
+                ( returns the address of the pattern char in the rule    )
+        [ pattern-char-offset ] literal + ;
+: rule          (s (start-state pattern-char replacement-char end-state -- )
+                ( creates and links in a rule to the rules list for the    )
+                ( starting state                                           )
+        rule-length allot
+        this-rule new-state !
+        this-rule replacement-character c!
+        this-rule pattern-character c!
+        dup
+        ( starting-state's ) movement @ ( this-rule ) moves
+        this-rule ( to starting-state's rule list ) prepend
+        ;
+: read          (s ( tape-head-ptr -- character )
+                ( just an alias for c@ actually     )
+        @ c@ ;
+: write         (s (character tape-head-ptr -- )
+                ( just an alias for c! actually    )
+        @ c! ;
+: move          (s ( direction tape-head-ptr-- )
+        swap over @ + swap ! ;
+: tm-kernel     (s ( -- )
+                ( The kernel works completely off of the "registers" )
+                ( of the virtual machine, it changes the state if the)
+                ( rule demands it, and writes to the "tape"          )
+        tape read               \ get the character we are looking at
+        current-state @         \ get the current state and...
+        begin
+                next-rule       \ get the address of the next rule in the list
+                dup ( make a copy of the pointer to check for end-of-list )
+        while
+                dup ( this-rule ) pattern-character c@ 
+                rot swap over   \ (rule-addr read-char pattern-char read-char)
+                = if
+                        drop ( the read-char )
+                        dup ( rule-addr) replacement-character c@ tape write
+                        dup ( rule-addr) rule-movement @ tape move
+                        new-state @ current-state !
+                        nil nil ( done flag on the stack  and dummy char)
+                else
+                        swap ( read char and rule address )
+                then
+        repeat
+        drop ( the nil left on the stack )
+        if ( there really was a character...i.e. no match )
+                current-state @ movement @ tape move
+        then
+        ;
+\               End of Turing Machine Kernel
+\            Shell for the Turing Machine Kernel
+: tm-simulator  (s ( starting-state-addr -- )
+                ( input stream: <tape-contents> )
+        current-state !
+        [compile] "" dup 1+ tape !      \ get the tape value
+        begin
+                dup ( string address ) ". cr    \ print the string
+                current-state @         \ nil state means halt simulation
+        while
+                tm-kernel
+        repeat
+        drop ( string address )
+        ;
+
+

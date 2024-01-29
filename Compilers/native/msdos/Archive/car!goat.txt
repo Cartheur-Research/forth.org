@@ -1,0 +1,100 @@
+
+
+
+   CAR!GOAT  --  a probability simulation in Pygmy FORTH
+
+                   by David Zethmayr
+
+      _______________________________________________
+
+The Three-Door CAR!GOAT probability poser is a lovely quasi-
+paradox you can read more about in the file GOAT-CAR.DOC on
+the Educational RT.  It can be stated like this:
+
+     You are the contestant in a Game Show where the
+     challenge is to choose the winning Door out of three
+     closed doors, exactly one of which hides the prize: a
+     new Car.  Each of the other two doors hides a Goat
+     (a non-prize).
+
+     After you announce your original choice, the Game Show
+     Host opens one of the other two doors, revealing a
+     goat.  (This, by the way, is the way the game always
+     proceeds, and everyone knows the procedure.)
+
+     After opening a Goat door of his choice, the Show
+     Host offers you a second choice, namely to switch from
+     your original choice to the other closed door.
+
+     The question, then, is this: is it of any advantage to
+     you to switch?
+
+Test your answer with the program CAR!GOAT, written in
+Pygmy FORTH for XT/AT/386 MS-DOS computers.  You are the
+contestant, the program is Game Show Host and Tallykeeper
+as you play multiple times.
+
+The Tallykeeper tracks the times you switched and the times
+you didn't, tallying the wins for each case.
+
+      _______________________________________________
+
+Here is my attempt at explaining/predicting the results.
+
+  Explanation
+  ===========
+Consider your second choice--switch or no--from two cases
+at that point:
+
+Case 1:  picked one of the Goat doors originally.
+    What is the probability you will now win by switching?
+    ( it is certain, or 1)
+
+Case 2:  picked the prize door originally.
+    What is now the probability of winning by "keeping"--
+    not switching? ( certain-- 1)
+
+There are no other cases from the point of view facing the
+second choice.
+
+Now consider the original choice.
+
+At the outset, with what probability will your original
+choice position you for a certain win by switching?  It's
+exactly the probability of choosing a Goat door originally.
+(2/3)
+
+This is your overall expectation of winning by switching.
+
+At the outset, with what probability will your original
+choice put you in position of a certain win by "keeping"--
+not switching?  It's exactly the probability of choosing
+the Car door originally.  (1/3)
+
+This is your overall expectation of winning by keeping.
+
+      _______________________________________________
+
+A FORTH course may be starting soon in CALC, GEnie's
+Computer Aided Learning Center.
+
+CAR!GOAT was written in Pygmy FORTH version 1.3, a program-
+ming environment well suited to learning FORTH, as well as
+serving its primary purpose as a superbly crafted engineer-
+ing tool.  You can get Pygmy by hopping over to the FORTH
+RoundTable on GEnie and downloading the latest version.
+Frank C. Sergeant is its author.  Please don't fail to
+support his generous work with the modest amount he asks.
+
+The source code for CAR!GOAT is available for study as
+CAR-GOAT.ZIP from the GEnie FORTH RoundTable.  Download
+file #2398 if you can PKUNZIP; if not, drop me an e-mail
+( D.ZETHMAYR1 ) and I'll XMODEM-e-mail it to you.
+
+You don't need to get Pygmy in order to run CAR!GOAT.  It's
+language-transparent.  Just start it like any other .COM
+or .EXE program you use, such as an editor or ALADDIN.
+      _______________________________________________
+
+
+

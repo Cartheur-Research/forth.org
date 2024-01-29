@@ -1,0 +1,57 @@
+<!-- X-URL: http://linux01.gwdg.de/~rhohen/H3sm.html -->
+<!-- Date: Fri, 03 Dec 1999 09:44:52 GMT -->
+<BASE HREF="http://linux01.gwdg.de/~rhohen/H3sm.html">
+<HTML><HEAD><TITLE><A 3-stack Forth-like language/machine</TITLE>
+</HEAD><BODY>
+<strong>H3sm<br></strong>
+Since about 1992 I've been curious about the possibility and
+possibilities of a 3-stack Forth. I have a 3-stack interpreter/calculator
+now, that I call H3sm. Here's the <A href=features> long blurb, </a> and
+here's the sourcecode of the first version worth looking at, <a href=H3sm.c>
+H3sm 0.3 </a>.
+<p>
+Much to my delight, <a href=http://grail.cba.csuohio.edu/~somos/>Michael
+Somos </a> has taken an interest in H3sm. He's already got a H3sm for
+non-x86's, or rather without 0.3's endianism dependancies,  with some
+other improvements, such as fixing "negate". I guess this
+is <a href=H3sm.c.somos> 0.4</a>. A 1.0 H3sm would be one with a compiler.
+<p>
+<a href=05.c > 0.5 </a> has a working "dp", dictionary pointer, and
+various cleanups.
+<p>
+19981229<br>
+H3sm needs a changelog file. You're looking at it. For now, anyway. If you
+want to submit a change to H3sm, please base it on the most recent H3sm in
+here.<p>
+Somos got hostfn working in <a href=06.c> 0.6 </a>. He also improved
+some comments and put in a nice compile switch for big-endian boxen. Just
+to feel like I'm
+still involved, I fixed a bug in "time" and added a "bench" word that does
+a countdown loop of 2^20 ( a meg) iterations. Bench takes about 18 seconds
+on my 486dx120.
+<p>
+hostfn is fun. H3sm now trivially calls /bin/sh for things it doesn't
+know. The thing to never make a H3sm word is   :;   because this allows
+calling host commands that are legal H3sm hex numbers, e.g.<br>
+
+:;  dc<br>
+will call unix dc, not put dc on the stack.
+<p>
+H3sm is really still just a calculator. If I write a compiler for it, it's
+going to be non-standard and rudimentry as hell. The gentle reader is
+invited to provide an alternative  :o)
+
+<p>
+<strong>A H3sm is...</strong><br>
+I guess a H3sm is a 3 stack machine with a "size" register/state variable
+for how big a data stack item is now, with data stack items, "pytes",
+settable to various byte sizes, using the low-significance byte of a pyte
+for logical flags, where pytes are otherwise handled in 2's-complement,
+and where most pointer operations occur on the pointer stack.
+</BODY</HTML>
+
+
+
+
+
+

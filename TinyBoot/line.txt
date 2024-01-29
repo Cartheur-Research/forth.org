@@ -1,0 +1,89 @@
+\ Line drawing algorithm                        1/26/01 Brad Eckert
+
+\ This is probably a variation of the classic Bresenham line drawing algorithm.
+\ Tested in Win32forth.
+
+anew teststuff
+-1 1 rshift invert 0 2constant wround   \ 0x0000.8000 for 16-bit Forth
+
+variable ch
+: plot          ( x y -- ) at-xy ch @ emit ;
+
+\ ---------------------------------------------------------------------------
+\ First, let's define the inner loop since this is where the work gets done.
+\ We'll step one point at a time in one direction and a fraction of a point
+\ in the other direction. The variable slope part uses a double-wide
+\ accumulator and we use the upper part of the accumulator to plot the point.
+\ In a real application, these would be coded in assembly.
+
+: RoundPoint    ( d -- d int )                 \ round to nearest point
+                2dup wround d+ nip ;
+
+: ShallowLine   ( slope 0 Y0 X1+1 X0 -- )      \ slope is between -1 and 1
+        do      RoundPoint i swap plot 2over d+
+        loop    4drop ;
+
+: SteepLine     ( slope 0 X0 Y1+1 Y0 -- )      \ 1/slope is between -1 and 1
+        do      RoundPoint i plot  2over d+
+        loop    4drop ;
+
+\ Now for the main word, where we look at the slope and decide which type of
+\ line to draw.
+
+variable Point0X  variable Point0Y
+variable Point1X  variable Point1Y
+
+: Prescale      ( dy*2^cellsize dx -- slope 0 0 )
+\ Compute the slope of lines used by the line drawers.
+                2dup xor >r
+                over 0< if >r dnegate r> then
+                dup  0< if negate then
+                um/mod nip 0
+                r> 0< if dnegate then 0 ;
+
+: Line          { x0 y0 x1 y1 \ dx dy -- }
+\ Locals make our job much easier here. You could substitute VALUEs 
+\ if your Forth doesn't support this popular local variable syntax.
+\ i.e. 0 value x0 0 value y0 ... to y1 to x1 to y0 to x0 ...
+                x0 x1 - dup to dx  abs
+                y0 y1 - dup to dy  abs -
+                dup 0< 0=
+        if      drop
+                0 dy dx Prescale
+                dx 0< if y0 else y1 then
+                x0 x1 dx 0< if swap then
+                swap 1+ swap			
+                ShallowLine exit
+        then
+        if      0 dx dy Prescale
+        else    0 dx dy = if 1 else -1 then 0 \ exact diagonal
+        then    dy 0< if x0 else y0 then
+                y0 y1 dy 0< if swap then
+                swap 1+ swap
+                SteepLine
+                ;
+
+\ ---------------------------------------------------------------------------
+
+\ Now let's test this:
+
+create points  0 ,  0 ,
+               0 , 12 ,
+               0 , 24 ,
+              35 , 24 ,
+              70 , 24 ,
+              70 , 12 ,
+              70 , 0 ,
+              35 , 0 ,
+
+: pth   7 and 2* cells points + 2@ swap ;
+
+: star  cls             \ draw a star
+        8 0 do  i 'A' + ch !
+                i pth i 3 + pth line
+        loop
+        28 11 at-xy ." You should see"
+        28 12 at-xy ." an 8-point star"
+        key drop ;
+
+

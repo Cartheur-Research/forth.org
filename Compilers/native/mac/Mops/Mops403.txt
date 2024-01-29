@@ -1,0 +1,48 @@
+This is Mops 4.0.3, of January 2001.
+
+This is an update and bugfix release, updating 4.0.2.  The details
+of the changes are in the release notes.
+
+This package contains the full Mops system.  There is now
+only one distribution file, which has the Mops system already 
+fully compiled up and ready to run.  This is Mops402.sit.bin.
+
+Earlier Mops releases had both this fully built form and also
+a "basic" form which required the full system to be compiled up
+from the source files which are included.  However net and
+modem speeds are now so fast that the extra download time for
+the fully built up version shouldn't bother anybody, and will
+prevent possible confusion with having two versions.
+
+The distribution files are in MacBinary format, and are Stuffit
+(.sit) archives, which shouldn't present any problems to current
+browsers or ftp clients on the Mac, and probably not on Windows
+either.
+
+When you expand the file, please read the files "ReadMe.1st" and
+"Mops 4.0.3 release notes" first.  They'll tell you what to do next.
+
+The manual is not included in the distribution, since it hasn't
+changed from the 4.0 release.  It should be available in
+the same location as this distribution, and is in both Microsoft
+Word 5.1 and PDF format.  The files are MopsManual400Word.sit.bin
+and  MopsManual400PDF.sit.bin.
+
+You will really need the manual if you're going to do anything with 
+Mops.
+
+
+
+I hope you enjoy it!
+
+
+------------------------------------------------------------------------
+Mike Hore        email:          mikehore@bigpond.com
+
+                 Mops web page:  http://www.netaxs.com/~jayfar/mops.html
+snail-mail:                                                      _*-_|\
+        Michael Hore                                            /      \
+        1/14 Donaldson Court,                                   \_.--._/
+		Karama  NT  0812,                                             v
+		AUSTRALIA.
+------------------------------------------------------------------------

@@ -1,0 +1,358 @@
+
+Forth Interest Group
+Category 18,  Topic 81
+Message 6         Tue Aug 21, 1990
+GARY-S                       at 07:42 EDT
+ 
+             
+  PORTED FROM UseNet =>
+              ------
+
+ From: rob@idacom.uucp (Rob Chapman)
+ Newsgroups: comp.lang.forth
+ Subject: Libraries for Forth
+ Message-ID: <1990Aug17.071455.29925@idacom.uucp>
+ Date: 17 Aug 90 07:14:55 GMT
+ Organization: IDACOM, a division of Hewlett-Packard
+ Lines: 167
+       ^^^^^ split for ForthNet port - part a
+
+ A few notes on my previous posting of ...and zen there were objects.
+
+  - the word OBJECT would be more appropriate if it was named CLASS.
+  - there is a bug in the definition of INSTANCE which only shows up if an
+    instance is interpreted: 
+     : INSTANCE ( object -- )  <BUILDS IMMEDIATE  DUP ,  @ ALLOT
+        DOES>  ( inst -- a )  @+  \ LITERAL  CAST ;
+                                  ^^^^^^^^^^^^^^^
+    should be:
+        DOES>  ( inst -- a )  @+  SWAP CAST  \ LITERAL ;
+
+    LITERAL has two different stack outcomes.  If compiling, it consumes
+    an item ( n -- ), if interpreting, it has no affect ( -- ).  Thanks
+    to Mitch for this one.
+
+  Anyway, here's a copy of what was presented at Thursdays' FUG (Forth Users
+  Group).  The code is for botForth but could easily be adapted to other
+  Forths.  Its based on a Forth which uses a link list for its dictionary
+  structure.
+
+ Rob Chapman
+
+ ( FUG excerpt: Aug 14,1990 )
+     Libraries
+
+  Forth, without constraint or guidance, can quickly mushroom into a long
+  list of words in a large programming project.  These words fall into two
+  categories: tools and application.
+
+  Tools are words which enrich a programmers environment and allow them to
+  program more efficiently.  Tools such as string manipulaters, user
+  interface constructs and decompilers are just a few examples.
+
+  These tools need to be available when requested and hidden when not needed.
+  By defining a few words, we can create a mechanism to accomplish this end.
+
+  The following code implements this concept and uses the notion of libraries
+  prevelant in some other languages.  Owing to Forth's simplicity yet
+  completeness, only 5 words (also only 5 lines of code) are needed.
+
+ ( ==== Libraries for botForth: Rob Chapman Aug 14, 1990 ==== )
+   ( Library structure:     | >latest | first entry | dummy name field | )
+ : LIBRARY  ( -- )  DATA  HERE  2 + ,     0 ,            E120 , ;
+ : OPEN   ( lib -- )  @+  latest @ SWAP !  latest ! ;
+ : ENCLOSE  ( lib -- )  latest @  SWAP !+  @ latest ! ;
+ : PREVIOUS  ( entry \ head -- prev )  BEGIN  2DUP @ XOR  WHILE  @  REPEAT 
+NIP ;
+ : CLOSE  ( lib -- )  @+ @ SWAP  latest  PREVIOUS ! ;
+
+ Notes:
+   : DATA  ( -- )  0 VARIABLE -2 ALLOT ;
+   : @+  ( a -- n \ a+ )  DUP @  SWAP 2 + ;
+   - 16 bit Forth
+   - 'latest' points to the the latest defined word in the word list.
+   - All headers have their
+     link pointer as the first entry.  | link | name |   body   |
+   - E120 is a dummy name field used as the tail of a library link list
+
+ Usage:
+  LIBRARY TOOLS        ( create a library for tools )
+  TOOLS OPEN    (   and open it )
+   LIBRARY ASSEMBLER       ( create an assembler library in the tools library
+)
+   ASSEMBLER OPEN
+   .
+   . assembler definitions
+   .
+   ASSEMBLER ENCLOSE   ( enclose all the assembler words in the library )
+
+   ASSEMBLER OPEN   ( open it again for usage )
+   .
+   . tools 
+   .
+   LIBRARY DISASSEMBLER       ( create a disassembler library )
+   DISASSEMBLER OPEN
+   .
+   . disassembler definitions
+   .
+   DISASSEMBLER CLOSE    ( enclose all the words in the library )
+   .
+   . more tools
+   .
+  TOOLS ENCLOSE     ( encapsulate everything in the tools library )
+----------
+Forth Interest Group
+Category 18,  Topic 81
+Message 7         Tue Aug 21, 1990
+GARY-S                       at 07:43 EDT
+ 
+             
+  PORTED FROM UseNet =>
+              ------
+
+ From: rob@idacom.uucp (Rob Chapman)
+ Newsgroups: comp.lang.forth
+ Subject: Libraries for Forth
+ Message-ID: <1990Aug17.071455.29925@idacom.uucp>
+ Date: 17 Aug 90 07:14:55 GMT
+ Organization: IDACOM, a division of Hewlett-Packard
+ Lines: 167
+       ^^^^^ split for ForthNet port - part b
+
+  In the above example, a tools library is created and inside it, two more
+  libraries are created.  When the TOOLS library is closed, the only word
+  that appears in the dictionary is TOOLS.  To access the assembler, one
+  must: TOOLS OPEN .   This opens the TOOLS library and makes the ASSEMBLER
+  library accessable.  Now the assembler library may be opened by:
+  ASSEMBLER OPEN .
+
+               ASSEMBLER  DISASSEMBLER   \
+                    |        |            |
+                     \      /             | library structure
+                      TOOLS               |
+                        |                /
+                      FORTH
+
+  More words may be added to the library by first opening the library,
+  defining the new words and then enclosing the new words.  ENCLOSE and CLOSE
+  both close the library, except ENCLOSE adds all the words since it was
+opened
+  to the library.
+
+
+ Libraries and Modules
+
+  In trying to visualize how libraries fit into the overall scheme of Forth
+  and MODULEs I usually refer to the following picture:
+
+          \|/   \|/   }libraries within libraries
+      \ | /   }libraries
+     Forth
+     / | \   }modules
+          /|\   /|\   }modules within modules
+
+  Applications are built in the modules while the tools reside in the
+libraries.
+
+  When a library is opened, its words are inserted at the top of the Forth
+  word list.  This gives them priority in any naming conflicts.  By opening
+  libraries in the proper sequence, libraries are effectively stacked into
+  the Forth wordlist.
+
+
+ Historical Solutions
+
+  If we look back in the mists of Forth, (not so far back in ptForth), we
+  come across the words CURRENT and CONTEXT.  These could be considered as
+  the first primitive attempts to create this balance of dictionary searching
+  provided by libraries and modules.  In figForth, they allowed survival
+  within a tree structured dictionary.  The problem with the tree structured
+  dictionary model was that the end words for an application ended up at the
+  bottom of the tree.  Using CURRENT and CONTEXT allowed this tree to be
+  searched (CONTEXT) in one way while definitions were added to another part
+  (pointed to by CURRENT).
+
+  Around Forth-83, a second generation dictionary mechanism was proposed. 
+  This threw away the heirarchial dictionary tree provided by earlier efforts
+  and replaced it with a dictionary stack.  Definitions were added to the
+  vocabulary which was on top of the stack and the whole stack was searched
+  when looking up words.
+
+  These are only two of the many different dictionary mechanisms which have
+  been used.
+
+
+ ANSI-Forth Wordsets as Libraries
+
+  The ANSI-Forth standards committee (started in 87,) have categorized a whole
+  bunch of words into what they term the core wordset and other wordsets. 
+  The other wordsets are really libraries for Forth much like the ones
+  usually associated with C.  They include wordsets for handling files,
+  floating point, strings, double number, blocks, search order, locals, and
+  far memory.  Each of these wordsets can have extenstions.  By using
+  libraries, it is easy to include all these wordsets in Forth without
+  cluttering it.
+
+    extsn  extsn    extsn    extsn   extsn    extsn    extsn  extsn
+      |      |        |        |       |        |        |      |
+    FILES  FLOATS  STRINGS  DOUBLES  BLOCKS  SEARCHES  LOCALS  FARS    extsn
+      |______|________|________|_______|________|________|______|________|
+       |
+           Forth (CORE)
+       |
+       ...applications...
+
+  These wordsets or libraries sit behind Forth giving it power and depth if
+  needed, but may be tucked away to keep the core simple when they are not
+  used.  Applications can now be built on the other side of Forth where they
+  belong.
+----------
+Forth Interest Group
+Category 18,  Topic 81
+Message 13        Thu Aug 30, 1990
+GARY-S                       at 06:39 EDT
+ 
+             
+  PORTED FROM UseNet =>
+              ------
+
+ From: dwp@willett.pgh.pa.us (Doug Philips)
+ Newsgroups: comp.lang.forth
+ Subject: Re: Libraries for Forth
+ Message-ID: <1637.UUL1.3#5129@willett.pgh.pa.us>
+ Date: 29 Aug 90 12:11:26 GMT
+ References: <1990Aug17.071455.29925@idacom.uucp>
+ Organization: String, Scotch tape, and Paperclips.  (in Pgh, PA)
+
+ In <1990Aug17.071455.29925@idacom.uucp> (Rob Chapman) writes:
+ > ( FUG excerpt: Aug 14,1990 )
+ >     Libraries
+
+ I really like your scheme.  It does remind of the "vocabulary trees" in
+ Fifth, but I don't know that language well enough to make the comparison.
+
+ > Applications are built in the modules while the tools reside in the 
+ > libraries.
+ > When a library is opened, its words are inserted at the top of the Forth
+ > word list.  This gives them priority in any naming conflicts.  By opening
+ > libraries in the proper sequence, libraries are effectively stacked into
+ > the Forth wordlist.
+
+ I'm a bit confused here.  Are you saying that Modules are just libraries
+ with application code in them, or are they different from libraries?
+
+ > Around Forth-83, a second generation dictionary mechanism was proposed. 
+ > This threw away the heirarchial dictionary tree provided by earlier effort
+ > and replaced it with a dictionary stack.  Definitions were added to the
+ > vocabulary which was on top of the stack and the whole stack was searched
+ > when looking up words.
+
+ I'm not sure I see the difference.  Are Forth-83 vocabularies conceptually
+ like your libraries?  The biggest difference I see is that in Forth-83 all
+ vocabulary names are global, where in your scheme you scoped library
+ names.  Am I missing something else?
+
+ > ANSI-Forth Wordsets as Libraries
+ >  These wordsets or libraries sit behind Forth giving it power and depth if
+ >  needed, but may be tucked away to keep the core simple when they are not
+ >  used. Applications can now be built on the other side of Forth where they
+ >  belong.
+
+ I like.  When BASIS13 comes out (I have BASIS11, and am loath to refer to
+ an old BASIS for what is current) I'll have to take a look at how the
+ Search Order Word Set works...
+
+ Thanks for making that posting.  It looks like a nice clean system.
+ Have you been using it long?  (BTW:  Just curious, do you have any
+ idea as to the number of botForth users?).
+
+ -Doug
+----------
+Forth Interest Group
+Category 18,  Topic 81
+Message 15        Mon Sep 03, 1990
+GARY-S                       at 11:52 EDT
+ 
+             
+  PORTED FROM UseNet =>
+              ------
+
+ From: rob@idacom.uucp (Rob Chapman)
+ Newsgroups: comp.lang.forth
+ Subject: Re: Libraries for Forth
+ Message-ID: <1990Aug30.193637.26428@idacom.uucp>
+ Date: 30 Aug 90 19:36:37 GMT
+ Organization: IDACOM, a division of Hewlett-Packard
+
+
+ > I really like your scheme.  It does remind of the "vocabulary trees" in
+  Thanks  {;^{)-]--[
+
+ > > Applications are built in the modules while the tools reside in the 
+ > > libraries.
+ > > When a library is opened, its words are inserted at the top of the Forth
+ > > word list.  This gives them priority in any naming conflicts. By opening
+ > > libraries in the proper sequence, libraries are effectively stacked into
+ > > the Forth wordlist.
+ > 
+ > I'm a bit confused here.  Are you saying that Modules are just libraries
+ > with application code in them, or are they different from libraries?
+  Sorry.  What's lacking here is a definition of how we implement modules.
+  The real difference is how and when words are added to libraries and
+  modules.  Libraries are like tool sets.  An explicit effort must be made to
+  add new words.  The normal action is to OPEN and CLOSE them.  ENCLOSE is
+  used to add all the words defined since the library was OPENed.
+
+  In modules, words are automatically added to the most recently entered
+  module.  The syntax was developed thru discussions with a MODULA-2
+  programmer:
+    MODULE name  ( declare a module and enter it )
+      define module words here
+      EXPORT word ( move this word up into the parent module )
+      other exports
+    END-MODULE  ( exit the module )
+
+  Modules may be defined within modules for a hierarchial ordering.  Its
+  really an extension to figForth VOCABULARYs which allows the useful
+  words to be exported for use while the inner workings of the module are
+  encapsulated.
+
+  Inside a MODULE, a library may be opened so that more words are available
+  for the word definitions.
+
+  Modules are used for information hiding and may be used within a library
+  to hide the particular implementation.
+
+ > >  Around Forth-83, a second generation dictionary mechanism was proposed. 
+ > >  This threw away the heirarchial dictionary tree provided by earlier 
+ > >  efforts and replaced it with a dictionary stack. Definitions were added
+ > >  to the vocabulary which was on top of the stack and the whole stack was
+ > >  searched when looking up words.
+ > 
+ > I'm not sure I see the difference.  Are Forth-83 vocabularies conceptually
+ > like your libraries?
+  The similarity is the ability to specify the search order.  A difference is
+  that the programmer specifies whether words are enclosed by the most
+  recently opened library or not.
+
+ >                       The biggest difference I see is that in Forth-83 all
+ > vocabulary names are global, where in your scheme you scoped library
+ > names.  Am I missing something else?
+  The scoping is another difference.  Programmers perspective is the most
+  important difference.  Libraries are available for reusing code while
+  modules are provided for encapsulating within an application.
+
+ > Thanks for making that posting.  It looks like a nice clean system.
+ > Have you been using it long?  (BTW:  Just curious, do you have any
+ > idea as to the number of botForth users?).
+  botForth is only about 1.5 years old but I've learned quite a lot about
+  Forth and real-time since working with a much simpler system.  I'm not in
+  touch with any botForth users except for at work.  Although, I have posted
+  the kernel for the 68000 and the RTX2001A.  Since the meta-compiler makes a
+  good cross-compiler, a couple of hardware engineers ported it to the 6811
+  and the 8051 without to much trouble.
+
+ Rob
+----------
+
+

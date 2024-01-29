@@ -1,0 +1,73 @@
+\ These classes obtain the sine and cos of an angle by table lookup.
+\ Modified from the original Neon version by Mike Hore.
+
+\ The main class is ANGLE, which has SIN: and COS: methods that look
+\ up a table defined with the TRIGTABLE class.
+
+
+need	struct1
+
+:class  TRIGTABLE	super{ wArray }
+
+	4	wArray  AXISVALS				\ 90 degree values
+
+:m SIN:  { degree \ quadrant  -- sin }
+						\ Looks up a sin * 10000 of an angle
+
+	degree 360 mod					\ Put angle in range -359 to +359
+	dup 0<  IF   360 +   THEN		\ Now 0 to +359
+	90  /mod				\ Convert degree to range 0-89 and get quadrant
+	-> quadrant   -> degree   
+	degree							\ Test for an axis
+	NIF 	quadrant  at: axisVals	\ If an axis, get value
+	ELSE	quadrant  1 and			\ True for "mirror" quadrants 1 and 3
+		IF	90 degree  -			\ Create mirror image
+		ELSE	degree
+		THEN
+		at: self					\ Get sin for this degree
+		quadrant 2 and				\ true for "negative" quadrants 2 and 3
+		IF  negate  THEN
+	THEN  ;m
+
+:m  COS:	\ (degree -- cos )
+	90 +   sin: self   ;m			\ Cos is sin shifted by 90 degrees
+
+:m  CLASSINIT:
+	0 0 to: axisvals	10000 1 to: axisvals  
+	0 2 to: axisvals   -10000 3 to: axisvals    ;m
+
+;class
+
+90  TrigTable  SINES  	\ system-wide table of sines
+
+: 's		\ ( val degree -- )    Fills a Sin table entry
+	to: sines   ;
+
+00000 00 's   00175 01 's   00349 02 's   00524 03 's   00698 04 's
+00872 05 's   01045 06 's   01219 07 's   01392 08 's   01571 09 's
+01736 10 's   01908 11 's   02079 12 's   02250 13 's   02419 14 's
+02588 15 's   02756 16 's   02924 17 's   03090 18 's   03256 19 's
+03420 20 's   03584 21 's   03746 22 's   03907 23 's   04067 24 's
+04226 25 's   04384 26 's   04540 27 's   04695 28 's   04848 29 's
+05000 30 's   05150 31 's   05299 32 's   05446 33 's   05592 34 's
+05736 35 's   05878 36 's   06018 37 's   06157 38 's   06293 39 's
+06428 40 's   06561 41 's   06691 42 's   06820 43 's   06947 44 's
+07071 45 's   07193 46 's   07314 47 's   07431 48 's   07547 49 's
+07660 50 's   07771 51 's   07880 52 's   07986 53 's   08090 54 's
+08192 55 's   08290 56 's   08387 57 's   08480 58 's   08572 59 's
+08660 60 's   08746 61 's   08829 62 's   08910 63 's   08988 64 's
+09063 65 's   09135 66 's   09205 67 's   09272 68 's   09336 69 's
+09397 70 's   09455 71 's   09511 72 's   09563 73 's   09613 74 's
+09659 75 's   09703 76 's   09744 77 's   09781 78 's   09816 79 's
+09848 80 's   09877 81 's   09903 82 's   09925 83 's   09945 84 's
+09962 85 's   09976 86 's   09986 87 's   09994 88 's   09998 89 's
+
+: SIN	sin: sines   ;
+: COS	cos: sines   ;
+
+:class  ANGLE	super{ int }
+
+:m  SIN:	get: self   sin    ;m
+:m  COS:	get: self   cos    ;m
+
+;class

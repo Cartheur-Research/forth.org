@@ -1,0 +1,557 @@
+This file contains some documentation for the F-PC Graphics package.
+
+                  ÄÄÄÄÄÂÄÄÄÄÄ   ³      ³      ÚÄÄÄÄÄÄÄÄ
+                       ³        ³      ³      ³
+                       ³        ÃÄÄÄÄÄÄ´      ÃÄÄÄÄ
+                       ³        ³      ³      ³
+                       ³        ³      ³      ÀÄÄÄÄÄÄÄÄ
+
+                   ÚÄÄÄÄÄÄÄÄ        ÚÄÄÄÄÄÄÄ¿      ÚÄÄÄÄÄÄÄ
+                   ³                ³       ³      ³
+                   ÃÄÄÄÄ    ÄÄÄÄÄÄ  ÃÄÄÄÄÄÄÄÙ      ³
+                   ³                ³              ³
+                   ³                ³              ÀÄÄÄÄÄÄÄ
+
+  ÉÍÍÍÍÍÍÍµ     ÉÍÍÍÍÍÍÍÍ»  ÉÍÍÍÍÍÍÍÍ»   ÉÍÍÍÍÍÍÍÍ»  ÍËÍ  ÉÍÍÍÍÍÍÍµ  ÉÍÍÍÍÍµ
+  º             º        º  º        º   º        º   º   º          º
+  º             ÌÍÍÍÍËÍÍÍ¼  ÌÍÍÍÍÍÍÍÍ¹   ÌÍÍÍÍÍÍÍÍ¼   º   º          ÈÍÍÍÍÍ»
+  º     ÆÍÍÍ»   º    È»     º        º   º            º   º                º
+  º         º   º     È»    º        º   º            º   º                º
+  ÈÍÍÍÍÍÍÍÍÍ¼  ÄÐÄ     ÓÄ  ÄÐÄ      ÄÐÄ ÄÐÄ          ÍÊÍ  ÈÍÍÍÍÍÍÍµ  ÆÍÍÍÍÍ¼
+
+ÉÍÍÍÍÍÍÍÍ»  ÉÍÍÍÍÍÍÍÍ»  ÉÍÍÍÍÍÍÍµ ÄÒÄ    ÖÄ   ÉÍÍÍÍÍÍÍÍ»  ÉÍÍÍÍÍÍÍµ    ÉÍÍÍÍÍÍµ
+º        º  º        º  º          º    É¼    º        º  º            º
+ÌÍÍÍÍÍÍÍÍ¼  ÌÍÍÍÍÍÍÍÍ¹  º          ÌÍÍÍÍ¹     ÌÍÍÍÍÍÍÍÍ¹  º            ÌÍÍÍµ
+º           º        º  º          º    È»    º        º  º     ÆÍÍÍ»  º
+º           º        º  º          º     È»   º        º  º         º  º
+ÓÄ         ÄÐÄ      ÄÐÄ ÈÍÍÍÍÍÍÍµ ÄÐÄ     ÓÄ ÄÐÄ      ÄÐÄ ÈÍÍÍÍÍÍÍÍÍ¼  ÈÍÍÍÍÍÍµ
+
+18Nov94mds  ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ  Version 4.6N ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+ÄÄÄÄÄÄÄÄÄÄÄÄÄ This version of the Graphics Package works with ÄÄÄÄÄÄÄÄÄÄÄÄ
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ F-PC versions 3.5615  ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    Documentation for the F-PC Graphics package.
+
+    Here are the latest versions of a number of my new graphics routines
+including CGA, EGA and VGA support.
+    See GRAPHICS.NTS for information on recent changes.  See GRDEMOS.DOC
+for a list of demos to try.
+    Look in SMILEYXP.ZIP for some interesting experimental files:  SVGA
+support, graphics text, flood fill, scrolling the text at the bottom of the
+screen, and VGA 256-color sprites (complete with a sprite editor).
+    This version of the graphics package is known to work with F-PC
+version 3.5615.  It will very likely work with
+other versions of F-PC, but I cannot guarantee that.
+    Note that some graphics files require DMULDIV.SEQ, a file found in
+F-PC's SMITH.ZIP.
+    Please note my address and phone number at the end of this file.
+                                                        -- Mark Smiley
+
+                         ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                         ³  Quick Start  ³
+                         ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+To install, run GINSTALL.BAT with the syntax:
+    GINSTALL A C
+where A is the source drive (diskette), and C is the destination drive
+(hard disk).
+
+Then run
+SM-FPCE.BAT.  This file assumes you have installed FPC in the
+C:\FPC directory.  If not, edit SM-FPCE.BAT before running.
+SM-FPCE.BAT creates two files:
+
+1)  MFE.EXE, a small version of F-PC without Tom's editor, but with
+    access to an external editor of your choice via the .BAT files
+    ED.BAT and EDN.BAT
+    This version of FPC creates links to an external
+    editor through two .BAT files that you create for your editor.
+    One:  ED.BAT  calls the editor followed by the filename.
+          ex:  ED myfile.seq
+          My ED.BAT file looks like this:
+             c:\tools\e  %1 %2
+    The other:  EDN.BAT  calls the editor followed by the filename and a
+    line number:
+          ex:  ED myfile.seq 1302
+          Here's a sample EDN.BAT file (for Qedit):
+               c:\tools\e  %1 -n%2
+
+2) MSV.EXE, which is MFE.EXE with SFLOAT and SGRAPH loaded.  Most of the
+   graphics demos will run on this engine.
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+From within F.EXE:
+    To load all the graphics routines that don't use floating point,
+load the file GRAPHICS.SEQ.  Then save the system with  FSAVE FV.EXE.
+
+    To load all the graphics routines, including those that use floating
+point, you must load one of the following pairs of files:
+        1) SFLOAT.SEQ and SGRAPH.SEQ , or
+        2) VPSFLOAT.SEQ and VGRAPH.SEQ, or
+        3) FFLOAT.SEQ and FGRAPH.SEQ, or
+        4) PASM386.SEQ, SFLOAT.SEQ and 386GRAPH.SEQ (for '386 systems only)
+    Then save the system with  FSAVE FSV.EXE, or use another name of
+your choice.  Now exit F-PC with  BYE, and re-enter the system with FSV.
+Again, this saving and re-entering assures that the graphics buffer is
+allocated properly.
+
+To enter a graphics mode, use one of the words:
+     MED, HIGH, EGA, VGA320, VGA640, or VEGA.
+
+To plot points:
+     Enter the x and y coordinates of the point followed by the color,
+  then say DOT.
+     Example: 20 10 12 DOT  ( x y color -- ) plots a point in color 12
+  that is 20 pixels to the right and 10 pixels down from the upper left
+  corner of the screen.
+     OR:
+  Store the color of the dot in COLOR (e.g. 14 COLOR !), then use
+  COLOR-DOT.  Example:  20 10 COLOR-DOT  ( x y -- ).
+     Other variants to explore later are: CDOT, CLIP-DOT, and XDOT.
+
+To draw lines:
+     Store the color of the line in COLOR, then enter the endpoints of
+  the segment you wish to draw followed by the command: LINE.
+     Example:  entering, 11 COLOR !  10 20 30 40 LINE, will cause a
+  segment with endpoints [10,20] and [30,40] to be drawn in color 11.
+  If you wish to continue drawing from [30,40], simply enter the next
+  endpoint, followed by the command NLINE.
+     Other variants to explore later are: HLINE, VLINE, XLINE, XHLINE,
+  XVLINE, CLIP_HLINE, XCLIP_HLINE, CLIP_VLINE, and XCLIP_VLINE.
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+Saving and Recalling Graphics Images:
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+Use SaveVID (instead of VID>BUF) to temporarily save the video image
+after it appears on the screen.  Only then will BSAVE save the file
+properly.  And use RestVID (instead of BUF>VID) to restore a temporarily
+saved image.  As before, BRECALL recalls and displays an image, in the
+graphics mode set in SET-RES. Note that SaveVID uses a buffer in memory
+if possible, but in EGA and VGA640 modes, it saves to a file called
+TEMP.$$$, which can be around 153,600 bytes (for VGA640); so you need a
+little more disk space to save a file in these modes.
+    See LAND.SEQ and BARN.SEQ for examples of the new file-saving
+words.
+    I have also added "BRECALL and "BSAVE to be able to recall or save a
+specific file.
+    GETVGA.SEQ is included as a simple demo of the graphics saving and
+recalling words in VGA320 mode.  It is independent of the rest of the
+graphics files, and can be loaded on it's own.
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+BIOS and Direct Graphics.
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+Once the graphics routines are loaded, use BIOS_GRAPHICS to revert to
+the slower (but safer) way.  Use DIRECT_GRAPHICS to return to the
+faster way (the default) of putting graphics on the screen.
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+***********************************************************************
+Notes on various versions.  See GRAPHICS.NTS for much more.
+
+   Load VSCROLL.SEQ, then say SCROLLING to turn on scrolling at the
+bottom of the screen, and NORMAL to return to no scrolling.  ScrollLines
+sets the number of lines that scroll.
+
+   PALKEYS is a deferred word that prints the available palette key
+choices for (?PAL) in either 256 or 16-color VGA modes.  PALKEYS is set
+when the screen resolution is set.
+
+21May91mds  ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ  Version 4.4d ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+   Added MS#EDIT.SEQ to the files.
+
+04Apr91mds  ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ  Version 4.4a ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+  Added (RES) to CALC-XYSCALES (and hence to REGION). Added connected
+  plotting to PLOT and GRAPH in FUNCPLT.SEQ.  CONNECT? is a varible
+  which can be set to turn connected plotting on or off. Now GRAFIX?
+  checks to see if the system is in text mode (mode 2 or 3), if so, it
+  goes into graphics mode, if not, it doesn't.  This is nice for use
+  with GRAPH and FUNC_PLT.
+
+10Mar91mds  ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ  Version 4.3c ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+   Added .GRAPHVER to VGA.SEQ; it prints the current graphics version.
+
+23Apr90mds  ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ  Version 4.2g ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+    Fixed CGRAPH.SEQ, in CGAAPP.ZIP, so now a CGA-only system may be
+built, though I DO NOT RECOMMEND IT !  Most people with CGA systems will
+prefer using SGRAPH.SEQ to create a full system, since this includes
+CGA, as well as VGA & EGA routines. Also, SGRAPH creates a full-featured
+system, whereas CGRAPH generates a bare-bones system.  Furthermore, I do
+not guarantee compatibility of the CGRAPH system with the other routines
+in this package.
+***********************************************************************
+
+    If you'd like to see some working applications, use FSV.EXE, which
+you created above.  Then based on your graphics card, load any of the
+applications listed in the DEMO section below.
+
+For more advanced users:
+    Use SM-FPC.BAT to create a version of F-PC without the editor
+(freeing valuable code space), then load GRAPHICS.SEQ and FSAVE MV.EXE.
+Now MV.EXE may be used to load GIRL, VKAL, SP (sprites), or LAND.
+All these applications can be loaded on top of either FSV.EXE or FV.EXE,
+as well.
+
+
+***********************************************************************
+***********************************************************************
+    DEMOs
+    See GRDEMOS.DOC for a complete list of demos to try.
+***********************************************************************
+
+If you have a VGA system:
+       Try the demos in VGAAPP.ZIP:  Try GIRL, VKAL, and FTURT.
+       A floating point version of Turtle Graphics has been implemented
+    in FTURT.SEQ.  This also includes a motor turtle demo in rainbow
+    colors in 256 color mode.
+       Use VGA640 (for 640x480 16 color mode), or VGA320 (for 320x200
+    256 color mode).   You may also use EGA resolution (or MED or HIGH,
+    which are CGA modes).
+
+If you have an MCGA system:
+       Try the demos in VGAAPP.ZIP:  Try GIRL, VKAL, and FTURT.
+       Use VGA320 (for 320x200 256 color mode).   You may also use EGA
+    resolution (or MED or HIGH, which are CGA modes).
+
+If you have an EGA system:
+       Try the demos in XGAAPP.ZIP.  Particularly LAND.
+       Use EGA resolution (or MED or HIGH, which are CGA modes).
+
+If you have a CGA system:
+       Try the demos in XGAAPP.ZIP.  Particularly LAND.
+       Try the sprites in CGAAPP.ZIP:  FLOAD SP.SEQ
+       Use MED or HIGH resolution -- the two CGA modes.
+
+If you have a Hercules system:
+       Run a program like SIMCGA (to be found on many BBSs), which
+    allows the Hercules card to simulate a CGA card.  Then use the Forth
+    graphics in BIOS_GRAPHICS mode in CGA (MED or HIGH) resolution.
+       Sorry there is no direct support for Hercules yet, since I don't
+    have access to a hercules card on which to test the graphics
+    routines.  If any of you write such routines, please send them to me
+    for inclusion in a later release of the graphics routines.
+
+***********************************************************************
+
+
+  ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+  ³  There now follows a more detailed description of each file. ³
+  ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+     Note: see FILES.DOC for brief file descriptions.
+
+***********************************************************************
+SMILEY.DOC      documentation (this file)
+GRAPHICS.NTS    list of recent bugs and answers to questions
+FILES.DOC       list of all files in SMILEY.ZIP
+GRDEMOS.DOC     list of graphics demos
+***********************************************************************
+GRAPHICS.SEQ    a load file for loading graphics w/o floating point.
+THE.SEQ         an assembler extension word (+CODE) required by
+                GRAFKRNL.SEQ.  This is in a separate file, since it may
+                one day be included in PASM.
+GRAFKRNL.SEQ    the graphics kernel.  Includes many basic graphics words
+                written in assembler, such as the direct memory
+                accessing dot plotting words.  Also includes most of the
+                graphics deferred words (though not necessarily what
+                those words are deferred to).
+VGA64LIN.SEQ    direct memory mapped (fast) line drawing routines for
+                graphics resolutions with 640 (or 800) pixels in the
+                horiziontal direction, such as: VGA640, EGA, and HIGH.
+VGA32LIN.SEQ    direct memory mapped (fast) line drawing routines for
+                graphics resolutions with 320 pixels in the horiziontal
+                direction, such as: VGA320 and MED.
+CGAKRNL.SEQ     the CGA graphics kernel.
+FILESEL.SEQ     used by BRECALL.SEQ to recall saved graphics files using
+                Tom Zimmer's window file selection tool.
+BRECALL.SEQ     Save graphics screens to disk.  Used by VKAL.SEQ,
+                LAND.SEQ, BARNEX, and JULIA.SEQ.  Also saves the
+                colors in all supported graphics modes. This plus
+                FILESEL completely replace the old GRAPHSAV.SEQ file,
+                which only saved colors in MED, HIGH, and VGA320 modes.
+VGA.SEQ         The final file in the basic graphics routines that must
+                be loaded.  It includes the words that set the graphics
+                modes properly.  Use TEXT to return to text mode.  MED,
+                and HIGH are CGA modes, EGA is self-explanatory, VGA320
+                is a VGA/MCGA mode, and VGA640 is a VGA mode.  Also
+                includes clipped lines.
+                TEXT works now, but uses whatever mode the system is
+                installed for when VGA.SEQ is loaded.
+VGA.HLP         Help file for VGA.SEQ
+PAL.SEQ         palettes for VGA/MCGA, EGA, and CGA.  Includes
+                256COLOR_BAR to display the 256-color palettes in VGA320
+                mode.
+                   If you have a VGA machine, try PAL320, then press the
+                keys 1,2,3,4,5,6,7,8,9,G, and g to see all the 256 color
+                palettes (actually, the last two are just grayscales).
+                   If you have an EGA system, try PAL_EGA. In this case,
+                use keys 1,2,3,4,5,6,7,9,0, and T to change the palette.
+                The T choice allows you to define any of the 16 colors
+                to be any one of the 64 choices available in EGA.
+MCOLOR.SEQ      some text colors used in menues in the graphics system,
+                as well as in the applications.  Includes
+                >BUWT, which makes text white on blue.  Oddly enough,
+                this word is defined in F-PC to be white on GREEN text!
+                Also includes RED.EMIT and SP.RED.EMIT used in menus.
+                And HALT, used to wait for a key press.
+VGABIOS.SEQ     All BIOS (slow, but highly compatible) line and point
+                plotting routines, as well as the words BIOS_GRAPHICS,
+                and its antonym, DIRECT_GRAPHICS.
+                Also BIOS_OR_DIRECT? and REST_GRAPHICS are in this file.
+WHITE.SEQ       turns a graphics screen white in a hurry.  Allows
+                black-on-white or white-on-black.  Includes CHOOSE-RES,
+                and CHOOSE-COLORS.  Used by FUNCPLT.SEQ, and hence by
+                JULIA.SEQ.
+WHITE.HLP       some help for WHITE.SEQ.
+INVERT.SEQ      Inverts (reverses) the colors of the graphics screen in
+                the graphics buffer.  Turns white to black and vice
+                versa in the buffer.  Load after loading VGA.SEQ and
+                BRECALL.SEQ. Used by JULIA.SEQ.
+                  Put an image on the screen, then say:
+                      VID>BUF  INVERT.COLORS  BUF>VID
+                to see the inverted image.
+RECTANGL.SEQ    implements a moving, sizable rectangle in graphics
+                modes.  Used by JULIA.SEQ and BARNEX.SEQ.
+ELLIP.SEQ       Draw and fill clipped ellipses and circles in any graphics
+                mode.  Needs VGA.SEQ and DMULDIV.SEQ.
+ELLIP.HLP       help on ellipses
+VSCROLL.SEQ     allows the bottom of the screen to scroll. Say SCROLLING
+                to turn on scrolling at the bottom of the screen, and
+                NORMAL to return to no scrolling.  ScrollLines sets the
+                number of lines that scroll.
+
+***********************************************************************
+Old files:     not necessary for normal operation
+***********************************************************************
+FLSEL225.SEQ    an old version of FILESEL.SEQ for use w/ F-PC v 2.25.
+                To use it, delete FILESEL.SEQ, and rename FLSEL225.SEQ
+                to FILESEL.SEQ.  If you are using F-PC version 3.5 or
+                later, use the normal FILESEL.SEQ discribed above.
+DLINE.SEQ       old high-level line routines.  This file is unnecessary,
+                but it is included for those who want to study the old
+                high-level code.
+
+***********************************************************************
+FLTGRAPH.ZIP    graphics routines that require floating point
+***********************************************************************
+SGRAPH.SEQ      assumes SFLOAT is already loaded.  Loads the graphics.
+VGRAPH.SEQ      assumes VPSFLOAT is already loaded.  Loads the graphics.
+FGRAPH.SEQ      assumes FFLOAT is already loaded.  Loads the graphics.
+386GRAPH.SEQ    assumes PASM386 and SFLOAT are already loaded.  Loads
+                the graphics.
+
+FLT-EXT.SEQ     some floating point extensions for the SFLOAT package.
+FLT-EXT.HLP     some help for the above file.
+
+FUNCTPLT.SEQ    function plotting in any resolution in either
+                white-on-black or black-on-white modes.  Plot functions
+                of the form y=f(x) by defining the function to have
+                stack notation (F  x -- x y ), define the region to be
+                graphed with REGION, then say "GRAPH <function name>" to
+                graph the function in the current RESolution.
+                Alternatively, it allows functions to be defined
+                iteratively, too.  See TINKERBELL for an example of
+                this.
+FUNCTPLT.HLP    some help for FUNCTPLT.SEQ.  See FUNCT.SEQ for some
+                examples.
+MCOMPLEX.SEQ    is my set of complex number floating point routines.
+                This is no longer needed with SFLOAT, since Robert
+                Smith's COMPLEX.SEQ is better.  But it is still needed
+                for VPSFLOAT and HFLOAT.
+***********************************************************************
+RAND3.SEQ       Excellent Random number generator, now faster.
+DOSEDIT.SEQ     better than XEXPECT in graphics modes.  Needs the memory
+                resident program CED or DOSEDIT to be loaded into memory
+                at runtime to work properly.
+SWITCH.SEQ      Is by Mike Sperl, it is used by JULIA.SEQ, and other
+                applications to patch QUIT to keep the application from
+                crashing back into the F-PC system.  SWITCH allows you
+                to re-define an old word with a new definition without a
+                speed penalty, by switching the heads of the old and new
+                words.
+***********************************************************************
+Freeing up code space: building a system without Tom Zimmer's editor.
+***********************************************************************
+SMALLE.SEQ     an extend file used by SM-FPC.BAT to create a smaller
+               F-PC.  This frees up code space for large applications.
+
+SM-FPCE.BAT    uses SMALLE.SEQ to create a smaller F-PC with links to
+               an external editor.
+VIEWE35.SEQ      a replacement for VIEW.SEQ, for use with MDS35E.SEQ
+VIEWE40.SEQ      a replacement for VIEW.SEQ, for use with MDS40E.SEQ
+VIEWEDIT.SEQ   needed by VIEWE.SEQ.  File by George T. Hawkins and DKnight.
+
+***********************************************************************
+XGAAPP  .ZIP   applications that work in any mode
+***********************************************************************
+LAND.SEQ        Draws Fractal Landscapes in MED, EGA, and VGA320
+                resolutions.  Many palettes implemented in the latter
+                two modes!
+A-XX.SEQ        another graphics and floating point demo.  Draws the
+                attractors for the map A-x^2, as A varies.
+FUNCT.SEQ       some sample functions for use with FUNCTPLT.SEQ.
+BARN.SEQ        This file implements Barnsley's Iterated Function
+                Systems.  Load SFLOAT and SGRAPH first.
+MAPS.SEQ        uses RECTANGL.SEQ or CVRECT.SEQ.
+                Used by BARNEX.SEQ.
+BARNEX.SEQ      examples for use with BARN.SEQ.  Load SFLOAT, SGRAPH,
+                BARN, and MAPS first.  See the fractal fern.
+BARN.DOC        some docs for BARN.SEQ and BARNEX.SEQ
+JULIA.SEQ       draws fractal Julia sets in CGA, EGA, or VGA resolution
+                in either white-on-black or black-on-white modes. Allows
+                saving and recalling screens to and from disk.  Version
+                3.7.
+JULIA.HLP       help file for JULIA.SEQ
+
+***********************************************************************
+VGAAPP  .ZIP    applications that only work in VGA/MCGA modes
+***********************************************************************
+FTURT.SEQ       floating point turtle graphics, including a motor turtle
+                demo that runs in rainbow colors in 256-color mode.
+GETVGA.SEQ      stand alone file that reads and displays a 320x200
+                256-color picture.  For a short demo, load this file,
+                then load GIRL.SEQ.
+
+GIRLDEMO.BAT    runs girl demo in VGA 320x200 256-color mode.
+GIRL.SEQ        load file of picture of a girl's face
+GIRL.PAL        palette for the girl's face picture
+GIRL.PIC        image of the girl's face picture.  Note: don't try to
+                list or edit this file, it is binary, not ASCII.
+
+VKAL.SEQ        VGA Kaleidoscopes, version 4.1, main program
+VKAL.LOD        VGA Kaleidoscopes, program loader.
+VKAL.DOC        VGA Kaleidoscopes: documentation
+VKAL.HLP        VGA Kaleidoscopes: help file
+***********************************************************************
+* The following starred files are no longer included with the package.
+***********************************************************************
+* CGAAPP  .ZIP    applications that only work in CGA modes
+*  The following files are not part of the graphics package proper.  They
+*  are independent of all other files.
+*  These files may be loaded directly on top of F-PC (no need to load
+*  GRAPHICS.SEQ first).
+************************************************************************
+* CGRAPH.SEQ      Like SGRAPH.SEQ, but for CGA only.  Load SFLOAT first.
+* CGA.SEQ         Graphics for those with CGA systems only!  The line
+*                 algorithm here even works on IBM-PCs.  The one in
+*                 VGA.SEQ only works on PC-clones.  (weird, eh?)
+* CWHITE.SEQ      Like WHITE.SEQ, but for CGA only.
+* CVRECT.SEQ      Like RECTANGL.SEQ, but for CGA only.
+* GRAPHSAV.SEQ    save CGA files to disk or graphics buffer
+***********************************************************************
+The following files have been used to write simple CGA games in F-PC.
+But they don't work with the current version of F-PC, and so they are no
+longer supplied.  See VGASPRIT.SEQ for the (working) VGA equivalent.
+
+CASEOP.SEQ      Case operators -- enhancements to CASE.
+CURSOR.SEQ      Some cursor words, like GTC (GeT Character at cursor).
+
+* SP.SEQ          Load file for all the sprite stuff.
+* SPRITE.SEQ      Sprite editor for HIGH and MEDium CGA resolutions.  Load
+*                CASEOP.SEQ and CURSOR.SEQ first.
+* SPRITE.HLP      Help file for Sprite editor.
+* *.FNT           Sprite Fonts for use with SPRITE.
+*                 Say FINDFONT <filename> to load a font and MDF to
+*                 display it in MEDium resolution.
+* SPSCRED.SEQ     Sprite screen editor.  Fill your screen with sprites and
+*                 save it.  Load SPRITE.SEQ first.
+* SPSCRED.HLP     Help file for sprite screen editor.
+* *.SCR           Screens for use with SPSCRED.SEQ.  Load the appropriate
+*                 font first with FINDFONT.  Example: use CHESS2.FNT and
+*                 CHESS3.SCR together.
+***********************************************************************
+***********************************************************************
+
+***********************************************************************
+***********************************************************************
+
+    The files GRAPHICS, SGRAPH, VGRAPH, or HGRAPH are really the proper
+way to load the graphics routines, these files also give some indication
+of the proper order of loading the graphics files.
+
+Versions of these routines have been tested on Zimmmer's FF, and F88
+Forths, as well as his F-PC versions 1.02b, 1.03b, 2.02, 2.15, 2.25,
+3.35, 3.50, 3.53, 3.5501, 3.5503, 3.5601, 3.5609, 3.5613, 4.0003, and
+3.5614.  This version of the graphics package should work with the most
+recent version of F-PC listed.
+
+Some of the help files could be better, but I am currently writing a
+book on all these F-PC files,  and most of my new documentation is going
+into that (it's too hard to keep up with all the changes in three files
+at once!).  If you want in depth coverage of all the little
+idiosyncracies of these routines, get:
+
+    "The F-PC Graphics and Floating Point Book,"
+    by Mark Smiley, published by Offete Enterprises, Inc.
+
+To purchase it, send approximately $25.00 (contact Offete Enterprises
+for exact price) for the book (about 53 pages) and disk (containing a
+recent version of the graphics package) to Offete Enterprises at:
+
+    Offete Enterprises, Inc.,
+    1306 South B Street
+    San Mateo, CA  94402
+    (415) 574-8250
+
+    If you prefer, simply send me $25.00 ($40.00 overseas) to receive
+the latest version of the graphics package, along with a (21 page) users
+manual for the graphics package.
+
+    If you like this program, or have suggestions (or code) for future
+features, please write or call me.  I am also available for consulting
+work, particularly graphics and/or Forth, on the PC/AT family.
+
+    If your budget is tight, the latest version of the grapics package
+is available by sending me a stamped (enough postage to return the
+disks), self-addressed mailer with blank formatted disks and $10.00
+(prices good through 6-31-1993). You will get the graphics routines in a
+.ZIP file, unless you specify otherwise.  If you want everything
+unzipped, send
+        3 5¬" DD (360K) disks, or
+        2 3«" DD (720K) disks, or
+        1 5¬" HD (1.2M) disk, or
+        1 3«" HD (1.44M) disk.
+    If disk space permits (this may vary as the graphics package grows),
+I will send you an .EXE file with the graphics loaded, so you can get
+started right away.
+    For Canada or Mexico, add an additional $5.00 to the cost.
+    For overseas shipping, add an additional $15.00 to the cost.
+    All prices are in U.S. dollars.
+
+    Currently, a recent version of the graphics package appears on the
+Programmer's Corner BBS in Maryland.  The BBS's numbers are:
+                410-596-1180, or 410-995-3744.
+The Programmer's Corner has a Forth message area, as well as a Forth
+file area.  It also carries the Forthnet echo.
+
+    The graphics package is free for personal or educational use.
+    But if you use the graphics package in a commercial product, you should
+call me to work out a deal.  Some common options are:
+    1) Pay a royalty of P percent of the profit on each item sold, where
+       P is the (approximate) percentage of the application's code
+       (beyond the F-PC system) occupied by the graphics package, up to
+       a maximum of 10%.  Here profit is calculated by taking the
+       purchase price minus the costs of producing the disks and packaging.
+       (ex:  At 10%, it would be $.50 per item on a $5.00 profit item)
+    2) Pay a one-time lump sum of $200.00 for unlimited use of the
+       current version of the graphics package (much like purchasing a
+       graphics package for C, Pascal, or FORTRAN).  This includes free
+       updates for at least a year, and it includes up to 2 hours of my
+       consulting time to either help you get started, or to write
+       additional features that you require.
+
+                  ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»
+                  º  Dr. Mark Smiley               º
+                  º  26 Heartwood Ct.              º
+                  º  Baltimore, MD  21234-3407     º
+                  ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+                  º  Email: MarkSmiley@aol.com     º
+                  º  (410)-668-5089 (H)            º
+                  ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼
+
+Enjoy,
+
+Mark Smiley
+
+

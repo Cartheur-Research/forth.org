@@ -1,0 +1,56 @@
+
+Mops related files in this directory as of 3/25/95:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Mops27.sea.bin
+--------------
+Mops 2.7 is Michael Hore's public-domain development system for the
+Macintosh. A robust hybrid of Forth and Smalltalk, Mops has extensive
+OOP capabilities including multiple inheritance, and a class library
+supporting the Macintosh interface.  Includes all source code and Doug
+Hoffman's Quick Edit program.
+
+Mops 2.7 has been updated to incorporate the latest Apple Universal
+Headers.
+
+Mops26m.sea
+-----------
+This archive contains the manual and tutorial for Mops in MS Word
+format.  This version of the manual is for Mops versions through 2.7.
+New features of 2.7 are explained in the release notes.
+
+Quick_Edit.2.7.sea.hqx
+----------------------
+Doug Hoffman's updated editor for Mops 2.7 with new features and an
+updated glossary.
+
+MopsApp.sea.hqx
+---------------
+Mops App (MA) by Doug Hoffman is a set of Mops source code files that
+provide a basic framework for a typical multi-window Macintosh
+application.  Also included is an updated Selection Framework 2.7 (SF).
+Requires Mops 2.7.
+
+GrDemo.2.7.sit.hqx
+------------------
+Minor revision of the demo program for the tutorial.  This should
+replace the version included with Mops26m.sea.
+
+Mops_Newbie_Kit-2.7.sit.hqx
+---------------------------
+Simple demonstration Mops apps by Bruce Bennett.  Expanded and revised
+for Mops 2.7. 
+
+App_Framework_0.3.sit.hqx
+-------------------------
+The beginnings of a Mops development framework by Johnathon McAlister.
+
+ReadMe_App_Framework.txt
+------------------------
+See App_Framework_0.3.sit.hqx
+
+mops.faq.txt
+------------
+The current Mops Frequently Asked Questions, revised 1/96.
+
+

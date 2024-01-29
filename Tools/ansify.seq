@@ -1,0 +1,610 @@
+Article: 36304 of comp.lang.forth
+Path: taurus.cs.nps.navy.mil!lll-winken.llnl.gov!koriel!cs.utexas.edu!uunet!zib-berlin.de!solid.theo-physik.uni-kiel.de!news.informatik.uni-kiel.de!not-for-mail
+From: uho@informatik.uni-kiel.d400.de (Ulrich Hoffmann)
+Newsgroups: comp.lang.forth
+Subject: ANSIFY.SEQ: convert standard definition names from lower to upper case
+Date: 22 Sep 1994 15:12:29 +0200
+Organization: Dept. of Computer Science, University of Kiel, FRG
+Lines: 596
+Message-ID: <35rvrt$mum@minnie.informatik.uni-kiel.de>
+References: <40.2005.1617@channel1.com> <WAASB44P@gwdu03.gwdg.de> <353vhs$nfi@minnie.informatik.uni-kiel.de>
+NNTP-Posting-Host: minnie.informatik.uni-kiel.de
+
+> In <WAASB44P@gwdu03.gwdg.de> plewe@dl.mpi-dortmund.mpg.de (J.Plewe) writes:
+
+> > I had some problems to start GRAY4 on my F68KANS system. The first reason
+> > was that it really is *no* ANSI source, because it uses lowercase 
+> > primitives. 
+
+> > Ulli Hoffman gave me a small tool to convert it in a smart
+> > way to uppercase.
+> Maybe it's time to publish it?   Coming soon...
+
+Coming now!
+
+-ansify.seq-----------------------------------------------------------
+\ Convert ANSI Forth standard definition names from lower to upper case.
+
+\ $Id: ansify.seq,v 1.3 1994/09/22 13:10:37 uho Exp $ 
+
+\ This file contains code to convert ANSI Forth source code
+\ with standard definition names written in lower case (environmental 
+\ dependency) to source code with standard definition names written in
+\ UPPER case. It thus helps porting ANSI Forth code written for case
+\ insensitive systems to case sensitive systems.
+
+\ This code can be used and copied free of charge. All rights reserved.
+
+\ Comments, hints and bug reports are welcome. Please email
+\ to 
+\                    uho@pizzicato.deceiver.org
+\                               or
+\                    uho@informatik.uni-kiel.d400.de
+
+\                      Ulrich Hoffmann
+\                      Sehestedter Strasse 26 
+\                      24340 Eckernfoerde
+\                      Germany
+
+
+\ Thanks to J.Plewe for his helpful hints.
+\ ---------------------------------------------------------------------------
+
+\ This is an ANS-Forth program
+\    -  Requiring  
+\       .( 0> ?DO FALSE MARKER NIP TO TRUE U> VALUE WITHIN \   
+\       from the Core Extensions word set,
+\    -  Requiring the File-Access word set,
+\    -  Requiring the Search-Order word set,
+\    -  Requiring FORTH from the Search-Order Extensions word set
+\    -  Requiring the String word set.
+
+\ Required program documentation
+\
+\    - Environmental dependencies
+\         This program has no known environmental dependencies.
+\    - Other program documentation
+\         This program requires to output text via the standard words
+\         .( ABORT" and EMIT
+\         After loading this program, a Standard System still exists.
+
+\ ---------------------------------------------------------------------------
+ 
+\ From the draft proposed standard:
+
+\ 3.4.2 ... A system may be either case sensitive, treating
+\ upper- and lower-case letters as different and not matching,
+\ or case insensitive, ignoring differences in case while searching.
+
+\ 3.3.1.2 ... Programs that use lower case for standard definition
+\ names or depend on the case-sensitivity properties of a system have
+\ an environmental dependency.
+
+
+MARKER ansifying
+
+: umin ( u1 u2 -- u3 )
+   \ Which is the smaller one? u1 or u2?
+   2DUP U> IF  SWAP  THEN  DROP ;
+
+: /string' ( c-addr1 u1 n -- c-addr2 u2 )
+   \ Define /string with a known behaviour for n>u1
+   DUP 0> IF  OVER umin  THEN
+   /STRING ;
+
+: place ( c-addr len c-addr' -- )  
+   \ Put the string given by C-ADDR LEN as counted string at address C-ADDR'
+   2DUP C!  CHAR+ SWAP CMOVE ;
+
+: skip  ( addr len c -- addr' len' )
+    \ Within the string given by ADDR and LEN skip leading occurances of
+    \ character C. Return the remaining string denoted by ADDR' and LEN'.
+    >R
+    BEGIN ( addr len )  
+      OVER C@ R@ =  
+    WHILE  
+      1 /string'  
+      DUP 0=
+    UNTIL THEN 
+    R> DROP ; 
+
+: scan  ( addr len c -- addr' len' )
+    \ Within the string given by ADDR and LEN scan for the first occurances 
+    \ of character C. Return the remaining string denoted by ADDR' and LEN'.
+    >R
+    BEGIN ( addr len ) 
+      OVER C@ R@ - 
+    WHILE 
+      1 /string' 
+      DUP 0= 
+    UNTIL THEN
+    R> DROP ; 
+
+: uppercase ( c -- C )
+   \ Convert character to uppercase.
+    DUP [CHAR] a [CHAR] z 1+ WITHIN IF [ CHAR A CHAR a - ] LITERAL + THEN ;
+
+: upper ( addr len -- )
+   \ Convert string to uppercase.
+   OVER + SWAP ?DO  I C@  uppercase  I C!  LOOP ;
+
+
+CREATE search$ 64 CHARS ALLOT   ( buffer to hold search strings )
+
+: find-list  ( addr len list -- xt true | 0 false ) 
+   \ Look for capitalized string given by ADDR LEN in the 
+   \ word list denoted by LIST. If search is succesful 
+   \ return the appropriate execution token and true,
+   \ else return a dummy 0 and false.
+   >R  
+   SWAP OVER  search$ SWAP CMOVE  
+   search$ SWAP   2DUP upper  
+   R> SEARCH-WORDLIST 
+   IF  TRUE EXIT THEN
+   0 FALSE ; 
+
+: Capitalize: ( <name> -- )
+  \ Define a word, which when executed will capitalize a string.
+    CREATE
+  DOES> DROP ( addr len -- ) upper ;
+
+: Verbatim: ( <name> c -- )
+  \ Define a word, which when executed will capitalize a string
+  \ and then will scan in another string for a given delimiter.
+    CREATE C,
+  DOES> C@ >R ( addr' len' addr len -- addr' len' )
+    upper
+    R> scan  1 /string' ;
+
+
+WORDLIST CONSTANT <standard-words>  
+
+<standard-words> SET-CURRENT
+
+  CHAR " Verbatim: "
+  CHAR " Verbatim: ."
+  CHAR " Verbatim: ABORT"
+  CHAR ) Verbatim: .(
+  CHAR " Verbatim: C"
+  CHAR " Verbatim: S"
+  CHAR ) Verbatim: (
+  -1     Verbatim: \
+
+\ Capitalize: !
+\ Capitalize: #
+\ Capitalize: #>
+  Capitalize: #S
+  Capitalize: #TIB
+\ Capitalize: (
+\ Capitalize: '
+  Capitalize: (LOCAL)
+\ Capitalize: *
+\ Capitalize: */
+  Capitalize: */MOD
+\ Capitalize: +
+\ Capitalize: +!
+  Capitalize: +LOOP
+\ Capitalize: ,
+\ Capitalize: -
+  Capitalize: -TRAILING
+\ Capitalize: .
+\ Capitalize: ."
+\ Capitalize: .(
+  Capitalize: .R
+  Capitalize: .S
+\ Capitalize: /
+  Capitalize: /MOD
+  Capitalize: /STRING
+\ Capitalize: 0<
+\ Capitalize: 0<>
+\ Capitalize: 0=
+\ Capitalize: 0>
+\ Capitalize: 1+
+\ Capitalize: 1-
+\ Capitalize: 2!
+\ Capitalize: 2*
+\ Capitalize: 2/
+  Capitalize: 2>R
+\ Capitalize: 2@
+  Capitalize: 2CONSTANT
+  Capitalize: 2DROP
+  Capitalize: 2DUP
+  Capitalize: 2LITERAL
+  Capitalize: 2OVER
+\ Capitalize: 2R>
+\ Capitalize: 2R@
+  Capitalize: 2ROT
+  Capitalize: 2SWAP
+  Capitalize: 2VARIABLE
+\ Capitalize: :
+  Capitalize: :NONAME
+\ Capitalize: ;
+  Capitalize: ;CODE
+\ Capitalize: <
+\ Capitalize: <#
+\ Capitalize: <>
+\ Capitalize: =
+\ Capitalize: >
+  Capitalize: >BODY
+  Capitalize: >FLOAT
+  Capitalize: >IN
+  Capitalize: >NUMBER
+  Capitalize: >R
+\ Capitalize: ?
+  Capitalize: ?DO
+  Capitalize: ?DUP
+\ Capitalize: @
+  Capitalize: ABORT
+\ Capitalize: ABORT"
+  Capitalize: ABS
+  Capitalize: ACCEPT
+  Capitalize: AGAIN
+  Capitalize: AHEAD
+  Capitalize: ALIGN
+  Capitalize: ALIGNED
+  Capitalize: ALLOCATE
+  Capitalize: ALLOT
+  Capitalize: ALSO
+  Capitalize: AND
+  Capitalize: ASSEMBLER
+  Capitalize: AT-XY
+  Capitalize: BASE
+  Capitalize: BEGIN
+  Capitalize: BIN
+  Capitalize: BL
+  Capitalize: BLANK
+  Capitalize: BLK
+  Capitalize: BLOCK
+  Capitalize: BUFFER
+  Capitalize: BYE
+  Capitalize: C!
+\ Capitalize: C"
+  Capitalize: C,
+  Capitalize: C@
+  Capitalize: CASE
+  Capitalize: CATCH
+  Capitalize: CELL+
+  Capitalize: CELLS
+  Capitalize: CHAR
+  Capitalize: CHAR+
+  Capitalize: CHARS
+  Capitalize: CLOSE-FILE
+  Capitalize: CMOVE
+  Capitalize: CMOVE>
+  Capitalize: CODE
+  Capitalize: COMPARE
+  Capitalize: COMPILE,
+  Capitalize: CONSTANT
+  Capitalize: CONVERT
+  Capitalize: COUNT
+  Capitalize: CR
+  Capitalize: CREATE
+  Capitalize: CREATE-FILE
+  Capitalize: CS-PICK
+  Capitalize: CS-ROLL
+  Capitalize: D+
+  Capitalize: D-
+  Capitalize: D.
+  Capitalize: D.R
+  Capitalize: D0<
+  Capitalize: D0=
+  Capitalize: D2*
+  Capitalize: D2/
+  Capitalize: D<
+  Capitalize: D=
+  Capitalize: D>F
+  Capitalize: D>S
+  Capitalize: DABS
+  Capitalize: DECIMAL
+  Capitalize: DEFINITIONS
+  Capitalize: DELETE-FILE
+  Capitalize: DEPTH
+  Capitalize: DF!
+  Capitalize: DF@
+  Capitalize: DFALIGN
+  Capitalize: DFALIGNED
+  Capitalize: DFLOAT+
+  Capitalize: DFLOATS
+  Capitalize: DMAX
+  Capitalize: DMIN
+  Capitalize: DNEGATE
+  Capitalize: DO
+  Capitalize: DOES>
+  Capitalize: DROP
+  Capitalize: DU<
+  Capitalize: DUMP
+  Capitalize: DUP
+  Capitalize: EDITOR
+  Capitalize: EKEY?
+  Capitalize: EKEY>CHAR
+  Capitalize: EKEY
+  Capitalize: ELSE
+  Capitalize: EMIT
+  Capitalize: EMIT?
+  Capitalize: EMPTY-BUFFERS
+  Capitalize: ENDCASE
+  Capitalize: ENDOF
+  Capitalize: ENVIRONMENT?
+  Capitalize: ERASE
+  Capitalize: EVALUATE
+  Capitalize: EXECUTE
+  Capitalize: EXIT
+  Capitalize: EXPECT
+  Capitalize: F!
+  Capitalize: F*
+  Capitalize: F**
+  Capitalize: F+
+  Capitalize: F-
+  Capitalize: F.
+  Capitalize: F/
+  Capitalize: F0<
+  Capitalize: F0=
+  Capitalize: F<
+  Capitalize: F>D
+  Capitalize: F@
+  Capitalize: FABS
+  Capitalize: FACOS
+  Capitalize: FACOSH
+  Capitalize: FALIGN
+  Capitalize: FALIGNED
+  Capitalize: FALOG
+  Capitalize: FALSE
+  Capitalize: FASIN
+  Capitalize: FASINH
+  Capitalize: FATAN
+  Capitalize: FATAN2
+  Capitalize: FATANH
+  Capitalize: FCONSTANT
+  Capitalize: FCOS
+  Capitalize: FCOSH
+  Capitalize: FDEPTH
+  Capitalize: FDROP
+  Capitalize: FDUP
+  Capitalize: FE.
+  Capitalize: FEXP
+  Capitalize: FEXPM1
+  Capitalize: FILE-POSITION
+  Capitalize: FILE-SIZE
+  Capitalize: FILE-STATUS
+  Capitalize: FILL
+  Capitalize: FIND
+  Capitalize: FLITERAL
+  Capitalize: FLN
+  Capitalize: FLNP1
+  Capitalize: FLOAT+
+  Capitalize: FLOATS
+  Capitalize: FLOG
+  Capitalize: FLOOR
+  Capitalize: FLUSH
+  Capitalize: FLUSH-FILE
+  Capitalize: FM/MOD
+  Capitalize: FMAX
+  Capitalize: FMIN
+  Capitalize: FNEGATE
+  Capitalize: FORGET
+  Capitalize: FORTH
+  Capitalize: FORTH-WORDLIST
+  Capitalize: FOVER
+  Capitalize: FREE
+  Capitalize: FROT
+  Capitalize: FROUND
+  Capitalize: FS.
+  Capitalize: FSIN
+  Capitalize: FSINCOS
+  Capitalize: FSINH
+  Capitalize: FSQRT
+  Capitalize: FSWAP
+  Capitalize: FTAN
+  Capitalize: FTANH
+  Capitalize: FVARIABLE
+  Capitalize: F~
+  Capitalize: GET-CURRENT
+  Capitalize: GET-ORDER
+  Capitalize: HERE
+  Capitalize: HEX
+  Capitalize: HOLD
+  Capitalize: I
+  Capitalize: IF
+  Capitalize: IMMEDIATE
+  Capitalize: INCLUDE-FILE
+  Capitalize: INCLUDED
+  Capitalize: INVERT
+  Capitalize: J
+  Capitalize: KEY
+  Capitalize: KEY?
+  Capitalize: LEAVE
+  Capitalize: LIST
+  Capitalize: LITERAL
+  Capitalize: LOAD
+  Capitalize: LOCALS|
+  Capitalize: LOOP
+  Capitalize: LSHIFT
+  Capitalize: M*
+  Capitalize: M*/
+  Capitalize: M+
+  Capitalize: MARKER
+  Capitalize: MAX
+  Capitalize: MIN
+  Capitalize: MOD
+  Capitalize: MOVE
+  Capitalize: MS
+  Capitalize: NEGATE
+  Capitalize: NIP
+  Capitalize: OF
+  Capitalize: ONLY
+  Capitalize: OPEN-FILE
+  Capitalize: OR
+  Capitalize: ORDER
+  Capitalize: OVER
+  Capitalize: PAD
+  Capitalize: PAGE
+  Capitalize: PARSE
+  Capitalize: PICK
+  Capitalize: POSTPONE
+  Capitalize: PRECISION
+  Capitalize: PREVIOUS
+  Capitalize: QUERY
+  Capitalize: QUIT
+  Capitalize: R/O
+  Capitalize: R/W
+  Capitalize: R>
+  Capitalize: R@
+  Capitalize: READ-FILE
+  Capitalize: READ-LINE
+  Capitalize: RECURSE
+  Capitalize: REFILL
+  Capitalize: RENAME-FILE
+  Capitalize: REPEAT
+  Capitalize: REPOSITION-FILE
+  Capitalize: REPRESENT
+  Capitalize: RESIZE
+  Capitalize: RESIZE-FILE
+  Capitalize: RESTORE-INPUT
+  Capitalize: ROLL
+  Capitalize: ROT
+  Capitalize: RSHIFT
+\ Capitalize: S"
+  Capitalize: S>D
+  Capitalize: SAVE-BUFFERS
+  Capitalize: SAVE-INPUT
+  Capitalize: SCR
+  Capitalize: SEARCH
+  Capitalize: SEARCH-WORDLIST
+  Capitalize: SEE
+  Capitalize: SET-CURRENT
+  Capitalize: SET-ORDER
+  Capitalize: SET-PRECISION
+  Capitalize: SF!
+  Capitalize: SF@
+  Capitalize: SFALIGN
+  Capitalize: SFALIGNED
+  Capitalize: SFLOAT+
+  Capitalize: SFLOATS
+  Capitalize: SIGN
+  Capitalize: SLITERAL
+  Capitalize: SM/REM
+  Capitalize: SOURCE
+  Capitalize: SOURCE-ID
+  Capitalize: SPACE
+  Capitalize: SPACES
+  Capitalize: SPAN
+  Capitalize: STATE
+  Capitalize: SWAP
+  Capitalize: THEN
+  Capitalize: THROW
+  Capitalize: THRU
+  Capitalize: TIB
+  Capitalize: TIME&DATE
+  Capitalize: TO
+  Capitalize: TRUE
+  Capitalize: TUCK
+  Capitalize: TYPE
+  Capitalize: U.
+  Capitalize: U.R
+  Capitalize: U<
+  Capitalize: U>
+  Capitalize: UM*
+  Capitalize: UM/MOD
+  Capitalize: UNLOOP
+  Capitalize: UNTIL
+  Capitalize: UNUSED
+  Capitalize: UPDATE
+  Capitalize: VALUE
+  Capitalize: VARIABLE
+  Capitalize: W/O
+  Capitalize: WHILE
+  Capitalize: WITHIN
+  Capitalize: WORD
+  Capitalize: WORDLIST
+  Capitalize: WORDS
+  Capitalize: WRITE-FILE
+  Capitalize: WRITE-LINE
+  Capitalize: XOR
+\ Capitalize: [
+\ Capitalize: [']
+  Capitalize: [CHAR]
+  Capitalize: [COMPILE]
+  Capitalize: [ELSE]
+  Capitalize: [IF]
+  Capitalize: [THEN]
+\ Capitalize: \
+\ Capitalize: ]
+
+\ FORTH-WORDLIST SET-CURRENT
+FORTH DEFINITIONS
+
+: ansify-line ( addr len -- )
+    \ Process a source text line given by ADDR and LEN.
+    BEGIN ( addr len )
+      BL skip DUP 0= IF ( eoln ) 2DROP EXIT THEN
+      2DUP BL scan    ( addr len addr' len' )
+      2SWAP  2OVER    ( addr' len'  addr len  addr' len' )
+      NIP -           ( addr' len' addr l )
+      2DUP <standard-words> find-list 
+      IF ( addr' len' addr l xt ) EXECUTE ( addr' len' )
+      ELSE  ( addr' len' addr l 0 )  DROP 2DROP THEN
+      DUP 0=
+    UNTIL ( eoln )
+    2DROP ;
+
+1024 CONSTANT bufsize  \ maximal size lines can have
+CREATE line  bufsize 2 + ( newline chars )  CHARS ALLOT
+
+: getline ( fileid -- addr len flag )
+   \ Read a line of text from the file denoted by FILEID.
+   \ If the end of file is reached, return two dummy values and false
+   \ If a line could be read succesfully return its address and
+   \ length along with a true flag.
+   line bufsize ROT READ-LINE ABORT" getline: read error!"
+   0= IF ( eof )  0 FALSE EXIT THEN
+   line SWAP TRUE ;
+
+: putline ( addr len fileid -- )
+   \ Write the line denoted by ADDR and LEN to the file given by FILEID.
+   WRITE-LINE ABORT" putline: write error! " ;
+
+0 VALUE input   ( input  file id )
+0 VALUE output  ( output file id )
+
+: fansify ( infile outfile -- ) TO output  TO input
+    \ Convert the file given by the fileid INFILE and store the result
+    \ in the file denoted by the fileid OUTFILE
+    BEGIN
+      input getline   
+      [CHAR] . EMIT      \ Show progress.
+    WHILE
+      2DUP ansify-line
+      output putline
+    REPEAT
+    2DROP ;
+
+: ansify-file ( addr-in len-in addr-out len-out -- )
+    \ Expect two strings, the names of the input file and the name of
+    \ the output file. Convert the input file and write the result
+    \ to the output file.
+    R/W CREATE-FILE  ABORT" Cannot create output file!" >R ( outfileid )
+    R/O OPEN-FILE    ABORT" Cannot open input file!"       ( infileid )
+    DUP R@ fansify
+    CLOSE-FILE DROP
+    R> CLOSE-FILE DROP ;
+
+CREATE inname  64 ALLOT    \ Name of input file
+CREATE outname 64 ALLOT    \ Name of output file
+
+: ansify ( <inname> <outname> -- )
+    \ User word.  Used in the form  ansify <inname> <outname>
+    \ to convert the file with name <inname> and put the result
+    \ in the file with name <outname>
+    BL WORD  COUNT   inname  place
+    BL WORD  COUNT   outname place
+    inname COUNT  outname COUNT ansify-file ;
+
+CR .( ansify <inname> <outname> )
+
+----------------------------------------------------------------------
+-- 
+Ulrich Hoffmann, Uni Kiel        WWW: http://www.informatik.uni-kiel.de/~uho/
+Institut f. Informatik,                     email: uho@informatik.uni-kiel.de
+Preusserstr 1-9, D-24105 Kiel, Germany      Tel: +49 431 560426   Fax: 566143
+
+

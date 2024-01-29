@@ -1,0 +1,1914 @@
+  comp.lang.forth Frequently-Asked Questions, part 4 of 7
+  A discussion of available Forth Systems: Commercial,
+  Shareware & Freeware
+  John D. Verne <jdv@forth.org>
+  Last modified: $Date: 1999/07/23 02:26:49 $
+
+  Please send omissions or corrections to John D. Verne
+  <mailto:jdv@forth.org>.  The Forth Systems FAQ, Copyright (C) 1996 by
+  John D. Verne.  All Rights Reserved.  For all the gory legal stuff,
+  please see the ``Legalities...'' section.  This FAQ is adopted in its
+  entirety from the "implementations" FAQ by Stephen J. Bevan, last
+  updated September 1995.  Thanks Stephen!
+  ______________________________________________________________________
+
+  Table of Contents
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  1. Introduction
+
+     1.1 What this document is
+     1.2 What this document is not
+     1.3 How to get the files listed herein
+     1.4 Why are some listings so terse?
+     1.5 Requesting Changes to the FAQ
+     1.6 About the Systems FAQ
+
+  2. Recent Changes
+
+     2.1 Change Log
+     2.2 To Do
+
+  3. Forth for Embedded Systems
+
+     3.1 8051/31
+     3.2 CP/M, Z80
+     3.3 Hitachi
+     3.4 DSP (Digital Signal Processors)
+     3.5 MCS51 (AMTEL)
+     3.6 Motorola (68K, 6809, 68HC11/16)
+        3.6.1 68HC11/16
+        3.6.2 68000
+        3.6.3 6809
+     3.7 Microchip PIC
+
+  4. Forth for Stack Machines and Forth Chips
+
+  5. Forth for the PC
+
+     5.1 16-bit real-mode
+     5.2 32-bit protected-mode
+
+  6. Forth for Microsoft Windows
+
+  7. Forth for the Apple Macintosh
+
+  8. Forth for OS/2
+
+  9. Forth for the Acorn ARM/StrongARM
+
+  10. Forth written in C/C++
+
+  11. Forth for Various Flavors of UNIX
+
+  12. Forth for the Amiga
+
+  13. Forth for the Atari ST
+
+  14. Forth for the Transputer
+
+  15. Forth for the Tandy TRS-80
+
+  16. Forth for the Apple II
+
+  17. Forth for VAX/VMS
+
+  18. Miscellaneous Forth
+
+     18.1 Musical Forth
+     18.2 Java Forth
+     18.3 USR/3COM Pilot/Palm Pilot/Palm
+
+  19. Forth that ain't necessarily Forth
+
+  20. Contributors and Acknowledgments
+
+  21. Legalities, Miscellanea and Caveats
+
+
+
+  ______________________________________________________________________
+
+  1.  Introduction
+
+
+
+  1.1.  What this document is
+
+  This is part four of a seven part document covering many aspects of
+  the Forth programming language.  All seven parts are posted monthly to
+  the USENET newsgroups comp.lang.forth, comp.answers, and news.answers.
+  They are updated regularly.
+
+  This part is primarily concerned with the Forth implementations
+  available for a wide variety of systems.  That is, it attempts to
+  answer the question, "Where can I get Forth for ...  ?"  For further
+  information on Forth or Forth resources, please consult the other
+  parts of this FAQ.  They can be found at:
+
+
+  o  <http://www.forth.org/fig.html>
+
+  o  <ftp://ftp.forth.org/pub/Forth/FAQ/>
+
+
+
+
+  1.2.  What this document is not
+
+  This document is not a complete list of all the available Forth
+  implementations, and it never will be.  Neither will it ever be the
+  most accurate or up-to-date source for contacts and Forth resources.
+  I fully expect to have missed many legacy systems, and I know that
+  there are current Forth vendors and authors who have not made it into
+  these pages.
+
+  What I have attempted to do is maintain this document as a good
+  starting point for those who are interested in finding a Forth
+  solution for a given system.
+
+  Just as a single keyword search on the internet may not give you the
+  exact results you want, perhaps there are enough "hits" in these pages
+  to guide most people to their eventual destination.
+
+
+  1.3.  How to get the files listed herein
+
+  Some of these Forth systems are listed as being available from
+  particular anonymous ftp addresses, or from "good archives".  If you
+  have a choice of sites, please try and use as geographically close a
+  site to you as possible.  Most ftp directories have README or 00INDEX
+  files that tell you what's in them.  Read these first.
+
+
+  1.4.  Why are some listings so terse?
+
+  Forth is probably one of the most ported languages.  The number of
+  implementations I have been able to note in these pages is nothing
+  short of staggering.  In some cases I've been forced to be a little,
+  um, terse, to say the least.  If this document is going to be accepted
+  by most news servers, it has to be kept below a critical size; it may
+  already be over that limit for some sites.
+
+  If a listing is short, it is probably because that product is
+  available for more than one machine.  If you can't find the Forth
+  system you are looking for in this document, please remember that most
+  of the vendors mentioned herein can source for a wide variety of
+  platforms.  Company addresses and contact information are in part 3 of
+  the FAQ, vendors <ftp://ftp.forth.org/pub/Forth/FAQ/vendors>.
+
+
+  1.5.  Requesting Changes to the FAQ
+
+  There are probably several errors and/or omissions in this document.
+  If you spot an error, or feel that there is an obvious omission,
+  please let me know <mailto:jdv@forth.org>.  If possible, please send
+  one (1) email per change request.
+
+  Please indicate in the email subject line that this is a change
+  request for the Forth Systems FAQ, and be sure to include the exact
+  text to revise.  It is especially helpful if you can provide an
+  example of the new or fixed listing.
+
+  Please note that listings marked with a "?" are known to be wrong, and
+  need to be corrected or removed.  As well, I've also marked some
+  listings with comments [like this] when I am unsure of the accuracy of
+  the information it contains.
+
+
+  1.6.  About the Systems FAQ
+
+  The source text of this document is in SGML format, and is maintained
+  with emacs, utilizing the SGML major-mode. Historical versions are
+  stored as a GNU RCS archive.
+
+  The text and HTML versions are created with the SGMLTools package,
+  using the LinuxDoc96 DTD. The same tool is used to verify the SGML
+  source.
+
+  The HTML 3.2 conversion is tested with Netscape Communicator 4.61 and
+  Lynx.  If you require this document in formats other than plaintext or
+  HTML, please email me.
+
+
+
+  2.  Recent Changes
+
+
+
+  2.1.  Change Log
+
+  Please note that recent changes to product listings are marked with a
+  vertical bar ("|").
+
+
+  o  99-07-22 Added RTC678 PIC Forth
+
+  o  99-07-11 Updated ARM eForth, ARM in general, eForth in general,
+     added kForth, played with heading names
+
+  o  99-07-10 Added iTV 4os, Silicon Composers, P21Forth &etc. to
+     engines section
+
+  o  99-07-09 Added a skeleton Forth Engine section.  Need to populate
+     this at some point.
+
+  o  99-07-07 More tweaks, no real content change.  Folded some sections
+     into subsections.
+
+  o  99-07-05 Added TpForth listing. Tested 8051 and PC URLs.
+
+  o  99-07-03 Converted to SGML; original text source has been branched
+     in the archive.  This document will supercede it.
+
+  o  99-06-30 Tweaks hacks and fixes. Massaged LegoForth listing to be
+     clearer
+
+  o  99-05-05 Update hForth for ARM, transputer, Jax4th, FIJI, Holon,
+     Aztec, ForthCMP, Delta
+
+  o  98-10-07 Added refs to Hartforth, ChForth, 8051-forth, byteforth
+
+  o  98-09-12 Fixed A. Houghton email, typos, Quartus listing
+
+  o  98-08-24 Added entry for Quartus beta
+
+  o  98-08-19 Added listings for chipFORTH from COMSOL
+
+  o  98-08-13 Added TDS to the Misc/Hitachi list.
+
+  o  98-08-12 Updated (some) changed ftp.forth.org URLs
+
+  o  98-08-12 Updates to FORTH, Inc., MPE, jForth is now freeware
+
+  o  98-06-02 Updated PFE info, added pForth listing
+
+
+  2.2.  To Do
+
+  Maintaining and organizing the comp.lang.forth FAQ is a large job, and
+  can eat a big chunk of my time.  I've prioritized some Things To Do to
+  let the reader know what I'm up to:
+
+
+  1. Verify most, if not all, URLs
+
+  2. Organize (and standardize) the internal references, and references
+     to the other FAQ-files; integration with HTML versions
+
+  3. Create links for all commercial products to vendors' sites
+
+  4. Update commercial blurbs with latest info
+
+  5. Use the SGML source smarter -- I may or may not continue using the
+     idiosyncratic LinuxDoc DTD
+
+  If you want to help, or have any suggestions, please let me know
+  <mailto:jdv@forth.org>.
+
+
+
+  3.  Forth for Embedded Systems
+
+  Forth is probably the most chip-friendly language there is. I won't
+  pretend that I've mentioned even half of the supported chip families.
+  Please note that many of the vendors in this section can source for a
+  huge variety of chips and chip families.
+
+
+
+
+
+  3.1.  8051/31
+
+
+     Commercial
+
+     o  8051-ANS-Forth v1.01, by F.C. Cornelis and W. Ouwerkerk
+        <mailto:w.ouwerkerk@kader.hobby.nl> is a 16-bit ANSI standard
+        implementation for the MCS51 line of processors.  Currently
+        available for 80C32, 80C320, 80C520, 80C552, 80C535 and runs
+        also on Intel's new line of 87C251 processors.  Turnkey programs
+        are free of royalties and can be located in RAM. After
+        relocating it may be burned into the 8 Kb free gap in EPROM next
+        to the Forth system.  Features include LOCALS, assembler, many
+        libraries and a printed English-language manual.  Version 1.11
+        will be released in November 1998.  [Status? --jdv]
+
+     o  AM Research offer amrFORTH; a cross-development system for the
+        8051, 80C16x and 68HC11 that features a kernel of less than 700
+        bytes.  16-bit DOS or 32-bit Windows 95/98/NT development
+        systems are available.  A shareware version of amr8051 Forth
+        <ftp://www.amresearch.com/pub/lit/shar8051.exe> is available for
+        download.
+
+     o  Computer Solutions <http://www.computer-solutions.co.uk/>
+        (COMSOL) produce and sell chipFORTH for many chip families,
+        including the 8031, 83C552, 8051, 80186 and 80196.  Features and
+        development procedures depend on the chip supported, but
+        chipFORTH provides a target compiler and assembler, debugging
+        tools and code to communicate with the host.  The FORTH nucleus
+        is a 16-bit signed integer implementation with FORTH-83
+        extensions.
+
+     o  SwiftX <http://www.forth.com/Content/Products/SwiftX/SwiftX.htm>
+        from FORTH, Inc. <http://www.forth.com> is an interactive cross-
+        development tool for embedded systems.  A Windows-based system
+        that features a multitasking kernel, debugging tools,
+        dis/assembler and source libraries.  Supported chips include the
+        8051, 68332, 68HC11/12 and UT69R000.
+
+     o  Laboratory Microsystems, Inc.
+        <http://www.cerfnet.com/~lmi/catalog/catalog.htm> (LMI) offer
+        the LMI FORTH metacompiler that cross-compiles to many chip
+        families, including the 8051/31.  Compiles to ROMable code, or a
+        turnkey disk application.  Produces headerless words for compact
+        code.  There is no license fee or royalties for compiled
+        applications.
+
+     o  Mikrap and Forth-Systeme sell SwissForth and act as agents for
+        Laboratory Microsystems, Inc. (LMI).
+
+     o  MicroProcessor Engineering, Ltd. (MPE) offer their Forth5 Cross
+        Compiler for the 8031 which contains expanded ROM/RAM and single
+        chip targets.  Variants for the 8055x also available.
+
+     o  Offete Enterprises, Inc. 8051 eForth
+        <http://www.ultratechnology.com/p21prod.htm> by C. H. Ting.  A
+        small ROM based Forth system, with source code in MASM, for
+        US$25.
+
+
+     Non-commercial
+
+     o  William H. Payne, the author of "Embedded Controller Forth for
+        the 8051 Family", has made all the code
+        <ftp://ftp.forth.org/pub/Forth/Compilers/cross/8051/forth51.zip>
+        for the system described in his book available.  It is also
+        available with purchase of the book from FIG.
+
+     o  ?eForth51
+        <ftp://ftp.forth.org/pub/Forth/Compilers/cross/eForth/eForth51.zip>
+        may be downloaded free of charge from the RealTime Control and
+        Forth Board (RCFB) < http://www.well.com/~jax/rcfb>.  Designed
+        to be very portable.  [JDV:960920]
+
+     o  51forth <ftp://fims-ftp.massey.ac.nz/pub/GMoretti/51forth.zip>
+        (alternative site
+        <ftp://ftp.forth.org/pub/Forth/Compilers/cross/8051/51forth.zip>)
+        is a subroutine-threaded Forth by Scott Gehmlich.  [APH:950807]
+
+     o  CamelForth/51
+        <ftp://ftp.forth.org/pub/Forth/Compilers/cross/Camel/cam51-15.zip>
+        by Brad Rodriguez is an ANSI Standard Forth that is free for
+        non-commercial work (negotiate with the author if you want to
+        use it in a commercial product).  This is a beta-test version.
+        [SJB:950721]
+
+     o  TpForth 2.6 <http://www.technopoint.net/tpforth/> by Technopoint
+        Inc. <http://www.technopoint.net/> is an integrated software
+        development and debugging environment for the production of
+        embedded Forth software.  Two components make up the system:
+        TpForth Developer Studio and TpForth Real Engine.  The former is
+        an application designed for Microsoft Windows for writing multi-
+        threaded Forth programs and their interactive symbolic debug in
+        real time.  The latter is a multitasking engine that allows the
+        real time execution and debug of Forth programs on the target
+        hardware architecture (in other words, a multitasking stack
+        based machine that has been implemented on supported hardware
+        architectures).  Supported target architectures are currently
+        8051, 8086 (16- and 32-bit) and the MIPS family.
+
+
+  3.2.  CP/M, Z80
+
+
+
+
+     Commercial
+
+     o  Laboratory Microsystems, Inc. (LMI) offer a version of their
+        Forth-83 cross-compiler for the Z80 and the HD64180. [see the
+        ``8051'' section]
+
+     o  |eForth <http://www.ultratechnology.com/p21prod.htm> has been
+        ported to the Z80 by Ken Chen.  Includes a diagnostic program to
+        debug the system during cold boot.
+
+
+     Non-commercial
+
+     o  CamelForth/80
+        <ftp://ftp.forth.org/pub/Forth/Compilers/cross/Camel/cam80-12.zip>
+        by Brad Rodriguez is an ANSI Standard Forth that is free for
+        non-commercial work (please negotiate with the author if you
+        want to use it commercially).  [SJB:950721]
+
+     o  eForth
+        <ftp://ftp.forth.org/pub/Forth/Compilers/cross/eForth/z80efort.zip>
+        has been ported to the Z-80.
+
+
+
+
+  3.3.  Hitachi
+
+
+
+     Commercial
+
+     o  MicroProcessor Engineering, Ltd.
+        <http://www.mpeltd.demon.co.uk/> (MPE) Forth 6 compiler for the
+        H8/300H is a Windows-hosted system with a choice of umbilical or
+        standalone targets.  Comes with source code.  No runtime
+        royalties.
+
+     o  chipFORTH from FORTH, Inc is available for the H8.  [see the
+        ``8051'' section]
+
+     o  Triangle Digital Services Ltd.
+        <http://ourworld.compuserve.com/homepages/triangle/> (TDS) have
+        two varieties of Forth burned into the PROMs of their Hitachi-
+        based microcontroller systems.  Two versions are available:
+        16-bit ANS Forth on an H8/532, and FIG-Forth on the 8-bit
+        HD6301.  Manuals and utilities are provided.
+
+     o  |eForth <http://www.ultratechnology.com/p21prod.htm> has been
+        ported to the H8/532 by Bernie Mentink.
+
+
+     Non-commercial
+
+     o  pbFORTH (Programmable Brick FORTH)
+        <http://www.bmts.com/~rhempel/lego/pbFORTH/default.html> is an
+        embedded almost-ANS Forth for H8/300 and LEGO Mindstorms based
+        on hFORTH by Dr. Koh [see the ``PC Forth'' section].  Plenty of
+        tools, utilities and examples are included.  Source code
+        available for download.
+
+
+  3.4.  DSP (Digital Signal Processors)
+
+
+
+     Commercial
+
+     o  Computer Solutions (COMSOL) <http://www.computer-
+        solutions.co.uk/> offer a 32-bit FORTH for the T800.  All 64-bit
+        floating point instruction are supported on the T805.  Features
+        include a speedy optimized compiler, generation of ROMable code,
+        dis/assembler and debugger.  Multi-tasking kernel.
+
+     o  ?TCOM FORTH Target Compiler by Tom Zimmer and Andrew McKewen has
+        been extended for the TMS320.  It also supports 808X, 80196 and
+        SuperZ8. [is this still accurate information?  --jdv]
+
+     o  FORTH, Inc <http://www.forth.com/> offers chipFORTH
+        <http://www.forth.com/Content/Products/cFData.htm> for the
+        TMS320C31, an interactive, DOS-based, cross-development
+        environment for embedded systems.  Support for Intel, Motorola
+        and Hitachi microcontrollers.
+
+     o  Micro-K Systems produce complete AT&T DSP32 boards running
+        Forth. Includes the AT&T DSP library.
+
+     o  MicroProcessor Engineering, Ltd. (MPE) Forth5 Cross Compiler,
+        for various TMS320C3x family DSP chips.
+
+
+
+     Non-commercial
+
+     o  A port of eForth
+        <ftp://ftp.forth.org/pub/Forth/Compilers/cross/eForth/56k2e4th.zip>
+        is available for the 56002 DSP.  [JDV:970412]
+
+     o  Dwight Elvey has made available a Forth cross-compiler
+        <ftp://ftp.forth.org/pub/Forth/Compilers/cross/2k1forth.zip> for
+        the 21xx family of DSP chips that runs under Tom Zimmer's TCOM.
+        It was originally designed for the 2181, but should be easily
+        adapted to other 21xx parts (e.g., the 2115). The use of special
+        218x/7x instructions was avoided.
+
+
+  3.5.  MCS51 (AMTEL)
+
+
+
+
+     Commercial
+
+     o  ByteForth is a near ANSI Forth implementation for the MCS51 line
+        of processors.  Currently only the AT89C1051 and AT89C2051 are
+        supported.  ByteForth is an optimizing macro compiler,
+        generating royalty-free standalone applications.  The compiler
+        lets the user free to adjust the RAM and ROM for optimal use and
+        has a built in Flash programmer.  The system runs under
+        8051-ANS-Forth v1.01 [see the ``8051'' section] an a B+ SBC with
+        80C535.  Features built-in hardware support, decompiler, 8051
+        assembler, DOS server, printed (Dutch-language) manual and two
+        AT89C2051-12PC processors, cables and Flash programmer.  Please
+        contact W. Ouwerkerk <mailto:w.ouwerkerk@kader.hobby.nl> for
+        details.
+
+
+  3.6.  Motorola (68K, 6809, 68HC11/16)
+
+
+  3.6.1.  68HC11/16
+
+
+
+     Commercial
+
+     o  AM Research offer a version of amrForth for the 68HC11. [see the
+        ``8051'' section]
+
+     o  COMSOL offers chipFORTH for the 68HC11/16.  [see the ``8051''
+        section]
+
+     o  Holon 11 <http://holonforth.com/tools/holon11.htm> by Forth
+        Engineering is an integrated cross- development tool, which lets
+        you work interactively on the program in the target system.  The
+        200 byte remote monitor is boot-loaded into the 68HC11.  Holon
+        11 offers all benefits of HolonForth [see the ``PC Forth''
+        section].  A free fully functional test version is available.
+
+
+     o  SwiftX from FORTH, Inc. <http://www.forth.com/>.  [see the
+        ``8051'' section]
+
+     o  MicroProcessor Engineering, Ltd. (MPE) has a version of their
+        Forth5 Cross Compiler for the PC, which includes a resident
+        Forth for the 68HC16.  This is a 16-bit Harvard model (64K code
+        & 64K data).  The MPE Forth includes "long address" fetch and
+        store operators for the full megabyte of 68HC16 memory.
+        Multiple data pages are also supported if your hardware will do
+        it.
+
+     o  Laboratory Microsystems, Inc. (LMI) offer an 83-Standard
+        metacompiler for the 68HC11.  [see the ``8051'' section]
+
+     o  New Micros, Inc. <http://www.newmicros.com/> has Max-FORTH which
+        is burned into the ROMs of their OEM 68HCxx development boards.
+        Max-FORTH uses a serial port to talk to the outside world, and
+        can be compiled to off-chip ram.  [BL:931117]
+
+     o  |An eForth <http://www.ultratechnology.com/p21prod.htm> port is
+        available for the 68HC11.
+
+
+     Non-commercial
+
+     o  ?tiny4th <http://www.seanet.com/~karllunt/tiny4th> by Karl Lunt
+        is free for all non-commercial use.  [JDV:960918]
+
+     o  eForth
+        <ftp://ftp.forth.org/pub/Forth/Compilers/cross/eForth/hc11e4th.zip>
+        is a highly portable, ANS-aligned Forth with source.
+
+     o  Various at  <ftp://asterix.inescn.pt/pub/forth/68hc11/> &
+        <ftp://ftp.forth.org/pub/Forth/Compilers/cross/68hc11/>
+
+
+  3.6.2.  68000
+
+
+
+     Commercial
+
+     o  Bradley Forthware's ForthMon is available for US$500.
+
+     o  COMSOL offer chipFORTH for the 68332, 680x0.  [see the ``8051''
+        section]
+
+     o  SwiftX from FORTH, Inc. <http://www.forth.com> [see the ``8051''
+        section]
+
+     o  MicroProcessor Engineering, Ltd. (MPE): Forth5 Cross Compiler, a
+        32-bit cross-development system for the PC.  A protected-mode
+        version is available.
+
+     o  Laboratory Microsystems, Inc. (LMI) offer a 16- or 32-bit 680x0
+        Forth-83 system.  [see the ``8051'' section]
+
+     o  |eForth <http://www.ultratechnology.com/p21prod.htm> has been
+        ported to the 68000 by Richard Haskell, specifically for the
+        Motorola ECB board.
+
+
+     Non-commercial
+
+     o  There is a version of Laxen and Perry's F83 which will meta-
+        compile 68000 code on a PC that can be burned to ROM, or used
+        with S records any way you like.  It is available on GEnie as
+        M16PC.ARC.  [MC:93]
+
+     o  ?bot-Forth
+        <ftp://asterix.inescn.pt/pub/forth/68000/botfth68.arc>: The
+        source code is comprised of 3 parts: the metacompiler, mini-
+        assembler, and the kernel.  The kernel will meta-compile itself.
+        The metacompiler was presented at the 1989 Rochester Forth
+        Conference. [SJB:93]
+
+     o  F68KANS & F68K, Joerg Plewe. [see the ``8051'' section]
+
+     o  eForth has been parted to the VME 68K.  A subroutine threaded
+        implementation of ECBE4TH 32-bit eForth, derived from Haskell's,
+        is available on GEnie as MVME167.ZIP.
+
+     o  TILEforth by Mikael Patel. [see the ``C-Forth'' section]
+
+     o  Various at
+        <ftp://ftp.forth.org/pub/Forth/Compilers/cross/68000/>
+
+
+  3.6.3.  6809
+
+
+
+     Non-commercial
+
+     o  CamelForth/09
+        <ftp://ftp.forth.org/pub/Forth/Compilers/cross/Camel/cam09-10.zip>
+        by Brad Rodriguez.  Consult the author for commercial use.
+
+
+  3.7.  Microchip PIC
+
+
+
+
+     Commercial
+
+     o  |IRTC678 for the PIC <http://www.ram-tech.co.uk/picmicro.htm> is
+        available from RAM Technology Systems.  IRTC678 for the PIC
+        produces optimized machine code.  The 'words' are subroutines
+        that use the 8 deep stack of the PIC and the compiler keeps
+        track of the stack use to warn of wrap over. The PIC is
+        programmed incrementally by the ICEPIC module that connects to
+        the host PC parallel port and your project hardware.
+
+     o  F2P v1.0
+        <ftp://ftp.forth.org/pub/Forth/Compilers/cross/PIC/f2pic10.exe>
+        is a compiler that reads Forth source for the PIC16Cxx family of
+        microcontrollers and generates a file ready to be assembled by
+        Microchip's MPASM. You will need MPASM or MPLAB to be able to
+        generate executable code.  This is freely available from the
+        Microchip web site <http://www.microchip.com>.  Incremental
+        updates <ftp://lagrange.isy.liu.se/ftp/pub/F2PIC> may be
+        available. [JDV:970815]
+
+     o  |eForth <http://www.ultratechnology.com/p21prod.htm> has been
+        ported to the PIC17C42.
+
+
+     Non-commercial
+
+     o  There is an implementation for the PIC of unknown pedigree here:
+        <ftp://ftp.forth.org/pub/Forth/Compilers/cross/PIC/Irtc84.zip>
+
+
+
+  4.  Forth for Stack Machines and Forth Chips
+
+  [Under construction. Suggestions welcome. --jdv]
+
+
+     Commercial
+
+     o  |The iTV Corporation <http://www/itvc.com/4os.htm> has developed
+        4os, a real-time OS that utilizes the i21 Forth microprocessor.
+        4os is a complete networked information appliance operating
+        system.  The entire system (OS, live Forth system, network, file
+        system, graphic decoders &etc.) requires less than 512Kb of
+        program memory.
+
+     o  |Silicon Composers, Inc. <http://www.silcomp.com/product.htm>
+        offer several high-end single board computers and parallel
+        coprocessor systems based on the Harris RTX 2000 and SC32 stack
+        machines.  SC/Forth for the Harris-based systems is a
+        multitasking Forth-83 standard implementation with IEEE
+        floating-point and utility libraries available.
+
+     o  |P21Forth <http://www.ultratechnology.com/p21forth.html> from
+        Offete Enterprises, Inc. is an ANS implementation designed for
+        the MuP21 (and MuP21h).  Includes drivers for bit manipulation,
+        I/O, graphics and multitasking.  Discrete P21 chips and
+        evaluation kits are also available.
+
+     o  |Offete Enterprises, Inc.
+        <http://www.ultratechnology.com/p21prod.htm> offer the Indelko
+        RTX2000 kit with the cmForth source code for US$150.
+
+
+     Non-commercial
+
+     o  |S21 <http://www.ultratechnology.com/s21.html> is a freely
+        available simulator for the MuP21 Forth machine.  It comes with
+        an online manual, source code and a target image of P21Forth.
+
+
+
+  5.  Forth for the PC
+
+
+
+  5.1.  16-bit real-mode
+
+
+
+
+     Commercial
+
+     o  CHForth is a 16-bit ANSI standard implementation for the Intel
+        80x86 and above processors under DOS. CHForth runs in real mode
+        using multiple segments.  By using more segments much larger
+        programs can be written than under F83.  CHForth makes it easy
+        to generate turnkey programs (with or without headers).  Royalty
+        free.  Features online help, command-line editor, Locals,
+        interrupt support and many libraries.  Please contact W.
+        Ouwerkerk <mailto:w.ouwerkerk@kader.hobby.nl> for details.
+
+     o  polyFORTH <http://www.forth.com/Content/Products/pF32-386.htm>
+        from FORTH, Inc. <http://www.forth.com> is a fully integrated,
+        interactive programming environment designed for real-time
+        applications on 32-bit DOS-based PCs.  Includes an assembler,
+        editor, programming aids and utilities.  polyFORTH hosts a
+        cross-development system for single-chip microcontrollers. [See
+        the ``8051'' section]
+
+     o  Harvard Softworks HS/FORTH makes full use of extended memory,
+        and comes with optimizer, sound, graphics, and 80x87 libraries.
+        Has an odd, but efficient, use of memory and dictionary
+        structure.  [JDV:950919]
+
+     o  Holon 86 <http://holonforth.com/tools/holon86.htm> by Forth
+        Engineering is an interactive cross-development tool for x86
+        processors in real mode under DOS. Holon 86 offers all benefits
+        of HolonForth: browser user interface, structured presentation
+        of the source code, hypertext and direct access to every program
+        word, automatic code substitution, automatic code stripping,
+        single step debugging of Forth and assembler code.  A free test
+        version is available.
+
+     o  MicroMotion MasterFORTH is available for the PC.
+
+     o  Miller Microcomputer Services (MMS) offer MMSFORTH V2.5 for
+        systems with and without DOS.
+
+     o  Laboratory Microsystems, Inc. (LMI) offer UR/FORTH
+        <http://www.cerfnet.com/~lmi/catalog/catalog1.htm#I1>, in 16-
+        and 32-bit implementations.  They provide libraries for
+        telecommunications, 80x87 support, custom characters, target
+        compiler, and more.  Based on the Forth-83 standard.
+
+     o  MP7: TURBO-Forth.  Four versions optimized for specific CPU's.
+        Also: FASTGRAF; an I/O and graphics package for TURBO-Forth.
+        [JDV:960216]
+
+
+     Non-commercial
+
+     o  AstroForth
+        <ftp://ftp.forth.org/pub/Forth/Archive/ibm/astro4th.arc>, I. R.
+        Agumirsian.  An 83-Standard Russian Forth with windows,
+        assembler, and a screen editor.  This is a demonstration system
+        only.
+
+
+     o  eForth
+        <ftp://ftp.forth.org/pub/Forth/Compilers/cross/eForth/eforth.zip>
+        is a very portable, ANS-aligned, public-domain Forth that comes
+        with all sources and only 29 words in assembler.
+
+     o  ForthCMP 2.3S <http://www.aracnet.com/~tomalmy/forthcmp.html> by
+        Tom Almy is a fast native code compiler for DOS and embedded
+        80x86 applications.  Both ANS and 84-Standard versions
+        available.  Printed documentation supplied with registration.
+
+     o  Golden Porcupine Forth, v92.5 by Alexandr Larionov.  Distributed
+        as FREEWARE, with Russian docs, for non-commercial work.
+        Includes various useful libraries for graphics, sound &etc.
+        Follows the Forth-83 Standard.  Phone: 7 095 288-2660.  [VPF:93]
+
+     o  Pygmy Forth v1.5 <http://www.eskimo.com/~pygmy/forth.html> is a
+        small, 16-bit DOS Forth written by Frank Sergeant that is
+        modeled after Chuck Moore's cmFORTH for NOVIX.  It is shareware
+        but there is no charge for registration.  If you DO choose to
+        register, there is a Bonus Disk with goodies for  $20.  Complete
+        with documented source code, editor, multitasker, I/O, assembler
+        and metacompiler.  Can be embedded in a C wrapper to access C
+        library routines.  Pygmy Forth is free to download
+        <ftp://ftp.forth.org/pub/Forth/Compilers/native/dos/Pygmy/pygmy15.zip>.
+
+     o  MVP-FORTH <ftp://ftp.forth.org/pub/Forth/Archive/ibm/make-
+        mvp.exe>, a Forth-79 from Mountain View Press Inc. (MVP), is
+        freely available for different platforms.  MVP also offer other
+        commercial Forth systems, information, and books.
+
+     o  ?TCOM v2.5 <ftp://ftp.forth.org/pub/Forth/Reviewed/tcom25.zip>
+        by Tom Zimmer is a 16-bit cross/metacompiler for DOS.
+        [SJB:950720]
+
+     o  ?  F-PC v3.6 <http://www.efn.org/~fwarren/fpc.html> is a 16-bit
+        Forth that is based on the Forth-83 Standard, but includes
+        numerous extensions.  Very complete implementation, with lots of
+        examples, and a huge library of code for graphics, I/O, math,
+        &etc.  Available for public download
+        <ftp://ftp.forth.org/pub/Forth/Compilers/native/dos/FPC>
+        [SJB:950722]
+
+     o  hForth v0.9.c
+        <ftp://ftp.forth.org/pub/Forth/Compilers/native/dos/hForth/hf86v09c.zip>
+        by Wonyong Koh is an ANS-Forth inspired by eForth.  This free
+        beta release is ANS-compliant, and all commented MASM source
+        code is included.  There are three hForth models to choose from:
+        A standard EXE (for segmented memory machines), RAM (for any
+        other RAM-only system), and ROM (for small embedded systems).
+        Designed to be easily ported to any CPU (Z-80 & ARM versions are
+        also available).  [SJB:950720]
+
+     o  wpforth v1.0
+        <ftp://ftp.forth.org/pub/Forth/Reviewed/wpforth.zip> by Albert
+        Chan is a prototype of a typographical programming system built
+        around WordPerfect v5.x and Pygmy Forth v1.4.  [SJB:950722]
+
+     o  ZENForth v1.18a
+        <ftp://ftp.forth.org/pub/Forth/Archive/ibm/zen18a.zip> by Martin
+        Tracy is a ROMable small-model ANS-Forth.  The beta version is
+        bundled with J. Woehr's book, "Forth: The New Model" (ISBN:
+        1-55851-277-2).
+
+     o  ?4tH v3.2e <http://www.geocities.com/SiliconValley/Bay/2334/> is
+        a fast, portable and stable compiler that is very easy to embed
+        into C applications.  It is ANS-Forth and 79-Standard
+        compatible, and includes such constructs as assertions,
+        exception handling, and decompilers.  Generates portable byte
+        code.  Confirmed ports to DOS, Windows, Linux, BSD-UNIX, DPX/2,
+        DPX/20, RS/6000, and Coherent, with others in the works.  Comes
+        with lots of documentation and sample applications.  4tH was
+        discussed in Forth Dimensions (Sep/Oct 1996).  Available for
+        download
+        <ftp://ftp.taygeta.com/pub/Forth/Applications/4th-32e.zip>.
+
+     o  Various at  <ftp://ftp.forth.org/pub/Forth/Archive/ibm/> &
+        <ftp://ftp.forth.org/pub/Forth/Compilers/native/dos/>
+
+
+     Miscellaneous
+        These should be available on any SIMTEL mirror
+
+     o  bbl_[ab].zip: Fast 16/32-bit Forth based on F83; needs work
+
+     o  min4th25.zip: MiniForth system v2.5, with A86 [a public-domain
+        assembler] source
+
+     o  uniforth.zip: Sampler of floating point Forth compiler
+
+     o  fig86.zip: Original Fig-86 Forth compiler [SJB:931030]
+
+
+  5.2.  32-bit protected-mode
+
+  Please note that the ``16-bit real-mode'' listings may also contain
+  references to 32-bit implementations.
+     Commercial
+
+     o  Bradley Forthware sells Forthmacs for $250.  Price includes
+        source and DOS extender.
+
+     o  polyFORTH from FORTH, Inc. <http://www.forth.com>.  [see the
+        ``PC Forth'' section]
+
+     o  HS/FORTH, by Harvard Softworks, provides access to a full, flat
+        4Gb of memory.  [JVN:93]
+
+     o  iForth <http://www.IAEhv.nl/users/mhx/i4faq.html> is an ANS-
+        compliant system by Marcel Hendrix <Mailto:mhx@IAEhv.nl>
+        available for DOS (with the GO32 extender), WinNT, or Linux.
+        iForth is optimized for speed. It is subroutinethreaded, and
+        uses a combination of macro expansion, special-casing, and
+        peephole optimizing.  iForth also contains many words to
+        interface to the PC hardware; either directly under MS-DOS, or
+        through libraries in the Linux iServer.  A very large number of
+        Examples are available, including: graphics, floating-point
+        utilities, language compilers and interpreters, code to work
+        with .WAV files, and routines to access Novell Net hardware.
+        Comes with a 220 page manual and an online help facility (ASCII
+        or HTML).  iForth costs Dfl 200 (US$130), but a free copy is
+        available for those planning to use it for projects in any way
+        beneficial to the Forth community at large, or those using the
+        MMURTL OS.  [JDV:960911]
+
+     o  Laboratory Microsystems, Inc. (LMI) sell a 32-bit protected-mode
+        UR/FORTH based on the 'Phar Lap' DOS extender.  [see the ``PC
+        Forth'' section]
+
+     o  MicroProcessor Engineering, Ltd. (MPE) ProForth for DOS
+        <http://www.mpeltd.demon.co.uk/index2.htm>, v2.2 is a powerful,
+        comprehensive Forth system for 386+ DOS PCs.  Uses a royalty-
+        free DOS extender to provide a full 32-bit Forth running in
+        protected mode.  Features full DOS file and shell support,
+        VGA/EGA graphics, direct screen writes, support for IEEE
+        floating-point math, a macro assembler and a Forth decompiler.
+
+     o  Offete Enterprises Inc. has a protected-mode 32-bit eForth
+        <http://www.ultratechnology.com/p21prod.htm> that comes with
+        source code and a public-domain DOS extender.
+
+     o  bigFORTH by Bernd Paysan [see the ``Atari'' section ].
+
+
+     Non-commercial
+
+     o  Common Forth v1.668 <http://www.sinica.edu.tw/~lukelee> is an
+        experimental 32-bit Forth system that features floating point
+        support, C interface, disassembler/assembler, graphics support
+        and a metacompiler.  Full source code included.
+
+     o  eForth
+        <ftp://ftp.forth.org/pub/Forth/Compilers/cross/eForth/e4th386.lzh>
+        is available as a 32-bit port by Andy Valencia.
+
+     o  FORTH32 is a flat 32-bit subroutine-threaded Forth for DOS-DPMI.
+        [see the ``OS/2'' section]
+
+     o  MB&WW Forth386 V1.0 is a Forth interpreter conforming to the
+        ANSI draft standard X3.215, for 80386+ processors running MS-DOS
+        V3.3 or later.  The dictionary is kept separate from the
+        compiled code, allowing a header- less copy of the interpreter
+        to be saved as a new executable file.  Utility definitions are
+        provided which take advantage of this to produce compact and
+        secure applications.  Supports file-oriented or block I/O.
+        String handling has been made an integral part of the design.
+        Please email J. Bruce <mailto://jbrucew@aol.com> for details.
+
+     o  FROTH <ftp://ftp.forth.org/pub/Forth/Reviewed/froth-0.41b.zip>
+        is a free 32-bit Forth system, with source code.
+
+     o  Gforth v0.1b works under DOS (with the GO32 DOS extender).  [see
+        the ``C-Forth'' section]
+
+     o  OOF <ftp://ftp.forth.org/pub/Forth/Reviewed/oof.zip> is an
+        object-oriented 32-bit Forth System written by Zsoter Andras. It
+        does not use a threaded paradigm, and generates native machine
+        code. Although many ANS Forth programs will run on OOF, it is
+        not fully ANS Forth compliant.  All source is under the GNU
+        General Public License. [SJB:940722]
+
+     o  Ale Forth <ftp://ftp.forth.org/pub/Forth/Reviewed/alefth.zoo> by
+        Johns Lutz Sammer.  Implements ANS Basis 17 wordset along with
+        lots of extensions.  Supports subroutine threading, native code
+        generation and inline words.  [SJB:940722]
+
+     o  |KernelForth <http://www.kernelforth.com/> is a development
+        system for writing Win32 device drivers.  It is targeted for use
+        in a lab environment.  Source code available.  Registration is
+        required, but free.
+
+
+
+
+  6.  Forth for Microsoft Windows
+
+
+
+     Commercial
+
+     o  Bradley Forthware Forthmacs is available for Windows 3.1 and
+        costs $250.  It includes an EMACS editor and comes complete with
+        source.
+
+     o  iForth for Windows NT 4.0/Linux comes with a C-server that
+        handles all I/O and other operating system-specific tasks.  This
+        version supports pipes, dynamic linking, Tcl/Tk, X-windows, SVGA
+        graphics, Voxware, MIDI, and control of virtual console screens.
+        [see the ``32-bit PC Forth'' section]
+
+     o  LMI WinForth v1.01
+        <http://www.cerfnet.com/~lmi/catalog/catalog0.htm#1> is a 16-bit
+        Forth for Windows 3.1/NT 3.1 available from their BBS, or via
+        ftp <ftp://ftp.forth.org/pub/Forth/Reviewed/wfshr101.exe>, for a
+        US$100 registration fee.  Comes with a native-code compiler and
+        debugger.  Supports 80x87 floating-point, SDK Help and overlays.
+        The kernel can be re-compiled.  Based on the Forth- 83 standard.
+        A 32-bit version is under development.
+
+     o  MicroProcessor Engineering, Ltd. (MPE) ProForth for Windows
+        <http://www.mpeltd.demon.co.uk/index2.htm> v2.1 is a 32-Forth
+        environment designed to run under Windows 3.11/95/98/NT.
+        Features include simple access to the 32-bit Windows API and
+        DLLs, debugger, (dis)assembler, fast compilation, on-line help
+        and interfaces for file system support, floating-point and
+        serial communications.  Supports the ANS Forth standard.
+        Windows 3.11 requires WIN32s (supplied).
+
+
+     o  SwiftForth
+        <http://www.forth.com/Content/Products/SwForth/SwForth.htm> from
+        FORTH, Inc. <http://www.forth.com> is an extremely fast Forth
+        system fully integrated with Windows 95/98/NT.  It is capable of
+        as much real-time performance as these environments can support.
+        Fully compliant with the ANS Standard.  32-bit subroutine
+        threaded implementation.
+
+
+     Non-commercial
+
+     o  Aztec Forth <http://www.ncl.ac.uk/~n6388131/azintro.htm> is a
+        minimum system for IBM compatible computers under Win95.  Aztec
+        Forth generates native Intel code, with inlining available to
+        modify the amount of subroutines based on the size of the
+        current word.  Windows API calls are normal Forth words and DLLs
+        are wordlists, although WORDS will not list the contents of a
+        DLL.  All addresses are treated the same so there is no need to
+        translate from "Forth" to "Windows" addresses.  A Windows block
+        editor with cut & paste and shadow block support is included
+        with the download <http://www.ncl.ac.uk/~n6388131/aztec.zip>.
+        [JDV:970724]
+
+     o  GForth is available as a DOS/GO32 or native Win32 application.
+        No Windows programming support yet.  [see the ``C-Forth''
+        section]
+
+     o  Jax4th v1.25 <http://www.well.com/~jax/rcfb/forth.html>; a
+        freeware 32-bit Forth for Windows NT complete with source code.
+        The current version features complete access to NT DLLs, and a
+        BLOCK loading facility.  Written in MASM by Jack Woehr.
+        [JJW:990102]
+
+     o  Laboratory Microsystems, Inc. (LMI) WinForth.  An "explorer"
+        version is available. [see the ``commercial section'', above]
+
+     o  ?Pocket Forth <http://www.davidn.com/pforth.htm> v0.1 for
+        Windows CE is a work in progress.  There are MIPS and SH3
+        binaries available.  [Address no longer valid; any ideas?
+        --jdv]
+
+     o  Win32forth
+        <ftp://ftp.forth.org/pub/Forth/compilers/native/windows/Win32For/w32for35.exe>
+        v3.5 by Tom Zimmer and Andrew McKewan is a relatively complete
+        implementation of a Forth IDE for 32-bit Windows.  It comes with
+        some online documentation and examples, but is meant for those
+        who are already familiar with Windows programming.  The kernel
+        can be recompiled from the C++ source.  [JDV:980420]
+
+     o  4tH v3.2e has been ported successfully to Windows.  [see the
+        ``PC Forth'' section]
+
+
+
+  7.  Forth for the Apple Macintosh
+
+
+     Commercial
+
+     o  Bradley Forthware Forthmacs is available for US$50.
+
+     o  Power MacForth
+        <http://www.forth.com/Content/Products/MacForth.htm> from FORTH,
+        Inc. <http://www.forth.com> (based on MacForth originally
+        developed by Creative Solutions, Inc.) is a highly optimized
+        native Power Mac system that features high-speed execution,
+        internal multi- tasking and a RISC assembler providing direct
+        access to the native CPU architecture.  Features include
+        complete Power Mac Toolbox support, multitasking support,
+        integrated editor, Quickdraw graphics libraries and extensive
+        documentation.  Fully ANS compliant.
+
+     o  Micromotion offer a version of their MasterForth for the Mac.
+
+
+     Non-commercial
+
+     o  Yerk <ftp://astro.uchicago.edu/pub/MAC/Yerk/yerk_367.sea.bin> is
+        an object-oriented language based on Forth for the Macintosh and
+        was originally a product marketed as Neon (reviewed in Dr.
+        Dobb's Journal #108, 1985).  Yerk runs on all Macs with at least
+        System 6.0 but requires System 7.0 (or greater) for full
+        compatibility.  Manual available
+        <ftp://astro.uchicago.edu/pub/MAC/Yerk/yerkManual3.67.sea.bin>.
+
+     o  Mops v2.7 <http://www.netaxs.com/~jayfar/mops.html>, by Michael
+        Hore, is a free object oriented Forth
+        <ftp://ftp.forth.org/pub/Forth/Compilers/native/mac/Mops/> also
+        derived from Neon.  There is a PPC native version in the works.
+        [info?  --jdv]
+
+     o  Pocket Forth v6.5
+        <http://chemlab.pc.maricopa.edu/pocket/pocket65.sit.hqx>, by
+        Chris Heilman.  Subroutine threaded with 16-bit words.  Supports
+        16-bit relative, 32-bit absolute addressing.  Allows "inline"
+        definitions, but doesn't have an inline assembler.  Minimal
+        Toolbox support; but it does supports Apple Events.  Comes as a
+        17K application, and a desk accessory.  The Distribution
+        <ftp://kreeft.intmed.mcw.edu/q/pub/forth/Pocket65.cpt.hqx> comes
+        with complete Source; the kernel is in assembly.  There is an
+        MPW version available.
+
+     o  MacQForth
+        <ftp://kreeft.intmed.mcw.edu/q/pub/mac/macqforth.cpt.hqx> is an
+        adaptation of (Apple II) QForth to the Macintosh. Created with
+        Mops [see above] and accompanied by the Mops sources.  An
+        attractive introductory package, including some witty and
+        instructive material proselytizing on behalf of Forth.
+        [BB:950807]
+
+     o  ThisForth v1.0.0.d is an ANS-compliant C-Forth written by Will
+        Baden, originally for the Sun, now maintained on a Macintosh.
+        Designed with portability and ease of extension in mind.  The
+        Mac incarnation has few Mac features; it does have drag & drop,
+        and double-clicking on a source file will load and execute it.
+        [see the ``C-Forth'' section]
+
+
+
+  8.  Forth for OS/2
+
+
+
+     Commercial
+
+     o  Forth/2 by Michael A. Warot and Brian Mathewson can be licensed
+        for commercial work.  Talk to Brian if you have something to add
+        or you have any suggestions regarding Forth/2.  Contact Michael
+        if you want to obtain a commercial license and/or source code.
+        Free for non-commercial work.
+
+
+     Non-commercial
+
+     o  Forth/2 <ftp://ftp-
+        os2.cdrom.com/pub/os2/2_x/program/forth025.zip> by Michael A.
+        Warot and Brian Mathewson is available by ftp for non-commercial
+        work.  [see above]
+
+     o  FORTH32 <ftp://ftp.forth.org/pub/Forth/OS-2/os2forth.zip> is a
+        flat 32-bit subroutine-threaded Forth for DOS- DPMI, and text-
+        mode OS/2.  It is ANS-Compliant and contains the full ANS
+        wordset implementation, including all the extension wordsets
+        except LOCALS.  The DOS version has a built-in editor for code
+        VIEWing, and the OS/2 version has hooks precompiled in it to
+        link to GNU EMACS for VIEWing.  The OS/2 version is also fully
+        multi-threaded and supports all the DOS, VIO, and MOUSE system
+        calls from high-level code.  [JDV:970708]
+
+     o  Gforth works under OS/2 (with EMX).  No OS/2-specific
+        programming support.  [see the ``C-Forth'' section]
+
+     o  The Portable Forth Environment
+        <ftp://ftp.forth.org/pub/Forth/Compilers/native/OS-2/pfe095.zip>
+        (PFE) will run on most PC's under OS/2.  [see the ``C-Forth''
+        section]
+
+     o  There are two implementations of unknown pedigree at
+        ftp://ftp.forth.org/pub/Forth/Compilers/native/OS-2/
+        <ftp://ftp.forth.org/pub/Forth/Compilers/native/OS-2/>
+
+
+
+  9.  Forth for the Acorn ARM/StrongARM
+
+
+     Commercial
+
+     o  RiscForth by Bill Larkin, available from Silicon Vision.  A
+        subroutine threaded Forth-83 implementation with with the nose
+        of the stack in a register and nice, tight coupling to the
+        underlying OS.  A mean and fast commercial product.
+        [JDV:960911]
+
+
+     Non-commercial
+
+     o  |Forthmacs v3.1
+        <ftp://ftp.forth.org/pub/Forth/Reviewed/forthmacs.arc> is Hanno
+        Schwalm's port of Mitch Bradley's Forthmacs for RISC/OS (Acorn)
+        computers using the ARM2, ARM3, ARM6, ARM7 or StrongARM CPUs.
+        Complete with debugger, assembler, decompiler/disassembler, and
+        floating-point math.  Follows the 83-Standard, and was written
+        with portability to other platforms and former versions in mind.
+        It runs almost any software that has been written for Forthmacs.
+        Free for evaluation, or 100 d-marks for the fully supported
+        version.  Some documentation and tutorials
+        <http://pweb.de.uu.net/schwalm.hb/> are available online.
+
+     o  ARMForth by Rob Turner <mailto:rst@cs.hull.ac.uk>, a lecturer at
+        the University of Hull (United Kingdom).  Released into the
+        public domain.  [JDV:960911]
+
+     o  hForth <http://taygeta.org/forthcomp.html> has been ported to
+        the ARM. [see the ``PC Forth'' section]
+
+     o  wimpForth for the StrongARM under RISC/OS 3.7 is available from
+        the author <mailto:charlese@cvs.com.au>.
+     o  |aForth <http://sc3d.org/rrt/research.html> by Reuban Thomas is
+        a freely available implementation for the RISC/OS.
+
+
+
+  10.  Forth written in C/C++
+
+
+
+     Commercial
+
+     o  Bradley Forthware C-Forth costs US$100.
+
+
+     Non-commercial
+
+     o  ThisForth
+        <ftp://ftp.forth.org/pub/Forth/Compilers/native/unix/this4th.tar.gz>
+        v1.0.0.d, by Will Baden, is a reluctantly ANS-compliant C-Forth
+        that originated on a Sun Workstation before the ANS-Forth
+        standard.  It is intended as an embedded command line
+        interpreter and scripting tool for Unix applications.  You will
+        need m4 and an ANSI-C compiler to compile it.  Two major design
+        objectives were portability and ease of extending.  The first
+        goal was achieved by sticking to Standard C, and the Standard C
+        Library; the second by the m4 macro processor to define
+        primitives in "low-level Forth".  Binaries are available for a
+        number of architectures (Macintosh, CRAY, MIPS, SUN, SGI,
+        Intel).  [JDV:970407]
+
+     o  PFE (Portable Forth Environment)
+        <ftp://ftp.forth.org/pub/Forth/Compilers/native/unix/pfe-0.9.14.tar.gz>
+        v0.9.14 is an ANS-compatible Forth implementation written in
+        ANSI-C.  All the code is under the GNU Library General Public
+        License.  Binaries for various architectures available.  The
+        interpreter has many bash-like features, like input completion.
+        A more powerful version with dynamic module loading is in final
+        testing.  [JDV:02JUN98]
+
+     o  pForth v19 <www.softsynth.com/pforth/> is a public domain,
+        portable ANS Forth based on a kernel written in ANSI C.
+        designed to be easily portable to any platform, pForth has been
+        successfully ported to Macs, PCs, Suns, Amigas, SGI Indys, 3DO
+        ARM/PowerPCs and others.  Features ANS standard support for most
+        word sets, debugger, DEFER and smart conditionals.  Can be
+        compiled without any stdlib calls or special pre-processing.
+
+     o  Gforth <http://www.complang.tuwien.ac.at/forth/gforth/> is a
+        fast and portable implementation of the ANS Forth language. It
+        works nicely with the EMACS editor, offers some nice features
+        such as input completion and history and a powerful locals
+        facility, and it even has (the beginnings of) a manual.
+        Distributed under the GNU General Public License.  Gforth runs
+        under Unix (various flavors), DOS/Win (with GO32), OS/2 (with
+        EMX) and Win95/NT, and should not be hard to port to other
+        systems supported by GCC.  Gforth-0.1beta
+        <ftp://ftp.complang.tuwien.ac.at/pub/forth/gforth/> has been
+        tested successfully on Linux (Intel), SunOS (SPARC) and Ultrix
+        (MIPS).  Linux binaries
+        <ftp://sunsite.unc.edu/pub/Linux/devel/lang/forth/> and source
+        available.
+
+     o  HENCE4TH v1.2
+        <ftp://ftp.forth.org/pub/Forth/Archive/ibm/hence4th.arc>; A
+        FIGforth written in C that currently runs under V7 Unix,
+        Personal C Compiler, and Mix Power C.  Porting to other
+        platforms should be trivial, considering how vastly different
+        these three are!  [KH:93]
+
+     o  C-Forth <ftp://asterix.inescn.pt/pub/forth/unix/c-forth.tar.z>
+        is available available from comp.sources.unix, or via ftp.
+
+     o  TILEforth
+        <ftp://ftp.forth.org/pub/Forth/Compilers/native/unix/tile-
+        forth-2.1.tar.z> by Mikael Patel is a 32-bit Forth-83.  Can be
+        built on most 68000 machines (Amiga, Atari ST, &etc).
+        [JDV:960920]
+
+     o  Until v2.5.2
+        <ftp://ftp.forth.org/pub/Forth/Compilers/native/misc/until252.zip>
+        is (almost) Forth-83 written in C.  Its internals are described
+        in the book "Write Your Own Programming Language Using C++"
+        (ISBN# 1-55622-264-5) by Norman Smith
+        <mailto:smithn@ORVB.SAIC.COM>.  This implementation was designed
+        to call, and be called, by other C functions.  It is ideal as a
+        'macro' language embedded in C/C++ applications.  Comes with 175
+        pp. of documentation.  [SJB:950720]
+
+     o  |kForth 1.0
+        <http://ourworld.compuserve.com/homepages/krishnamyneni/ccre/ccre.htm>
+        is available for Linux or Windows.  It implements a subset of
+        the ANS-Forth Standard.  Designed such that it's object code may
+        be interfaced to another program to serve as a customizable
+        application language.  Features include low-level file access
+        words, string manipulation and type-checking on memory
+        operations.
+
+
+
+  11.  Forth for Various Flavors of UNIX
+
+  Please see the ``C-Forth'' section.
+
+
+
+     Commercial
+
+     o  Bradley Forthware's Forthmacs.  It comes with source code, an
+        assembly debugger, and floating point routines.  Available for
+        Sun Solaris.  [others? --jdv]
+
+     o  iForth v1.07 is an ANS-Forth for Linux/DOS/Windows NT.  May be
+        available free, with some restrictions.  [see the ``32-bit PC
+        Forth'' section]
+
+
+     Non-commercial
+
+     o  68K <ftp://asterix.inescn.pt/pub/forth/68000/forth-68000.tar.Z>
+        is an indirect-threaded 32-bit Forth based on the 83 standard.
+        Written in 68K assembly (Motorola format) by Andy Valencia
+        <vandys@cisco.com>.  [SJB:94]
+
+     o  A UN*X port of Forth-83
+        <ftp://ftp.forth.org/pub/Forth/Compilers/native/unix/f83.tar.z>
+        is available.
+
+
+     o  A version of figForth
+        <ftp://ftp.forth.org/pub/Forth/Archive/others/pdp114th.zip> in
+        PDP-11 assembler is available.  (Alternative site
+        <ftp://asterix.inescn.pt/pub/forth/others/pdp114th.zip>).
+        [SJB:950718]
+
+     o  An eForth v1.0 port
+        <ftp://ftp.forth.org/pub/Forth/Compilers/native/unix/Linux/Linux-
+        eforth-1.0c.tar.gz> (by Francois-Rene Rideau) to Linux on an
+        i386 architecture is based on the DJGPP/GO32 version by Andy
+        Valencia.  [SJB:950720]
+
+     o  eForth <http://www.IAEhv.nl/users/mhx/eforth.html> has been also
+        ported to Linux by Marcel Hendrix.  [JDV:970412]
+
+     o  Gforth has been tested successfully on Linux.  [see the ``C-
+        Forth'' section]
+
+     o  4tH v3.2e
+        <ftp://ftp.taygeta.com/pub/Forth/Applications/4th-32e.tar> has
+        been ported successfully to RS/6000, Linux, BSD, and others.
+        [see the ``PC Forth'' section]
+
+
+     Miscellaneous
+
+     o  Firmworks Open Boot <http://www.firmworks.com>: built-in to the
+        SPARCstation PROMs.  Inaccessible from the UNIX environment; you
+        have to interrupt the boot process and then type "n" to get to
+        Forth.  [SJB:950720]
+
+
+
+  12.  Forth for the Amiga
+
+
+
+     Non-commercial
+
+     o  Delta Research JForth Professional
+        <http://www.softsynth.com/jforth> 3.x comes with a tutorial,
+        libraries, and examples.  The environment includes an editor
+        with ARexx, and a standard block editor.  Although it behaves as
+        an interpreter, JForth is a true compiler.  It can handle
+        precompiled modules and includes, and comes with a utility to
+        translate includes from C to Forth.  JForth provides words for
+        handling C-style data structures, easy graphics and menus, IFF,
+        and ARexx.  It also has an object-oriented programming system
+        suitable for building data types for large projects.  [MH:93]
+
+     o  A4th by Appleman
+        <ftp://ftp.forth.org/pub/Forth/Compilers/native/misc/amiga/a4th.zoo>
+        is a 32-bit port of L&P F83 complete with metacompiler written
+        for the A1000.  [JJW:931021]
+
+     o  F68K & F68KANS by Joerg Plewe should work if you can implement a
+        loader.  [see the ``8051'' section2]
+
+     o  Jax4th <http://www.well.com/~jax/rcfb/> is a dp-ANS2
+        implementation by Jack J. Woehr.  [JJW:990102]
+
+     o  MVP-FORTH <http://src.doc.ic.ac.uk/aminet/dev/lang/MVP-
+        FORTH.lha> by MVP is available for the Amiga at various sites
+        <ftp://ftp.forth.org/pub/Forth/Compilers/native/misc/amiga/mvp4th.arc>.
+
+     o  TILEforth
+        <ftp://ftp.forth.org/pub/Compilers/cross/68000/OS9TILE.LZH> will
+        run on most 68000 machines.  [see the ``C-Forth'' section]
+
+
+  13.  Forth for the Atari ST
+
+
+
+     Commercial
+
+     o  Bradley Forthware Forthmacs is available for $50 w/ optional GEM
+        support, source code, floating point, applications stripper and
+        spreadsheet.
+
+     o  bigFORTH, by Bernd Paysan, is available for 200 DM.  Extras:
+        Source code, floating point, GEM interface, object-oriented
+        extensions, native code compiler.
+
+     o  F68KANS, Joerg Plewe.  As per the free version, but you can use
+        it commercially.  Contact Joerg for licensing details.
+
+     o  HiSoft FORTH is a 32-bit Forth for the Atari ST, with full
+        support for GEM.  It is subroutine threaded, and a Motorola
+        68000 assembler is also included. [HM:93]
+
+
+     Non-commercial
+
+     o  F68K
+        <ftp://ftp.forth.org/pub/Forth/Compilers/native/misc/atari_st/f68kst11.arc>
+        and F68KANS
+        <ftp://ftp.forth.org/pub/Forth/Compilers/native/misc/atari_st/f68kans.zip>,
+        Joerg Plewe.  F68KANS is ANS-aligned.
+
+
+     Miscellaneous
+        There are plenty of implementations, docs and code of unknown
+        pedigree available for your perusal here [anyone care to
+        comment? --jdv]:
+
+     o  <ftp://ftp.forth.org/pub/Forth/Compilers/native/misc/atari_st/>
+
+     o  <ftp://ftp.forth.org/pub/Forth/Compilers/native/misc/atari_8bit/>
+
+
+
+  14.  Forth for the Transputer
+
+
+
+     Commercial
+
+     o  MicroProcessor Engineering, Ltd. (MPE) Forth5 Cross Compiler for
+        the T-212, T-414 and T-800.  The package consists of a PC-hosted
+        (Unix if required) cross compiler and target code.  All source
+        code is included.
+
+     o  |Transputer eForth <http://www.ultratechnology.com/p21prod.htm>
+        by Rob Barr for the Inmos 32-bit transputers is an experimental
+        system not yet fully tested.
+
+     o  tForth <http://www.IAEhv.nl/users/mhx/t4faq.html> is a parallel,
+        32-bit ANS-Forth for the INMOS range of Transputers.  Supports
+        all of the Transputer hardware: task-switching, floating- point,
+        the on-chip timer, and the links.  tForth is optimized for
+        speed, with an integrated optimizer, and OCCAM-like constructs.
+        Dynamic memory and recursion is supported, as are semaphores and
+        queues, to enable multi- process I/O.  A full ASSEMBLER
+        vocabulary is included, with cross- assembly to other models
+        available.  Extras include: symbolic dis- assembler, debugger &
+        profiler, buffered I/O, SVGA drivers (DOS), C server, double and
+        single precision floating point math.  tForth (binaries for T4
+        and T8 models, a DOS/UNIX server, and a 400+ page manual) sells
+        for $400.  Access to source code for the server must be
+        negotiated with the author.  Contact Willem Ouwerkerk at DFW.
+
+
+     Non-commercial
+
+     o  F-TP v1.00
+        <ftp://ftp/leo/org/pub/comp/os/dos/programming/forth/transputer/f-
+        tp-100.zip> is a free Forth-83 for the T-80x INMOS transputer
+        family, designed to replace the OCCAM development kit.  Most of
+        the ANS core wordset is implemented.  Some highlights include:
+        trig functions, metacompiler, debugger, disassembler, Forth
+        decompiler, assembler, integrated DOS calls, parallel
+        processing, online help for all vocabularies and plenty of
+        documentation.  [JDV:970705]
+
+     o  pd-forth
+        <ftp://unix.hensa.ac.uk/pub/parallel/languages/forth/pd-forth/>
+        is a freeware implementation of Forth for 16 & 32-bit
+        transputers, with source by Laurie Pegrum.  Requires the D705
+        OCCAM development system, and a 32-bit Transputer board with 1Mb
+        of memory to recompile or run.  Uses iserver interface to host.
+
+     o  There are several implementations
+        <http://www.geocities.com/SiliconValley/Heights/1190/> of Forth
+        for the transputer made available by Ram Meenakshisundaram.
+
+
+
+  15.  Forth for the Tandy TRS-80
+
+
+     Commercial
+
+     o  MMS have a nonDOS version of their MMSFORTH for the Model
+        I/III/4.
+
+
+     Non-commercial
+
+     o  MVP-FORTH for the Model 4 by Art Wetmore.  The basic MVP-FORTH
+        system is released into the public domain.  Contact MVP for
+        details.
+
+     o  There's an implementation of Forth for the Model 100 available
+        as
+
+        1. <ftp://ftp.forth.org/pub/Forth/Archive/others/m100-pt1.src>
+
+        2. <ftp://ftp.forth.org/pub/Forth/Archive/others/m100-pt2.src>
+
+
+     o  HartForth
+        <http://www.research.digital.com/SRC/personal/mann/trs80/Forth5.zip>
+        by A. M. Graham is a Forth 79 implementation for the Tandy
+        TRS-80 Model I/III/4.  The documentation is available as plain-
+        text (ASCII)
+        <http://www.research.digital.com/SRC/personal/mann/trs80/doc/Forth.txt>,
+        Microsoft Word 97
+        <http://www.research.digital.com/SRC/personal/mann/trs80/doc/ForthW97.zip>
+        and Scripsit
+        <http://www.research.digital.com/SRC/personal/mann/trs80/doc/Forth.zip>.
+
+  16.  Forth for the Apple II
+
+
+
+     Commercial
+
+     o  Apple Forth v1.6, Cap'n Software.  Uses a unique disk format.
+        [LWV:93]
+
+     o  6502 Forth v1.2, Programma International.  [LWV:93]
+
+     o  FORTH II for the II+ or //e by Softape.  [LWV:93]
+
+     o  Raven Forth (+) by C. K. Haun, runs on IIgs.  Available on GEnie
+        Library 19 as file 903.  [LWV:950919]
+
+     o  MicroMotion: MasterFORTH for II's.  Features: graphics,
+        debugger, file handling, software floating point.  Follows the
+        79-Standard.
+
+     o  MVP offer MVP-FORTH; a 79-standard for II's.
+
+
+     Non-commercial
+
+     o  GraFORTH(+) for DOS 3.3, by Paul Lutus.  Available on GEnie
+        Library 8, file 3299.  [LWV:950919]
+
+     o  Mad Apple Forth(+)
+        <ftp://wuarchive.wustl.edu/system/apple2/Lang/Forth> [LWV:93]
+
+     o  Purple Forth(+)
+        <ftp://ftp.forth.org/pub/Forth/Compilers/native/misc/appleII/purple4th.bsq>
+
+     o  QForth(+) <ftp://ftp.uu.net/systems/apple2/languages/forth>
+        v2.0, Alpha 1.0, is a small integer Forth written by Toshiyasu
+        Morita <mailto:tm@netcom.com>.  [LWV:93]
+
+     o  GS 16 FORTH II, Version II (+)
+        <ftp://ftp.forth.org/pub/Forth/Compilers/native/misc/appleII/gsforth.bqy>
+        - A 16-bit implementation able to make use of the GS Toolbox.
+        Includes assembler and full screen editor.  Also Available on
+        GEnie (Library 18, file 2124/2125).  [LWV:950919]
+
+     o  Various at
+        <ftp://ftp.forth.org/pub/Forth/Compilers/native/misc/appleII/>
+
+
+
+  17.  Forth for VAX/VMS
+
+  Please see the ``C-Forth'' and ``UNIX Forth'' sections, as some C and
+  UNIX based systems may port without too much effort.
+
+
+
+     Commercial
+        [I am currently unaware of any commercial VAX/VMS Forth --jdv]
+
+
+     Non-commercial
+
+     o  vforth
+        <ftp://ftp.forth.org/pub/Forth/Compilers/native/misc/vax/vax-
+        forth.tar-z> is a 32-bit forth based on the FIG model, but it
+        deviates where necessity or religion demanded.  It will run on a
+        VAX running 4.2, and tends to use the UNIX system calls in only
+        the most generic of ways (i.e.: it should move to 4.1 without
+        problems).  vforth uses subroutine threading and inline code
+        generation to increase performance.
+
+
+     o  John O. Comeau <mailto:jcomeau@world.std.com> has made the
+        source
+        <ftp://ftp.std.com/pub/jcomeau/hacking/mystuff/vmsfig.bld> and
+        documentation
+        <ftp://ftp.std.com/pub/jcomeau/hacking/otherstuff/vmsfig.txt>
+        for versions 1 & 2 of FIG-Forth for the VAX/VMS available.
+        [JDV:970510]
+
+     o  Klaus Flesch wrote a VAX VMS Forth some years ago.  It is
+        believed to be derived from FIG-Forth.  Availability is
+        uncertain; try contacting the author, c/o Forth-Systeme.
+
+     o  There are two files of unknown pedigree at
+        <ftp://ftp.forth.org/pub/Forth/Compilers/native/misc/vax/>
+
+
+
+  18.  Miscellaneous Forth
+
+  This is a catch-all section for implementations that didn't seem to
+  warrant their own sections.
+
+
+  18.1.  Musical Forth
+
+
+
+  o  HMSL (Hierarchical Music Specification Language); Frog Peak Music.
+     Contact Delta Research, or Phil Burk <mailto:phil@mills.edu>, at
+     the Center for Contemporary Music at Mills College.
+
+  o  MANX 1.0 is an extension of the regular Forth environment, enhanced
+     with a number of special purpose music language words.  The program
+     is able to read and write standard MIDI files, with special
+     instrument drivers taking care of I/O details.  At this moment MANX
+     has drivers for metallophones, the PC speaker, and GM (General
+     MIDI) synthesizers or sound cards that support MIDI.  This music
+     language aims to be complete in the sense that a user should be
+     able to translate anything written down in conventional scores to
+     MANX commands.  32-bit ANS-Forth, with many extensions.  Free with
+     iForth [see the ``32-bit PC Forth'' section].  [JDV:970315]
+
+
+  18.2.  Java Forth
+
+
+
+  o  jeForth <http://www.amsystech.com/mlosh/> is a Java applet based on
+     eForth that is free for non-commercial use.  It has been designed
+     to be compatible with the description of Forth in Brodie's
+     "Starting Forth".  A commercial version is being planned.
+
+  o  Misty Beach Forth <http://www.mistybeach.com/> is an ANS-compliant
+     implementation that runs as an OS independent applet.  It is
+     designed to run multi-threaded code at speeds comparable to native
+     Forths.  The full package will include an IDE.
+
+  o  DELTA Forth is a non-standard Forth system, as it is a compiled
+     dialect. It runs on Java, so it is platform-independent.  DELTA
+     Forth is free of charge, as it is still in Alpha development stage.
+     The most important feature apart from being platform independent is
+     that DELTA Forth has support for external libraries, so its
+     capabilities are virtually limitless.  Please email the author
+     <mailto:vbocan@usa.net> for details.
+
+
+
+  18.3.  USR/3COM Pilot/Palm Pilot/Palm
+
+
+
+     o  Quartus 1.2.1 <http://www.interlog.com/~nbridges> is an on-board
+        native ANS Forth optimizing compiler for the USR/3Com Pilot,
+        Palm Pilot and Palm III series of PDAs.  Standard precompiled
+        (PilRC) resources can be used in your Quartus programs and there
+        is built-in compiler awareness of the PalmOS systrap calls.
+        There is an evaluation-only version which will not compile code
+        to a .prc.
+
+
+
+
+  19.  Forth that ain't necessarily Forth
+
+
+
+     Commercial
+
+     o  FIFTH by Software Construction Co.  Available for the Amiga, PC.
+
+     o  Charles Moore's OK for PC's was developed as the OS for Chuck's
+        VLSI CAD system.  It is essentially a minimal Graphical User
+        Interface (GUI).  Available from Offete Enterprises, Inc.
+        <http://www.ultratechnology.com/> Source for the MuP21 Forth
+        compiler is also available.
+
+     o  Meme (Multitasking Extensible Messaging Environment) from
+        Immersive Systems, Inc. is a Forth interpreter with multitasking
+        and floating- point extensions.  The executable has a fast 3D
+        rendering engine and a TCP/IP interface that is callable with
+        Forth words.  Each object in a Meme virtual world is a
+        dynamically-loadable module.  The executable Forth code in the
+        modules is a hybrid of token threading and indirect threading
+        that is platform-independent and executes identically on any
+        computer running the Meme interpreter.  [JDV:960911]
+
+
+     Non-commercial
+
+     o  Kevo <ftp://cs.uta.fi/pub/kevo/> by Antero Taivalsaari
+        <mailto:tsaari@cs.uta.fi> is a prototypical (classless) object-
+        oriented language (for the Mac) which has a Forth feel to it.
+        Features multitasking, dynamic memory management, and an
+        integrated (Mac Finder-like) iconic programming environment.
+        Comes with source, demo programs, and some documentation.
+        [AT:931021]
+
+     o  ANNforth
+        <ftp://ftp.forth.org/pub/Forth/Compilers/native/unix/annforth.arc>
+        by Bruce J. McDonald.  No documentation, but a header file
+        states "ANN simulator with forth interpreter".  Written in C++.
+        [SJB:931026]
+
+     o  TIPI v2.0a <mailto:peterson@halcyon.com> is a small, structured,
+        extensible programming language for DOS computers.  It requires
+        about 100K bytes of RAM to run and is thus well- suited for
+        palmtop computers such as the Poquet PC, the HP-95LX or the
+        HP100LX.  TIPI incorporates elements from various languages (C,
+        Pascal, awk, BASIC) and owes a tremendous amount to Forth.
+        While TIPI is not Forth, it is definitely Forth-like and Forth-
+        inspired.  A Windows CE version may be in the works.
+        [JDV:970723]
+
+     o  FIJI <http://www.well.com/~jax/SoftWoehr/> is a Forthish Java
+        interpreter by Jack J. Woehr.
+
+
+
+  20.  Contributors and Acknowledgments
+
+  This document is based on previous work by Stephen J. Bevan, Doug
+  Philips and Bradford J. Rodriguez.
+
+  Many thanks, and a box of *magic* cookies, to the following for
+  providing the information for this section of the FAQ:
+
+
+  o  Bruce Bennet <mailto:bbennett@unixg.ubc.ca> (BB)
+
+  o  Stephen J. Bevan <mailto:bevan@cs.man.ac.uk> (SJB)
+
+  o  Mitch Bradley <mailto:wmb@forthware.com> (MB)
+
+  o  Mike Coughlin <mailto:mikc@gnu.ai.mit.edu> (MC)
+
+  o  Valery P. Frolov <mailto:frolov@planck.phys.ualberta.ca> (VPF)
+
+  o  Mike Haas <mailto:mikeh@starnine.com> (MH)
+
+  o  Kevin Haddock <mailto:fish@ecst.csuchico.edu> (KH)
+
+  o  Rick Hohensee <mailto:rickh@capaccess.org> (RH)
+
+  o  Andrew P. Houghton <mailto:houghtona@acm.org> (APH)
+
+  o  Nan-Hung (Carl) Lin <mailto:carllin@csie.nctu.edu.tw> (CL)
+
+  o  Benjamin Lee <mailto:rpcelec@jupiter.sun.csd.unb.ca> (BL)
+
+  o  Henry McGeough <mailto:hmcg@cix.compulink.co.uk> (HM)
+
+  o  Dick Miller <mailto:DMiller@gis.net> (DM)
+
+  o  Julian V. Noble <mailto:jvn@fermi.clas.Virginia.EDU> (JVN)
+
+  o  Bernd Paysan <mailto:paysan@informatik.tu-muenchen.de> (BP)
+
+  o  Elizabeth D. Rather <mailto:erather@forth.com> (EDR)
+
+  o  Bradford J. Rodriguez <mailto:bj@forth.org> (BJR)
+
+  o  Antero Taivalsaari <mailto:tsaari@cs.uta.fi> (AT)
+
+  o  Larry W. Virden <mailto:lvirden@cas.org> (LWV)
+
+  o  Jack J. Woehr <mailto:jax@well.com> (JJW)
+
+
+
+
+
+
+  21.  Legalities, Miscellanea and Caveats
+
+  This document is not in the public domain.  To keep it freely
+  accessible to all, I've reserved all rights of ownership.  You may
+  distribute copies or quote from this compilation freely on the
+  conditions that credit is given to the contributors, and this entire
+  copyright notice is included with any quote or copy:
+
+  "The Forth Systems FAQ, Copyright (C) 1996 by John D. Verne.  All
+  Rights Reserved."
+
+  If, for some strange reason, you wish to make money by copying or
+  distributing this document, please let me know <mailto:jdv@forth.org>.
+
+  The other parts of this FAQ may be copyrighted by their respective
+  authors, as well.  Consult with the author(s) of the other parts for
+  more complete copyright information.
+
+  Some terms mentioned in this document are known to be trademarks or
+  service marks.  However, the author(s) have made no attempt to label
+  them as such.  The reader should contact the appropriate companies for
+  complete information regarding trademarks and registration.  This
+  document is provided "For Your Information" only.  The author(s)
+  accept no responsibility for errors or omissions, or for loss or
+  damages resulting from the information contained herein.
+
+   'Nuff said.  May the Forth be with you.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

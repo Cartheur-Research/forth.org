@@ -1,0 +1,62 @@
+From: "Ed" <nospam@invalid.com>
+Newsgroups: comp.lang.forth
+Subject: F83 assembler bugs
+Date: Sun, 12 Mar 2006 13:02:12 +1100
+
+For those still using the F83 8086 assembler (or its clones)
+here's a list of bugs I've encountered.  The fixes shown have
+been briefly tested and their use is "at your own risk".
+
+Anyone know of other bugs?
+
+1. XCHG fails in all operations involving 8 bit transfers
+   between memory and register e.g  AL 0 [DI] XCHG
+   Another problem is operand ordering for AX/memory ops
+   e.g.  AX 0 [DI] XCHG  works but  0 [DI] AX XCHG  won't.
+
+  \ Original
+  : XCHG   (S MR1 MR2 -- )   DUP REG?
+     IF  DUP AX =
+       IF  DROP RLOW 90 OP,  ELSE  OVER AX =
+       IF  NIP  RLOW 90 OP,  ELSE  86 WR/SM,  THEN  THEN
+     ELSE  ROT 86 WR/SM,  THEN  ;
+
+  \ Fixed  (base is hex)
+  : XCHG   (S MR1 MR2 -- )   DUP REG?
+     IF  OVER REG?
+       IF  OVER AX = IF  SWAP  THEN  DUP AX =
+       IF  DROP RLOW 90 OP,  EXIT  THEN  THEN
+    ELSE  ROT  THEN  DUP R16?  SIZE !  86 WR/SM,  ;
+
+2. There's no way to shift/rotate the CL register!  One
+   could 'comma' it in, however a neater solution is to
+   allow a '1' to signify the shift count e.g.  CL 1 ROL
+   For registers other than CL the '1' is optional.
+
+  \ Original
+  : 10MI  CREATE  C,  DOES>  C@ OVER CL =
+     IF  NIP 322  ELSE  320  THEN  WR/SM,  ;
+
+  \ Fixed  (base is octal)
+  : 10MI  CREATE  C,  DOES>  C@ OVER CL =
+     IF  NIP 322  ELSE  OVER 1 = IF  NIP  THEN
+       320  THEN  WR/SM,  ;
+
+3. REP generates the wrong opcode ($F2 instead of $F3).
+   Note: applying the fix could invalidate existing
+   source code.
+
+  \ Original
+  F2  1MI REP
+
+  \ Fixed  (base is hex)
+  F3  1MI REP
+
+
+
+
+
+
+
+
+

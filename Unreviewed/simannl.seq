@@ -1,0 +1,323 @@
+\ simannl.seq       Simulated Annealing using Cauchy cooling
+
+ 
+\ This is an ANS Forth program requiring:
+\      1. The Floating-Point word set
+\      2. The word '}' to dereference a one-dimensional array.
+\      3. Uses words 'Private:', 'Public:' and 'Reset_Search_Order'
+\         to control visibility of internal code
+\      4. The word 'V:' to define function vectors and the
+\         immediate 'defines' to set them.
+\      5. Uses '}malloc' and '}free' to allocate and release memory
+\         for dynamic arrays ( 'DARRAY' ).
+\      6. Uses 'ranf' to return a uniformly distributed floating point
+\         value in the range 0..1
+\      7. The compilation of the test code is controlled by VALUE ?TEST-CODE
+\         and the conditional compilation words in the Programming-Tools
+\         wordset
+\ 
+
+\ The first problem illustrates solving for the global minimum of a function
+\ with multiple local minima.
+\ The second problem illustrates constraining the range of search by
+\ making the cost of out-of-range solutions very high.
+
+\ (c) Copyright 1994 Everett F. Carter.  Permission is granted by the
+\ author to use this software for any application provided this
+\ copyright notice is preserved.
+
+CR .( SIMANNL      V1.0d                 16 December 1994   EFC )
+
+Private:
+
+PI 2.0e0 F/ FCONSTANT PI2
+0.10e0      FCONSTANT TSCALE
+0.10e0      FCONSTANT DT
+1.0e30      FCONSTANT HUGE
+
+V: }cost             \ pointer to user cost function  cost ( &x -- ) ( F: -- z )
+
+
+REAL*4 DARRAY x{         \ pointer to user input/output array
+
+REAL*4 DARRAY xnew{       \ dynamically allocated scratch space
+REAL*4 DARRAY xbest{
+
+0 VALUE dimension         \ internal parameters
+0 VALUE dwell
+FVARIABLE KK
+FVARIABLE rho
+FVARIABLE jump
+
+FVARIABLE y               \ internal scratch variables
+FVARIABLE ybest
+FVARIABLE ynew
+FVARIABLE t0
+FVARIABLE old_c
+
+: uniform ( -- ) ( F: -- x )
+	ranf PI F* PI2 F-
+;
+
+: best ( -- )
+	dimension x{ xbest{ }fcopy
+        y F@ ybest F!
+;
+        
+
+: better ( -- )
+
+         dimension xnew{ x{ }fcopy
+         ynew F@ FDUP y F!
+
+         ybest F@ F< IF best THEN	          
+;
+
+: delta ( -- ) ( F: c -- del )
+        FABS
+        y F@ F0= 0= IF y F@ F/
+                    ELSE
+                       ynew F@ F0= 0= IF ynew F@ F/ THEN
+                    THEN
+;
+
+: new-state ( -- ) ( F: t -- t )
+
+      dimension 0 DO
+                    uniform FTAN FOVER F* rho F@ F*
+                    x{ I } F@ F+   xnew{ I } F!                            
+      LOOP
+
+;
+
+: reduce-temperature ( i -- ) ( F: -- t )
+         t0 F@ S>F tscale F* 1.0e0 F+ F/
+;
+
+: maybe-keep ( -- ) ( F: t c -- t )
+
+          FOVER KK F@ F* F/ FNEGATE FEXP
+          ranf FSWAP F< IF
+                           dimension xnew{ x{ }fcopy
+                           ynew F@ y F!
+                        THEN
+;
+
+\ iterate at the present temperature to get to thermal equilibrium
+: equilibrate ( itmax -- i ) ( F: t -- t )
+
+	0 0 ROT 0 DO
+                    new-state
+                    \ calculate "energy"
+                    xnew{ }cost FDUP ynew F!
+
+              y F@ F- FDUP F0< IF
+                                  better
+
+                                  delta 0.10e0 F< IF
+                                                         1+
+                                                   ELSE
+                                                         DROP 0
+                                                   THEN
+                               ELSE
+                                   FDROP 1+
+                               THEN
+
+                SWAP DROP I SWAP
+		DUP 9 > IF LEAVE THEN              
+                  
+        LOOP
+
+        DROP 1+        
+;
+
+Public:
+
+\ increase the temperature until the system "melts"
+: melt ( iters -- ) ( F: t0 -- t )
+
+        0 DO
+                DT F+
+                new-state
+                dwell equilibrate DROP
+
+                \ calculate "energy"
+                xnew{ }cost FDUP ynew F!
+
+                y F@ F- FDUP F0< IF 
+                                  better
+                                  old_c F!
+                                 ELSE
+                                  FDUP F0= IF FDROP ELSE
+                                       I 1 > old_c F@ jump F@ F* FOVER F< AND
+                                             IF
+                                               FDROP LEAVE
+                                             THEN
+                                               old_c F!
+                                  THEN THEN
+               ynew F@ y F!
+
+          LOOP
+
+          FDUP t0 F!
+;
+
+: anneal ( iters -- ) ( F: t0 -- t )       \ cool the system with annealing
+
+        FDUP t0 F!
+        
+        \ first come to an equilibrium at this temperature
+	dwell 10 * equilibrate DROP
+
+	0 DO
+
+                FDROP
+		i reduce-temperature
+
+                dwell equilibrate DROP
+                
+                new-state
+                \ calculate "energy"
+                xnew{ }cost FDUP ynew F!
+
+                y F@ F- FDUP F0< IF
+                                  FDROP
+                                  better
+                                 ELSE
+                                  maybe-keep
+                                 THEN
+
+          LOOP
+
+          \ now get to equilibrium at the final temperature
+          dwell 10 * equilibrate DROP
+       
+	dimension xbest{ x{ }fcopy
+
+        FDUP t0 F!
+
+	& xnew{ }free
+        & xbest{ }free
+;
+
+: .anneal-config ( -- )
+
+       ." Boltzman constant: " KK F@ F.
+       ."    Learning rate: " rho F@ F. CR
+       ." Jump value: " jump F@ F.  ." Dwell: " dwell .
+       ."    Dimension: " dimension . CR
+       
+       ." Current temperature: " t0 F@ F. CR
+
+       ." Current state: " dimension x{ }fprint CR
+
+;
+
+: )init-anneal ( &cost &x n dw -- ) ( F: K rho jump -- )
+       TO dwell
+       TO dimension
+       & x{ &!
+       defines }cost
+
+       jump F! rho F!   KK F!
+
+       0.0e0 old_c F!
+       
+       dimension
+       & xnew{ OVER }malloc
+       malloc-fail? ABORT" init-anneal failure (1) "
+
+       & xbest{ SWAP }malloc
+       malloc-fail? ABORT" init-anneal failure (2) "
+
+       HUGE y F!   HUGE ybest F!
+;
+
+Reset_Search_Order
+
+TEST-CODE? [IF]     \ test code =============================================
+
+1 CONSTANT N
+N REAL*4 ARRAY x{
+
+: func1 ( &x -- ) ( F: -- z )           \ lots of local minima
+
+        0 } F@
+        FDUP 14.5E0 F* 0.3E0 F- FCOS
+        FSWAP
+        FDUP 0.2E0 F+ F*
+        F+
+;
+
+: sa-test1 ( -- )
+
+     N 0 DO                 \ initialize to somewhere in -2..2
+            ranf 4.0E0 F* 2.0E0 F- x{ I } F!
+         LOOP
+         
+    ." Initial x: "  N x{ }fprint CR
+    
+     use( func1 x{ N 10 1.0E0 0.5E0 100.0E0 )init-anneal
+
+     400 0.0E0 melt
+
+     ." Melting temperature: " FDUP F. CR
+
+     1.2E0 F*       \ increase the temperature slightly
+
+     500 anneal
+
+    ." Final temperature: " F. CR
+    ." Final x: "  N x{ }fprint
+    ."  (actual = -0.195068) " CR
+
+    .anneal-config
+
+;
+
+: func2 ( &x -- ) ( F: -- z )           \ an example with range constraints
+
+        0 } F@
+
+	FDUP FABS 2.0E0 F> IF FDROP 1.0e30 EXIT THEN
+
+        3.0E0 FOVER F*
+        5.0E0 F+ FOVER F*
+        -2.0E0 F+ F* 3.0E0 F+
+;
+
+: sa-test2 ( -- )
+
+     N 0 DO                \ initialize to somewhere in -1..1
+            ranf 2.0E0 F* 1.0E0 F- x{ I } F!
+         LOOP
+         
+    ." Initial x: "  N x{ }fprint CR
+    
+     use( func2 x{ N 10 1.0E0 0.5E0 100.0E0 )init-anneal
+
+     400 0.0E0 melt
+
+     ." Melting temperature: " FDUP F. CR
+
+     1.2E0 F*       \ increase the temperature slightly
+
+     500 anneal
+
+    ." Final temperature: " F. CR
+    ." Final x: "  N x{ }fprint
+    ."  (actual = 0.173049) " CR
+    .anneal-config
+
+;
+
+
+
+\ initialization
+\ create pool 2000 allot
+\ pool 2000 Dynamic-Mem
+\ 1. r250d_init
+
+[THEN]
+
+

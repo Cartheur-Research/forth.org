@@ -1,0 +1,639 @@
+WIN32FOR.NEW            New Stuff in Win32Forth         by Tom Zimmer
+
+Complete list of Win32Forth demo programs;
+
+  Name                  Subject
+
+*FILEDUMP.F     A File Dump program contributed by Jih-tung Pai
+ HELLO.F        Windows interfacing without objects by Andrew McKewan
+*ROMCALC.F      A Roman numeral calculator by Lars Krueger
+ WINBROWS.F     File handling and window scrolling
+ WINDEMO.F      Graphics operations in a window
+ WINDILOG.F     User designed dialog box
+ WINHELLO.F     Windows interfacing with objects
+*WINMULTI.F     A multi window/menu program by Wolfgang Engler
+ WINPAR.F       Simple parallel port output
+ WINSER.F       Simple serial communications program
+ WINVIEW.F      Complete multi-file macro editor with hypertext
+
+*=New with release 3.3
+
+Help on ANS definitions is now available while editing in WinView by
+clicking the mouse on an ANS word, then press the F1 key.  The ANS
+definition of the word will be displayed.
+
+The change History of Win32Forth from previous versions is now in the
+file Win32For.PRV, and can be accessed from the "Previous Win32Forth
+Changes" menu item under the Help menu in the FOrth console window.
+
+************************************************************************
+********************** Win32Forth Change History ***********************
+************************************************************************
+
+October 9th, 1996 - 7:30 tjz
+******************** Release version Win32Forth 3.3 ********************
+
+October 8th, 1996 - 16:13 tjz
+Added primitive HTML support to the WinView editor.  And when I say
+primitive, I mean primitive.  It currently detects a few HTML embeded
+commands, and generally ignores them.  The exception to this, is <li>
+which is turned into four spaces, <title> and </title>, which turn bold
+on, then off, and <A and /A> which mark a hypertext reference.  Such
+references are marked with an underline, and can be clicked on.  Only one
+hyperlink can exist on a line currently.  The cursor changes to an arrow
+when you are on a line that has a link on it. Clicking anywhere on the
+line will cause a hyper link to the "FILE" specified within the hypertext
+link.  ONLY A FILENAME can be placed in these links, NOT a real HTML
+linkage.  So basically this isn't useful yet, there is MUCH MORE WORK to
+do to get WinView or Win32Forth talking to the socks host, and accessing
+the World Wide Web. Note that HTML parsing is only done when WinView is
+in BROWSE mode, not edit mode.
+
+Here are examples of the only legal hypertext links;
+
+        <A HREF="WIN32FOR.NEW">Open This File Again</A>
+        <A HREF="#SEARCHLINK">Search for a Link</A>
+
+Then a target link for searching will be in the form;
+
+        <A NAME="SEARCHLINK">
+
+If you want to see how these look as hypertext links, you need to press
+Shift+F9 to toggle into browse mode.
+
+Eventually, I intend to add the ability to put a search link at the end
+of a filename, so you can hyperlink to a specific location within a
+destination file, but thats not done yet.
+
+October 4th, 1996 - 9:37 tjz
+Added ALIAS, used in the form;
+
+' DUP ALIAS DUPPY
+
+Creates a new header DUPPY, whose CFA pointer, points to the CFA of DUP.
+The new header is NOT created IMMEDIATE, regardless of whether the 'xt'
+passed to ALIAS was the xt of an immediate word or not.  That makes it
+different from SYNONYM, which creates an alias of a word that will be
+immediate if the original word was immediate.
+
+Added N>CFAPTR, a very simple word that returns the address of the CFA
+pointer, given the NFA of a word.
+
+Modified SYNONYM to use ALIAS, rather than having it define a runtime
+function that decides whether to compile or execute it. It still creates
+an immediate ALIAS if the word it is a SYNONYM of was IMMEDIATE.
+
+Did some cleanup in the kernel, related to FIND. Removed LOCALS-ON,
+LOCALS-OFF and (PFIND).
+
+I was tempted to make major changes to simplify find, and get rid of a
+bunch of extra layers of words that are present because of evolution, but
+I have limited the changes for compatibility reasons since I am about to
+release Version 3.3.  So these changes are defered, least for now. In the
+future, I think it would be useful to have a better way of controlling
+find, so it would be possible to extend the functionality of find in a
+more controlled way. I realize, I don't understand how to do that yet, so
+I am saving those changes until later.  It is also useful to note, that
+any such changes could significantly effect existing code compatibility,
+but then anyone who is playing (working) down at the level of changing
+the functionality of find, should be ready to make changes at that level
+to fix their code when I break it. Sorry, but life isn't always easy.
+
+Deleted the string buffer &FILEBUF, it was redundant with the string
+buffer CUR-FILE.
+
+October 2nd, 1996 - 9:40 tjz
+Set the default for SCREENDELAY to 18 milli-seconds, rather than zero. If
+words seems to display too slowly, just press either one, or zero to
+speed it up.
+
+October 1st, 1996 - 10:53 tjz & am
+Fixed a bug in number conversion, reported by Bill Muench.  It seems that
+if you had a source line that contained a two character word ending in a
+decimal point, preceeding a single digit number, then the number was
+converted as a double erroneously. OOPS!  Corrected NUMBER?.  Also
+notices a problem in floating point conversion, where a number like
+"1.2e5.2" was converted as 1.2e52 erroneously.  Added code to FLOAT.F to
+detect a decimal point in the exponent, and flag it as an error.
+
+September 30th, 1996 - 9:05 tjz
+I accepted a new definition for ANEW from Bill Muench, it uses MARKER
+instead of MARK, and is somewhat simpler.  The primary difference, is
+that MARKER forgets everything backto and including itself, instead of
+forgetting everything backto just after itself.
+
+Changed DEFINED to use PARMFIND, instead of FIND.  Bill noticed that he
+got an "invalid object type" error if he used ANEW with a name that
+contained a decimal point.  Since DEFINED should only be used to lookup
+words in the dictionary, it shouldn't have been using the method lookup
+facility.
+
+Added ?IS, which verifies that a 'xt' is a defered word.  Used by IS to
+prevent storing into the body of a word which is not a defered word.
+
+Added some additional generalization to uppercase conversion.  Removed
+?UPERCASE from _INTERPRET, and added it to the start of NEW-NUMBER, and
+(NUMBER), so user additions to the number conversion chain, won't have to
+worry about whether the string being converted is uppercase already or
+not.  This means that when a word is not found, it gets converted to
+uppercase twice, once in FIND, and once in NUMBER.  Oh, well, thats the
+price we have to pay for the ANS requirement that we not chang the
+original string. 
+
+September 25th, 1996 - 10:06 tjz
+Implemented a method suggested by Bill Muench, to allow slowing down
+screen output in DUMP and WORDS, by puting a programmable MS delay into
+their inner loops.  When these words are displaying, pressing keys '0 to
+'9' change the screen output delay in an exponential way, to slow display
+down, so you can read it.  You can add this screen output delay to your
+own display words my using the sequence;  START/STOP SCREENDELAY MS in
+your words that display a lot of information to the screen.
+
+At the request of Bill Muench, I have modified the WinView editor, to
+automatically convert unix, and apple files into the PC format when you
+start editing them.  They are converted in memory, so the original disk
+file will not be changed, unless you modify the file, and save changes.
+This was done, because of an incompatibility between copying and pasting
+text between files of different formats.  
+
+September 24th, 1996 - 13:51 tjz
+Added TASKER.F, a ported version of Bill Muench's EFORTH multi-tasker.
+Bill modified it for Win32Forth.  It is all highlevel, but seems to be
+functional,a nd may be of interest to anyone that wants to experiment
+with multi-tasking.  A limited set of system variables have been turned
+into USER variables to suppor the multi-tasker.
+
+September 12th, 1996 - 10:36 tjz
+Added uppercase and lowercase conversions to the wrapper using the
+Win32API case conversion functions, and modified Win32Forth to use the
+wrapper case conversions. The Win32API functions know about multiple
+languages, and how to convert properly for different countries.
+
+Made >NUMBER case insensitive.  It only required adding a single
+instruction to  >NUMBER.
+
+September 11th, 1996 - 12:00 tjz
+Moved ?UPPERCASE into FIND, and into number conversion, to hide case
+insensitivity from the user better.
+
+September 10th, 1996 - 8:50 tjz
+Moved the randome number generator from WINDEMO.F down into UTILS.F, and
+renamed the randome number generator word from RND to RANDOM.  Also added
+RANDOM-INIT, and linked it into the initialization chain, so
+randomization will occur at boot time automatically.
+
+September 7th, 1996 - 10:51 tjz
+Fixed a bug in .COUNTS, it was not including the top item of a thread.
+Reported by martin Laeuter.  FIXED
+
+September 6th, 1996 - 14:50 tjz
+After a suggestion from Richard Astle, I have added a function called
+'Clone:' that can be used to create copies of existing objects.  This is
+useful, when you have created an object using :Object, and then decide
+you really need another object instance like it.  Rather than having to
+use :Object again, and inherit from the previous object, you can now
+clone it, avoiding the creation of another headerless class that would
+just take up space.
+
+September 5th, 1996 - 11:15 tjz
+Fixed floating point, which I broke, when making the changes for
+multi-tasking.  Some words that were using DX weren't saving and
+restoring it. FIXED
+
+Fixed a bugs in CELL-SORT and BYTE-SORT, reported by Martin Laeuter,
+where they would fail if passed a length less than two.
+
+September 3rd, 1996 - 17:33 tjz
+Extended 0xNUMBER? to accept hex numbers starting with '$'.
+
+August 30th, 1996 - 11:45 tjz
+Added a new constant MAXCOUNTED, that is equal to 255, and a new word
+called "CLIP" (with the quotes), that that clips the string length on the
+stack to between zero and MAXCOUNTED.
+
+August 29th, 1996 - 13:34 tjz
+Bill Muench edited FKERNEL.F and CALLBACK.F to add User variables to
+Win32Forth, in preparation for adding cooporative multi-tasking.  He
+submitted the files back to me, and I added additional code and
+corrections for Windows callback support.  Currently these are the list
+of user variables defined in Win32Forth.
+
+
+        USER RP0        ( initial return stack pointer )
+        USER SP0        ( initial data stack pointer )
+        USER STATUS     ( PASS or WAKE )
+        USER FOLLOWER   ( address of next task's STATUS )
+        USER TOS        ( save top of data stack )
+        USER HANDLER    ( throw frame )
+        USER LP         ( local variable pointer )
+        USER OP         ( object pointer )
+        USER BASE       ( numeric radix )
+        USER HLD        ( numeric output pointer 80 characters)
+        USER PAD        ( user string buffer MAXSTRING characters (260))
+        USER MSG        ( abort message pointer )
+
+Callbacks always use the CONUSER user area, so other user tasks will not
+be able to use callbacks that manipulate user variables.  A limitation,
+but perhaps not a serious one.
+
+Register EDX is used to hold the "absolute" address of the current user
+area which is refered to by [UP].  The assembler has been extended to
+include the [UP] macro as an alias for [EDX] to improve readability.
+
+Future enhancements I hope will include "thread" base multi-tasking
+additions, and in the nearer future, Bill will be adding his cooporative
+multi-tasker.
+
+August 28th, 1996 - 10:12 tjz
+Fixed a bug reported by Bill Muench, where decimal numbers were treated
+as floating point numbers when they were entered while the nubmer base
+was set to binary (base 2).  Added a line to FLOAT.F, to prevent
+automatic floating point number conversion, except when base is set to
+decimal.
+
+August 27th, 1996 - 13:24 TJZ
+Assed a new menu item to the File menu of the Forth console.  The menu
+item is called "Adjust Forth Dictionaries", and it does just that.  It
+warns you about what is going to happen, then it prompts you for the
+sizes of the new application dictionary and system dictionary, then it
+proceeds to re-meta-compile, and re-extend Win32Forth with the user
+specified sizes.  This eliminates the need to edit META.F if your
+application needs to have a larger dictionary than the provided 200k
+bytes or so available as shipped..
+
+Modified the meta compiler, to allow a commandline parameter SETSIZE that
+lets you set the dictionary sizes of the newly meta-compiled system being
+created using a dialog box.  It is used like this;
+
+Win32For.EXE fload meta.f SETSIZE bye <enter>
+
+When SETSIZE is included on the commandline, the meta compiler will
+prompt, using the save forth dialog, to let you set the amount of free
+application dictionary space, andsystem dictionary space you want
+available.  Values entered smaller than 512k for the application
+dictionary and 300k for the system dictionary will be adjusted up to
+these values.  The "Meta Compiler Kernel" icon has been adjusted to
+include this commandline parameter.
+
+Also added a word REEXTEND to the meta-compiler, to allow forcing a
+re-extend after the meta-compile finishes.  It is then used like this;
+
+Win32For.EXE fload meta.f SETSIZE REEXTEND bye <enter>
+
+Fixed LocalAlloc, it worked when used in the form LocalAlloc: inside a
+word that had local variables, but the basic primitive would not work
+when used by itself inside a definition.
+
+August 26th, 1996 - 11:13 tjz
+Installed a new version of Andrew's WINCON.DLL.  he has added an
+additonal call, that allows constants that contain a string to be
+returned to the caller, so that WORDS could be modified to work with the
+DLL, to display a subset of constants that contain a string.  This helps
+find constants that you might know part of the name for, but might not
+know exactly how to spell it.  I had to modify the load order slightly,
+to allow for this enhancements, since WORDS needed to perform a callback
+to process the DLL's names and CALLBACK.F was being loaded too late.
+
+August 23rd, 1996 - 12:03 tjz
+All previous font creation words in DC.F have been deleted.  You must use
+the new Font class for all font manipulation.  It is really very easy,
+here is a simple example extracted from WINBROWS.F.
+
+Font bFont
+
+:M ClassInit:   ( -- )
+                ClassInit: Super
+                char-width        Width: bFont  \ init font as needed
+                char-height      Height: bFont
+                s" Courier" SetFacename: bFont
+                TRUE          Underline: bFont
+                ;M
+
+:M On_Paint:    ( -- )  \ screen redraw procedure
+                SaveDC: dc                      \ save device context
+                Handle: bFont SetFont: dc       \ set the font to be used
+                ...params...  TextOut: dc       \ draw the text
+                RestoreDC: dc
+                ;M
+
+:M On_Init:     ( -- )
+                On_Init: super
+                Create: bFont
+                ;M
+
+:M On_Done:     ( -- )
+                Delete: bFont   \ delete the font when no longer needed
+                On_Done: super
+                ;M
+
+
+August 22nd, 1996 - 15:21 tjz
+After a request from Bill Muench for increased flexibility in the
+creation of Fonts, I have added a FONT class in a new file FONTS.F.  A
+font is now an object, that has methods for setting all the appropriate
+characteristics of a font object as follows;
+
+-------Method Name------Parameters----Default Value------------------
+---------------------------------------------------------------------
+        Height:         ( n1 -- )     \ 14
+        Width:          ( n1 -- )     \ 9
+        Escapement:     ( n1 -- )     \ 0
+        Orientation:    ( n1 -- )     \ 0
+        Weight:         ( n1 -- )     \ FW_DONTCARE
+        Italic:         ( f1 -- )     \ FALSE
+        Underline:      ( f1 -- )     \ FALSE
+        StrikeOut:      ( f1 -- )     \ FALSE
+        CharSet:        ( n1 -- )     \ ANSI_CHARSET
+        OutPrecision:   ( n1 -- )     \ OUT_TT_PRECIS
+        ClipPrecision:  ( n1 -- )     \ CLIP_DEFAULT_PRECIS
+        Quality:        ( n1 -- )     \ PROOF_QUALITY
+        PitchAndFamily: ( n1 -- )     \ FIXED_PITCH  \ font pitch
+                                      \ 0x04 or      \ TrueType fonts
+                                      \ FF_SWISS or  \ font
+        family
+
+        SetFaceName:    ( a1 n1 -- )  \ Set the font name
+        GetFaceName:    ( -- a1 n1 )  \ Get the font name
+        Delete:         ( -- )        \ delete font when not needed
+        Create:         ( -- )        \ create the font
+        Handle:         ( -- HFONT )  \ get the font objects handle
+---------------------------------------------------------------------
+
+A font object is created like this;     Font MyFont
+You then can change its parameters;     TRUE Italic: MyFont
+Then you can create the font for use;   Create: MyFont
+
+Once the font has been created, it must be selected into a DC (Device
+Context) before any characters can be displayed in the font.  You can
+examine the demo program WINBROWS.F for an example of how to create a
+font.
+
+August 21st, 1996 - 9:58 tjz
+Bill Muench reported that if you type: HERE -1 DUMP <enter>, then DUMP
+kind of goes off and does its own thing, and can't easily be stopped.  I
+modified DUMP slightly, to avoid an address wrap around problem that this
+was causing.  Also added a couple of words from Bill's utilities, DM
+dumps from an address, till stopped, and NUF? returns a flag from the
+user TRUE when escape has been pressed.  This was useful in DUMP, to
+avoid the ABORT that START/STOP performs when you use it. Interestingly
+NUF? uses START/STOP in its definition as follows;
+
+        : NUF?  ( -- f1 )
+                ['] START/STOP CATCH ;
+
+Removed the defered word DO-STOP, which was always set to ABORT, and was
+only used in WAIT and subsequently START/STOP.  Now that NUF? relys on
+START/STOP performing an ABORT, it would be inappropriate to allow a
+defered operation that could be changed to not abort.  So when coding,
+use START/STOP when you want a word to be abortable, and use NUF? when
+you want to look at a flag.  Use CATCH, if you want to use START/STOP,
+but don't want your program to abort.
+
+Fixed a bug reported by Jih-tung Pai, where a backspace occuring in the
+last line of a file, caused the while last line ot be erased.
+
+Changed CLASS.F and all references to late binding, to the new syntax
+suggested by Andrew's recently published ANS Object support document.
+
+    Old syntax:   Method: [[ self ]]    _or_   Method: [[ object ]]
+    New Syntax:   Method:  [ self ]     _or_   Method:  [ object ]
+
+Although I edited all of Win32Forth to use the new syntax, the old syntax
+is in fact still supported for historical reasons, so you can still use
+the double brackets if you really want to.
+
+Removed FCONVERT and FFORMAT their supporting wrapper calls from
+Win32Forth.  They were used at one time for floating point number
+conversion, but were replace by routines written by Robert Smith some
+time ago.  I removed them, because they were causing the 'C' floaing
+point library to be included in the wrapper, which was just taking up
+space. 
+
+August 19th, 1996 - 11:22 tjz **** SIGNIFICANT CHANGE ****
+All Windows constant support has been moved into WINCON.DLL.  Andrew has
+written a DLL, that contains all of the over 8000 standard windows
+constants.  This removes the need to have any windows constants defined
+as constants in your Forth application, saving about 81k bytes in the
+development system.  WINCON-NUMBER? has been added to NUMBER?-CHAIN that
+looks up any unfound words in WINCON.DLL.  If the word is a windows
+constant, then its value is returned on the stack, as if it were a
+number.
+
+: wincon-number? ( a1 n1 f1 -- d1 TRUE | a1 n1 FALSE )
+                dup ?exit drop
+                2dup swap rel>abs
+                WinVal    rel>abs -rot  \ under adr & len
+                Call FindConstant
+                if      2drop
+                        WinVal @ 0 TRUE \ return constant, zero and TRUE
+                else    FALSE
+                then    ;
+
+number?-chain chain-add wincon-number?          \ windows constant server
+
+This is significant, because it removed the entire WINCON voicabulary
+which had to be included whenever windows constants were going to be
+used in a source file.  the result is less things to have to worry about,
+and automatic availability of windows constants to any forth program that
+needs them.  Compiler performance is not effected, because Andrew
+included a 2000 way hash in WINCON.DLL, resulting in very fast constant
+lookup.
+
+All references to WINCON have been removed from Win32Forth, and you must
+remove any references to WINCON you have in any of your applications.
+
+This has resulted in the number of words in Win32Forth decreasing from
+about 5200 down to less than 3900 words.  A significant reduction in
+dcitionary.
+
+Enhanced WinLibrary to include a new word SYS-WinLibrary, which is used
+to load DLLs that will NOT BE PRESENT or USED in a TURNKEYed application.
+The only example if this presently is WINCON.DLL, which MUST be present
+when COMPILING, but MUST NOT be LOADED or REFERENCED when the turnkeyed
+application is running.  Normally any DLL referenced either when
+compiling, or running will be automatically loaded by a turnkeyed
+application, but system libraries will not be loaded, and if they are
+used at runtime in a turnkeyed applcation, then a dialog reporting the
+error will result, and the program will terminate.  This change was
+needed so you would not have to ship WINCON.DLL with your application to
+get it to run.
+
+August 15th, 1996 - 10:13 tjz
+Integrated SKIP'C', the word that was used to prevent uppercasing
+character literals in the format 'C', into ?UPPERCASE.  Removed SKIP'C'
+from the kernel as a separate word.
+
+Also did some cleanup in 0xNUMBER?, in the area of 'C' handling.
+
+Added error checking to MDEBUG and MDBG to prevent someone from trying
+to debug a class method directly instead of a method of an object of a
+class. Debugging can only be done on objects.
+
+I split this file (Win32For.NEW) out into two files.  All the older notes
+about previous versions of Win32Forth have been moved into the file
+Win32For.PRV.  I have also added a Help menu item to access them from the
+Forth console window.  Win32For.NEW was getting to be too large to keep
+on Andrew's ftp site in uncompressed form, and this change keeps the
+total file size small enough to fit on a single 1.4meg floppy (the real
+reason I did it).
+
+Added functions for Copy Console, and Cut Console to the console menu.
+They can also be performed using the standard windows keys Ctrl+C and
+Ctrl+X.  Cut console just copies the console buffer to the Windows
+clipboard, and then clears the screen.  Also added code to stop a paste
+to the keyboard (Ctrl+V), when an error occurs during the paste.
+
+Removed the two File Menu items "Append Forth Console Buffer" and
+"Save Forth &Console Buffer As", they are not needed now that we have
+Copy Console, and Cut Console under the Edit Menu.
+
+August 14th, 1996 - 15:30 tjz
+Modified TURNKEY, APPLICATION, and HELLO, to allow default initialization
+routines to be used for simple applications, so you don't have to worry
+about creating an obscur initialization word for you application, if the
+normal initialization works for you.  Modified all the sample programs
+that create applications, to reflect the simpler usage.  The old usage
+will probably still work if you have created an initialization word for
+your application.
+
+Added FOREGROUND and BACKGROUND to the file COLORS.F, to allow setting
+the color of the console forground and background. These wrods work like
+the DC class methods "SetTextColor: dc" and "SetBkColor: dc".
+
+August 12th, 1996 - 10:50 tjz
+Added about 100 windows style constants to WINCON.F.  They are needed to
+support commoon controls.  Only part of the common control constants were
+added, more may be needed later as determined by usage.
+
+Added the file FILEDUMP.F to Win32Forth, seems I mentioned it above, but
+neglected to actually add it to the installation archive.
+
+Modified DU< and FPICK to preserve the contents of EDX.  These were the
+only code words that weren't preserving it.  This is in preparation for
+the possible inclusion of multi-tasking, where EDX might be used to point
+ot the current task.
+
+Modified PLACE, per the suggestion of Bill Muench, to correct for a
+possible future problem if multi tasking is included.
+
+Renamed the word that makes Win32Forth re-register itself from
+FORCE-REGISTRY in the hidden vocabulary to RE-REGISTER in the forth
+vocabulary.  
+
+Added extensive documentation to UTILS.F on the use of FSAVE, TURNKEY
+and APPLICATION.
+
+August 9th, 1996 - 10:55 tjz
+Received a new version of INTERPIF.F, the interpreted conditionals
+support, from Jim Schneider this version is nestable.  Included with it
+was a file called CTYPE.F, which implements 'C' style character type
+testing words.
+
+Added case insensitive versions of COMPARE and SEARCH to the system, they
+are called CAPS-COMPARE and CAPS-SEARCH.  They take and return the same
+parameters as the case sensitive versions.
+
+August 8th, 1996 - 14:54 tjz
+Added additional comments to FKERNEL.F. Added defered word DO-STOP to
+FKERNEL.F, to use in place of ABORT in WAIT, which is used in START/STOP.
+DO-STOP is initialized to ABORT, but can be changed if desired.
+
+August 6th, 1996 - 12:33 tjz
+I received a request from Lars ?, to allow Windows Messages (WM_ words)
+to be accessable from a child class that needs to redefine the action
+taken when windows sends a message, without having to dulpicate all the
+code in a chailes superclass.  In other words, it was not possible to
+send a message to a WM_ method of your superclass.  It is now possible,
+and here is an example of how it is done;
+
+    :M WM_CLOSE  ( -- )
+                 save-edit-fields               \ save user entered info
+                 FALSE to window-is-open?       \ mark as closed
+                 WM_CLOSE WM: Super             \ send superclass a
+                 ;M                             \ WM_CLOSE message
+
+It turns out to be quite useful to do some little thing when a window
+is close, like save a windows edit box parameters, or whatever.  The WM:
+pseudo method, allows this to be done.
+
+
+NOTE: You should not change any of the stack parameters passed into the
+      window message, between the start of the method, and the sending of
+      the message to the super class, since windows messages normally use
+      those parameters.
+
+Fixed a couple of bugs in WinView, where it was discarding data stack
+items on returning from starting up a modeless dialog.  This was bad,
+because modeless dialogs start up and return immediately, and don't
+return any result flags, like normal dialog boxes.
+
+Found and fixed a bug in the Windows Callback code in the kernel, that
+wasn't initializing SP0 properly.  This was preventing the debugger from
+working during any windows callback.
+
+August 2nd, 1996 - 9:15 tjz
+Received ROMCALC.F, a very nice roman numeral calculator contributed by
+Lars Krueger.
+
+Added comments to ASMWIN32.F to make it obvious that you should not
+update that file from Jim Schnieder's 486ASM.ZIP archive, should you
+happen to try to update Jim's assembler.  ASMWIN32.F contains substantial
+modifications that are needed for Win32Forth to function properly.  It is
+really part of Win32Forth, not part of 486ASM as dictributed by Jim
+Schnieder.  
+
+July 31st, 1996 - 14:27 tjz
+Added a few new entries to the Win32Forth Display menu for additional
+words that have been added over the last few months, and catagorized the
+Display menu into sections to make entries easier to find.
+
+July 30th, 1996 - 8:50 tjz
+Found and fixed a serious bug in WinView's PASTE text function called
+PASTE-TEXT.  I was using the line pointer table after reallocating the
+text buffer and before rebuilding the line pointer table.  This can lead
+to an attempt to access memory that has been deallocated, since windows
+may have moved the text buffer in memory.  The fix was simple once I
+understood the problem, I just moved the faulty code up a few lines to
+before the code that reallocated the text buffer.  This assured the line
+pointer table would be valid.  This bug has been present in the code
+since the paste text function was added to WinView.  FIXED
+
+Factored REGISTER-FRAME-WINDOW into two functions DEFAULT-WINDOW-CLASS
+and REGISTER-THE-CLASS as suggested by Lars Krueger.  This will improve
+flexibility for non-default class windows.  You can use the lower level
+words, and insert your changes between the default initialization, and
+the register class word, minimizing code duplication.
+
+: default-window-class ( -- ) \ fill in the defaults for the window class
+     CS_DBLCLKS CS_HREDRAW + CS_VREDRAW + ( CS_OWNDC + ) to Style
+     TheWndProc rel>abs                                  to wndProc
+     0                                                   to clsExtra
+     0                                                   to wndExtra
+     appInst                                             to hInstance
+\    IDI_APPLICATION NULL           Call LoadIcon        to hIcon
+     101 appinst                    Call LoadIcon        to hIcon
+\    IDC_ARROW NULL                 Call LoadCursor      to hCursor
+     DefaultCursor: [[ self ]] NULL Call LoadCursor      to hCursor
+     WHITE_BRUSH                    Call GetStockObject  to hbrBackground
+     NULL                                                to MenuName
+     frame-name rel>abs                                  to ClassName ;
+
+: register-the-class    ( -- f )        \ register the class structure
+        WndClass rel>abs  Call RegisterClass ;
+
+: register-frame-window  ( -- f )       \ init the class and register it
+        default-window-class
+        register-the-class ;
+
+July 29th, 1996 - 9:50 tjz
+Received a new sample program from Brad Eckert. The program is called
+WINSTACK, and it displays a window with the current stack contents in it.
+The stack window is updated when interpret returns.
+
+************************************************************************
+************************************************************************
+SEE THE FILE WIN32FOR.PRV FOR NNOTES ON CHANGES TO WIN32FORTH FROM
+PREVIOUS VERSIONS.
+************************************************************************
+************************************************************************
+

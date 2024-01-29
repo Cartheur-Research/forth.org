@@ -1,0 +1,183 @@
+
+                   Developing Pull Down Menus in Forth
+
+                            by Nick Hennenfent 
+
+
+Implementing  pull-down  menus  is  really  very  easy.  The menus I have 
+written are not fancy, but they are easy to use and to write.  
+
+Don't look to closely at the code - I am maintaining this code  on  three 
+systems and the details  tend  to  blend  together  sometimes.  This  was 
+written in LMI PC/Forth, which has some video control words built in.  If 
+your Forth doesn't have them,  you can easily write short code words that 
+call the DOS interrupts.  If you don't know how,  get one of the books by 
+Peter Norton on programming the PC or get Ray Duncan's new book, Advanced 
+MS-DOS, and it will be easy to do.  
+
+The technique I use was to create a data structure to represent the menu.
+
+  : menu  create  c,  c,  c,  c,  does> ;
+
+Now you can define a menu quite easily as follows:
+
+  30  0  2   vertical menu  my.menu
+  s"  option one "   ' option1 ,
+  s"  option two "   ' option2 ,
+
+This  defines a menu to be located at column=30 and row=0 with 2 items to 
+select from.  A few ancillary definitions -
+
+  0  constant  horizontal     1  constant  vertical
+     variable  'menu             variable  m-done
+
+The constants vertical and horizontal allow you to use the same  code  to 
+process either type of menu. Normally a pull-down system has a horizontal 
+menu  across the top of the screen and vertical menus that pull-down from 
+it.  
+
+The  words  option1  and  option2  are executed when the user selects the 
+corresponding menu entry.  
+
+The  data structure described defines a menu compiled into the dictionary 
+with the data -
+
+  ( type, #items, row#, col#, text, addr, text, addr )
+
+If you wanted to simplify things further you could  define  a  word  like 
+MENU" that would do the  s" .... "  and  ' ... ,  automatically.  
+
+Now some very simple words allow you to process the menu data structure.  
+
+  : menu.init   'menu !   m-done off ;
+
+This  sets  a  pointer to the menu for other words to use and sets a flag 
+that is set to on when we want to leave the menu.  
+
+  : menu.shape?   'menu @         c@ ;
+
+This tells us whether it is a vertical or horizontal menu.
+
+  : menu.items    'menu @    1+   c@ ;
+
+This tells us how many items the menu contains.
+
+  : menu.row      'menu @   2 +   c@ ;
+  : menu.col      'menu @   3 +   c@ ;
+
+This tells us the row and column at which to display the menu.
+
+  : menu.data     'menu @   4 +      ;
+
+This returns the adress where the menu text strings begin.  Now to access 
+any one of the menu text strings, use the following-
+
+  : @menu    ( index -- addr,length )
+       menu.data  swap  0
+       ?do  count  +  2+  loop  count ;
+
+Another simple definition to tell us how long the text strings are -
+
+  : menu.width   ( index -- length )
+       0  swap  0  ?do  i  @menu  nip  +  loop ;
+
+To execute the word associated with a menu entry use the following -
+
+  : menu.run    ( index -- )
+      1+  @menu  drop  1-  2-  @  execute ;
+
+
+Next we will display the menu. 
+
+  : menu.type    ( index -- )
+       dup  menu.shape?
+       if    ( vertical menu )  menu.row +  menu.col   swap    gotoxy
+       else  ( horizontal )     menu.width  menu.col + menu.row gotoxy
+             then
+       @menu  type ;
+
+This word displays a string representing one menu entry.  Note  that  you 
+need a word to position the cursor at a given row,col.  
+
+  : menu.block    ( index -- )
+       inverse  menu.type  -inverse ;
+
+This word displays one of  the  menu  entries  in  reverse  video  -  the 
+bouncing bar, so to speak.  You have to have a reverse video routine!  
+
+  : menu.show   ( -- )
+       menu.items  0  do  i  menu.type  loop ;
+
+This  very  simple  word displays the menu.  See how easy Forth makes it!  
+Now a few more simple definitions for manipulating the menu.  
+
+  : menu++    ( index -- )
+       menu.show  1+  menu.items  mod  menu.block
+
+This word moves the bar forward.
+
+  : menu--    ( index -- )
+       menu.show  1-  menu.items  mod  menu.block ;
+
+This word moves the bar backward.
+
+  : menu.exit   m-done on ;
+
+Sets a flag indicating that we want to exit the menu.
+
+  : menu.quit?  m-done @  m-done off ;
+
+Gets  the  exit  flag  and  resets it in case we are unnesting to another 
+menu.  
+
+
+To  process  the  keystrokes  that  drive  the  menu,  you can use a case 
+statement as follows.  
+
+  : menu.keys    ( index -- index,index )
+       begin  key
+              case 
+              &up   of  dup menu--  1- menu.items mod     false endof
+              &left of  dup menu--  1- menu.items mod     false endof
+              &dn   of  dup menu++  1+ menu.items mod     false endof
+              &rght of  dup menu++  1+ menu.items mod     false endof
+              &cr   of  menu.run    1+ menu.items mod dup true  endof
+              false swap
+              endcase
+       until ;
+
+Note that if may need to write a KEY that hides the cursor while  waiting 
+for a keystroke. The case statement uses constants representing the keys.  
+If  you  want  you  can  look  for  an  escape  key and set the exit flag 
+accordingly to drop out of the menu rather than have one of the selection 
+items perform an exit.  
+
+Now to execute the menu we use 
+
+  : menu.exec       ( index,index -- index,index,flag )
+       menu.show    ( index,index -- index,index )
+       menu.block   ( index,index -- index )
+       menu.keys    ( index       -- index,index )
+       menu.quit?   ( index,index -- index,index,flag )
+  ;
+
+This word displays the menu, then displays the first item with a block or 
+bar ( inverse video), and then sits and watches for keys.  Then it checks 
+the exit flag to see if it is time to leave.  
+
+Next is a short  routine  to  iteratively  recall  the  menu  after  each 
+selection has been made and the appropriate action performed.  
+
+  : menu#1
+       0  0  begin  cls
+                    my.menu  menu.init
+                    menu.exec
+             until  2drop ;
+
+
+To  really  make your menus look right,  you'll need to draw a box around 
+them with the IBM graphics characters.  That is really not too hard,  but 
+in  my  opinion,  to be done right it needs to be done with code words so 
+that your menus look snappy.  
+
+

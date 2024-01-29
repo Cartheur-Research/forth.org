@@ -1,0 +1,612 @@
+---[ Graphics of the Second Kind, Part II ]-----------[12/12/2006]---
+
+                         by Timothy Trussell
+
+---[ Where We Are ]--------------------------------------------------
+
+Now that I have that PCX interface out of my system, we are going to
+step up to the next level of graphics, and this involves the use of
+sprites, which are something you see everytime you look at your
+computer and see an icon on the screen.
+
+---[ Sprites I ]-----------------------------------------------------
+
+Sprites have two basic attributes.  They have a width, and they have
+a height, and so are actually a simple two-dimensional construct that
+we can display.
+
+A basic sprite image is simply an array of bits, which are displayed
+at an X,Y coordinate to the screen.  The size of the sprite is up to
+the programmer, since with virtual windows techniques, it is actually
+possible to make the sprite larger than can possibly be displayed on
+a computer screen, but the screen can be used to 'pan' around inside
+the sprite.  But, I get ahead of myself.
+
+Three basic sprite images follow, a Square, a Diamond and an Ovoid.
+Each of these are in a 16x16 packed pixel matrix, and the way they
+are configured (at the moment) only allows for a single color to be
+used to draw them in.
+
+        1111111111111111  0000000110000000  0000111111110000
+        1111111111111111  0000001111000000  0011111111111100
+        1111111111111111  0000011001100000  0111111111111110
+        1111111111111111  0000110000110000  0111111111111110
+        1111000000001111  0001100110011000  1111100000011111
+        1111000000001111  0011001111001100  1111000000001111
+        1111000000001111  0110011001100110  1111000000001111
+        1111000000001111  1100110000110011  1111000000001111
+        1111000000001111  1100110000110011  1111000000001111
+        1111000000001111  0110011001100110  1111000000001111
+        1111000000001111  0011001111001100  1111000000001111
+        1111000000001111  0001100110011000  1111100000011111
+        1111111111111111  0000110000110000  0111111111111110
+        1111111111111111  0000011001100000  0111111111111110
+        1111111111111111  0000001111000000  0011111111111100
+        1111111111111111  0000000110000000  0000111111110000
+
+The main advantage of this packed pixel format is that it keeps the
+space required to store the sprites in your program to a minimum.
+In the case of these 16x16 images, only 32 bytes of memory are needed
+to store each image.
+
+To store into memory, the above bit patterns will need to be stored
+as bytes, which in Forth is simple to do:
+
+        binary
+
+        create Square[]
+        11111111 C, 11111111 C,
+        11111111 C, 11111111 C,
+        11111111 C, 11111111 C,
+        11111111 C, 11111111 C,
+        11110000 C, 00001111 C,
+        11110000 C, 00001111 C,
+        11110000 C, 00001111 C,
+        11110000 C, 00001111 C,
+        11110000 C, 00001111 C,
+        11110000 C, 00001111 C,
+        11110000 C, 00001111 C,
+        11110000 C, 00001111 C,
+        11111111 C, 11111111 C,
+        11111111 C, 11111111 C,
+        11111111 C, 11111111 C,
+        11111111 C, 11111111 C,
+
+        create Diamond[]
+        00000001 C, 10000000 C,
+        00000011 C, 11000000 C,
+        00000110 C, 01100000 C,
+        00001100 C, 00110000 C,
+        00011001 C, 10011000 C,
+        00110011 C, 11001100 C,
+        01100110 C, 01100110 C,
+        11001100 C, 00110011 C,
+        11001100 C, 00110011 C,
+        01100110 C, 01100110 C,
+        00110011 C, 11001100 C,
+        00011001 C, 10011000 C,
+        00000110 C, 01100000 C,
+        00000110 C, 01100000 C,
+        00000011 C, 11000000 C,
+        00000001 C, 10000000 C,
+
+        create Ovoid[]
+        00001111 C, 11110000 C,
+        00111111 C, 11111100 C,
+        01111111 C, 11111110 C,
+        01111111 C, 11111110 C,
+        11111000 C, 00011111 C,
+        11110000 C, 00001111 C,
+        11110000 C, 00001111 C,
+        11110000 C, 00001111 C,
+        11110000 C, 00001111 C,
+        11110000 C, 00001111 C,
+        11110000 C, 00001111 C,
+        11111000 C, 00011111 C,
+        01111111 C, 11111110 C,
+        01111111 C, 11111110 C,
+        00111111 C, 11111100 C,
+        00001111 C, 11110000 C,
+
+        decimal
+
+To create a 16x16 sprite is as easy as drawing the image in a matrix
+using 1's where you want a pixel to be, and 0's for no pixel. Then,
+you split them down the middle to create a pair of bytes and
+put a C, after each.  Remembering to set BINARY mode first so Forth
+compiles the numbers into the dictionary correctly.
+
+Drawing the sprite is now a matter of decompressing the packed pixel
+data, and plotting the pixels. How to handle the 1s is easy: if the
+bit is a 1 we plot a color pixel there.
+
+With the 0s, we have two choices:
+
+The first is that we can skip the pixel position, so if the sprite is
+being drawn on top of something like a background image, or even
+another sprite, the other image will be visible thru the 'holes' that
+the 0s leave.
+
+The second is to plot the 0s, which will put a black pixel to the
+image.  If being drawn on a background, the image will not be visible
+'behind' the sprite image. If we have put a border of 0's around the
+sprite image, this give us the additional benefit of erasing the
+sprite as it is redrawing itself in the new position if we are moving
+it back and forth on the screen.  BUT - it would still destroy the
+background image (if one is being used).
+
+In this code example, we will be using the first method, skipping the
+pixel position if the bit is a zero.
+
+        value %UseVR
+        value %Speed
+
+        value %src
+        value %dst
+
+        : DrawPackedSprite ( &image x y c -- )
+          >R rot to %src R>             \ x y c
+          16 0 do                       \ x y c
+            %src C@ 1 +to %src          \ x y c chi
+            8 LSHIFT                    \ x y c chi<<8
+            %src C@ 1 +to %src          \ x y c chi<<8 clo
+            OR                          \ x y c n
+            16 0 do                     \ x y c n
+              dup $8000 and if          \ x y c n
+                3 pick i +              \ x y c n x+i
+                3 pick j +              \ x y c n x+i y+j
+                3 pick                  \ x y c n x+i y+j c
+                %Speed if
+                  FastPlot
+                else
+                  Plot
+                then
+              then
+              1 LSHIFT                  \ move to next pixel bit
+            loop
+            drop
+          loop
+          2drop
+          drop
+        ;
+
+For each of the 16 lines (height) of the sprite, we load the two
+bytes and process each bit in the word, by testing bit 15 for it
+being a 1 or 0.  If a 1, plot the pixel, else skip that pixel.
+
+We then shift the data left one position, and do this for each of the
+16 pixels represented by those two bytes, each time checking bit 15
+for being a 1 or 0 value.
+
+Then, we go on to the next pair of bytes, and repeat until we have
+processed all 16 lines of the sprite image.
+
+I have added the ability for the word to use either the FastPlot or
+BIOS Plot word to draw the individual pixels, which is implemented
+below in my demo words.
+
+Now for an example to show the use of the DrawPackedSprite routine:
+
+        : KeyCheck ( -- 0/1 )
+          key? if
+            key dup 32 = if     \ Space Bar toggles using Retrace
+              drop
+              %UseVR not to %UseVR
+              0
+            else
+              8 = if            \ Backspace toggles Plot/FastPlot
+                %Speed not to %Speed
+                0
+              else
+                1
+              then
+            then
+          else
+            0
+          then
+          not                   \ reverse it for the While check
+        ;
+
+        : TestPSprite1
+          $13 InitGraph
+          1 to %UseVR           \ start using WaitRetrace
+          0 to %Speed           \ start using BIOS Plot
+          begin
+            KeyCheck
+          while
+            11 0 do
+              16 0 do
+                3 rnd
+                case
+                  0 of Square[]  endof
+                  1 of Diamond[] endof
+                  2 of Ovoid[]   endof
+                endcase
+                i 20 *
+                j 18 *
+                256 rnd
+                DrawPackedSprite
+              loop
+            loop
+            %UseVR if WaitRetrace then
+          repeat
+          FadeDown
+          CloseGraph
+        ;
+
+TestPSprite1 will allow you to toggle between drawing with the Wait
+for Vertical Retrace enabled or disabled by switching it with the
+Space Bar, and to toggle between using the BIOS Plot and the FastPlot
+pixel routines using the Backspace key.
+
+Any other key exits the word.
+
+The sprites are laid out to fill the screen, and then are changed at
+random in random colors.  Any key other than the Space and BackSpace
+will exit the example.
+
+---[ Maximizing drawing speed ]--------------------------------------
+
+Converting the DrawPackedSprite routine into a CODE definition will
+give us the maximum speed for this word, which let's us use all the
+extra time to do things like sound, AI calculations, and so on.
+
+        code Fast.DrawPackedSprite ( &image x y c -- )
+                            bx  push    \ all parms to stack
+                         bp sp  xchg    \ setup stack frame
+                            es  push    \ save registers to modify
+                            di  push
+                VSelector # ax  mov
+                         ax es  mov
+                         di di  xor
+               3 cells [bp] bx  mov     \ bx=&image
+               2 cells [bp] di  add     \ di=&buf[x]
+               1 cells [bp] ax  mov     \ ax=y
+        \ Calculate Y*320+X
+                        6 # cl  mov
+                         ax cl  shl     \ ax=y*64
+                         ax di  add     \ di=&buf[y*64+x]
+                        2 # cl  mov
+                         ax cl  shl     \ ax=y*64
+                         ax di  add     \ di=&buf[y*320+x]
+                       16 # cx  mov     \ height loop
+        1 L:
+                            cx  push
+                     0 [bx] ah  mov     \ get first byte
+                            bx  inc
+                     0 [bx] al  mov     \ get second byte
+                            bx  inc
+                       16 # cx  mov     \ width loop
+        2 L:
+                    $8000 # ax  test    \ check bit 15
+                          3 L#  jz      \ skip pixel if 0
+                            ax  push    \ else plot it
+               0 cells [bp] al  mov     \ al=pixel color
+                 es: al 0 [di]  mov     \ plot the pixel
+                            ax  pop
+        3 L:
+                            ax  shl     \ move to next bit
+                            di  inc     \ increment plotted or not
+                            cx  dec
+                          2 L#  jnz     \ next width loop
+                      304 # di  add     \ advance to start of next line
+                            cx  pop
+                            cx  dec
+                          1 L#  jnz     \ next height loop
+
+                            di  pop     \ restore parameters
+                            es  pop
+                         bp sp  xchg    \ restore stack frame
+                  4 cells # sp  add     \ drop parameters
+                            bx  pop     \ get new TOS
+                            end-code
+                            no-expand
+
+Fast.DrawPackedSprite is not precisely an exact conversion from high
+level Forth code to assembly.  It only performs Y*320+X once, and
+after each loop we add 304 (320-16) to the destination pointer (DI)
+to get to the start of the next line position.  This means that this
+word is hard-coded for the 320x200x256 resolution mode.
+
+An example word to test this version of the sprite drawing routine:
+
+        : TestSprite2
+          1 to %UseVR           \ start using WaitRetrace
+          0 to %Speed           \ start using BIOS Plot
+          $13 InitGraph
+          begin
+            KeyCheck
+          while
+            3 rnd
+            case
+              0 of Square[]  endof
+              1 of Diamond[] endof
+              2 of Ovoid[]   endof
+            endcase
+            320 16 - rnd
+            200 16 - rnd
+            256 rnd
+            %Speed if
+              Fast.DrawPackedSprite
+            else
+              DrawPackedSprite
+            then
+            %UseVR if WaitRetrace then
+          repeat
+          FadeDown
+          CloseGraph
+        ;
+
+This one is a little more complex in the keyboard handling, since it
+is possible to access all three drawing methods.
+
+The Fast.DrawPackedSprite routine pumps out 1,000,000 sprites on my
+machine in 30.32 seconds.  Your mileage may vary.
+
+The size of a Packed Pixel Sprite is totally up to the programmer. If
+you have an application that can benefit from using this method of
+drawing sprites, then you can realize a very small code size and very
+fast speed of drawing. This is basically how the Space Invaders games
+were implemented, and they have been very successful commercially.
+
+---[ Sprites II ]----------------------------------------------------
+
+To be able to implement a sprite that has more than a single color to
+it requires that we abandon the Packed Pixel format, and allocate the
+number of bytes required per pixel for the color capability we wish
+to use.
+
+In the case of the 320x200x256 mode, this means a single byte will be
+needed for each pixel in the sprite. This means that our 16x16 sprite
+grows from a miserly 32 bytes up to 256 bytes per sprite.
+
+Rather than try to add a bunch of colors to an expanded version of
+the Square, Diamond and Ovoid sprites above, I will use another image
+that I have in another demo program, which will also require the use
+of a palette to view correctly.
+
+First, the palette that we will use is defined as the following array
+of data:
+
+        create BollPalette[]
+        0 C,  0 C,  0 C,  \ color # 0
+        0 C,  0 C, 12 C,  \ color # 1
+        4 C,  4 C, 12 C,  \ color # 2
+        4 C,  4 C, 16 C,  \ color # 3
+        4 C,  4 C, 20 C,  \ color # 4
+        4 C,  4 C, 24 C,  \ color # 5
+        8 C,  8 C, 24 C,  \ color # 6
+        8 C,  8 C, 28 C,  \ color # 7
+        8 C,  8 C, 32 C,  \ color # 8
+        8 C,  8 C, 36 C,  \ color # 9
+        12 C, 12 C, 40 C, \ color # 10
+        12 C, 12 C, 44 C, \ color # 11
+        12 C, 12 C, 48 C, \ color # 12
+        12 C, 12 C, 52 C, \ color # 13
+        16 C, 16 C, 48 C, \ color # 14
+        16 C, 16 C, 52 C, \ color # 15
+        16 C, 16 C, 56 C, \ color # 16
+        20 C, 20 C, 56 C, \ color # 17
+        20 C, 20 C, 60 C, \ color # 18
+        24 C, 24 C, 60 C, \ color # 19
+        28 C, 28 C, 60 C, \ color # 20
+        32 C, 32 C, 60 C, \ color # 21
+        36 C, 36 C, 60 C, \ color # 22
+        60 C, 60 C, 60 C, \ color # 23
+
+What has been defined is a limited subset of palette colors, with
+only 24 colors being defined.  The reason for this small number of
+colors will be seen if you examine the following bitmap definition:
+
+        create Boll[]
+        31 , 24 ,       \ height, width
+         0 C,  0 C,  0 C,  0 C,  0 C,  0 C,  0 C,  0 C,
+         0 C,  8 C,  9 C, 10 C, 10 C, 10 C,  0 C,  0 C,
+         0 C,  0 C,  0 C,  0 C,  0 C,  0 C,  0 C,  0 C,
+         0 C,  0 C,  0 C,  0 C,  0 C,  0 C,  0 C,  8 C,
+         9 C, 10 C, 11 C, 11 C, 12 C, 12 C, 12 C, 11 C,
+         0 C,  0 C,  0 C,  0 C,  0 C,  0 C,  0 C,  0 C,
+         0 C,  0 C,  0 C,  0 C,  0 C,  5 C,  8 C,  9 C,
+        10 C, 11 C, 11 C, 12 C, 12 C, 13 C, 13 C, 12 C,
+        12 C, 10 C,  0 C,  0 C,  0 C,  0 C,  0 C,  0 C,
+         0 C,  0 C,  0 C,  0 C,  5 C,  7 C,  9 C, 10 C,
+        11 C, 11 C, 12 C, 12 C, 13 C, 15 C, 15 C, 15 C,
+        15 C, 12 C, 11 C,  0 C,  0 C,  0 C,  0 C,  0 C,
+         0 C,  0 C,  0 C,  4 C,  7 C,  8 C,  9 C, 10 C,
+        11 C, 12 C, 12 C, 13 C, 15 C, 15 C, 16 C, 16 C,
+        15 C, 15 C, 12 C, 10 C,  0 C,  0 C,  0 C,  0 C,
+         0 C,  0 C,  0 C,  5 C,  7 C,  8 C,  9 C, 10 C,
+        11 C, 12 C, 12 C, 13 C, 15 C, 16 C, 16 C, 16 C,
+        16 C, 15 C, 13 C, 12 C,  0 C,  0 C,  0 C,  0 C,
+         0 C,  0 C,  4 C,  6 C,  8 C,  9 C, 10 C, 10 C,
+        11 C, 12 C, 12 C, 13 C, 15 C, 16 C, 16 C, 16 C,
+        16 C, 16 C, 15 C, 12 C, 11 C,  0 C,  0 C,  0 C,
+         0 C,  2 C,  4 C,  7 C,  8 C,  9 C, 10 C, 10 C,
+        11 C, 12 C, 12 C, 13 C, 15 C, 15 C, 16 C, 16 C,
+        16 C, 16 C, 15 C, 13 C, 12 C,  8 C,  0 C,  0 C,
+         0 C,  3 C,  5 C,  7 C,  8 C,  9 C, 10 C, 10 C,
+        11 C, 12 C, 12 C, 13 C, 15 C, 15 C, 16 C, 16 C,
+        16 C, 16 C, 15 C, 13 C, 12 C, 10 C,  0 C,  0 C,
+         0 C,  3 C,  5 C,  7 C,  8 C,  9 C,  9 C, 10 C,
+        11 C, 11 C, 12 C, 12 C, 15 C, 16 C, 16 C, 16 C,
+        16 C, 15 C, 15 C, 13 C, 12 C, 11 C,  0 C,  0 C,
+         2 C,  4 C,  5 C,  7 C,  8 C,  9 C,  9 C, 10 C,
+        11 C, 11 C, 12 C, 12 C, 19 C, 22 C, 18 C, 15 C,
+        15 C, 15 C, 15 C, 13 C, 12 C, 11 C,  8 C,  0 C,
+         2 C,  4 C,  5 C,  7 C,  8 C,  8 C,  9 C, 10 C,
+        10 C, 11 C, 11 C, 14 C, 22 C, 23 C, 22 C, 15 C,
+        15 C, 15 C, 13 C, 12 C, 12 C, 11 C,  9 C,  0 C,
+         2 C,  4 C,  5 C,  6 C,  7 C,  8 C,  9 C,  9 C,
+        10 C, 11 C, 11 C, 12 C, 21 C, 23 C, 22 C, 15 C,
+        13 C, 13 C, 12 C, 12 C, 12 C, 11 C,  9 C,  0 C,
+         2 C,  3 C,  4 C,  6 C,  7 C,  8 C,  9 C,  9 C,
+        10 C, 10 C, 11 C, 11 C, 15 C, 20 C, 17 C, 12 C,
+        12 C, 12 C, 12 C, 12 C, 11 C, 10 C,  9 C,  0 C,
+         2 C,  3 C,  4 C,  5 C,  7 C,  8 C,  8 C,  9 C,
+         9 C, 10 C, 10 C, 11 C, 11 C, 12 C, 12 C, 12 C,
+        12 C, 12 C, 12 C, 11 C, 11 C, 10 C,  9 C,  0 C,
+         2 C,  3 C,  4 C,  5 C,  7 C,  7 C,  8 C,  8 C,
+         9 C, 10 C, 10 C, 10 C, 11 C, 11 C, 11 C, 11 C,
+        11 C, 11 C, 11 C, 11 C, 10 C, 10 C,  8 C,  0 C,
+         2 C,  3 C,  4 C,  4 C,  6 C,  7 C,  8 C,  8 C,
+         9 C,  9 C, 10 C, 10 C, 10 C, 11 C, 11 C, 11 C,
+        11 C, 11 C, 11 C, 10 C, 10 C,  9 C,  8 C,  0 C,
+         2 C,  3 C,  3 C,  4 C,  5 C,  7 C,  7 C,  8 C,
+         8 C,  9 C,  9 C,  9 C, 10 C, 10 C, 10 C, 10 C,
+        10 C, 10 C, 10 C, 10 C,  9 C,  9 C,  7 C,  0 C,
+         2 C,  2 C,  3 C,  4 C,  5 C,  5 C,  7 C,  7 C,
+         8 C,  8 C,  9 C,  9 C,  9 C, 10 C, 10 C, 10 C,
+        10 C, 10 C, 10 C,  9 C,  9 C,  8 C,  7 C,  0 C,
+         1 C,  2 C,  3 C,  4 C,  4 C,  5 C,  6 C,  7 C,
+         7 C,  8 C,  8 C,  9 C,  9 C,  9 C,  9 C,  9 C,
+         9 C,  9 C,  9 C,  9 C,  8 C,  7 C,  5 C,  0 C,
+         1 C,  2 C,  3 C,  3 C,  4 C,  4 C,  5 C,  6 C,
+         7 C,  7 C,  8 C,  8 C,  8 C,  8 C,  9 C,  9 C,
+         9 C,  9 C,  8 C,  8 C,  8 C,  7 C,  4 C,  0 C,
+         1 C,  2 C,  2 C,  3 C,  3 C,  4 C,  4 C,  5 C,
+         6 C,  7 C,  7 C,  7 C,  8 C,  8 C,  8 C,  8 C,
+         8 C,  8 C,  8 C,  7 C,  7 C,  5 C,  3 C,  0 C,
+         0 C,  1 C,  2 C,  3 C,  3 C,  4 C,  4 C,  4 C,
+         5 C,  6 C,  7 C,  7 C,  7 C,  7 C,  7 C,  8 C,
+         8 C,  7 C,  7 C,  7 C,  6 C,  4 C,  0 C,  0 C,
+         0 C,  1 C,  2 C,  2 C,  3 C,  3 C,  4 C,  4 C,
+         4 C,  5 C,  5 C,  6 C,  7 C,  7 C,  7 C,  7 C,
+         7 C,  7 C,  6 C,  5 C,  4 C,  3 C,  0 C,  0 C,
+         0 C,  1 C,  1 C,  2 C,  2 C,  3 C,  3 C,  4 C,
+         4 C,  4 C,  5 C,  5 C,  5 C,  5 C,  6 C,  6 C,
+         6 C,  5 C,  5 C,  4 C,  4 C,  2 C,  0 C,  0 C,
+         0 C,  0 C,  1 C,  1 C,  2 C,  2 C,  3 C,  3 C,
+         3 C,  4 C,  4 C,  4 C,  4 C,  5 C,  5 C,  5 C,
+         5 C,  4 C,  4 C,  4 C,  3 C,  0 C,  0 C,  0 C,
+         0 C,  0 C,  0 C,  1 C,  1 C,  2 C,  2 C,  3 C,
+         3 C,  3 C,  3 C,  4 C,  4 C,  4 C,  4 C,  4 C,
+         4 C,  4 C,  3 C,  3 C,  0 C,  0 C,  0 C,  0 C,
+         0 C,  0 C,  0 C,  1 C,  1 C,  1 C,  2 C,  2 C,
+         2 C,  3 C,  3 C,  3 C,  3 C,  3 C,  3 C,  3 C,
+         3 C,  3 C,  3 C,  2 C,  0 C,  0 C,  0 C,  0 C,
+         0 C,  0 C,  0 C,  0 C,  1 C,  1 C,  1 C,  2 C,
+         2 C,  2 C,  2 C,  3 C,  3 C,  3 C,  3 C,  3 C,
+         3 C,  2 C,  2 C,  0 C,  0 C,  0 C,  0 C,  0 C,
+         0 C,  0 C,  0 C,  0 C,  0 C,  1 C,  1 C,  1 C,
+         1 C,  2 C,  2 C,  2 C,  2 C,  2 C,  2 C,  2 C,
+         2 C,  1 C,  0 C,  0 C,  0 C,  0 C,  0 C,  0 C,
+         0 C,  0 C,  0 C,  0 C,  0 C,  0 C,  0 C,  0 C,
+         1 C,  1 C,  1 C,  1 C,  1 C,  1 C,  1 C,  0 C,
+         0 C,  0 C,  0 C,  0 C,  0 C,  0 C,  0 C,  0 C,
+
+As you can see, the numbers in this image range from 0..23, and
+specify what the color will be when displayed on the screen when
+the correct palette data has been sent to the VGA card.
+
+This definition starts off with creation of the array name, and
+then we store two numbers, 31 and 24, immediately.  These two numbers
+are the height and width of the sprite image.  A data structure for
+this image can be constructed as follows:
+
+        S{
+          {1WORD}-DEF :: .height
+          {1WORD}-DEF :: .width
+          31 24 *     :: .image
+        }S sprite-obj
+
+The plotting of this sprite data to the screen is now a trivial
+operation, as it simply consists of a word with a pair of loops
+that simply loads the pixel to be plotted, and does so with either
+Plot or FastPlot, like so:
+
+        value %imagedata
+
+        : DrawSprite ( &obj x y -- )
+          2 pick .image to %imagedata   \ &obj x y
+          2 pick .height @ 0 do         \ &obj x y
+            2 pick .width @ 0 do        \ &obj x y
+              %imagedata C@             \ &obj x y c
+              1 +to %imagedata          \ &obj x y c
+              dup if                    \ &obj x y c
+                2 pick i +              \ &obj x y c x+i
+                2 pick j +              \ &obj x y c x+i y+j
+                rot                     \ &obj x y x+i y+j c
+                %Speed if               \ &obj x y x+i y+j c
+                  FastPlot              \ &obj x y
+                else                    \ &obj x y x+i y+j c
+                  Plot                  \ &obj x y
+                then                    \ &obj x y
+              else                      \ &obj x y c
+                drop                    \ &obj x y
+              then                      \ &obj x y
+            loop                        \ &obj x y
+          loop                          \ &obj x y
+          2drop drop                    \ --
+        ;
+
+This word also skips the pixel if it is a zero value.
+
+This DrawSprite word is the basic construct for drawing a sprite in
+almost all the VGA resolutions.  You pass it the address of the data
+image along with the x/y coordinates, and it will draw the image to
+the screen.  To make it work with any of the higher resolutions or
+planar modes is simply a matter of modifying the FastCode word.
+
+Before we can test this, we also need a customized Set Palette word:
+
+        : SetBollPalette
+          0 $03C8 CPortOut
+          24 3 * 0 do
+            BollPalette[] i + C@ $03C9 CPortOut
+          loop
+        ;
+
+that only transfers the colors in this limited size palette to the
+VGA registers.
+
+So, combining the above gives us the following example:
+
+        : DrawBolls
+          $13 InitGraph
+          0 to %UseVR           \ start using WaitRetrace
+          1 to %Speed          \ start using Plot
+          SetBollPalette
+          4 0 do
+            6 0 do
+              Boll[] i 50 * j 50 * DrawSprite
+            loop
+          loop
+          key drop
+          CloseGraph
+        ;
+
+which draws 24 of these Bolls spaced across the screen.
+
+For a speed test, let's add the KeyCheck routine to let you toggle
+back and forth between the FastPlot and Plot pixel routines, and do
+the drawing randomly all over the screen:
+
+        : DrawRandomBolls
+          1 to %UseVR           \ start using WaitRetrace
+          0 to %Speed          \ start using Plot
+          $13 InitGraph
+          SetBollPalette
+          begin
+            KeyCheck
+          while
+            Boll[]                      \ &Boll[]
+            320 over .width @ - rnd     \ &Boll[] rnd(x)
+            200 2 pick .height @ - rnd  \ &Boll[] rnd(x) rnd(y)
+            DrawSprite
+            %UseVR if WaitRetrace then
+          repeat
+          FadeDown
+          CloseGraph
+        ;
+
+---[ Wrapping Up ]---------------------------------------------------
+
+We're not done with sprites yet, but I think we've done enough for
+this column.
+
+In the next column, I think we'll do a routine that animates these
+boll images.
+
+So, onward - ever onward.
+
+

@@ -1,0 +1,773 @@
+---[ Graphics of the Third Kind, Part I ]-------------[01/05/2007]---
+
+                         by Timothy Trussell
+
+---[ Where We Are ]--------------------------------------------------
+
+Sorry for the delay.  I have been doing research into what I will be
+writing about a couple columns down the road - filled polygons to be
+exact - and I have had to rewrite the code section of this a few
+times so that what I want to do later meshes with what I put into
+this column.  It also reduced the size of the Code Addendum by about
+two-thirds, so research isn't all bad.
+
+---[ Onward, Ever Onward ]-------------------------------------------
+
+Breaking the seal on a few more concepts, we will now venture into
+the realm of the 3D.
+
+Three dimensional graphics are certainly not a new concept, and have
+been implemented on just about every kind of output device that has
+been connected to a computer - whether it be printed and plotted on
+paper, or drawn to a video display in both text and graphics modes,
+attempts to generate three dimensional representations of, well, all
+kinds of things have always been done, or at least attempted.
+
+These early representations were mostly line drawings of the objects
+that the program wanted to display.  One of my first exposures to
+these kinds of 3D graphics was the SuperGraphics program written by
+Paul Lutus on the Apple ][.
+
+These line drawings - commonly referred to as wireframes - are where
+we will start our explorations into 3D.
+
+---[Note]------------------------------------------------------------
+Many will feel that this next section is too simplistic.  It is
+meant to be.  I have to set a "ground level" from which to build up
+from.  Feel free to bypass this if you already know the information.
+--------------------------------------------------------[End Note]---
+
+---[ Intro to X and Y ]----------------------------------------------
+
+The first object most people draw in three dimensions is a cube. Some
+do a triangle, but I'm saving that for when I get my texture mapper
+working.  So, we'll stick with the cube.
+
+The first stage for this is defining what makes up a cube.
+
+Drawing a rectangle (a square), requires the definition of four pairs
+of coordinates, which define the placement of the corners of the
+object:
+                 Point A                      Point D
+                   +----------------------------+
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   +----------------------------+
+                 Point B                      Point C
+
+Each of these points are defined by a set of two coordinates, X and
+Y, with X being in the horizontal plane (left and right), and the Y
+being in the vertical plane (up and down).  In the 320x200x256 mode
+we are working in, the range of the X values are always between 0 and
+319, and the Y values between 0 and 199.
+
+---[ Cartesian Coordinates ]-----------------------------------------
+
+The numbering system we will now start using to define our three
+dimensional points is the Cartesian Coordinate System, developed by
+everyone's friend, Renee Descartes, to define the locations of these
+corners.
+
+As an example of the use of Cartesian Coordinates, let us say that
+you are going to a bachelor(ette) party that's being held in a room
+at a certain hotel. To get to the party, you are told:
+
+        "From the entrance, take the elevator up to to the 14th
+         floor, turn right and go to the 5th room on the right."
+
+What this has done is, first of all, defined our Origin point - the
+entrance of the hotel.  Next, you go to the elevator, which is about
+30 feet from the entrance.  Then, pressing the button for the 14th
+floor, the elevator takes you (approximately) 140 feet up into the
+"air".  From the elevator, you then turn right and go down the
+hallway to the 5th door on the right of the hall, which is (again
+approximately) 45 down the hallway.
+
+These kinds of directions are used everyday, but are easier to "see"
+than if you were told, "From the entrance, move Z=-30 feet and press
+button 14 to move Y=+140 feet. Then, move X=+45 feet, and knock."
+
+This is, however, the basis for use of the Cartesian Coordinates.
+You have an origin point, where everything is referenced from.  All
+additional coordinates are offset from the origin point, allowing you
+to move around the space that you are in.
+
+In order to differentiate between Up and Down, Left and Right, and
+Forwards and Backwards, we will add the use of both positive numbers
+and negative numbers to our coordinate system.  To move to the left,
+we make the X coordinate more negative.  To move down, we make the Y
+coordinate more negative, and to move more forward, we make the Z
+coordinate more negative.
+
+More negative (or positive) than what - you might ask.  In the case
+of the hotel directions above, it's the current location that you
+are at in the hotel.
+
+In the case of the rectangle we have above, we will place our origin
+location at the exact center of the rectangle, and assign it to be
+location (0,0) - the point where our X and Y coordinates are both
+equal to zero.
+
+                 Point A                      Point D
+                   +----------------------------+
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |             X              |
+                   |           (0,0)            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   +----------------------------+
+                 Point B                      Point C
+
+What this does for us is define where the coordinate numbers in our
+X and Y directions - axis of movement - become either positive or
+negative values.
+
+When I was taught math, back when they actually taught math, they
+told us to look at a ruler, and to use the 6" mark as our 0 reference
+for the X axis, the horizontal axis, and moving left from the 6 -
+towards the 1 - our numbers would go negative, while moving right -
+towards the 12 - our numbers would go positive.
+
+    +----------------------------------------------------------+
+    |                            Ref                           |
+    |                             |                            |
+    |     +---+---+---+---+---+---+---+---+---+---+---+---+12  |
+    |     |   |   |   |   |   |   |   |   |   |   |   |   |    |
+    |     |   1   2   3   4   5   6   7   8   9  10  11   |    |
+    |     +-----------------------------------------------+    |
+    |                                                          |
+    |                                                          |
+    |            (<--Negative)         (Positive-->)           |
+    |     +---+---+---+---+---+---+---+---+---+---+---+---+    |
+    |     |   |   |   |   |   |   |   |   |   |   |   |   |    |
+    |     |  -5  -4  -3  -2  -1   0   1   2   3   4   5   |    |
+    |     +-------------------------------------------+---+    |
+    |                                                          |
+    +----------------- X Axis Representation ------------------+
+
+Similarly, for the Y axis, the vertical axis, you just stand the
+ruler up and the numbers moving up from the 6 go more positive, and
+moving down, the numbers go more negative
+
+              +---------------------------------------+
+              |       +---+          +---+            |
+              |       |   |          |   |            |
+              |       |   |          |   |            |
+              |       | 1-+          | 5-+            |
+              |       |   |          |   |            |
+              |       |   |          |   |            |
+              |       | 2-+          | 4-+  P         |
+              |       |   |          |   |  o         |
+              |       |   |          |   |  s         |
+              |       | 3-+          | 3-+  i         |
+              |       |   |          |   |  t         |
+              |       |   |          |   |  i         |
+              |       | 4-+          | 2-+  v         |
+              |       |   |          |   |  e         |
+              |       |   |          |   |            |
+              |       | 5-+          | 1-+            |
+              |       |   |          |   |            |
+              |       |   |          |   |            |
+              |       | 6-+<-- Ref ->| 0-+            |
+              |       |   |          |   |            |
+              |       |   |          |   |            |
+              |       | 7-+          |-1-+            |
+              |       |   |          |   |            |
+              |       |   |          |   |            |
+              |       | 8-+          |-2-+            |
+              |       |   |          |   |            |
+              |       |   |          |   |  N         |
+              |       | 9-+          |-3-+  e         |
+              |       |   |          |   |  g         |
+              |       |   |          |   |  a         |
+              |       |10-+          |-4-+  t         |
+              |       |   |          |   |  i         |
+              |       |   |          |   |  v         |
+              |       |11-+          |-5-+  e         |
+              |       |   |          |   |            |
+              |       |   |          |   |            |
+              |       +---+12        +---+            |
+              |                                       |
+              +------- Y Axis Representation ---------+
+
+So, when we use the Cartesian Coordinate system to define the X,Y
+coordinates of our rectangle, we have something similar to this:
+
+
+               (-35,35)                      (35,35)
+                   +----------------------------+
+                   |A                          D|
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |             X              |
+                   |           (0,0)            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |B                          C|
+                   +----------------------------+
+               (-35,-35)                     (35,-35)
+
+with these coordinates defined in relation to the position of the
+(0,0) origin coordinates.  As you can see, this defines a rectangle
+that is 70 units wide by 70 units high.
+
+---[ Adding Depth ]--------------------------------------------------
+
+What we need to do now is add another coordinate to our system that
+will allow us to define a distance - or depth - aspect to the image
+being displayed, which we will call the Z coordinate.
+
+In relation to the above example with the rulers, if you lay the
+ruler down so that one end points at you, and the other end points
+away, so that it is perpendicular to the X and Y axes, the numbers
+that are closest to you are the more positive numbers, and the ones
+farthest away are the more negatives.  So, the larger the amount of
+the negative Z value, the farther away from you it is when we start
+translating this to the video display.
+
+         +------------------------------------------------+
+         |                                                |
+         |                                     12 +       |
+         |                                       / \      |
+         |                                      /   \     |
+         |                                  11 +     \    |
+         |                                    / \     +   |
+         |                                   /   \   /    |
+         |                               10 +       /     |
+         |                                 / \     /      |
+         |                                /   \   /  -5   |
+         |                             9 +       /        |
+         |                              / \     /         |
+         |                             /   \   /  -4      |
+         |                          8 +       /           |
+         |                           / \     /            |
+         |                          /   \   /  -3   e     |
+         |                       7 +       /       v      |
+         |                        / \     /       i       |
+         |                       /   \   /  -2   t        |
+         |                    6 +       /       a         |
+         |                     / \     /       g          |
+         |                    /   \   /  -1   e           |
+         |                 5 +       /       n            |
+         |                  / \     /                     |
+         |                 /   \   /  0                   |
+         |              4 +       /     \                 |
+         |               / \     /       \                |
+         |              /   \   /  1      \--Reference    |
+         |           3 +       /                          |
+         |            / \     /       p                   |
+         |           /   \   /  2    o                    |
+         |        2 +       /       s                     |
+         |         / \     /       i                      |
+         |        /   \   /  3    t                       |
+         |     1 +       /       i                        |
+         |      / \     /       v                         |
+         |     /   \   /  4    e                          |
+         |    +       /                                   |
+         |     \     /                                    |
+         |      \   /  5                                  |
+         |       \ /                                      |
+         |        +                                       |
+         |                                                |
+         +------------ Z Axis Representation -------------+
+
+
+Another ASCII art masterpiece to show the coordinate planes:
+
+        +---------------------------------------------------+
+        |+-------------------------------------------------+|
+        ||        Graphics of the Third Kind Part I        ||
+        ||                        Y            Z           ||
+        ||                        |          /             ||
+        ||                        |         /              ||
+        ||                     +3 +        + -3            ||
+        ||                        |       /                ||
+        ||                        |      /                 ||
+        ||                     +2 +     + -2               ||
+        ||                        |    /                   ||
+        ||                        |   /                    ||
+        ||                     +1 +  + -1                  ||
+        ||                        | /                      ||
+        ||           -3  -2  -1   |/                       ||
+        ||         ---+---+---+---+---+---+---+--- X       ||
+        ||                       /|   +1  +2  +3           ||
+        ||                      / |                        ||
+        ||                  +1 +  + -1                     ||
+        ||                    /   |                        ||
+        ||                   /    |                        ||
+        ||               +2 +     + -2                     ||
+        ||                 /      |                        ||
+        ||                /       |                        ||
+        ||            +3 +        + -3                     ||
+        ||              /         |                        ||
+        ||             /          |                        ||
+        ||                Press the ANYKEY                 ||
+        |+-[SONY]-------------------------------[144" LCD]-+|
+        +---------------+-------------------+---------------+
+                        |                   |
+                   +----+-------------------+----+
+                   +-----------------------------+
+
+Extending our rectangle into the third dimension can be expressed as:
+
+                     +-----------------+
+                     |A               D|\
+                     | \               | \
+                     |  \              |  \
+                     |   \             |   \
+                     |    +-----------------+
+                     |    |E           |   H|
+                     |    |            |    |
+                     |    |      X     |    |
+                     |B   |           C|    |
+                     +----|------------+    |
+                      \   |             \   |
+                       \  |              \  |
+                        \ |               \ |
+                         \|F               G|
+                          +-----------------+
+
+
+with the coordinates defined in three dimensional space as:
+
+                 -X- -Y- -Z-       -X- -Y- -Z-
+        Point A: -35, 35,-35    E: -35, 35, 35
+              B: -35,-35,-35    F: -35,-35, 35
+              C:  35,-35,-35    G:  35,-35, 35
+              D:  35, 35,-35    H:  35, 35, 35
+
+              X:   0   0   0
+
+Again, these are all in relation to the origin position, X, which is
+at coordinates (0,0,0).
+
+---[ Structure definition of a cube ]--------------------------------
+
+I will again be using the EDO structure package by GT Hawkins, which
+is available on the Taygeta Scientific Forth Archives site.
+
+A typical structure defining an individual point in three dimensional
+space:
+
+        S{
+          {1WORD}-DEF :: .cX
+          {1WORD}-DEF :: .cY
+          {1WORD}-DEF :: .cZ
+        }S xyz-obj
+
+And a vector array for the above cube can be defined as:
+
+        xyz-obj 8 [] cube[]-obj cube-ndx
+
+This defines cube[]-obj as a constant with a value that is the size
+of the structure [xyz-obj] multiplied by the number of the elements
+we want the array to have [8].  The index word, cube-ndx, handles the
+task of accessing the correct structure elements of the array.
+
+Putting the data into array memory is straightforward:
+
+        : SetObject ( x y z obj# -- )
+          cube[] swap cube-ndx >R
+          R@ .cZ !
+          R@ .cY !
+          R> .cX !
+        ;
+
+        : InitCube ( -- )
+          -35  35 -35 0 SetObject \ back top left coords
+          -35 -35 -35 1 SetObject \ back bottom left coords
+           35 -35 -35 2 SetObject \ back bottom right coords
+           35  35 -35 3 SetObject \ back top right coords
+          -35  35  35 4 SetObject \ front top left coords
+          -35 -35  35 5 SetObject \ front bottom left coords
+           35 -35  35 6 SetObject \ front bottom right coords
+           35  35  35 7 SetObject \ front top right coords
+        ;
+
+This allows us to reset the coordinates to a known state when the
+program is executed each time.
+
+---[ 3D Projection into a 2D Environment ]---------------------------
+
+Projecting our coordinates into three dimensions requires the use of
+a little bit of math.  The basic calculations we will use are:
+
+To rotate on the X axis:
+
+        Y = Y*COS(XAngle)-Z*SIN(XAngle)
+        Z = Y*SIN(XAngle)+Z*COS(XAngle)
+
+To rotate on the Y axis:
+
+        X = X*COS(YAngle)-Z*SIN(YAngle)
+        Z = X*SIN(YAngle)+Z*COS(YAngle)
+
+To rotate on the Z axis:
+
+        X = X*COS(ZAngle)-Y*SIN(ZAngle)
+        Y = X*SIN(ZAngle)+Y*COS(ZAngle)
+
+I am not going to attempt to define and explain all the matrix math
+required that reduces the mathematical formulas down to these forms.
+
+To be able to do the sine and cosine math, we are going to create
+lookup tables that will contain a floating point value for each of
+the 360 degrees of rotation:
+
+        : CreateLookupTables ( -- )
+          360 0 do
+            i S>F 3.14159265 F* 180.0 F/ FSINCOS
+            Cosine[] i sc-ndx F!
+            Sine[]   i sc-ndx F!
+          loop
+        ;
+
+This saves a lot of computational time on redundant calculations.
+
+The next word processes each coordinate vector (x/y/z point) of the
+cube, and store the results and final projection coordinates to a
+temporary work array:
+
+        : RotateVectors ( -- )
+          #OfObjects 0 do
+            cube[] i cube-ndx >R
+
+          \ rotate on the X axis
+            R@ .cY @ S>F Cosine[] xangle sc-ndx F@ F*
+            R@ .cZ @ S>F Sine[]   xangle sc-ndx F@ F* F-
+            F>S to %ny
+
+            R@ .cY @ S>F Sine[]   xangle sc-ndx F@ F*
+            R@ .cZ @ S>F Cosine[] xangle sc-ndx F@ F* F+
+            F>S to %nz
+            R> .cX @ to %nx
+
+            temp[] i cube-ndx >R
+            %nx R@ .cX !
+            %ny R@ .cY !
+            %nz R@ .cZ !
+
+          \ rotate on the Y axis
+            R@ .cX @ S>F Cosine[] yangle sc-ndx F@ F*
+            R@ .cZ @ S>F Sine[]   yangle sc-ndx F@ F* F+
+            F>S to %nx
+
+            R@ .cX @ negate S>F Sine[]   yangle sc-ndx F@ F*
+            R@ .cZ @        S>F Cosine[] yangle sc-ndx F@ F* F+
+            F>S to %nz
+            %nx R@ .cX !
+            %nz R@ .cZ !
+
+          \ rotate on the Z axis
+            R@ .cX @ S>F Cosine[] zangle sc-ndx F@ F*
+            R@ .cY @ S>F Sine[]   zangle sc-ndx F@ F* F-
+            F>S to %nx
+
+            R@ .cX @ S>F Sine[]   zangle sc-ndx F@ F*
+            R@ .cY @ S>F Cosine[] zangle sc-ndx F@ F* F+
+            F>S to %ny
+            %nx R@ .cX !
+            %ny R@ .cY !
+
+          \ and finally project and adjust to center of screen
+            R@ .cZ @ distance - R@ .cZ !
+            R@ .cX @ 256 * R@ .cZ @ / 160 + R@ .cX !
+            R@ .cY @ 256 * R@ .cZ @ / 100 + R@ .cY !
+            R>
+          loop
+        ;
+
+After the three rotations have been done, it then does three final
+calculations which convert the rotated values into the 2-dimensional
+x/y coordinates we need to plot the points they represent to the
+display.  In this case, we are also adjusting these final points to
+use the center of the screen (160,100 in 320x200 mode) as the origin
+point of reference.
+
+All this means is that we are going to draw the cube in the center of
+the screen.
+
+---[ Drawing Line Segments ]-----------------------------------------
+
+Now, we need to take a step back for a moment, and determine how the
+lines for the cube are going to be drawn.  Bringing my most excellent
+ASCII art depiction back,
+
+                     +-----------------+
+                     |A               D|\
+                     | \               | \
+                     |  \              |  \
+                     |   \             |   \
+                     |    +-----------------+
+                     |    |E           |   H|
+                     |    |            |    |
+                     |    |      X     |    |
+                     |B   |           C|    |
+                     +----|------------+    |
+                      \   |             \   |
+                       \  |              \  |
+                        \ |               \ |
+                         \|F               G|
+                          +-----------------+
+
+One way to draw the cube is to draw six rectangles. This is a total
+of 24 lines being drawn, with each line being draw twice.
+
+However, we can reduce this to a pair of rectangles and an additional
+4 line segments, giving us only 12 lines to draw:
+
+        A to B to C to D to A           ABCD
+        E to F to G to H to E           EFGH
+        A to E                           AE
+        B to F                           BF
+        C to G                           CG
+        D to H                           DH
+
+This results in each of the corner pixels getting plotted three
+times, but these are only individual pixel re-writes, not entire
+line segments.
+
+Drawing the cube at this point is a simple function using the Line
+word we have from the GotFK3 column, the Bresenham Algorithm.  But,
+we will use one that has been modified to draw the lines to the
+double buffer we are using, VPage0[].
+
+Upon entry to DrawCube, we have already executed the RotateVectors
+word, which has set up the coordinates in the temp[] array, with
+temp[0] thru temp[7] representing points A thru H of the cube.
+
+        : DrawCube ( -- )
+        \ draw segments AB, BC, and CD
+          3 0 do
+            VPage0[]
+            temp[] i cube-ndx dup .cX @ swap .cY @
+            temp[] i 1+ cube-ndx dup .cX @ swap .cY @ 1 Line
+          loop
+        \ draw the final connector from D back to A
+          VPage0[]
+          temp[] 3 cube-ndx dup .cX @ swap .cY @
+          temp[] 0 cube-ndx dup .cX @ swap .cY @ 1 Line
+        \ draw segments EF, FG, and GH
+          7 4 do
+            VPage0[]
+            temp[] i cube-ndx dup .cX @ swap .cY @
+            temp[] i 1+ cube-ndx dup .cX @ swap .cY @ 1 Line
+          loop
+        \ draw the final connector from H back to E
+          VPage0[]
+          temp[] 7 cube-ndx dup .cX @ swap .cY @
+          temp[] 4 cube-ndx dup .cX @ swap .cY @ 1 Line
+        \ draw segment AE
+          VPage0[]
+          temp[] 0 cube-ndx dup .cX @ swap .cY @
+          temp[] 4 cube-ndx dup .cX @ swap .cY @ 1 Line
+        \ draw segment BF
+          VPage0[]
+          temp[] 1 cube-ndx dup .cX @ swap .cY @
+          temp[] 5 cube-ndx dup .cX @ swap .cY @ 1 Line
+        \ draw segment CG
+          VPage0[]
+          temp[] 2 cube-ndx dup .cX @ swap .cY @
+          temp[] 6 cube-ndx dup .cX @ swap .cY @ 1 Line
+        \ draw segment DH
+          VPage0[]
+          temp[] 3 cube-ndx dup .cX @ swap .cY @
+          temp[] 7 cube-ndx dup .cX @ swap .cY @ 1 Line
+        ;
+
+Simple.  But, not very factored down, is it.
+
+A simple way to reduce this to a very small loop is to create another
+array that contains pointers that tells DrawCube what the first and
+second coordinates for each line segment will be.  A structure for
+this is:
+
+        S{
+          {1WORD}-DEF :: .pa
+          {1WORD}-DEF :: .pb
+        }S seg-obj
+
+        seg-obj 12 [] cseg[]-obj cseg-ndx
+
+and the line segments ordering as:
+
+        create CSegs[]
+        0 , 1 ,                 \ a to b
+        1 , 2 ,                 \ b to c
+        2 , 3 ,                 \ c to d
+        3 , 0 ,                 \ d to a
+        4 , 5 ,                 \ e to f
+        5 , 6 ,                 \ f to g
+        6 , 7 ,                 \ g to h
+        7 , 4 ,                 \ h to e
+        0 , 4 ,                 \ a to e
+        1 , 5 ,                 \ b to f
+        2 , 6 ,                 \ c to g
+        3 , 7 ,                 \ d to h
+
+The 0..7 numbers are the index pointers into the temp[] array, and
+refer directly to points A thru H of our cube.
+
+Using this structure, the above word can be redefined as:
+
+        : DrawCube ( -- )
+          12 0 do
+            VPage0[]
+            CSegs[] i cseg-ndx >R
+            temp[] R@ .pa @ cube-ndx dup .cX @ swap .cY @
+            temp[] R> .pb @ cube-ndx dup .cX @ swap .cY @
+            1
+            Line
+          loop
+        ;
+
+What this does is use the elements of the CSegs[] array as index
+pointers into the temp[] array.
+
+To finish this off, let's add the lines to send the buffer to the
+video screen, and then erase the box from the buffer, by calling the
+Line word again, but using color 0 for the pixels. This saves us from
+having to erase the entire buffer each cycle.
+
+        : DrawCube ( -- )
+          12 0 do
+            VPage0[]
+            CSegs[] i cseg-ndx >R
+            temp[] R@ .pa @ cube-ndx dup .cX @ swap .cY @
+            temp[] R> .pb @ cube-ndx dup .cX @ swap .cY @
+            1
+            Line
+          loop
+          WaitRetrace
+          VPage0[] BlitBuffer
+          12 0 do
+            VPage0[]
+            CSegs[] i cseg-ndx >R
+            temp[] R@ .pa @ cube-ndx dup .cX @ swap .cY @
+            temp[] R> .pb @ cube-ndx dup .cX @ swap .cY @
+            0
+            Line
+          loop
+        ;
+
+And, to put it all together, we have the following main word:
+
+        : cube ( -- )
+           25 to xangle           \ init variables and arrays
+          125 to yangle
+          275 to zangle
+          200 to distance
+
+          VPage0[] 64000 0 fill   \ initial clear buffer
+          CreateLookupTables      \ init the sine/cosine tables
+          InitCube                \ init the cube[] structure
+          $13 InitGraph
+          begin                   \ repeat until a key is pressed
+            key? not
+          while
+          \ update the angles
+            3 +to xangle  xangle 359 > if 0 to xangle then
+            3 +to yangle  yangle 359 > if 0 to yangle then
+            -2 +to zangle zangle 1 < if 359 to zangle then
+            DrawCube
+          repeat
+          key drop
+          CloseGraph
+        ;
+
+For those of you that want still more, let's add a little more code
+that will send the cube back and forth on the Z axis while it's
+rotating on all three axes of movemen:.
+
+        : cube1 ( -- )
+           25 to xangle           \ init variables and arrays
+          125 to yangle
+          275 to zangle
+          200 to distance
+            1 to direction
+
+          VPage0[] 64000 0 fill   \ initial clear buffer
+          CreateLookupTables      \ init the sine/cosine tables
+          InitCube                \ init the cube[] structure
+          $13 SetMode
+          begin                   \ repeat until a key is pressed
+            key? not
+          while
+            direction if          \ update distance & direction
+              1 +to distance
+              distance 599 > if 0 to direction 600 to distance then
+            else
+              -1 +to distance
+              distance 200 < if 1 to direction 200 to distance then
+            then
+          \ update the angles
+            3 +to xangle  xangle 359 > if 0 to xangle then
+            3 +to yangle  yangle 359 > if 0 to yangle then
+            -2 +to zangle zangle 1 < if 359 to zangle then
+            DrawCube
+          repeat
+          key drop
+          3 SetMode
+        ;
+
+You can change the distance limits, but keep the image within the
+bounds of the visible screen.  If the image gets larger than the
+screen, it will start corrupting tbe program's data tables.
+
+This is considered bad, and there is no code for clipping to the
+limits of the visible screen (yet).
+
+---[ Wrapping Up ]---------------------------------------------------
+
+This is just the tip of the iceberg, so to speak, of the world of 3D
+graphics.
+
+For the observant among my readers, the code we have just gone thru
+may look familiar.  It's the core of the code that was used for the
+Bolls demo in my GotSK4 Column.
+
+The line drawing module included in the Code Addendum is a re-write
+of the Bresenham Line Algorithm from the GotFK3 column, which I have
+reduced to an assembly code version, and so is a tad bit faster now.
+
+For those who might want to do research on their own, I would suggest
+looking (Googling) for a mirror of the Hornet Archives, which is no
+longer active, unfortunately.  There is a tremendous amount of
+tutorial information in those archives, as well as six or seven years
+of examples of what the VGA can be made to do.
+
+The XSharp package by Michael Abrash, and the XLib ModeX library by
+Matt Pritchard (and Themie Gouthas) are also excellent references for
+code that is (somewhat) easily adaptable to the Forth environment.
+For those who prefer one-stop-shopping, the Allegro package might be
+the best reference to look through.
+
+As with the previous columns, this will be posted to the Taygeta
+Scientific Forth site where Dr. Everett Carter is making it available
+for when these posts are no longer active on comp.lang.forth.
+------------------------------------------------------[End GotTK1]---
+

@@ -1,0 +1,426 @@
+---[ Graphics of the First Kind, Part IV ]------------[12/07/2006]---
+
+                         by Timothy Trussell
+
+---[ Where We Are ]--------------------------------------------------
+
+In the first three columns, we have gone from plotting basic pixels
+thru the BIOS interrupt system to drawing lines with an extremely
+efficient Bresenham Algorithm, linked to a fast assembly code pixel
+drawing word.
+
+A useful example of the Line routine, combined with a few more
+concepts would give a good example of a few more graphics programming
+techniques, so I bring up a VGA Graphics tutorial done a few years
+ago by Denthor of Asphyxia.  This tutorial deals with manipulating
+the palette of your VGA card, and contains some useful code that you
+can incorporate into your own programs, such as Palette fades and
+rotations.
+
+I have added the 32Forth equivalent of the routines that Denthor has
+coded in Pascal in this document, but in the addendum I have only
+included the 32Forth code.
+
+---[Note]------------------------------------------------------------
+The code addendum will try to load the CLFCODE3.4th file, which has
+the needed modules from the previous columns present in it.  I have
+also added compiling checks so that you can load the CLFCODE1.4th and
+CLFCODE2.4th files prior to loading the CLFCODE4 addendum, and if
+the required modules are present they won't be loaded again.
+Otherwise, just put the CLFCODE3.4th and CLFCODE4.4th files into the
+\os2forth\forth directory, run FORTH.COM, and enter
+
+                include clfcode4.4th
+                pplay
+
+to see the demo part of the CLFCODE4 code.
+--------------------------------------------------------[End Note]---
+
+
+                +-------------------------------+
+                |         W E L C O M E         |
+                |  To the VGA Trainer Program   | |
+                |              By               | |
+                |      DENTHOR of ASPHYXIA      | | |
+                +-------------------------------+ | |
+                  --------------------------------+ |
+                    --------------------------------+
+
+---[ Introduction ]--------------------------------------------------
+
+Hi there again! This is Grant Smith, AKA Denthor of ASPHYXIA. This is
+the second part of my Training Program for new programmers.
+
+In this part, I will put the Palette through it's paces. What the
+hell is a palette? How do I find out what it is? How do I set it? How
+do I stop the "fuzz" that appears on the screen when I change the
+palette? How do I black out the screen using the palette? How do I
+fade in a screen? How do I fade out a screen? Why are telephone calls
+so expensive? Most of these quesions will be answered in this, the
+second part of my Trainer Series for Pascal.
+
+---[ What is the Palette? ]-----------------------------------------
+
+A few weeks ago a friend of mine was playing a computer game. In the
+game there was a machine with stripes of blue running across it. When
+the machine was activated, while half of the the blue stripes stayed
+the same, the other half started to change color and glow. He asked
+me how two stripes of the same color suddenly become different like
+that. The answer is simple: the program was changing the palette. As
+you know from Part 1, there are 256 colors in MCGA mode, numbered 0
+to 255. What you don't know is that each if those colors is made up
+of different intensities of Red, Green and Blue, the primary colors
+(you should have learned about the primary colors at school). These
+intensities are numbers between 0 and 63. The color of bright red
+would for example be obtained by setting red intensity to 63, green
+intensity to 0, and blue intensity to 0. This means that two colors
+can look exactly the same, eg you can set color 10 to bright red and
+color 78 to color bright red. If you draw a picture using both of
+those colors, no-one will be able to tell the difference between the
+two.. It is only when you again change the palette of either of them
+will they be able to tell the difference. Also, by changing the whole
+palette, you can obtain the "Fade in" and "Fade out" effects found in
+many demos and games. Palette manipulation can become quite confusing
+to some people, because colors that look the same are in fact totally
+separate.
+
+---[ How do I read in the palette value of a color? ]----------------
+
+This is very easy to do. To read in the palette value, you enter in
+the number of the color you want into port $3C7, then read in the
+values of red, green and blue respectively from port $3C9. Simple,
+huh? Here is a procedure that does it for you :
+
+Procedure GetPal(ColorNo : Byte; Var R,G,B : Byte);
+  { This reads the values of the Red, Green and Blue values of a certain
+    color and returns them to you. }
+Begin
+   Port[$3c7] := ColorNo;
+   R := Port[$3c9];
+   G := Port[$3c9];
+   B := Port[$3c9];
+End;
+
+The 32Forth version of GetPal.  Instead of placing the returned
+values into an array, they will be returned on the stack.
+
+        : GetPal ( c# -- r g b )
+          $03C7 CPortOut        \ --
+          $03C9 CPortIn         \ r
+          $03C9 CPortIn         \ r g
+          $03C9 CPortIn         \ r g b
+        ;
+
+---[ How do I set the palette value of a color? ]--------------------
+
+This is also as easy as 3.1415926535897932385. What you do is you
+enter in the number of the color you want to change into port $3C8,
+then enter the values of red, green and blue respectively into port
+$3C9. Because you are all so lazy I have written the procedure for
+you ;-)
+
+
+Procedure Pal(ColorNo : Byte; R,G,B : Byte);
+  { This sets the Red, Green and Blue values of a certain color }
+Begin
+   Port[$3c8] := ColorNo;
+   Port[$3c9] := R;
+   Port[$3c9] := G;
+   Port[$3c9] := B;
+End;
+
+The 32Forth version of Pal:
+
+        : SetPal ( c# r g b -- )
+          3 pick $03C8 CPortOut \ c# r g b
+          rot  $03C9 CPortOut   \ c# g b
+          swap $03C9 CPortOut   \ c# b
+               $03C9 CPortOut   \ c#
+          drop                  \ --
+        ;
+
+---[ How do I stop the "fuzz" that appears on my screen when ]-------
+---[ I change the palette?                                   ]-------
+
+If you have used the palette before, you will have noticed that there
+is quite a bit of "fuzz" on the screen when you change it. The way we
+counter this is as follows: There is an electron beam on your monitor
+that is constantly updating your screen from top to bottom. As it
+gets to the bottom of the screen, it takes a while for it to get back
+up to the top of the screen to start updating the screen again. The
+period where it moves from the bottom to the top is called the
+Vertical Retrace. During the vertical retrace you may change the
+palette without affecting what is on the screen. What we do is that
+we wait until a vertical retrace has started by calling a certain
+procedure; this means that everything we do now will only be shown
+after the vertical retrace, so we can do all sorts of strange and
+unusual things to the screen during this retrace and only the results
+will be shown when the retrace is finished. This is way cool, as it
+means that when we change the palette, the fuzz doesn't appear on the
+screen, only the result (the changed palette), is seen after the
+retrace! Neat, huh? ;-) I have put the purely assembler WaitRetrace
+routine in the sample code that follows this message. Use it wisely,
+my son.
+
+NOTE : WaitRetrace can be a great help to your coding ... code that
+       fits into one retrace will mean that the demo will run at the
+       same speed no matter what your computer speed (unless you are
+       doing a lot during the WaitRetrace and the computer is slow).
+       Note that in the following sample program and in our SilkyDemo,
+       the thing will run at the same speed whether turbo is on or off.
+
+---[ How do I black out the screen using the palette? ]--------------
+
+This is basic : just set the Red, Green and Blue values of all colors to
+zero intensity, like so :
+
+Procedure Blackout;
+  { This procedure blackens the screen by setting the palette values of
+    all the colors to zero. }
+VAR loop1:integer;
+BEGIN
+  WaitRetrace;
+  For loop1:=0 to 255 do
+    Pal (loop1,0,0,0);
+END;
+
+The 32Forth version of BlackOut:
+
+        : BlackOut ( -- )
+          WaitRetrace
+          256 0 do
+            i 0 0 0 SetPal
+          loop
+        ;
+
+---[ How do I fade in a screen? ]------------------------------------
+
+Okay, this can be VERY effective. What you must first do is grab the
+existing palette in the VGA card into a variable, like so :
+
+   VAR Pal1 := Array [0.255,1..3] of BYTE;
+
+In 32Forth:
+
+        create Pal2[] here 256 3 * dup allot 0 fill
+
+        : .red   ( &pal -- &pal.r ) 0 + ;
+        : .green ( &pal -- &pal.g ) 1 + ;
+        : .blue  ( &pal -- &pal.b ) 2 + ;
+
+0 to 255 is for the 256 colors in MCGA mode, 1 to 3 is red, green and
+blue intensity values;
+
+Procedure GrabPalette;
+VAR loop1:integer;
+BEGIN
+  For loop1:=0 to 255 do
+    Getpal (loop1,pal1[loop1,1],pal1[loop1,2],pal1[loop1,3]);
+END;
+
+The 32Forth version of GrabPalette:
+
+        : GrabPalette
+          256 0 do
+            i GetPal                    \ r g b
+            Pal2[] i 3 * + >R           \ r g b
+            R@ .blue  C!                \ r g
+            R@ .green C!                \ r
+            R> .red   C                 \ --
+          loop
+        ;
+
+This loads the entire palette into variable Pal1. Then you must
+blackout the screen (see above), and draw what you want to screen
+without the construction being shown. Then what you do is go throgh
+the palette. For each color, you see if the individual intensities
+are what they should be. If not, you increase them by one unit until
+they are. Because intensites are in a range from 0 to 63, you only
+need do this a maximum of 64 times.
+
+Procedure Fadeup;
+VAR loop1,loop2:integer;
+    Tmp : Array [1..3] of byte;
+      { This is temporary storage for the values of a color }
+BEGIN
+  For loop1:=1 to 64 do BEGIN
+      { A color value for Red, green or blue is 0 to 63, so this loop only
+        need be executed a maximum of 64 times }
+    WaitRetrace;
+    For loop2:=0 to 255 do BEGIN
+      Getpal (loop2,Tmp[1],Tmp[2],Tmp[3]);
+      If Tmp[1]<Pall[loop2,1] then inc (Tmp[1]);
+      If Tmp[2]<Pall[loop2,2] then inc (Tmp[2]);
+      If Tmp[3]<Pall[loop2,3] then inc (Tmp[3]);
+        { If the Red, Green or Blue values of color loop2 are less then they
+          should be, increase them by one. }
+      Pal (loop2,Tmp[1],Tmp[2],Tmp[3]);
+        { Set the new, altered palette color. }
+    END;
+  END;
+END;
+
+The 32Forth version of FadeUp:
+Note that Pal2[] is being used as a reference for what the levels we
+are bringing the palette values to are to be.  We are NOT modifying
+the data contained there, as we are using it to restore the original
+palette when we exit the program. Only a reference. ONLY a reference.
+
+        : FadeUp ( -- )
+          64 0 do
+            WaitRetrace
+            256 0 do
+              i dup GetPal                      \ i r g b
+              Pal2[] i 3 * + >R                 \ i r g b
+            \ check the blue element
+              R@ .blue C@ over > if 1+ then rot \ i g b r
+            \ check the red element
+              R@ .red C@ over > if 1+ then rot  \ i b r g
+            \ check the green element
+              R> .green C@ over > if 1+ then rot \ i r g b
+            \ update the VGA register
+              SetPal                            \ --
+            loop
+          loop
+        ;
+
+Hey-presto! The screen fades up. You can just add in a delay before the
+waitretrace if you feel it is too fast. Cool, no?
+
+--[ How do I fade out a screen? ]------------------------------------
+
+This is just like the fade in of a screen, just in the opposite
+direction. What you do is you check each color intensity. If it is
+not yet zero, you decrease it by one until it is. BAAASIIIC!
+
+Procedure FadeDown;
+VAR loop1,loop2:integer;
+    Tmp : Array [1..3] of byte;
+      { This is temporary storage for the values of a color }
+BEGIN
+  For loop1:=1 to 64 do BEGIN
+    WaitRetrace;
+    For loop2:=0 to 255 do BEGIN
+      Getpal (loop2,Tmp[1],Tmp[2],Tmp[3]);
+      If Tmp[1]>0 then dec (Tmp[1]);
+      If Tmp[2]>0 then dec (Tmp[2]);
+      If Tmp[3]>0 then dec (Tmp[3]);
+        { If the Red, Green or Blue values of color loop2 are not yet zero,
+          then, decrease them by one. }
+      Pal (loop2,Tmp[1],Tmp[2],Tmp[3]);
+        { Set the new, altered palette color. }
+    END;
+  END;
+END;
+
+The 32Forth version of FadeUp:
+
+        : FadeDown ( -- )
+          64 0 do
+            WaitRetrace
+            256 0 do
+              i dup GetPal              \ i r g b
+            \ check the blue element
+              dup 0 > if 1- then rot    \ i g b r
+              dup 0 > if 1- then rot    \ i b r g
+              dup 0 > if 1- then rot    \ i r g b
+              SetPal                    \ --
+            loop
+          loop
+        ;
+
+Again, to slow the above down, put in a delay above the WaitRetrace.
+Fading out the screen looks SO much more impressive then just
+clearing the screen; it can make a world of difference in the
+impression your demo etc will leave on the people viewing it. To
+restore the palette, just do this :
+
+Procedure RestorePalette;
+VAR loop1:integer;
+BEGIN
+  WaitRetrace;
+  For loop1:=0 to 255 do
+    pal (loop1,Pall[loop1,1],Pall[loop1,2],Pall[loop1,3]);
+END;
+
+The 32Forth version of RestorePalette:
+
+        : RestorePalette
+          WaitRetrace
+          256 0 do
+            i
+            Pal2[] i 3 * >R
+            R@ .red C@
+            R@ .green C@
+            R> .blue C@
+            SetPal
+          loop
+        ;
+
+---[ In closing ]----------------------------------------------------
+
+Well, there are most of those original questions answered ;-) The
+following sample program is quite big, so it might take you a while
+to get around it. Persevere and thou shalt overcome. Palette
+manipulation has been a thorn in many coders sides for quite some
+time, yet hopefully I have shown you all how amazingly simple it is
+once you have grasped the basics.
+
+See you next week!
+   - Denthor
+
+---[ Switch channels back to GotFKPIV ]------------------------------
+
+This code will try to include my CLFCODE3.4TH file, the Bresenham
+Line module.  All the other words that are required from the previous
+CLFCODE files have been included, but the CLFCODE3 source is too big.
+
+Load the file ( include clfcode4.4th ) and enter PPLAY to see the demo
+in operation.
+
+Strictly speaking, most of these words are Plug-N-Play, in that they
+can be used in most any other program that you are creating.
+
+Oh, I wanted to mention what can happen if you do something like run
+any of the palette changing words outside of a program that sets the
+graphics and text modes.  If you execute, say, the BlackOut word from
+the OK prompt, the screen will go black.  That is, the text screen
+will go black IF you are in full screen text mode.  If you are in a
+window in the Windows environment, the screen won't go black because
+everything is being virtualized, but if you go full screen with
+(ALT-ENTER) everything will go dark.  All you need do is set the text
+mode again - CloseGraph - and this resets the palette information to
+the video card.  You can still do this because everything is still
+active, you've just told the text screen palette to go to black.
+
+Which means, of course, that the FadeUp and FadeDown words work in
+the text mode also.
+
+        FadeDown key drop FadeUp
+or
+        : pp begin key? not while palplay repeat closegraph ;
+
+Try it.
+
+(If you're in a virtualized window like the Windows Command Prompt,
+press ALT-ENTER to go full screen and try again)
+
+This is also a concept you need to be aware of - that when you go INTO
+a graphics mode, and return to text FROM a graphics mode, using the
+BIOS interrupts, the palette information is reset for you. So, if you
+enter BlackOut from the ok prompt, it will blank the display, but all
+you need do is enter CloseGraph to get back to normal again.
+
+---[ Wrapping Up ]---------------------------------------------------
+
+Thanks to the information above, Palettes are your new best friends.
+
+If nothing else, you've just learned how to do a nifty DOS screen
+saver program for your Forth system.
+
+We will be using more palette manipulations in later columns, as they
+are used in just about every advanced graphics program, like Bolls
+and sprites, not to mention PCX and BMP images.
+
+That's about enough for tonight, so we're off to the printers again.
+

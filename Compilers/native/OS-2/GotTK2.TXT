@@ -1,0 +1,725 @@
+---[ Graphics of the Third Kind, Part II ]------------[02/04/2007]---
+
+                         by Timothy Trussell
+
+---[ Where We Are ]--------------------------------------------------
+
+In GotTK Part I, we have the code that draws a rotating three-d cube
+to the screen.  In reality, what the code in Part I does is to move
+the points that define the corner coordinates of the cube around in
+our three dimensional Cartesian space, and then we perform a connect
+the dots sequence to draw the line segments to fill in the outline
+of our cube object.
+
+This line-drawn object technique, commonly referred to as wireframe,
+is widely used for a variety of purposes, but for our purposes it is
+merely a stepping stone to the next level of graphics manipulations
+we are coming to.
+
+---[ Filled Polygons ]-----------------------------------------------
+
+The next concept that we will be working with is Filled Polygons.
+
+A polygon is bascially defined as a multi-sided object, such as a
+triangle, cube, hexagon, octagon, etc, that is formed by a series of
+line segments that start at one point and do a connect the dot
+sequence around the perimeter of the object until the last point is
+connected to the first point:
+
+                 Point A                      Point D
+                   +----------------------------+
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   |                            |
+                   +----------------------------+
+                 Point B                      Point C
+
+Starting at Point A, we have a line segment from A to B, B to C,
+C to D, and finally D back to A.
+
+This is commonly referred to as a Convex Polygon.  A simple way of
+determining if a polygon is Convex is to picture a rubber band that
+has been put around the polygon.  If each vertex point of the object
+touches the rubberband, then it is Convex.
+
+We will only be working with standard Convex polygons for now, and
+specifically the rectangle (square) type of polygon.
+
+Therefore, the polygon fill word we will construct will be designed
+to work with a four-coordinate polygon object.
+
+---[ Horizontal Line List ]------------------------------------------
+
+The filling of a two dimensional rectangle is extremely easy to do,
+and is one of the first things that was done in the GotFK1 column
+with the FBox word:
+
+        : FBox ( x1 y1 x2 y2 c -- )
+          swap                  \ x1 y1 x2 c y2
+          3 pick                \ x1 y1 x2 c y2 y1
+          - 1+                  \ x1 y1 x2 c h
+          0 do                  \ x1 y1 x2 c
+            3 pick              \ x1 y1 x2 c x1
+            2 pick              \ x1 y1 x2 c x1 x2
+            4 pick              \ x1 y1 x2 c x1 x2 y1
+            i +                 \ x1 y1 x2 c x1 x2 y
+            3 pick              \ x1 y1 x2 c x1 x2 y c
+            HLine               \ x1 y1 x2 c
+          loop                  \ x1 y1 x2 c
+          2drop                 \ x1 y1
+          2drop                 \ --
+        ;
+
+We simply specify the X/Y coordinates of the top left (Point A) and
+bottom right (Point C) corners, and draw horizontal lines from the
+left side to the right side for the height of the rectangle.
+
+This can be accomplished because, at the outset, we already know the
+coordinates of the left side and right side of the polygon, and they
+never change.  It is always a rectangle being drawn, never something
+like a parallelogram.
+
+With the third dimension factored in, and with the rotation of the
+object performed, this is no longer such an easy operation:
+
+Additionally, when we perform the rotation calculations on the corner
+coordinates, those coordinates change from one display frame to the
+next, as the object is being animated.
+
+Consider the following polygon image:
+
+                                 A
+                                 /\
+                                /  \
+                               /    \
+                              /      \
+                             /        \
+                            /          \
+                           /            \
+                          /              \
+                       B /                \
+                         \                /D
+                          \              /
+                           \            /
+                            \          /
+                             \        /
+                              \      /
+                               \    /
+                                \  /
+                                 \/
+                                  C
+
+which can be viewed as a rectangle that has been rotated 45 degrees.
+
+The coordinates we know about are the X/Y/Z values of points A, B, C
+and D.
+
+There are a number of different possible ways to fill in the space
+defined by the boundary defined by the points A,B, C and D, but we
+are looking to use the fastest possible method of doing so, since in
+a large multi-polygon image, the faster the individual polygons can
+be drawn, the smoother the animation can be made to be viewed.
+
+So, the method we will use is to draw a series of horizontal lines
+from the top of the image (lowest screen Y coordinate value) to the
+bottom of the image (highest screen Y coordinate value), since we can
+use the REP STOSB assembly code sequence to rapidly plot a sequential
+string of pixels to the display.
+
+To be able to do this will require that we figure out what the X/Y
+coordinates for each pixel in the line segment AB, AD, BC and DC are.
+
+To illustrate what we will be trying to accomplish, I will "blow up"
+the above rotated rectangle and "map" the pixels to the screen:
+
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | | | | |  A  | | | | | | | | | | | | | 92
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | | | | | |X| | | | | | | | | | | | | | 93
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | | | | |X| |X| | | | | | | | | | | | | 94
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | | | |X| | | |X| | | | | | | | | | | | 95
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | | |X| | | | | |X| | | | | | | | | | | 96
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | |X| | | | | | | |X| | | | | | | | | | 97
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | |X| | | | | | | | | |X| | | | | | | | | 98
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | |X| | | | | | | | | | | |X| | | | | | | | 99
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | B |X| | | | | | |+| | | | | | |X| D | | | | | 100
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | |X| | | | | | | | | | | |X| | | | | | | | 101
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | |X| | | | | | | | | |X| | | | | | | | | 102
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | |X| | | | | | | |X| | | | | | | | | | 103
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | | |X| | | | | |X| | | | | | | | | | | 104
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | | | |X| | | |X| | | | | | | | | | | | 105
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | | | | |X| |X| | | | | | | | | | | | | 106
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | | | | | |X| | | | | | | | | | | | | | 107
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        | | | | | | | | | | | | |  C  | | | | | | | | | | | | | 108
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+         1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+         4 4 4 5 5 5 5 5 5 5 5 5 5 6 6 6 6 6 6 6 6 6 6 7 7 7 7
+         7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 7 2
+
+What the above ASCII art depicts is a rectangle that is drawn at the
+center of the video display, at coordinates (160,100), with sides
+that are 8 pixels in length.
+
+We know the X/Y values for the points A, B, C and D, and by passing
+them to the Line routine we can easily draw the line segments AB,
+BC, CD and DA.  This is, in fact, exactly what we did in GotTK1 to
+draw the cube object.
+
+What we want to do in this case, however, is to build an array of
+the X coordinates for those line segments, from which we will then
+call a routine that will use that array to draw the horizontal lines
+to fill the polygon in.
+
+In the above drawing, the topmost line to be drawn is located at line
+93 (Y coord) with the left X coord of 160 and a right X coord of 160,
+comprising a single pixel.
+
+The next line is at Y coord 94, left X coord 159, and right X coord
+of 161.  And so on to the bottom line of the object, defined by the
+Y coordinate of the C corner of this object.
+
+The routine that creates this Horizontal Line Listing is called a
+ScanEdge routine, which is a slightly modified version of the
+Bresenham Line Algorithm. It walks the path that it calculates from
+point A to point B, but instead of plotting a pixel at each step on
+the way it saves the X coordinate of that pixel to our Line List
+array.
+
+The array is defined as 200 integer element pairs - 200 because there
+are that many vertical lines in the 320x200x256 mode we are using.
+The left and right X coordinate values are stored into this array.
+
+        S{
+          {1WORD}-DEF :: .x1
+          {1WORD}-DEF :: .x2
+        }S xpos-obj
+
+        xpos-obj 200 [] xpos[]-obj xpos-ndx
+        xpos[]-obj HeapAllot XPos[]
+
+We first need some work variables:
+
+        value se.x1
+        value se.y1
+        value se.xh
+        value se.yh
+        value se.s
+        value se.y
+        value se.pos
+
+A decision word to help the code determine if we are working with the
+left or right side of a line:
+
+        \ boolean selector function
+
+        : ?pos  ( &XPos[y] 0/1 -- &XPos[y].x1/x2 )
+          case
+            0 of .x1 endof
+            1 of .x2 endof
+          endcase
+        ;
+
+And the modified Bresenham code that does the edge scanning:
+
+        : ScanEdge ( xl yl xh yh s -- )
+          to se.s
+          to se.yh to se.xh
+          to se.y1 to se.x1
+          se.y1 to se.y
+          se.y1 se.yh < abs to se.pos
+          se.y1 se.yh <> if
+            begin
+              se.xh se.x1 -     \ xh-x1
+              se.y se.y1 -      \ xh-x1 y-y1
+              *                 \ xh-x1*y-y1
+              se.yh se.y1 -     \ xh-x1*y-y1 yh-y1
+              /                 \ xh-x1*y-y1/yh-y1
+              se.x1 +           \ xh-x1*y-y1/yh-y1+x1
+              XPos[]            \ xh-x1*y-y1/yh-y1+x1 &XP[]
+              se.y              \ xh-x1*y-y1/yh-y1+x1 &XP[] y
+              xpos-ndx          \ xh-x1*y-y1/yh-y1+x1 &XP[y]
+              se.pos ?pos       \ xh-x1*y-y1/yh-y1+x1 &XP[y].x?
+              !                 \ --
+              se.s +to se.y     \
+              se.yh se.s +      \ yh+s
+              se.y =            \ 0/1
+            until
+          else
+            se.x1               \ x1
+            XPos[]              \ x1 &XP[]
+            se.y                \ x1 &XP[] y
+            xpos-ndx            \ x1 &XP[y]
+            se.pos ?pos         \ x1 &XP[y].x?
+            !                   \ --
+          then
+        ;
+
+We need a customized line draw word that will handle drawing to the
+double buffer, or directly to the video screen, at your choice.
+
+It should be noted that if the UseBuffer variable is set to 0, for
+direct screen writes, then the &buf parameter still needs to be used
+and set to a value of 0, as the &buf value is added to DI when the
+pixel address is being computed.
+
+  code (HorLine) ( &buf x1 x2 y c -- )
+                                \ c in bx on entry as TOS
+                    bx  push    \ put all parameters onto the stack
+                 bp sp  xchg    \ setup the stack frame
+                    es  push    \ save registers to be used
+                    di  push
+                    ds  push
+                    es  pop
+       UseBuffer #) ax  mov
+                0 # ax  cmp
+                  1 L#  jne     \ if !0, leave ES=DS
+        VSelector # ax  mov     \ else, draw direct to screen
+                 ax es  mov
+  1 L:
+
+       3 cells [bp] ax  mov
+       2 cells [bp] ax  cmp
+                  2 L#  jl      \ if x1<x2 continue
+       2 cells [bp] bx  mov     \ else swap them
+       ax 2 cells [bp]  mov
+       bx 3 cells [bp]  mov
+  2 L:
+       \ Calculate Y*320+X
+       3 cells [bp] di  mov     \ di=x1
+       1 cells [bp] ax  mov     \ ax=y
+                6 # cl  mov
+                 ax cl  shl     \ ax=y1*64
+                 ax di  add     \ di=y*64+x
+                2 # cl  mov
+                 ax cl  shl     \ ax=y*256
+                 ax di  add     \ di=y*320+x
+       4 cells [bp] di  add     \ di=&buf[y*320+x]
+       \ Calculate Length
+       2 cells [bp] ax  mov     \ ax=x2
+       3 cells [bp] ax  sub     \ ax=x2-x1
+                    ax  inc     \ ax=x2-x1+1
+                 ax dx  mov     \ dx=len
+       0 cells [bp] al  mov     \ al=c
+                 al ah  mov     \ put c into all 4 bytes of EAX
+               16 # cl  mov
+                 ax cl  shl
+       0 cells [bp] al  mov
+                 al ah  mov
+                 dx cx  mov
+  \ This handles the initial bytes of the line, so that the rest
+  \ can be plotted using the STOS opcode, 4 bytes/rep
+  \ This handles line lengths less than 4 pixels correctly.
+                        cld     \ set forward direction for DI inc
+                    cx  push
+                3 # cx  and     \ get bits 0/1
+                0 # cx  cmp
+                  3 L#  je      \ if=0 then no extra pixels to plot
+                        rep     \ else plot up to 3 pixels now
+                    al  stosb
+  3 L:
+                    cx  pop     \ retrieve count
+                    cx  shr     \ cx=cx>>1
+                    cx  shr     \ cx=cx>>2 (divide by 4)
+                0 # cx  cmp     \ if cx=0, then exit
+                  4 L#  je
+                        rep
+                    ax  stos    \ and store the dwords left
+  4 L:
+                    di  pop     \ restore register
+                    es  pop
+                 bp sp  xchg    \ restore stack frame
+          5 cells # sp  add     \ drop parameters
+                    bx  pop     \ get new TOS
+                    end-code
+                    no-expand
+
+Now for the main polygon routine.
+
+I am putting all the passed parameters into VALUEs to make it easier
+to visualize what the code is doing.  Removing all of the stack
+thrashing makes the code a bit easier to follow.  Also, there is a
+fair time savings by eliminating all of the OVER, PICK and SWAP code.
+
+        \ Parameters
+
+        value p.buf
+        value p.x1
+        value p.y1
+        value p.x2
+        value p.y2
+        value p.x3
+        value p.y3
+        value p.x4
+        value p.y4
+        value p.c
+
+        \ Local variables
+
+        value p.mny
+        value p.mxy
+        value p.s1
+        value p.s2
+        value p.s3
+        value p.s4
+
+        : polygon ( &buf x1 y1 x2 y2 x3 y3 x4 y4 c -- )
+          to p.c
+          to p.y4 to p.x4
+          to p.y3 to p.x3
+          to p.y2 to p.x2
+          to p.y1 to p.x1
+          to p.buf
+
+          \ find the lowest Y value - sets p.mny
+          p.y1 to p.mny
+          p.y2 p.mny < if p.y2 to p.mny then
+          p.y3 p.mny < if p.y3 to p.mny then
+          p.y4 p.mny < if p.y4 to p.mny then
+
+          \ find the highest Y value - sets p.mxy
+          p.y1 to p.mxy
+          p.y2 p.mxy > if p.y2 to p.mxy then
+          p.y3 p.mxy > if p.y3 to p.mxy then
+          p.y4 p.mxy > if p.y4 to p.mxy then
+
+          \ set the slope variables
+          p.y1 p.y2 < abs 2* 1- to p.s1
+          p.y2 p.y3 < abs 2* 1- to p.s2
+          p.y3 p.y4 < abs 2* 1- to p.s3
+          p.y4 p.y1 < abs 2* 1- to p.s4
+
+        \ Process line segment x1,y1 to x2,y2
+          p.x1 p.y1 p.x2 p.y2 p.s1 ScanEdge
+
+        \ Process line segment x2,y2 to x3,y3
+          p.x2 p.y2 p.x3 p.y3 p.s2 ScanEdge
+
+        \ Process line segment x3,y3 to x4,y4
+          p.x3 p.y3 p.x4 p.y4 p.s3 ScanEdge
+
+        \ Process line segment x4,y4 to x1,y1
+          p.x4 p.y4 p.x1 p.y1 p.s4 ScanEdge
+
+          p.mxy 1+ p.mny do
+            p.buf
+            XPos[] i xpos-ndx .x1 @
+            XPos[] i xpos-ndx .x2 @
+            i
+            p.c
+            (HorLine)
+          loop
+        ;
+
+The program flow is straightforward.  After storing the passed
+parameters to the local variables, we then find the lowest and the
+highest Y values, setting the p.mny and p.mxy variables accordingly.
+These are used to tell us what the valid entries in the XPos[] array
+are.
+
+Next, we call the ScanEdge word to process each of the four line
+segments forming the polygon to be drawn.
+
+Finally, we simply run thru the XPos[] array, drawing horizontal
+lines from the left side to the right side at the indexed line.
+
+---[ Raw Polygon Drawing ]-------------------------------------------
+
+As a short demo to test the above code, we have FillPoly1 and
+FillPoly2 that draw randomly sized polygons to the screen.
+
+FillPoly1 draws to the double buffer, and FillPoly2 draws directly to
+the video display.
+
+        : FillPoly1
+          $13 InitGraph
+          1 UseBuffer !         \ set to use the double buffer
+          begin
+            key? not
+          while
+            VPage0[]            \ &buf
+            300 rnd 10 +        \ &buf x1
+            180 rnd 10 +        \ &buf x1 y1
+            300 rnd 10 +        \ &buf x1 y1 x2
+            180 rnd 10 +        \ &buf x1 y1 x2 y2
+            300 rnd 10 +        \ &buf x1 y1 x2 y2 x3
+            180 rnd 10 +        \ &buf x1 y1 x2 y2 x3 y3
+            300 rnd 10 +        \ &buf x1 y1 x2 y2 x3 y3 x4
+            180 rnd 10 +        \ &buf x1 y1 x2 y2 x3 y3 x4 y4
+            256 rnd             \ &buf x1 y1 x2 y2 x3 y3 x4 y4 c
+            Polygon             \ --
+            VPage0[] BlitBuffer
+          repeat
+          key drop
+          CloseGraph
+        ;
+
+        : FillPoly2
+          $13 InitGraph
+          0 UseBuffer !         \ set for direct draw to screen
+          begin
+            key? not
+          while
+            0                   \ 0
+            300 rnd 10 +        \ 0 x1
+            180 rnd 10 +        \ 0 x1 y1
+            300 rnd 10 +        \ 0 x1 y1 x2
+            180 rnd 10 +        \ 0 x1 y1 x2 y2
+            300 rnd 10 +        \ 0 x1 y1 x2 y2 x3
+            180 rnd 10 +        \ 0 x1 y1 x2 y2 x3 y3
+            300 rnd 10 +        \ 0 x1 y1 x2 y2 x3 y3 x4
+            180 rnd 10 +        \ 0 x1 y1 x2 y2 x3 y3 x4 y4
+            256 rnd             \ 0 x1 y1 x2 y2 x3 y3 x4 y4 c
+            Polygon             \ --
+          repeat
+          key drop
+          CloseGraph
+        ;
+
+FillPoly2 is noticeably faster, but this is mainly due to the fact
+that FillPoly1 also does a 16000 dword screen transfer after every
+polygon is drawn to the double buffer, while FillPoly2 only writes
+the actual polygon pixel data to the display screen.
+
+---[ Filled Cube ]---------------------------------------------------
+
+Our next step is to modify the DrawCube word from the GotTK1 column
+to fill the sides of the cube so as to display a solid object.
+
+To do this, I have changed the CSegs[] array so that it now holds
+the index numbers for each corner forming each of the six faces of
+the cube object:
+
+        S{
+          {1WORD}-DEF :: .pa
+          {1WORD}-DEF :: .pb
+          {1WORD}-DEF :: .pc
+          {1WORD}-DEF :: .pd
+          {1WORD}-DEF :: .pcolor
+        }S seg-obj
+
+        seg-obj 6 [] cseg[]-obj cseg-ndx
+
+        create CSegs[]
+        0 , 1 , 2 , 3 ,  1 ,     \ ABCD
+        4 , 5 , 6 , 7 ,  2 ,     \ EFGH
+        0 , 1 , 5 , 4 ,  3 ,     \ ABFE
+        7 , 6 , 2 , 3 , 14 ,     \ HGCD
+        0 , 4 , 7 , 3 , 15 ,     \ AEHD
+        5 , 1 , 2 , 6 ,  6 ,     \ FBCG
+
+I have also added a color element, so we will be able to see each
+face as a separate object as the cube is being rotated.
+
+The DrawCube word is changed to add the .pc, .pd and .pcolor values
+to the preload sequence, and the call to Line changed to a call to
+the Polygon word. Rather than trying to then erase the completed
+cube object from the double buffer, we will simply clear the entire
+buffer memory after the image has been transferred to the display by
+the BlitBuffer word.
+
+        : DrawCube ( -- )
+          RotateVectors
+          6 0 do
+            VPage0[]                    \ draw image to buffer
+            CSegs[] i cseg-ndx >R
+            temp[] R@ .pa @ cube-ndx dup .cX @ swap .cY @
+            temp[] R@ .pb @ cube-ndx dup .cX @ swap .cY @
+            temp[] R@ .pc @ cube-ndx dup .cX @ swap .cY @
+            temp[] R@ .pd @ cube-ndx dup .cX @ swap .cY @
+            R> .pcolor @
+            Polygon
+          loop
+          WaitRetrace                   \ delay
+          VPage0[] BlitBuffer           \ display buffer data
+          VPage0[] 65536 0 fill
+        ;
+
+The only change to the fcube1 word is to change the name, and to add
+the setting of the UseBuffer variable so that the Polygon word draws
+the pixel data to the double buffer VPage0[].
+
+        : fcube1 ( -- )
+           25 to xangle           \ init variables and arrays
+          125 to yangle
+          275 to zangle
+          200 to distance
+            1 to UseBuffer
+
+          VPage0[] 64000 0 fill
+          CreateLookupTables      \ init the sine/cosine tables
+          InitCube                \ init the cube[] structure
+          $13 InitGraph
+          begin                   \ repeat until a key is pressed
+            key? not
+          while
+            \ update the angles
+            3 +to xangle  xangle 359 > if 0 to xangle then
+            3 +to yangle  yangle 359 > if 0 to yangle then
+            -2 +to zangle zangle 1 < if 359 to zangle then
+            DrawCube
+          repeat
+          key drop
+          CloseGraph
+        ;
+
+Run this [ fcube1 ] and observe the image for a while.
+
+In the DrawCube word, we are drawing the faces in a set order every
+time.  As the cube is being rotated around it's axes, the order of
+the faces being drawn is always identical.  This is causing us two
+separate problems, one of which should be fairly obvious, and the
+second which is not as obvious.
+
+The first problems is that, no matter what the rotation orientation
+is, the last face drawn will ALWAYS be drawn on top of any other face
+data present on the screen.
+
+It might appear that this face is being drawn on more than one of the
+faces of the cube, but what is happening is that, when it is "behind"
+the other faces, it is still being drawn last, on top of the other
+faces.
+
+The second problem is a matter of optimization.  When a cube is being
+rotated, there are a maximum of three faces that are actually visible
+on the display.  You can check this by holding up a box, and moving
+it around.  No matter what the orientation, you can only see three of
+the sides at any time (no cheating here and using a mirror).
+
+The solution to both problems lies in the concept of Hidden Face
+Removal, where we only draw the faces that can actually be seen from
+the viewpoint of being in front of the display.
+
+---[ ZBuffering ]----------------------------------------------------
+
+Hidden Face Removal is a method of only drawing the polygons of an
+object that have been determined to be actually visible. The purpose
+is to draw the minimal number of polygons to the screen.
+
+The ZBuffering function is a method of determining the visible faces
+of the to be drawn.
+
+Adding the Z values of each of the four coordinates that define each
+side and dividing that value by four gives us the average value of
+the Z values for each face:
+
+        : ZAverage
+          \ initialize the ZSum[] array
+          6 0 do
+            i ZSum[] i zsum-ndx .obj# !
+          loop
+          \ Calc zaverage for side ABCD
+          temp[] 0 cube-ndx .cZ @
+          temp[] 1 cube-ndx .cZ @ +
+          temp[] 2 cube-ndx .cZ @ +
+          temp[] 3 cube-ndx .cZ @ + 4 / ZSum[] 0 zsum-ndx .zavg !
+          \ Calc zaverage for side EFGH
+          temp[] 4 cube-ndx .cZ @
+          temp[] 5 cube-ndx .cZ @ +
+          temp[] 6 cube-ndx .cZ @ +
+          temp[] 7 cube-ndx .cZ @ + 4 / ZSum[] 1 zsum-ndx .zavg !
+          \ Calc zaverage for side ABFE
+          temp[] 0 cube-ndx .cZ @
+          temp[] 1 cube-ndx .cZ @ +
+          temp[] 5 cube-ndx .cZ @ +
+          temp[] 4 cube-ndx .cZ @ + 4 / ZSum[] 2 zsum-ndx .zavg !
+          \ Calc zaverage for side DCGH
+          temp[] 3 cube-ndx .cZ @
+          temp[] 2 cube-ndx .cZ @ +
+          temp[] 6 cube-ndx .cZ @ +
+          temp[] 7 cube-ndx .cZ @ + 4 / ZSum[] 3 zsum-ndx .zavg !
+          \ Calc zaverage for side AEHD
+          temp[] 0 cube-ndx .cZ @
+          temp[] 4 cube-ndx .cZ @ +
+          temp[] 7 cube-ndx .cZ @ +
+          temp[] 3 cube-ndx .cZ @ + 4 / ZSum[] 4 zsum-ndx .zavg !
+          \ Calc zaverage for side BFGC
+          temp[] 1 cube-ndx .cZ @
+          temp[] 5 cube-ndx .cZ @ +
+          temp[] 6 cube-ndx .cZ @ +
+          temp[] 2 cube-ndx .cZ @ + 4 / ZSum[] 5 zsum-ndx .zavg !
+        ;
+
+We start by initializing the ZSum[] array pointers to the ordinal
+sequence [0..5]. Next, we average the Z value for each face and save
+that value to the ZSum[] .zavg element.
+
+The next step is to sort the ZSum[] array.  Since we are only working
+with 6 values, we will use a simple bubble sort to perform this step.
+
+        : ZBuffering ( -- )
+          ZAverage
+          6 1- 0 do
+            6 i 1+ do
+              ZSum[] j zsum-ndx .zavg @
+              ZSum[] i zsum-ndx .zavg @ >= if
+                \ swap the two structures
+                ZSum[] j zsum-ndx TempZSum[] zsum-obj cmove
+                ZSum[] i zsum-ndx ZSum[] j zsum-ndx zsum-obj cmove
+                TempZSum[] ZSum[] i zsum-ndx zsum-obj cmove
+              then
+            loop
+          loop
+        ;
+
+Since we only need to draw the three possibly visible faces, we can
+now modify the DrawCube word to only draw the last three faces in the
+sorted listing:
+
+        : DrawCube1
+          RotateVectors
+          ZBuffering
+          VPage0[] 65536 0 fill
+          6 3 do
+            VPage0[]
+            ZSum[] i zsum-ndx .obj# @
+            CSegs[] swap cseg-ndx >R
+            temp[] R@ .pa @ cube-ndx dup .cX @ swap .cY @
+            temp[] R@ .pb @ cube-ndx dup .cX @ swap .cY @
+            temp[] R@ .pc @ cube-ndx dup .cX @ swap .cY @
+            temp[] R@ .pd @ cube-ndx dup .cX @ swap .cY @
+            R> .pcolor @
+            Polygon
+          loop
+        ;
+
+This  can be tested with the [ fcube2 ] word.
+
+---[ Wrapping Up ]---------------------------------------------------
+
+Now that we have a working solid-fill polygon routine, it's entirely
+likely that we won't be using it again.  Why?  Because there are more
+visually appealing and realistic methods of performing filled polygon
+images than the solid-fill method we have here.
+
+So, our next step will be into textured polygon fills - specifically
+the Gouraud method, which we will use to fill objects broken down
+into triangular polygons.
+
+But, that's for the next time.
+------------------------------------------------------[End GotTK2]---
+

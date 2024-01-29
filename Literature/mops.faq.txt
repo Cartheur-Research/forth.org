@@ -1,0 +1,434 @@
+Path: netaxs.com!hunter.premier.net!news.mathworks.com!howland.erols.net!feed1.news.erols.com!news.ecn.uoknor.edu!munnari.OZ.AU!news.mel.connect.com.au!news.syd.connect.com.au!phaedrus.kralizec.net.au!not-for-mail
+From: mikeh@zeta.org.au (Michael Hore)
+Newsgroups: comp.lang.forth.mac
+Subject: Mops FAQ
+Date: 5 Nov 1996 09:01:36 +1100
+Organization: Kralizec Dialup Unix Sydney, +61-2-837-1183 V.32bis
+Lines: 424
+Distribution: inet
+Message-ID: <55lp40$i6e@godzilla.zeta.org.au>
+NNTP-Posting-Host: godzilla.zeta.org.au
+
+==============  Mops FAQ - Nov '96 (current version: 2.7)  ================
+
+G'day.  (I'm Australian, OK?)  Welcome to the Mops FAQ file.
+
+Please read this before emailing me with a problem - answering lots of
+individual email messages can take up a lot of time in which I could be
+working on improving Mops, and I have to fit all this into the little
+spare time I have anyway.
+
+But if you have to email me, could you check a couple of things:
+
+1. Double-check that you've looked at the section near the end called
+"KNOWN BUGS IN 2.7, AND FIXES."
+
+2. Put your email address at the end (OK if it's in a .sig).  Occasionally
+I haven't been able to reply to someone because what looked like their
+email address on the header of their message didn't work.  Anyway it's
+harder for me to find it there.  Thanks.
+
+
+I'll post this list every month or so.
+
+--  Mike.
+
+
+
+-----------------------------------------------------------------------------
+
+
+
+Q. What is Mops?
+
+A. Mops is a public-domain development system for the Mac.  It's based on
+Forth, with extensive OOP extensions, along the lines of Smalltalk.  It comes
+with a class library which gives support for all the normal Mac interface
+functions.  While not as full-featured as MacApp, say, it's very adequate for
+the kind of applications which might be developed by one programmer.
+
+
+Q. Where did it come from?
+
+A. Mops is derived from Neon, which was one of the first languages for the
+Mac that allowed actual development on the Mac itself.  It's a close cousin
+to Yerk, which is a more "conservative" development of Neon, basically aimed
+at keeping up with later Macs and systems while remaining fully compatible
+with Neon.  Mops is more "radical".  It's a complete reimplementation which
+compiles native (68K) code instead of the usual Forth threaded variety.  It's
+very fast -- about as fast as anything on the Mac in fact.  It has a few
+other improvements over the original Neon, such as multiple inheritance,
+and temporary (local) objects.
+
+
+Q. Where can I get it?
+
+A. WWW:   <URL:http://www.netaxs.com/~jayfar/mops.html>
+       (thanks to Jayfar (Jay Farrell) for starting this page - please let
+        him know of any other links that might be useful - jayfar@netaxs.com)
+
+   ftp: //taygeta.com/pub/Forth/Mops
+       (taygeta is the main Forth ftp site)
+
+The Mops files are Mops27.sea.bin (the system) and Mops26m.sea (the manual,
+which is still the 2.6 manual).
+
+Note that I haven't updated the manual yet, since 2.7 just contains one major
+new feature, which is documented in the 2.7 release notes.
+
+
+Some other Mops code is available on the taygeta site, and there are links
+in the WWW page.
+
+taygeta is the main site -- I always make sure the latest version is there.
+I can't always ensure this for other places where Mops might be located.
+
+
+Q. Where can I find Mops discussion?
+
+A. The newsgroup comp.lang.forth.mac - this isn't exclusively Mops, but Mops is
+frequently discussed there.
+
+I gather there is also a Mops mailing list at forth.org, but I haven't checked
+it out yet.  See  http://www.forth.org
+
+
+Q. Do you have any other sample code available, apart from what's at those
+locations?
+
+A. Sorry, I can't help much.  I've only written two "real" Mops applications
+myself, and I'm not free to distribute the source.  Most of my Mops time
+has been spent on developing it rather than writing applications in it.
+
+If the above ftp and WWW sites don't have what you want, try posting on
+comp.lang.forth.mac - maybe somebody else there can help.
+
+
+Q. Does the Mops manual really have to be in Microsoft Word format?  Could it
+be made available in other formats?
+
+A. It's in Word format for historical reasons - also Word is still very
+widely used and easily convertible to other platforms.  If anyone feels
+strongly about this, how about volunteering to convert it to your favorite
+format and upload it to the taygeta ftp site?
+
+
+Q. Could I learn Mac programming with Mops?
+
+A. You could make a good start.  Mops comes with an on-line manual, which
+is derived from the original Neon manual.  This assumes a very basic level
+of knowledge about programming, and none about the Mac.  However to move on
+past the beginner stage with Mac programming, you'll really need to read
+some of Inside Macintosh.  You can certainly keep using Mops, though!
+
+
+Q. Could I learn OOP with Mops?
+
+A. Definitely! - for the same reason as in the last question.  OOP was
+still very new when Neon came out, so the manual explains everything from
+a very basic level.
+
+
+Q. Can I write XFCNs or XCMDs for HyperCard, or AppleScript Extensions for Apple
+Script, or Extensions, or Control Panels in Mops?
+
+No, sorry, you can't do it.  Mops only does applications.  It would need quite
+a bit of restructuring to be able to handle non-application bits of code
+like XCMDs.  I thought about doing something about this a couple of years
+ago but it wasn't a priority, and now with Power Macs and the Shared
+Library Manager I think the days of these sorts of things are numbered,
+so from my point of view it just wouldn't be worth the effort.
+
+On the Power Mac everything's done via shared libraries, and my future
+Power Mac version of Mops (see below) will fully support this.  So that's
+my number one priority right now.
+
+
+Q. I double-clicked the application "Mops", but just got a window with no
+menus.
+
+A. You didn't read the Readme.1st file!  To save download time, only the
+Mops "nucleus" is included.  You have all the source there, so you have
+to compile up the full system from the source by following the instructions
+in the Readme.1st file.  It's easy.
+
+
+Q.  I followed the instructions and started to compile the system, but got
+a crash.
+
+A.  This is possibly a conflict with some extension you have running.  We've
+had problems with SAM (Symantec Anti-virus for Macintosh) and RamDoubler.
+Try it again with extensions off (reboot with the shift key down).  Mops
+ought to then compile up OK.  You might also be able to turn your extensions
+on again afterwards.  But if the conflict persists with the fully-compiled Mops
+system, see if you can isolate which particular extension is causing the
+problem, and let me know.
+
+By the way, antivirus software is often not very friendly to compilers,
+since compilers do things to resources that the antivirus program might
+think is virus activity.  But I use Disinfectant all the time, and have
+never had any problems with it.
+
+
+Q. I compiled up the Mops system OK, but now when I type lines into the Mops
+window, nothing happens - the text just sits there.
+
+A. Maybe you've been using an earlier Mops version, but anyway, when you got
+2.7 you didn't read the Readme.1st file.  Please do.  The interface isn't
+the same.  Now that we have a proper editing window, typing RETURN just starts
+a new line.  You have to type ENTER to cause execution (this is what MPW does
+as well).  Some applications treat ENTER and RETURN as equivalent, but not
+Mops.  Along with the new interface, there's also much more extensive
+communication with Quick Edit, which you won't want to miss.
+
+
+Q. Q. I compiled up the Mops system OK, but when I double-click on Mops.dic,
+I get a crash.
+
+A. The most usual cause of this is that you are upgrading from an earlier
+version of Mops, and you still have a copy of the earlier Mops nucleus
+around.  From the Mac's point of view, "Mops.dic" is a document belonging
+to the application "Mops".  When you double-click on "Mops.dic", the Mac
+system launches the application "Mops", but if you have two versions of
+Mops around, you can't be sure that it will fire up the latest.  In fact,
+it probably won't.  As the location of words in the nucleus will be different
+between versions, you can't have a new dictionary running on top of an old
+nucleus - you'll just get a crash.  So trash the old nucleus (if you're the
+cautious type, you can save it onto a floppy first, then eject the floppy).
+That way, the Mac is forced to fire up the right version of Mops.
+
+
+Q. My code works fine in the Mops environment, but when I install it as an
+application strange things happen.
+
+A. There are a couple of things that could be wrong here.
+
+A common situation is if you are using a module in an installed application,
+but you've forgotten to put
+
+true  setInstall: myModule
+
+somewhere in your code.  That sets the flag that makes Install include it.
+This will happen, for example, if you're using dialogs and you've forgotten
+to put
+true setInstall: dialogMod
+somewhere.
+
+Another common source of problems with installed applications can happen
+if at compile time you're ticking words, and comma-ing the resulting
+execution tokens into a table, then at run time executing the words
+via  @ EXECUTE.  This might happen, e.g. if you're porting your application
+from another Forth.
+
+In Mops there's no problem with storing an xt at run time then using it later,
+but it's highly dangerous to store it at compile time, save it with the
+dictionary, then later try to load the dictionary and use the xt.  This is
+because in Mops an xt is simply an absolute address, and absolute addresses
+of locations in your code will probably change between runs, depending on where
+Mops or your application happens to load into the Mac's memory.
+
+The best way to handle this kind of operation is with a DicAddr, X-Addr or
+X-Array object.  Please see the section "Addresses--relocatable and absolute"
+in Part II of the manual.
+
+
+Q. Where's the ENTER key on a PowerBook?
+
+A. It's very cleverly hidden just to the right of the spacebar.  On the PB150,
+to make things even more confusing, it doesn't even have the word ENTER on it,
+but just a strange symbol.
+
+
+Q. I tried to load the grDemo, as in the Tutorial, but got the following
+error message:
+
+// grdemo
+
+  Loading: ::Mops manual:demo folder:grdemo
+    Loading: ::Mops manual:demo folder:turtle
+      Loading: ::Mops manual:demo folder:sin
+        Loading: ::Mops source:System source:struct1  Size: 724
+      Size: 1446
+    Size: 3192
+Error # 126 : That is not an object name
+:a DOPGUP  get: thisCtl  10 -  put: thisCtl  update: dWind  ;a
+                       ^
+Current object:  TW    Class:
+Stack:  Depth 4
+       8  $     8
+17778310  $10F4686
+-150039099  $-8F16A3B
+Return stack:  Depth 61
+17719864  $10E6238 DIE
+17721076  $10E66F4 REFTOKEN
+17721640  $10E6928 COMPREF
+File stack:
+::Mops manual:demo folder:grdemo
+
+
+A. Sorry.  My apologies - it's all my fault.  That line in grdemo is
+sending an implicitly late-bound message to a VALUE.  Previous Mops
+versions allowed this - you could send a message to a value, with the
+meaning that it was a late-bound send to the object whose address is
+in that value at run time.  But I was finding that it was too easy to
+invoke this feature accidentally, by forgetting that a Value wasn't
+an Object, and trying to send a message to it.  The result was
+usually a horrible death.  So I removed the feature, but totally forgot
+that it was used in the demo code.
+
+You need to change the offending lines (there are 4 of them) to:
+
+:a DOPGUP        get: [ thisCtl ]  10 -  put: [ thisCtl ]  update: dWind  ;a
+:a DOPGDN        get: [ thisCtl ]  10 +  put: [ thisCtl ]  update: dWind  ;a
+:a DOLNUP        get: [ thisCtl ]  1-    put: [ thisCtl ]  update: dWind  ;a
+:a DOLNDN        get: [ thisCtl ]  1+    put: [ thisCtl ]  update: dWind  ;a
+
+This way, you're doing an EXPLICIT late-bind, and it's much more obvious
+from the code what's happening.
+
+
+
+Q. Can I use color in a Mops window?
+
+A. You have to make the window a color window.  The Window class now has a
+new ivar, color?, and a method to set it, setColor: which takes a boolean
+flag.  So before you send new: or getNew: to your window, do
+
+true setColor: myWindow
+
+Then when you send new: or getNew:, the window will be created as a color
+window.
+
+
+Q. How do I plot an Icon / use the Sound Manager / use an offscreen PixMap
+   (insert favorite problem here).
+
+A. Well, if this is a general Mac programming problem rather than something
+specifically to do with Mops, I'm not really here to answer this sort of
+question.  Try posting on comp.sys.mac.programmer.help.  I have to try
+developing the next version of Mops in my spare time, so it's probably not
+right for me to be taking time to answer basic Mac programming questions.
+I don't have all the answers anyway.  I'm certainly not a substitute for
+Inside Mac.  Read the appropriate parts first, and if you're still stuck,
+try the newsgroup.  There are plenty of people willing and able to help there.
+
+
+Q. I've written this nifty code, and I'd like you to look at it and tell me
+what you think.
+
+A. I'd rather you didn't ask me that.  If everybody did that I'd get buried
+in email and never get anything done.  I'm doing this in my spare time, remember
+.
+Maybe consider posting it to comp.lang.forth.mac.
+
+
+Q. What's the minimum system I need to run Mops?
+
+A. Mac Plus or 512KE, 4 megs RAM, 4 megs spare hard disk space.
+
+
+Q. You're joking, surely?
+
+A. No I'm not!
+
+
+Q. Will a future Mops version compile native code for the Power Mac?
+
+A. Yes.  See the section at the end of the FAQ for a progress report.
+
+
+Q. What about a Windows version?
+
+A. A couple of people have contacted me, who are thinking about looking at this.
+
+But this was quite a while ago now.  If anybody else is interested, let me know.
+
+
+But it will be quite a big job.  It could possibly be built on top of an
+existing Windows Forth, but the hard part would be modifying all the classes
+to connect to the Windows API instead of the Mac.
+
+I can't really give any further help, since I don't have time, and in any
+case I've never programmed for Windows.
+
+
+Q. Will you continue to support Mops for some time to come?
+
+A. I've been doing it for 6 years now, and don't plan to stop!
+
+
+Q. Why an oddball language that isn't C++?
+
+A. Try it and see how quickly you can get things done.  The most popular
+way isn't always the best way.  After all, you're using a Mac, aren't you?
+
+
+
+
+----------------------- KNOWN BUGS IN 2.7, AND FIXES -------------------------
+
+* In the xcalls file, a few calls have no inline code for the 68k because
+they're implemented via compiler glue.  We don't give an error if one of
+these is syscall'ed on the 68k, but we should.  If you find a syscall
+isn't working, look at the xcalls file and see if there are any hex values
+on the same line as the name of the call.  If there are, it's not this
+problem.  I think the offending calls are mainly I/O related.
+
+* Unions and records can't be nested, since a value isn't being
+saved/restored.  This won't affect most people.
+
+* There's apparently a problem with temporary objects in methods -
+a user reported that methods called after temp{ } can't access the
+object's ivars.  The ivars themselves can be accessed after temp{ }.
+
+* Install crashes if you cancel out of it then try to do it again in
+the same session.
+
+* Mops generates bad code if you fetch two quantities where one is
+a partial word fetch (c@  w@ etc), add them, then use the result to
+do another fetch.  The fix involves a nucleus change so I can't
+help anybody until the next Mops release.
+
+The workaround is just to do a dummy operation between
+the add and the last fetch - like "123 drop" - this
+blocks the attempted optimization.
+
+
+
+
+I'll add to this list if (when?) new bugs are discovered.
+
+
+---------------- PROGRESS REPORT ON NATIVE POWER MAC VERSION -----------------
+
+The basic code generation now seems pretty solid.  The nucleus is pretty well
+done.  The next big step is to be able to recompile the code generator itself,
+targetting the PowerPC, so that the PowerPC Mops image can actually
+compile definitions and then load itself up into a full version.
+
+The code generator uses all the OOP stuff, so I have to provide enough
+native support for that before I can recompile the code generator itself.
+This is now well under way.
+
+I was feeling a bit stale a couple of months ago, so I took some time off
+to implement some Mops features in Andrew McKewan's ANSI OOP Forth
+extensions (available on Taygeta).
+
+But the good news is that I'm now running on a Power Mac at work, and I can
+take it home at weekends, so progress should be a lot faster now.
+
+So, I still hope to get it done this year.  I *will definitely* get it done
+before Copland  :-)
+
+More good news is that 2.7 seems to be extremely solid, so that I may not
+have to do another release before PowerMops (or whatever I call it).
+
+
+
+------------------------------------------------------------------------
+Mike Hore            mikeh@zeta.org.au                           _--_|\
+                     (no longer on Compuserve)                  /      \
+                                                                \_.--._x
+Aug 24, 1995 - the day Micro$oft released Windows 95 to               v
+millions of unsuspecting beta-testers.
+------------------------------------------------------------------------

@@ -1,0 +1,48 @@
+			                                   12/30/96
+
+Alberto Pasquale
+e-mail: alberto@hal-pc.org
+                              
+
+LMI 80386 UR/FORTH ICD Cable Interface Code
+
+The Motorola CPU32 core ( 6833X) has a Background Debug Mode.
+On this mode the CPU communicates thru a serial interface and it is possible
+to modify memory and registers.
+
+P&E Microcomputer System TEL (617) 353-9206 sells an  inexpensive interface
+to connect the parallel port of a PC to the BDM on the CPU32.
+
+The Software from P&E is a very good developing system for 6833X projects.
+I have worked with it for the last 3 years, developing 3 new instruments
+(recorders and data acquisition) and the $150 P&E system was the only emulator 
+we used.
+
+When the instruments went into production, we had a large amount of problems
+with the hardware.
+
+We decided to implement a set of utilities to test the hardware without any 
+code running. (BDM requires only the clock and 10 signals)
+
+The first step was to expand the forth system to create a set of operators 
+mapping the CPU32 space.
+
+The second was to create a set of script files that when executed by the 
+Forth System initialized and tested the instruments.
+
+The Forth used was LMI 80386 UR/FORTH. 
+(32bit protected mode running on PharLap TNT Extender)
+Since the CPU32 is a 32bit core, using a 32bit Forth seemed like a natural
+choice.
+
+It should be possible to port the code to any other 32bit Forth or modified
+to run on a 16bit forth.
+
+The files included are:
+
+     BDM32.4TH      interface
+     68332.4TH      CPU32 equates
+     DUMP.4TH       sample memory dump
+     MEMTST.4TH     sample target memory test
+          
+ 

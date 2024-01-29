@@ -1,0 +1,396 @@
+  comp.lang.forth Frequently-Asked Questions, part 2 of 7
+  Online Resources: Web, FTP and Email
+  John D. Verne <jdv@forth.org>
+  Last modified: $Date: 1999/07/23 02:27:09 $
+
+  A concise guide to Forth related online resources.  Send additions,
+  deletions or changes to John D. Verne <mailto:jverne@mks.com>.  Please
+  see the Forth Online Resources Quick-Reference Card <http://www.com-
+  plang.tuwien.ac.at/forth/forl.html>.  A detailed hardcopy version with
+  additional data is available in Forth Dimensions
+  <http://www.forth.org/> magazine.
+  ______________________________________________________________________
+
+  Table of Contents
+
+
+  1. Introduction
+
+  2. Personal and Commercial WWW Servers
+
+  3. Public File Repositories
+
+  4. News and Email Resources
+
+     4.1 Internet Mailing Lists
+     4.2 Commonly Requested Email Addresses
+     4.3 Newsgroups and Conferences
+
+  5. Bulletin-Board Systems (BBS)
+
+
+
+  ______________________________________________________________________
+
+  1.  Introduction
+
+
+  This is part two of a seven part document covering many aspects of the
+  Forth programming language.  All seven parts are posted monthly to the
+  USENET newsgroups comp.lang.forth, comp.answers, and news.answers.
+  They are updated regularly.
+
+  This part is primarily concerned with being a concise quick-reference
+  guide to the many online Forth resources available.  Specifically, it
+  attempts to answer the questions, "Where can I find the Forth
+  resource...?".
+
+  For more information on Forth or other Forth resources, please consult
+  the other parts of this FAQ.  They can be found at:
+
+
+  o  <http://www.forth.org/fig.html>
+
+  o  <ftp://ftp.forth.org/pub/Forth/FAQ/>
+
+
+  This document was adopted in it's entirety from the "online" FAQ
+  created by Kenneth O'Heskin.
+
+  To request a change or report an error, please contact the author
+  <mailto:jdv@forth.org>.
+
+  This document is placed entirely in the public domain.  You may quote
+  freely from it, as long as you play nice and give us some credit.
+  This document comes with no guarantees and is provided for your
+  information only.  Trademarks are the property of their respective
+  owners.  Your mileage may vary etc., etc., etc.
+
+
+
+  2.  Personal and Commercial WWW Servers
+
+  These sites are primarily Forth-oriented.  Some are very product
+  specific, while others are more for general programming interest.  If
+  you find any broken links or know of any pages that need to be
+  included here, please let me know <mailto:jdv@forth.org>.
+
+
+  o  The ATLAST <http://www.fourmilab.ch> (Autodesk Threaded Language
+     application System Toolkit) embedded system pages.  You can
+     download ATLAST from here, as well.
+
+  o  The Bournemouth Forth Redearch Page
+     <http://dec.bournemouth.ac.uk/forth/index.html>.  Links to the
+     Journal of Applied Forth and Research (JFAR), FAQs, Rochester Forth
+     Conference and more.  Very complete Forth bibliography.
+
+  o  euroFORTH <http://dec.bournemouth.ac.uk/forth/euro/index.html>, The
+     European Forth Conference home page.  Access to the latest news on
+     the conference, as well as links to the euroFORTH mail list
+     archives.
+
+  o  Forth Interest Group <http://www.forth.org/fig.html> (FIG) home
+     page.  FIG membership information, FAQs, bibliographies, downloads
+     and more.  Information on local chapters and a members-only
+     section.  Home of "Forth Dimensions" magazine.
+
+  o  The FORTH, Inc. <http://www.forth.com> Home Page is a commercial
+     site dedicated to FORTH, Inc.'s very complete product line.
+     Ordering and training information available online.
+
+  o  Frank Sergeant's <http://www.eskimo.com/~pygmy/forth.html> home
+     page.  The author of Pygmy Forth has many articles and links
+     available on his pages.
+
+  o  Immersive Systems, Inc. <http://www.immersive.com> have links and
+     technical information about Meme, their Forth-powered extensible
+     virtual reality product.
+
+  o  Forth Research at Institut fuer Computersprachen
+     <http://www.complang.tuwien.ac.at/projects/forth.html> has
+     technical documents, Forth code and many Forth links.  Some
+     downloads available.
+
+  o  Jeff Fox's UltraTechnology <http://www.ultratechnology.com/> Home
+     page.  Home of Offete Enterprises, Inc. and the source for
+     information about the MuP21 Forth engine.  Books, video tapes and a
+     diverse range of software available.
+
+  o  The Journal of Forth Application and Research
+     <http://www.jfar.org/index.html> and it's UK mirror
+     <http://dec.bournemouth.ac.uk/forth/jfar/index.html>, published by
+     the Institute for Applied Research, Inc.  Author's guides and
+     ordering information available.
+
+  o  Laboratory Microsystems Inc. (LMI) <http://www.cerfnet.com/~lmi>
+     have an online catalog and software updates for their wide range of
+     Forth systems.
+
+  o  The Forth Source <http://www.theforthsource.com> is the home of
+     Mountain View Press.  Tutorials, educational software and guides.
+     The Forth education source.
+  o  The Mops Page <http://www.netaxs.com/~jayfar/mops.html> is the
+     place for FAQs and information on Mops Forth for the Mac.  Plenty
+     of documentation and code available.
+
+  o  New Micros Inc. (NMI) <http://www.newmicros.com/> publish
+     information and an online catalog for their range of Forth-powered
+     Single-Board Computers.
+
+  o  FirmWorks <http://www.firmworks.com> is the source for information
+     on Open Firmware.  Dedicated to the development of the IEEE 1275
+     standard.  If you need information on Open Firmware, start here.
+
+  o  Patriot Scientific Corporation <http://www.ptsc.com> publishes
+     information on their PSC1000 (ShBoom) 32-bit RISC microprocessor
+     family, as well as their many other products.  Some Forth
+     information links.
+
+  o  Phil Koopman's <http://www.cs.cmu.edu/~koopman> Home Page has
+     extensive links to Forth, stack computers and embedded systems.
+     Several articles and technical papers are publicly available.
+
+  o  The Pocket Forth Page <http://chemlab.pc.maricopa.edu/pocket.html>,
+     home of Pocket Forth for the Mac.  Tutorials, downloads and code
+     examples abound.
+
+  o  The Rochester Forth Conference
+     <http://dec.bournemouth.ac.uk/forth/rfc/index.html>, organized by
+     the Institute for Applied Forth Research (JFAR), Inc.  This is the
+     place for Conference proceedings.
+
+  o  The Rocky Coast Free Board <http://www.well.com/~jax/rcfb/> is the
+     web incarnation of the RCFB dialup BBS.  Lots of information on
+     Forth, Java and programming.
+
+  o  The home of JForth <http://home.tampabay.rr.com/jforth/> for the
+     Amiga has FAQs, news and downloads.
+
+  o  The Computer Journal <http://www.psyber.com/~tcj/> is a good place
+     for legacy system information.  Very Forth-friendly publication.
+
+  o  Tout sur le Forth <http://perso.wanadoo.fr/mp7/> en France, the
+     source for French-language Forth resources.
+
+  o  Visit Triangle Digital Services, Ltd.
+     <http://ourworld.compuserve.com/homepages/triangle> for information
+     on their Forth-powered Single-Board Computers.  Very complete
+     online catalog.
+
+
+
+
+  3.  Public File Repositories
+
+  These sites offer anonymous FTP access to Forth files and resources.
+  URLs can change rapidly.  Please let me know <mailto:jdv@forth.org> if
+  you find broken links, or know of more Forth-oriented FTP sites.
+
+
+  o  Official ANS Forth x3j14 <ftp://ftp.uu.net/> Committee ftp site.
+     This is where to get the (un)official ANS-Forth documents.  [need
+     to find exact link --jdv]
+
+  o  Cygnus Support FTP Service <ftp://ftp.cygnus.com/pub/forth/> is a
+     huge ftp site with many Forth systems available.
+
+
+  o  Brad Rodriguez' CamelForth can be downloaded from here
+     <ftp://ftp.zetetics.com/camel/>.  You may also want to visit the
+     CamelForth web site <http://www.zetetics.com/camel/>.
+
+  o  The University of Michigan Department of Physics has a few Forth
+     implementations available here
+     <ftp://williams.physics.lsa.umich.edu/pub/forth>.
+
+  o  Dwight Elvey <ftp://ftp.hal.com/pub/elvey> has made a few Forth
+     resources available.
+
+  o  Marcel Hendrix <ftp://iaehv.iaehv.nl/pub/users/mhx> has an
+     extensive collection of Forth implementations available to the
+     public.
+
+  o  Taygeta Scientific, Inc is the host of forth.org
+     <ftp://ftp.forth.org/pub/Forth>.  This is simply the most complete
+     collection of Forth resources out there.  [need Bremen mirror
+     address --jdv]
+
+  o  This is the place for Yerk <ftp://astro.uchicago.edu/pub/MAC/Yerk>
+     (Forth for the Mac) manuals, information and code.
+
+
+
+  4.  News and Email Resources
+
+
+  4.1.  Internet Mailing Lists
+
+  [Anybody care to expand on this list? --jdv]
+
+
+  o  To subscribe to the MISC mailing list <mailto:misc-
+     request@pisa.rockefeller.edu> send an email with "subscribe" in the
+     text.
+
+  o  To subscribe to the Win32For mailing list <mailto:win32for-
+     requests@edmail.spc.uchicago.edu>, send an email with "subscribe"
+     as the only line in the body of the message.
+
+  o  To subscribe to the euroFORTH <mailto:euroforth-
+     subscribe@egroups.com> mail list, just send an empty message.
+
+  o  To subscribe to any of the following Forth mailing lists, send an
+     email <mailto:mdaemon@chaossolutions.com> with the appropriate
+     subscribe line as the only text in the body:
+
+
+  o  subscribe BigForth  (BigForth list)
+
+  o  subscribe GForth  (GForth list)
+
+  o  subscribe Minos
+
+  o  subscribe JForth-List  (Amiga JForth List)
+
+  o  subscribe 4th-List  (Original 4th learning list)
+
+
+
+  4.2.  Commonly Requested Email Addresses
+
+  These are the most commonly requested email addresses on
+  comp.lang.forth.
+
+  o  For information on the ANS Forth process, please contact the
+     ANSForth Mail Group <mailto:ansforth-request@minerva>
+
+  o  To contact the Forth FAQ authors, or request a change the the FAQ,
+     please email the Forth FAQ Maintainers <mailto:faq@forth.org>
+
+  o  The Forth Interest Group <http://www.forth.org/> (FIG):
+
+  o  FIG Board of Directors <mailto:board@forth.org>  (everyone)
+
+  o  Forth Dimensions Editor <mailto:editor@forth.org>  (Marlin
+     Ouverson)
+
+  o  FIG business office <mailto:office@forth.org>  (John Hall)
+
+  o  FIG President <mailto:pres@forth.org>  (Skip Carter)
+
+  o  FIG Secretary <mailto:sec@forth.org>  (Brad Rodriguez)
+
+  o  FIG Treasurer <mailto:treas@forth.org>  (Andrew McKewan)
+
+  o  FIG Vice President <mailto:vp@forth.org>  (Jeff Fox)
+
+  o  Secretary of the FORTH Gesellschaft <mailto:secretary@admin.forth-
+     ev.de> (German Forth users' group)
+
+  o  Editor of the Journal of Forth Application and Research
+     <mailto:editor@jfar.org>
+
+
+  4.3.  Newsgroups and Conferences
+
+  These are the primary Forth newsgroups and public conferences.  Please
+  let me know <mailto:jdv@forth.org> if you know of any others.
+  Specifically, I know there are several non-English Forth newsgroups.
+  Does anyone care to comment?
+
+
+  o  The unmoderated comp.lang.forth <news:comp.lang.forth> USENET
+     newsgroup is carried on most newsfeeds.  Archived messages
+     <ftp://asterix.inescn.pt/pub/forth/news/> are available.  [need to
+     find good archive URL --jdv]
+
+  o  Macintosh specific Forth news is found on the unmoderated
+     comp.lang.forth.mac <news:comp.lang.forth.mac> newsgroup.
+
+
+
+  5.  Bulletin-Board Systems (BBS)
+
+  These are the publicly available Forthish Bulletin-Board Systems that
+  we still know about.  This information is presented for legacy reasons
+  only.  The status of these numbers is unknown.  I'm starting to feel
+  all nostalgic about my first 300 baud modem...
+
+
+  o  Arcane Incantations, 617-899-6672
+
+  o  Art of Programming BBS, 604-826-9663
+
+  o  Bitter Butter Better BBS, 503-691-7938
+
+  o  Gold Country Forth BBS, 916-652-7117
+
+  o  Laboratory Microsystems, Inc (LMI), 310-306-3530
+
+  o  MindLink <telnet://mindlink.bc.ca>, 604-528-3500
+
+  o  The FROG Pond BBS, 716-461-1924
+
+
+
+  End of file
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,50 @@
+This is Mops 3.4, of February 1999.
+
+This package contains the full Mops system.  There are two
+distribution files, which are equivalent, except that one has
+the Mops system already fully compiled up and ready to run.
+The other only has the 68k nucleus, and you have to go through
+a series of steps to compile up the full system from the source
+files which are included -- just as you had to do with earlier 
+Mops releases.
+
+The fully built up version is Mops340buit.sea.bin, and is about
+2.3 megs.  The "basic" version is Mops340.sea.bin, and is about
+1.3 megs.  (I use "340" rather than just "34" in case I need
+to do 3.4.1, 3.4.2 etc. releases later..)
+
+Earlier Mops releases were all in "basic" form.  However net and
+modem speeds are now so fast that the extra download time for
+the built up version won't bother a lot of people, and will save
+them any hassle involved in compiling the system up.
+
+The distribution files are in binary format, which shouldn't present 
+any problems to current Mac network software.  They are self-extracting
+archives, so on a Mac, just double-click the file and it will expand
+itself.  (If you only have a Windows machine, bad luck.)
+
+When you expand the file, please read the files "ReadMe.1st" and
+"Mops 3.4 release notes" first.  They'll tell you what to do next.
+
+The manual is not included, but it should be available from the same
+location you got this.  It should be called Mops34Wrd.sea.bin or 
+Mops34PDF.sea.bin (Word or PDF format).  It's a separate file because
+of size.
+
+You will really need the manual if you're going to do anything with 
+Mops.
+
+
+
+I hope you enjoy it!
+
+
+------------------------------------------------------------------------
+Mike Hore        email:          mikeh@zeta.org.au
+                 Mops web page:  http://www.netaxs.com/~jayfar/mops.html
+snail-mail:                                                      _--_|\
+        Michael Hore                                            /      \
+        54 Frederick St,                                        \_.--._*
+		Sydenham  NSW  2044,                                          v
+		AUSTRALIA.
+------------------------------------------------------------------------

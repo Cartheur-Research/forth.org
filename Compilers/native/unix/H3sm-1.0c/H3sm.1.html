@@ -1,0 +1,117 @@
+<HTML><HEAD><TITLE> seedoc for Hohensee's 3-stack machine on cLIeNUX        .</TITLE></HEAD> <BODY>
+
+<h2>NAME</h2> H3sm - Hohensee's 3-stack machine programming interface
+
+<h2>DOCDATE</h2>19991208 
+
+<h2>OVERVIEW;  virtual machine description</h2> 
+
+ H3sm is descended from the <a href=http://www.taygeta.com><b>Forth</b></a>
+programming language. Most digital central processing units and programming
+languages for them have one stack structure that is implicit to the instructions of
+the machine. This stack structure is usually called the return stack. A stack is
+simply a LIFO, last in-first out. The last item placed on the stack is the item
+implicitly available to be taken from the stack. The typical return stack uses this
+characteristic to maintain coherence in a system that makes nested subroutine calls.
+The return addresses each subroutine returns to are "push"'ed and "pop"'ed to/from
+the stack by subroutine-calling operators, and the LIFO aspect of the stack keeps
+the proper chronology of what routine returns to what calling routine.
+ <p>
+ A Forth, either in emulation on a one-stack machine or as a silicon Forth engine,
+has the same type of return stack for the same purpose, plus a separate data stack.
+Example two-stack machine emulators are Postscript and the Java virtual machine.
+Forths exist as emulators and as two-stack CPU chips. H3sm has a return stack, a
+data stack, and a pointer stack. 
+ <p>
+ One very confusing aspect of this to people familiar with arbitrary stack
+structures written in various languages is the fact that stack-machine stacks are
+not just written in the language in question, they are it's structure. This is as
+different as a hammer and a nail, but which is which is not so clear. The three
+stacks in H3sm are implemented by and implicit to the instructions of H3sm. Other
+stack structures may be created, but are not inate to the instructions of the
+system. For example, H3sm's "<b>+</b>" operates on the data stack. You don't need
+any other instructions or qualifiers for it to pick the data stack; it's hardwired
+to it.  For a stack you create using a programming language, as opposed to as part
+of the structure of the language itself, you have to write all the stack operators
+also, and reference those operators to the correct stack somehow. 
+ <p>
+ One aspect of stack machines is excellent code-density. This is why a stack machine
+was chosen for the Java virtual machine. The data stack provides a general and
+implicit place to get and put things between routines. A stack gives a more compact
+means of passing parameters than an array of registers. With registers, for each
+value to be passed between routines you have to specify which register holds the
+value. The data stack of a Forth also provides added flexibility in how routines can
+obtain thier parameters, and from whom. 
+ <p>
+ H3sm's return stack is basically the same as Forth's, which is not that different
+from most other languages. H3sm's pointer and data stacks are a division of the
+functionality of the Forth data stack. H3sm divides data into data and pointers. The
+pointer stack is composed of cells of the size of an address of the machine, 32 bits
+on x86. The design of H3sm takes note of a fundamental difference between pointers
+and arbitrary data. Pointers are the same size as return stack cells, which are
+pointers also, but to executable machine code rather than arbitrary data. H3sm data
+items are variable-sized.  The H3sm data stack has a "<b>Size</B>" register
+affiliated with it.  The data stack is composed internally of bytes, but data stack
+items are manipulated in groups of bytes at the current Size. Most data stack
+operators are vectored by Size. For example, if the Size register holds 8, then "+"
+will add the top two data stack items of 8 bytes each, and leave an 8-byte result.
+Size may be from 1 to 256 bytes. An integer of some particular Size, i.e. a H3sm
+data stack item, is called a "<b>pyte</b>". 
+ <p>
+ The H3sm pointer stack is actually more like the Forth data stack than the H3sm
+data stack is. However, logical flags for conditionals are typically kept on the
+H3sm data stack, and arithmatic operators for the pointer stack are simple
+address-arithmatic actions.  This means that a Forth can not be implemented
+trivially with a subset of the H3sm instruction set. That means that H3sm is not a
+Forth, although I hope the family resemblance remains evident. 
+ <p>
+ The three stacks means arbitrary H3sm routines can be written without deciding
+until invocation time how big an integer is. This also means that any routine can be
+used at 256 different integer sizes. A drawback of stack machines is what is known
+affectionately as "<b>stack-dancing</b>". Parameters are often not on the stack in
+the order a particular routine expects them in, and stack manipulations simply to
+re-arrange may be required. It is hoped that dividing the Forth data stack into
+pointers and data will reduce stack-dancing. 
+
+<h2>INVOCATION</h2> 
+ The default program name of H3sm is <b>H3sm</b>. Simply typing <b>H3sm</b> will put
+you in the interpreter. "<b>bye</b>" exits. H3sm takes all arguments passed to it by
+the operating system, i.e. it's commandline arguments, and interprets them as normal
+H3sm input; there are no commandline-specific "switches". The argument strings the
+operating system passes to H3sm include argv[0], the program name, the first string.
+If H3sm is invoked by some other name, either by renaming the executable or by a
+symlink to H3sm, then the name the program was called as is looked for in the H3sm
+keyword dictionary and will be the starting point of H3sm execution if such a word
+exists. If H3sm is invoked by some other name and the <b>H3sm</b> keyword is not
+called, H3sm will exit after interpreting the commandline.  The "<b>h</b>" word is
+provided as a short alias for H3sm one-liners. 
+  <p>
+ In other words, the H3sm commandline is interpreted as regular H3sm input. If a
+symlink to or copy of H3sm named "h" exists, that can be used to call H3sm for one
+line of input and an immediate exit. Other H3sm words can be used as entry points if
+the H3sm word exists as an effective filename of the program. 
+ <p>
+<b>examples</b>
+<pre>
+	:; cLIeNUX0 /dev/tty1 r 18:36:11   /source/core/H3sm
+	:;h words | format<b>
+	zygote H3sm interpret ?word parsetoken h hexnumber askhexnumber nextchar
+	?char ?segments= words previous .name .string .r .s .ps .p p2+s p2dup
+	?hex ascii->digit tab blank cr maskchar chars digits hexdigits itoken
+	tib toklen Isize charsize dp beginparsearea endparsearea latest read
+	yes XOR ushift udivmodlsB true ->size ->p ->link ->code ->r * swap
+	si! ! s->p s->r rup r->s r->psi r->p r-> rsi! r-1 r@p return rdrop ?r=
+	?r ?= .bin .uhex pup pswap p! p->s_bd p->s p->r p-> psi! p-1 p-c p+c p+1
+	p+s p-s +p + p@ pdup pdrop over OR one onbits nothing no -p negate NOT
+	max maskdual maskbyte ip+ halve go gap flag getrsi getpsi getSize getsi @
+	false emit ell dup drop double doHNC dolit cells_bd cells bytes_bd bytes
+	bye bump ?contents= aint AND address
+</b>	:; cLIeNUX0 /dev/tty1 r 18:36:18   /source/core/H3sm
+	:;H3sm
+	28374 3 ushift .uhex bye<b>
+	00141ba0 </b>:; cLIeNUX0 /dev/tty1 r 18:37:12   /source/core/H3sm
+	:;  </pre> 
+ That, by the way, is my H3sm dictionary as of 19991214. Don't get to into that
+exact list.
+
+

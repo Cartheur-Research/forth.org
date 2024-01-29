@@ -1,0 +1,253 @@
+
+ Minutes of the GEnie Forth RT Conference
+     with special guest, Roedy Green.
+           
+ Roedy discusses his 32-bit Public Domain Forth, BBL-Forth and the database
+ management system, Abundance built from BBL-Forth which was featured in
+ BYTE Magazine (tm) October 1986. 
+
+Date: 07/20/89   Time: 22:17EDT
+
+Attendees:
+[[Gary] GARY-S]
+[[Len] NMORGENSTERN]
+[[Mark] M.E.DAVIDSON]
+[[Dennis] D.RUFFER]
+[[Roedy] PRESS18]
+[[Hadil] H.SABBAGH]
+[[Dave] DHWEINSTEIN
+[[Kevin] APPERT]
+[[Wil] W.BADEN1]
+[[BOB] R.SCHEMMEL1]
+[[phil] P.ALLEN8]
+
+Minutes:
+<[Gary] GARY-S>   The GEnie Forth RoundTable is very pleased to welcome ...
+<[Gary] GARY-S> Roedy Green, president/founder of Canadian Mind Products. ...
+<[Gary] GARY-S> His 4-man company (CMP) writes custom software for ...
+<[Gary] GARY-S> charities and puts together AT-based systems for small ...
+<[Gary] GARY-S> businesses. Roedy writes the lead column for the 'Computer 
+Paper'. ...
+<[Gary] GARY-S> When he is not thinking about computers, he worries about 
+ending ...
+<[Gary] GARY-S> world hunger, preserving the environment, and preventing
+nuclear war. ...
+<[Gary] GARY-S> Roedy Green is the author of the public domain BBL 32-bit
+Forth ...
+<[Gary] GARY-S> compiler and the Abundance DataBase.  .. .. ..
+<[Gary] GARY-S> It is my pleasure to welcome as tonight's special guest ...
+<[Gary] GARY-S> on the GEnie Forth RoundTable, Roedy Green.
+<[Gary] GARY-S>  .. .. .. .. ga Roedy
+<[Roedy] PRESS18> I guess that means I'm on.
+<[Roedy] PRESS18> There are two sorts of things...
+<[Roedy] PRESS18> you probably would be interested in hearing about...
+<[Roedy] PRESS18> 1. the internals of the 32 bit BBL Forth compiler...
+<[Roedy] PRESS18> 2. The externals of the Abundance database language.
+<[Roedy] PRESS18>    Abundance is more interesting because I was able to 
+<[Roedy] PRESS18>    experiment with some novel
+<[Roedy] PRESS18>    concepts in languages..
+<[Roedy] PRESS18>    BBL is interesting from the point of view of fanatical
+<[Roedy] PRESS18>    attention to detail. go
+<APPERT> is here.
+<[Wil] W.BADEN1> is here.
+<[Gary] GARY-S> questions ?
+<[Mark] M.E.DAVIDSON> My question is on the current state of Abundance/BBL.  I 
+am one of the poeple...
+<[Mark] M.E.DAVIDSON> who ordered Abundance from you after reading about it in 
+Byte magazine app. 2 years ago...
+<[Mark] M.E.DAVIDSON> I received one update (to version 1.5) but have heard 
+nothing since then...
+<[Mark] M.E.DAVIDSON> Since I sent address changes to you, I just assumed that 
+either 1) no updates had been issued,...
+<[Mark] M.E.DAVIDSON> or 2) I had bad luck with U.S. Mail.  I was wondering 
+about the current...
+<[Mark] M.E.DAVIDSON> version.  (Sorry for the length of the question)...
+<[Roedy] PRESS18> Version 1.8 should be shipping in a few days.  You are 
+entitled to one free
+<[Roedy] PRESS18> update.  After that you can get them at half price.
+<[Hadil] H.SABBAGH> Could you describe some of the more interesting features 
+of the...
+<[Hadil] H.SABBAGH> Abudance lanaugguage?
+<[Roedy] PRESS18> Jaunting is the most interesting.
+<[Roedy] PRESS18> It is the ability to run backward in time.
+<[Roedy] PRESS18> Arrays and files use identical syntax.  There are no 
+subscripts.
+<[Roedy] PRESS18> Like a spreadsheet values automatically
+<[Roedy] PRESS18> redisplay on the screen when recomputed.
+<[Roedy] PRESS18> Abundance knows details of the phone system in
+<[Roedy] PRESS18> Sweden, India, Canada, USA etc.
+<[Roedy] PRESS18> Ditto for postal/zip codes.  It validates data
+<[Roedy] PRESS18> without being asked.
+<[Roedy] PRESS18> Abundance programs look like they don't do anything.
+<[Roedy] PRESS18> One line of Abundance is often the equivalent of
+<[Roedy] PRESS18> books full of C or Cobol.
+<[Roedy] PRESS18> thats enough for now.  ga
+<[Dave] DHWEINSTEIN> Since inquiries have been made into Abundance...
+<[Dave] DHWEINSTEIN> ...could you describe some of the more interesting/unusual/
+especially-clever tricks or features of BBL.
+<[Roedy] PRESS18> The tricks that give me most speed are:
+<[Roedy] PRESS18> the top of the Dstack
+<[Roedy] PRESS18> is in a register pair.
+<[Roedy] PRESS18> The inner interpreter is LODSW JMP AX
+<[Roedy] PRESS18> Note I did not say LODSW JMP [BX]
+<[Roedy] PRESS18> This direct threading really saves time.
+<[Roedy] PRESS18> Also at compile time I choose different code
+<[Roedy] PRESS18> depending on the chip.
+<[Roedy] PRESS18> The divide algorithm is new.
+<[Roedy] PRESS18> I bested Knuth.
+<[Roedy] PRESS18> thats enough to start.
+<[Len] NMORGENSTERN> What chips will it run on?
+<[Roedy] PRESS18> It runs on MS DOS. 8088 .. 80386
+<[Mark] M.E.DAVIDSON> Could you tell us CMP's current address/phone number/etc?
+<[Roedy] PRESS18> Roedy Green
+<[Roedy] PRESS18> Canadian Mind Products
+<[Roedy] PRESS18> #162 - 1020 Mainland Street
+<[Roedy] PRESS18> Vancouver BC V6B 2T4
+<[Roedy] PRESS18> (604) 684-6529
+<[Roedy] PRESS18> (604) 684-5541 fax
+<[Gary] GARY-S> hmm moved away from Ewart Street - discuss BBL's multiple heads 
+a bit
+<[Roedy] PRESS18> Multiple heads is nothing special.
+<[Roedy] PRESS18> To speed dictionary searches
+<[Roedy] PRESS18> I randomize and have n threads.  This way
+<[Roedy] PRESS18> each thread is 1/n as long.  most of the time you
+<[Roedy] PRESS18> can find a word on the first or second look.
+<[Roedy] PRESS18> FIG forths use one thread.  If you have n words in
+<[Roedy] PRESS18> your dictionary, you on average must search
+<[Roedy] PRESS18> n/2 items to find a word.
+<[Hadil] H.SABBAGH> I am very interested to hear your thoughts about using 
+FORTH/BBL to...
+<[Hadil] H.SABBAGH> develop systems that are used to process information.  What 
+advantages...
+<[Hadil] H.SABBAGH> and disadvantages do you think BBL has over other languages?
+<[Roedy] PRESS18> I must be brief.
+<[Roedy] PRESS18> Abundance lets you see the forest for
+<[Roedy] PRESS18> the trees.  Languages like C clutter up
+<[Roedy] PRESS18> the program with endless computer trivia
+<[Roedy] PRESS18> housekeeping.  In abundance I can explain
+<[Roedy] PRESS18> to an end user how almost every word directly
+<[Roedy] PRESS18> connects to something in the spec.
+<[Roedy] PRESS18> The main advantages is in maintenance.  I did
+<[Roedy] PRESS18> all kinds of things to make it error-free.
+<[Roedy] PRESS18> The problem is there are only a handfull of
+<[Roedy] PRESS18> competent Abundance programmers on the planet.
+<[Len] NMORGENSTERN> How do you mean, you randomize dictionary threads? Is it 
+like hashing?
+<[Roedy] PRESS18> randomizing and hashing are
+<[Roedy] PRESS18> synonymns.
+<[Gary] GARY-S> do you use hash tables
+<[Roedy] PRESS18> there is a hashing table of start addresses
+<[Roedy] PRESS18> for each vocabulary.
+<[Roedy] PRESS18> you can dynamically resize them.
+<[Roedy] PRESS18> you can change the number of threads.
+<[Roedy] PRESS18> You can selecitively delete NFAs and
+<[Roedy] PRESS18> scrunch the vocabulary down.
+<R.SCHEMMEL1> is here.
+<[Gary] GARY-S> Have you used the VP-Planner floating point routines with BBL ?
+<[Roedy] PRESS18> We wrote ORGASM
+<[Roedy] PRESS18> the ORiGinal ASeMbler
+<[Roedy] PRESS18> It give 8087 80287 support
+<[Roedy] PRESS18> for the real chip.  No one has used it yet.
+<[Roedy] PRESS18> so putting is software 8087 is not a priority.
+<[Hadil] H.SABBAGH> Are there any data structures used in the file management...
+<[Hadil] H.SABBAGH> e.g., B-trees, hashing, etc.?
+<[Roedy] PRESS18> yes.  There
+<[Roedy] PRESS18> are almost every conceivable thing.
+<[Roedy] PRESS18> We use in interface to Novell/Softcraft
+<[Roedy] PRESS18> Btrieve BTREES.
+<[Roedy] PRESS18> Like Smalltalk, each variable
+<[Roedy] PRESS18> has a gigantic control block
+<[Roedy] PRESS18> where abundance keeps information about the variable.
+<[Roedy] PRESS18> such as
+<[Roedy] PRESS18> lower/upper bound.
+<[Roedy] PRESS18> array high water mark.
+<[Roedy] PRESS18> legal values list.
+<[Roedy] PRESS18> where on disk is it
+<[Roedy] PRESS18> where on the screen is it?
+<[Roedy] PRESS18> which array / file does it live inside?
+<[Roedy] PRESS18> I'll brag a second
+<[Roedy] PRESS18> Nasa got it.
+<[Roedy] PRESS18> JPL got it.
+<[Roedy] PRESS18> They said they were using it for
+<[Roedy] PRESS18> controlling spacecraft on the missions
+<[Roedy] PRESS18> to  the far planets.
+<[Roedy] PRESS18> Non-military of course.
+<[Gary] GARY-S> I was going to lead into that very point...
+<[Gary] GARY-S> care to send your discalimer now
+<[Roedy] PRESS18> BBL and Abundance may only be used for non-military
+<[Roedy] PRESS18> purposes.  In gray cases I ask to make the
+<[Roedy] PRESS18> judgement call.
+<[Roedy] PRESS18> Rockwell is using it without my permission.  They
+<[Roedy] PRESS18> said literallys "F... You" when I told them to stop.
+<P.ALLEN8> is here.
+<[Len] NMORGENSTERN> I am intrigued. How do you have an array without indexes?
+<[Roedy] PRESS18> Apparently I don't have the legal right to stop them.
+<[Roedy] PRESS18> In Cobol years ago
+<[Roedy] PRESS18> I read that there was a sort of associated index
+<[Roedy] PRESS18> with each array.
+<[Roedy] PRESS18> I naively thought this was a default index.
+<[Roedy] PRESS18> You would not have to write XXX(III).
+<[Roedy] PRESS18> you could write just XXX and the (III) would be presumed.
+<[Roedy] PRESS18> In Abundance the name of the Array and the
+<[Roedy] PRESS18> associated index are the same.  It is presumed by default.
+<[Roedy] PRESS18> It is stupid for Scientific work with matrices anid
+<[Roedy] PRESS18> vectors.
+<[Roedy] PRESS18> However for arrays
+<[Roedy] PRESS18> in business
+<[Roedy] PRESS18> it saves lots of writing
+<[Roedy] PRESS18> it avoids my favourite Pascal bug.
+<[Roedy] PRESS18> -- getting the wrong subscript.
+<[BOB] R.SCHEMMEL1> What kind
+<[BOB] R.SCHEMMEL1> of experience with
+<[BOB] R.SCHEMMEL1> forth do you recommend before
+<[BOB] R.SCHEMMEL1> tackling abundance?
+<[Roedy] PRESS18> I tell people to go through Brodie.
+<[Roedy] PRESS18> I have taught many people Abundance who
+<[Roedy] PRESS18> never learned Forth.
+<[Gary] GARY-S> do you preserve Forth syntax throughout Abundance ?
+<[Roedy] PRESS18> ABundance
+<[Roedy] PRESS18> is a strict superset
+<[Roedy] PRESS18> of Forth 83.  It adheres
+<[Roedy] PRESS18> to F-83 as strictly as possible given the 32 bitness.
+<[BOB] R.SCHEMMEL1> should I spend at least
+<[BOB] R.SCHEMMEL1> a few months with other
+<[BOB] R.SCHEMMEL1> versions first ?
+<[Roedy] PRESS18> I would start with a 16 bit forth.
+<[BOB] R.SCHEMMEL1> ok
+<[Roedy] PRESS18> BBL is great because you have all the
+<[Roedy] PRESS18> source.
+<[Roedy] PRESS18> It is heavily documented.  This is why JPL liked it.
+<[BOB] R.SCHEMMEL1> Your resume is awesome !
+<[Roedy] PRESS18> I had a tough time understanding words like
+<[Roedy] PRESS18> INTERPRET ABORT.  I have made copious notes for you.
+<[Hadil] H.SABBAGH> How can we get Abundance?
+<[Roedy] PRESS18> send $75 US to address mentioned earlier.
+<[Roedy] PRESS18> You get QDOS (retail $80 cdn) as part of the deal.
+<[Hadil] H.SABBAGH> Do we also need to purchase Btrieve?
+<[Roedy] PRESS18> Abunance is huge.
+<[Roedy] PRESS18> It fluffs up to something like 15 to 17 MB.
+<[Roedy] PRESS18> It can be pruned back.  It includes a copy of Btrieve.
+<[Roedy] PRESS18> To write programs that use Btrees you will have to buy
+<[Roedy] PRESS18> Btrieve.  However there are many things you can
+<[Roedy] PRESS18> do without it.
+<[Roedy] PRESS18> Comes with demo OptTech sort.  Real one is nice too,
+<[Roedy] PRESS18> but not necessary.  See BYTE OCT 86 for details.
+<[Gary] GARY-S> Closing comments please, Roedy
+<[Roedy] PRESS18> BBL is just a very fast 32 bit Forth.
+<[Roedy] PRESS18> FIG has not promoted it because it competed to directly
+<[Roedy] PRESS18> with commercial versions.
+<[Roedy] PRESS18> Abundance is HUGE.
+<[Roedy] PRESS18> Because you have all the source you can mold it.
+<[Roedy] PRESS18> I have reports of Arabic, Chinese
+<[Roedy] PRESS18> Abundances.  Another guy totally gutted Abundances auto prompt
+<[Roedy] PRESS18> feature.  Others have added features I don't even understand.
+<[Roedy] PRESS18> Don't bother with it unless you want to use it as a base
+<[Roedy] PRESS18> to roll your own.  It takes a long time to learn.  It has
+<[Roedy] PRESS18> thousands of verbs.
+<[Gary] GARY-S> BBL Forth is available for downloading from the GEnie Forth 
+Library
+<[Gary] GARY-S>  Roedy - on behalf of the GEnie Forth RoundTable ....
+<[Gary] GARY-S>  'Thank you' very much for an interesting conference. 
+=== End of Steno notes. ===
+
+

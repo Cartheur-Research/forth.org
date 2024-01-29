@@ -1,0 +1,599 @@
+  comp.lang.forth Frequently Asked Questions (1/6): Gen-
+  eral/Misc
+  M. Anton Ertl, anton@mips.complang.tuwien.ac.at
+
+  ____________________________________________________________
+
+  Table of Contents:
+
+  1.      Acknowledgements
+
+  2.      comp.lang.forth FAQs
+
+  3.      General Questions
+
+  3.1.    What is Forth?
+
+  3.2.    Where does the name Forth come from?
+
+  3.3.    Why and where is Forth used?
+
+  3.4.    Hang on, isn't Forth out of date now?
+
+  3.5.    Is Forth faster or smaller than C?
+
+  3.6.    What language standards exist for Forth?
+
+  3.7.    What is an RFI?
+
+  3.8.    Are there Coding Standards for Forth?
+
+  3.9.    I have trouble managing the stack. Should I use global
+  VARIABLEs?
+
+  3.10.   What is the Forth Interest Group?
+
+  3.11.   Who is Chuck Moore and what is he doing?
+
+  4.      Flame baits
+
+  4.1.    Commercial vs. free Forth systems
+
+  4.2.    Free Forth systems are bad for Forth.
+
+  4.3.    Blocks vs. files
+
+  4.4.    LOCALS|
+
+  5.      Miscellaneous
+
+  5.1.    Where can I find a C-to-Forth compiler?
+
+  5.2.    Where can I find a Forth-to-C compiler?
+
+  5.3.    RECORDS in Forth?
+
+  5.4.    Why does THEN finish an IF structure?
+
+  5.5.    What is threaded code? What are the differences between the
+  different threading techniques?
+
+  5.6.    Has anyone written a Forth which compiles to Java bytecode?
+
+  5.7.    What about translating Java bytecode to Forth?
+
+  5.8.    How about running Forth without OS?
+
+  5.9.    How about writing an OS in Forth?
+  ______________________________________________________________________
+
+  1.  Acknowledgements
+
+  This FAQ is based on previous work by Gregory Haverkamp, J. D. Verne,
+  and Bradford J. Rodriguez.
+
+  2.  comp.lang.forth FAQs
+
+  The comp.lang.forth FAQ is published in seven parts, corresponding to
+  these seven sections.  This part is the General/Misc FAQ, where the
+  questions not covered in the other FAQs are answered. The parts are:
+
+  o  General questions <http://www.complang.tuwien.ac.at/forth/faq/faq-
+     general.html>
+
+  o  Online resources <http://www.faqs.org/faqs/computer-lang/forth-
+     faq/part2/>
+
+  o  Forth vendors <http://www.faqs.org/faqs/computer-lang/forth-
+     faq/part3/>
+
+  o  Forth systems <http://www.faqs.org/faqs/computer-lang/forth-
+     faq/part4/>
+
+  o  Books, periodicals, tutorials <http://www.faqs.org/faqs/computer-
+     lang/forth-faq/part5/>
+
+  o  Forth groups & organizations <http://www.faqs.org/faqs/computer-
+     lang/forth-faq/part6/>
+
+  o  ANS Forth <http://dec.bournemouth.ac.uk/forth/ans/faq.html>
+
+     You can get the text versions of these FAQs at
+     <ftp://ftp.forth.org/pub/Forth/FAQ/>.
+
+  These FAQs are intended to be a brief overview of the tools and
+  information available for the new FORTHer.  For a historical
+  reference, programming paradigms, and deep technical information try
+  some of the listed references.  For general questions on the Usenet,
+  or the methods used to get this information, try these other Usenet
+  groups:
+
+  o  news.announce.newusers
+
+  o  news.newusers.questions
+
+  o  news.announce.important
+
+  3.  General Questions
+
+  3.1.  What is Forth?
+
+  Forth is a stack-based, extensible language without type-checking.  It
+  is probably best known for its "reverse Polish" (postfix) arithmetic
+  notation, familiar to users of Hewlett-Packard calculators: to add two
+  numbers in Forth, you would type  3 5 +  instead of 3+5.  The
+  fundamental program unit in Forth is the "word": a named data item,
+  subroutine, or operator. Programming in Forth consists of defining new
+  words in terms of existing ones.  The Forth statement
+
+  ______________________________________________________________________
+  : SQUARED  DUP * ;
+  ______________________________________________________________________
+
+  defines a new word SQUARED whose function is to square a number (mul-
+  tiply it by itself).  Since the entire language structure is embodied
+  in words, the application programmer can "extend" Forth to add new
+  operators, program constructs, or data types at will.  The Forth
+  "core" includes operators for integers, addresses, characters, and
+  Boolean values; string and floating-point operators may be optionally
+  added.
+
+  3.2.  Where does the name Forth come from?
+
+       The name FORTH was intended to suggest software for the
+       fourth (next) generation computers, which Moore saw as being
+       characterized by distributed small computers.  The operating
+       system he used at the time restricted file names to five
+       characters, so the "U" was discarded.  FORTH was spelled in
+       upper case until the late 70's because of the prevalence of
+       of upper-case-only I/O devices.  The name "Forth" was gener-
+       ally adopted when lower case became widely available,
+       because the word was not an acronym.
+
+  Rather, Colbourn, and Moore: The Evolution of Forth
+  <http://www.forth.com/Content/History/History1.htm>, in: History of
+  Programming Languages (HOPL-II), ACM Press/Addison-Wesley 1996.
+
+  Note: Forth is not a 4GL (language for programming database
+  applications).
+
+  3.3.  Why and where is Forth used?
+
+  Although invented in 1970, Forth became widely known with the advent
+  of personal computers, where its high performance and economy of
+  memory were attractive.  These advantages still make Forth popular in
+  embedded microcontroller systems, in locations ranging from the Space
+  Shuttle to the bar-code reader used by your Federal Express driver.
+  Forth's interactive nature streamlines the test and development of new
+  hardware. Incremental development, a fast program-debug cycle, full
+  interactive access to any level of the program, and the ability to
+  work at a high "level of abstraction," all contribute to Forth's
+  reputation for very high programmer productivity.  These, plus the
+  flexibility and malleability of the language, are the reasons most
+  cited for choosing Forth for embedded systems.
+
+  3.4.  Hang on, isn't Forth out of date now?
+
+  One of the best answers came from Brad Rodriguez
+  <mailto:bj@forth.org>. You can find the full version at
+  <http://www.complang.tuwien.ac.at/forth/faq/why-forth>. In short,
+  Forth's advantages are that it's comprehensible, small, interactive,
+  fast, extensible, and makes it easy to work at a high level of
+  abstraction.
+
+  BTW, this question came from someone comparing a 10+ year old Forth
+  system with the latest version of Borland C++. His system was really
+  out of date, but also with respect to current Forth systems.
+
+  3.5.  Is Forth faster or smaller than C?
+
+  Not in itself. I.e., if you translate a C program literally into
+  Forth, you will see a slow-down (e.g., a factor 4-8 with Gforth, a
+  threaded-code system; for typical native-code systems you will see a
+  factor of 1-3). Similarly, there is no inherent size advantage in
+  Forth. For details see
+  <http://www.complang.tuwien.ac.at/forth/performance.html>.
+
+  However, there are many reports of cases where Forth programs beat
+  others in size and/or speed. My guess is that the added flexibility of
+  Forth helps programmers produce faster and/or smaller programs.
+
+  3.6.  What language standards exist for Forth?
+
+  An American National Standard for Forth, ANSI X3.215-1994, is accepted
+  worldwide as the definitive Forth standard ("ANS Forth").  This
+  standard also has been blessed as international standard (ISO/IEC
+  15145:1997).
+
+  IEEE Standard 1275-1994, the "Open Firmware" standard, is a Forth
+  derivative which has been adopted by Sun Microsystems, HP, Apple, IBM,
+  and others as the official language for writing bootstrap and driver
+  firmware. See  <http://playground.sun.com/1275/home.html>.
+
+  Prior Forth standards include the Forth-83 Standard and the Forth-79
+  Standard issued by the Forth Standards Team.  The earlier FIG-Forth,
+  while never formally offered as such, was a de facto "standard" for
+  some years.
+
+  "FORTH STANDARDS  Published standards since 1978 are Forth 79 and
+  Forth 83 from the Forth Standard Team, and ANS Forth - document
+  X3.215-1994 - by the X3J14 Technical Committee.  The most recent
+  standard, ANS Forth, defines a set of core words and some optional
+  extensions and takes care to allow great freedom in how these words
+  are implemented.  The range of hardware which can support an ANS Forth
+  Standard System is far wider than any previous Forth standard and
+  probably wider than any programming language standard ever. See web
+  page  <ftp://ftp.uu.net/vendor/minerva/uathena.htm> for latest
+  details. Copies of the standard cost $193, but the final draft of ANS
+  Forth is free and available (subject to copyright restrictions) via
+  ftp..." --Chris Jakeman, apvpeter.demon.co.uk
+
+  The (un)official ANS Forth document is available in various formats at
+  <http://www.taygeta.com/forthlit.html> and at
+  <ftp://ftp.uu.net/vendor/minerva/x3j14/>. The format I like best is
+  the HTML version <http://www.taygeta.com/forth/dpans.html>.
+
+  To get yourself on the ANS-Forth mailing list, consult the various
+  README files at  <ftp://ftp.uu.net/vendor/minerva/x3j14/>.
+
+  Two unofficial test suites are available for checking conformance to
+  the ANS Standard Forth:
+
+  o  John Hayes has written a test suite to test ANS Standard Systems
+     (available through  <http://www.taygeta.com/forth.html>).
+
+  o  JET Thomas has written a test suite to test ANS Standard Programs:
+     <ftp://ftp.forth.org/pub/Forth/ANS/stand4th.zip>
+
+  There is also an ANS Forth FAQ
+  <http://dec.bournemouth.ac.uk/forth/ans/faq.html> that explains the
+  standardization process.
+
+  3.7.  What is an RFI?
+
+  A Request For Interpretation. If you find something in the standard
+  document ambiguous or unclear, you can make an RFI, and the TC
+  (technical committee), that produced the standard, will work out a
+  clarification. You can make an RFI by mailing it to greg@minerva.com
+  and labeling it as RFI. The answers to earlier RFIs are available at
+  ftp://ftp.uu.net/vendor/minerva/x3j14/queries/. They are also
+  integrated in the HTML version of the standard
+  <http://www.taygeta.com/forth/dpans.html>.
+
+  3.8.  Are there Coding Standards for Forth?
+
+  Leo Brodie's book Thinking Forth gives some advice; a short excerpt is
+  now available online <http://www.forth.org/forth_style.html>. Forth
+  shops have rules for their coding. Paul Bennet has published those of
+  his company; you can find them on
+  <http://www.forth.org/forth_coding.html>.
+
+  3.9.  I have trouble managing the stack. Should I use global VARI-
+  ABLEs?
+
+  No. There are better alternatives:
+
+  o  Keep on trying to use the stack. Reorganize (refactor) your words.
+     One day you will get the knack for it. Elizabeth Rather
+     <mailto:erather@forth.com> writes:
+
+       The basic skill required for comfortable, efficient Forth
+       programming is good stack management.  It's hard for newcom-
+       ers to learn, since it isn't a skill required in other lan-
+       guages, which all require the use of variables for practi-
+       cally everything.  Having taught literally hundreds of
+       courses over the last 25 years, I've seen newcomers wrestle
+       with this, and have developed exercises (similar to those in
+       Starting Forth) to help.  It seems to be a skill rather like
+       riding a bicycle: wobbly & scary at first, then suddenly a
+       "switch is thrown" in the brain and it seems comfortable and
+       natural ever after.
+
+  Andrew Haley writes in Message-ID: <7k8lln$q3c$1@korai.cygnus.co.uk>:
+
+       Try writing all of your code using definitions one, or at
+       most two lines long.  Produce a stack digram for each word
+       showing its inputs and its outputs.  If you ever need an
+       "intermediate" stack diagram to see what's going on, split
+       your word at that point into two words.  By doing this, you
+  may test each half of the word on the command line, checking
+  the stack each time.  Do not use PICK and ROLL.
+
+  Once you get the hang of writing code in this way you can
+  relax these rules, but it's much better to get used to this
+  style first.
+
+  o  Use the return stack.
+
+  o  Use locals.
+
+  o  Use data structures in memory, and pass pointers to it on the
+     stack.
+
+  o  One area that has been mentioned often as troublemaker is graphics
+     programming. Take a look at how Postscript handles this: They do
+     indeed have a global state to avoid stack management problems, but
+     you can access this state only through certain words.
+
+  3.10.  What is the Forth Interest Group?
+
+  The Forth Interest Group "FIG" was formed in 1978 to disseminate
+  information and popularize the Forth language, and it remains the
+  premier organization for professional Forth programmers.  FIG
+  maintains a Web page at  <http://www.forth.org/forth.html>, with a
+  more complete introduction to the Forth language, and links to the Web
+  pages of many Forth vendors.
+
+  3.11.  Who is Chuck Moore and what is he doing?
+
+  Chuck Moore discovered (as he puts it) Forth (for historical
+  information read The Evolution of Forth
+  <http://www.forth.com/Content/History/History1.htm>).  He later went
+  on to apply his design philosophy to hardware design and designed a
+  number of processors well-suited for executing Forth: Novix 4016,
+  Shboom, uP20, uP21, F21, i21, ...
+
+  He also explored new ideas and refined his earlier ideas on software
+  and Forth: his cmForth for the Novix has been quite influential.  His
+  latest developments are Color Forth and Machine Forth.
+
+  Machine Forth is a simple virtual machine consisting of 27
+  instructions.  It is implemented in hardare in uP21 and the following
+  chips, but has also been implemented in software on the 386 as simple
+  native-code system.  Some of the differences from ANS Forth are that
+  each stack entry contains an extra carry bit, and that there is
+  register A for accessing memory (instead of addressing through the top
+  of stack).
+
+  4.  Flame baits
+
+  Some statements spawn long and heated discussions where the
+  participants repeat their positions and ignore the arguments of the
+  other side (flame wars). You may want to avoid such statements.
+
+  Here, I present some regularly appearing flame baits and the positions
+  you will read (so you don't have to start a flame war to learn them).
+
+  4.1.  Commercial vs. free Forth systems
+
+  "You get what you pay for. With a commercial Forth you get commercial
+  documentation and support. We need commercial Forth systems or Forth
+  will die."
+
+  "I have had good experiences with free Forths. I cannot afford a
+  commercial Forth system. I want source code (some commercial vendors
+  don't provide it for the whole system). Examples of bad support from
+  commercial software vendors. Without free Forth systems Forth will
+  die."
+
+  4.2.  Free Forth systems are bad for Forth.
+
+  "Anyone can write a bad Forth and give it away without documentation
+  or support; after trying such a system, nobody wants to work with
+  Forth anymore. Free Forths give Forth a bad name. Free Forths take
+  business away from the vendors."
+
+  "Many people learned Forth with fig-Forth. There are good free Forths.
+  Most successful languages started with (and still have) free
+  implementations. Languages without free implementations (like Ada,
+  Eiffel and Miranda) are not very popular [There are free Ada and
+  Eiffel implementations now]."
+
+  4.3.  Blocks vs. files
+
+  The discussions on this topic are much cooler since Mike Haas has
+  dropped from comp.lang.forth.
+
+  "Everyone is using files and all third-party tools are designed for
+  files. Files waste less space. Blocks lead to horizontal, unreadable
+  code. Blocks make Forth ridiculous."
+
+  "We are not always working under an operating system, so on some
+  machines we don't have files. We have very nice block editors and
+  other tools and coding standards for working with blocks (e.g., shadow
+  screens)."
+
+  4.4.  LOCALS|
+
+  Everyone who mentions using LOCALS| gets the following flame from me:
+
+  LOCALS| is bad because the locals are ordered contrary to the stack
+  comment convention. I.e.:
+
+  ______________________________________________________________________
+  : foo ( you can read this -- ... )
+   LOCALS| this read can you | ... ;
+  ______________________________________________________________________
+
+  The following locals syntax is better and widely used:
+
+  ______________________________________________________________________
+  : foo { you can read this -- ... }
+   ... ;
+  ______________________________________________________________________
+
+  You can find an implementation of this syntax in ANS Forth at
+  <http://www.complang.tuwien.ac.at/forth/anslocal.fs>
+
+  5.  Miscellaneous
+
+  5.1.  Where can I find a C-to-Forth compiler?
+
+  Parag Patel <mailto:parag@pinhead.parag.codegen.com> writes:
+
+       We, (CodeGen, Inc. <http://www.codegen.com>) sell a C-to-
+       Fcode compiler.  Well, it actually generates IEEE-1275 Forth
+       that then must be run through a tokenizer.
+
+       Really, it generates pretty ugly Forth code.  It's easy to
+       generate lousy Forth, but it's very difficult to generate
+       nice clean optimized Forth.  C and stack-based languages
+       don't mix too well.  I end up faking a C variable stack-
+       frame using a Forth $frame variable for local vars.
+
+  Stephen Pelc <mailto:sfp@mpeltd.demon.co.uk> writes:
+
+       MPE has produced a C to stack-machine compiler. This gener-
+       ates tokens for a 2-stack virtual machine. The code quality
+       is such that the token space used by compiled programs is
+       better than that of the commercial C compilers we have
+       tested against. This a consequence of the virtual machine
+       design.  However, to achieve this the virtual machine design
+       has local variable support.
+
+       The tokens can then be back end interpreted, or translated
+       to a Forth system. The translater can be written in high
+       level Forth, and is largely portable, except for the target
+       architecture sections.
+
+       These are not shareware tools, and were written to support a
+       portable binary system.
+
+  5.2.  Where can I find a Forth-to-C compiler?
+
+  An unsupported prototype Forth-to-C compiler is available at
+  <http://www.complang.tuwien.ac.at/forth/forth2c.tar.gz>. It is
+  described in the EuroForth'95 paper
+  <http://www.complang.tuwien.ac.at/papers/ertl&maierhofer95.ps.gz>.
+  Another Forth-to-C compiler is supplied with Rob Chapman's
+  <mailto:rc@compusmart.ab.ca> Timbre
+  <http://www.compusmart.ab.ca/rc/Timbre/timbre.htm> system.
+
+  5.3.  RECORDS in Forth?
+
+  Many packages for data structuring facilities like Pascal's RECORDs
+  and C's structs have been posted. E.g., the structures of the Forth
+  Scientific Library ( <http://www.taygeta.com/fsl/fsl_structs.html>) or
+  the structures supplied with Gforth
+  <http://www.complang.tuwien.ac.at/forth/struct.fs>.
+
+  5.4.  Why does THEN finish an IF structure?
+
+  Some people find the way THEN is used in Forth unnatural, others do
+  not.
+
+  According to Webster's New Encyclopedic Dictionary, then" (adv.) has
+  the following meanings:
+
+       2b: following next after in order ... 3d: as a necessary
+       consequence (if you were there, then you saw them).
+
+  Forth's THEN has the meaning 2b, whereas THEN in Pascal and other pro-
+  gramming languages has the meaning 3d.
+
+  If you don't like to use THEN in this way, you can easily define ENDIF
+  as a replacement:
+
+  ______________________________________________________________________
+  : ENDIF  POSTPONE THEN ; IMMEDIATE
+  ______________________________________________________________________
+
+  5.5.  What is threaded code? What are the differences between the dif-
+  ferent threading techniques?
+
+  Threaded code is a way of implementing virtual machine interpreters.
+  You can find a more in-depth explanation at
+  <http://www.complang.tuwien.ac.at/forth/threaded-code.html>.
+
+  5.6.  Has anyone written a Forth which compiles to Java bytecode?
+
+  Paul Curtis <mailto:paul.curtis@ra-ltd.demon.co.uk> writes:
+
+  The JVM, although a stack machine, can't really be used to compile
+  Forth efficiently.  Why?  Well, there are a number of reasons:
+
+  o  The maximum stack depth of a called method must be known in
+     advance. JVM Spec, p. 111
+
+  o  JVM methods can only return a single object to the caller.  Thus, a
+     stack effect ( n1 n2 -- n3 n4 ) just isn't possible.
+
+  o  There is no direct support for unsigned quantities.
+
+  o  CATCH and THROW can't be resolved easily; you need to catch
+     exceptions using exception tables.  This doesn't match Forth's
+     model too well.  JVM Spec, p. 112
+  o  You'd need to extend Forth to generate the attributes required for
+     Java methods.
+
+  o  There is no such thing as pointer arithmetic.
+
+  o  You can't take one thing on the stack and recast it to another
+     type.
+
+  o  You can't manufacture objects out of raw bytes.  This is a security
+     issue.
+
+  o  There is no support for the return stack.
+
+  That said, it is possible to write something Forth-like using JVM
+  bytecodes, but you can't use the JVM stack to implement the Forth
+  stack.  ...
+
+  If you're serious, try getting Jasmin and programming directly on the
+  JVM.
+
+  5.7.  What about translating Java bytecode to Forth?
+
+  Some of the non-trivial pieces in translating JavaVM to Forth, that we
+  have identified, are:
+
+  o  garbage collection
+
+  o  threads
+
+  o  control structures (branches->ANS Forth's seven universal control
+     structure words)
+
+  o  exceptions
+
+  o  subroutines (JavaVM does not specify that a subroutine returns to
+     its caller)
+
+  o  JavaVM makes the same mistake as Forth standards up to Forth-83: It
+     specifies type sizes (e.g., a JavaVM int is always 32-bit). A few
+     operators have to be added to support this.
+
+  o  The native libraries (without them JavaVM can do nothing).
+
+  5.8.  How about running Forth without OS?
+
+  A Forth system running on the bare hardware is also known as a native
+  system (in contrast to a hosted system, which runs on an OS).  Don't
+  confuse this with native-code systems (which means that the system
+  compiles Forth code to machine code); hosted native-code systems exist
+  as well as native threaded-code systems.
+
+  In the beginning Forth systems were native and performed the functions
+  of an OS (from talking to hardware to multi-user multi-tasking).  On
+  embedded controllers Forth systems are usually still native.  For
+  servers and desktops most Forth-systems nowadays are hosted, because
+  this avoids the necessity to write drivers for the wide variety of
+  hardware available for these systems, and because it makes it easier
+  for the user to use both Forth and his favourite other software on the
+  host OS.  A notable exception to this trend are are the native systems
+  from Athena.
+
+  5.9.  How about writing an OS in Forth?
+
+  Native Forth systems can be seen as OSs written in Forth, so it is
+  certainly possible.  Several times projects to write an OS in Forth
+  were proposed.  Other posters mentioned the following reasons why they
+  do not participate in such a project:
+
+  If you want to write an OS in Forth for a desktop or server systems,
+  the problems are the same as for native Forth systems (and any other
+  effort to write a new OS): the need to write drivers for a wide
+  variety of hardware, and few applications running on the OS.
+
+  To get around the application problem, some posters have suggested
+  writing an OS that is API or even ABI compatible with an existing OS
+  like Linux.  If the purpose of the project is to provide an exercise,
+  the resulting amount of work seems excessively large; if the purpose
+  is to get an OS, this variant would be pretty pointless, as there is
+  already the other OS.  And if the purpose is to show off Forth (e.g.,
+  by having smaller code size), there are easier projects for that, the
+  compatibility requirement eliminates some of the potential advantages,
+  and not that many people care about the code size of an OS kernel
+  enough to be impressed.
+

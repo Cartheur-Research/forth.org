@@ -1,0 +1,131 @@
+* Files of the F6 GNU-Forth-collection GF6 * 2.9.1996 (C) .hpr 1996 Berlin *
+* H.-Peter Recktenwald, D-12159 Bln, Albestr. 21; inet: phpr@berlin.snafu.de
+
+"GF6" is a collection of files distributed under the terms and conditions
+of the GNU free software license, in the version supplied and transposed
+to german text - which doesn't deviate from the original that much, just
+read the preface to "F6WORDS_txt".
+
+As I do promise not a thing there is no warranty on anything related to
+F6, GF6 and any accompanying work, text, code nor data.
+
+* Contents
+  712K Archive "lr" : QF tiny model sources by Laurence Reeves 1991(?)
+ 1157K Archive "t1" : Documents
+  375K Archive "t2" : reference texts to be read with the F6 editor "F6ED"
+  698K Archive "gf" : the F6 experimental 64K f.i.g.-style forth system
+ 1325K Archive "ap" : applications and sources
+
+* Preface
+Just to prevent you getting disappointed by what you get with those files,
+this as I always thought that there are many good 4th's around there for
+any kind of host cpu's, which are highly portable, standardish and well
+documented by texts written in the english language, is an implementation
+highly specialized for the Sinclair QL (and its derivatives) with its 680xx
+operating systems of QDOS and SMSQ (or SMSQ/E) and comprensively explained
+by texts written in the german language, because those seemed not to exist
+at all (there is some english and hopefully sufficient documentation also).
+
+It also was made up preferably for the novice to Forth with many features
+and safety precautions an 'experienced' programmer might like to dispense
+with, at the cost of executional speed.
+Nevertheless the F6 system worked out to be fairly competitive with
+regard to speed and versatility also. Give it a try, and, plese, give
+me some feedback to possibly improove on the one I'm working on, which
+is going to be a "real"-time praeemptive multi-tasking rom-able system.
+
+
+* File affices
+.._txt          plain (QL-)ascii, lines terminated with a single <lf>, 10;
+.._asm          also;
+.._gls          plain (QL-)ascii with no ctrl's at all, lines formatted to
+                64 bytes boundaries ready for f6ed or any other standard
+                forth blockfile editor;
+.._scr          forth sources screenfiles to the same specifications.
+.._seq          forth sources textfiles, lines terminated by <lf>.
+.._4th          compiled forth code ready to {c-load}.
+.. (no affix)   executable f6 jobs.
+.._byt          code to be loaded as resident extensions to the host system.
+
+
+*  712K Directory/Archive "lr" : QF sources by Laurence Reeves 1991(?).
+This is the minimal f.i.g. forth installation as handed over to the author
+of F6 by L.Reeves some years ago. If you like a very small kernal with no
+more than 6K of size, 64K address space, and some extra features already
+built in, have a look at those files, which are excellent examples to memory
+efficient and still reasonably fast 4th programming.
+As I lost the original files, pse, bear in mind that this is NOT the ORIGINAL
+code and text passed to me by their author! Thus anything which does not work
+or prooves to be false may be blamed on me and on no one else.
+
+* 1157K Directory/Archive "t1" : Documents
+t1_GNU_txt              GNU License
+t1_GNU-G_txt            ditto, german
+t1_F6WORDS_txt          full system description & glossary, german (& english)
+t1_FORTH_txt            short system description & glossary, updated, english
+t1_JOBKEY_txt           <break> feature description, german
+t1_GF808_txt            notes on recent versions, german
+t1_forth_asm            F6 assembler source, comments (mostly) english
+t1_keypoll_asm          "JOBKEY" assembler source as used for F6 <break>-keys
+t1_ZUVOR_txt            - this text, german -
+t1_README_txt           - this text, this text -
+
+*  375K Directory "t2" : reference texts to be read with the F6 editor "F6ED"
+t2_GNU_txt
+t2_GNU-G_txt
+t2_bh_gls               finace accounting program, deutsch
+t2_as_gls               6800x assembler
+t2_ed_gls               Editor description & glossary, english
+t2_ed_gls_g             .. deutsch
+t2_f6_gls               F6 assembler glossary, deutsch
+t2_as_gls_e             .. english
+t2_z80_gls              Z80 disassembler (with simple tracing)
+
+*  698K Directory "gf" : the F6 experimental forth system
+gf_GNU_txt
+gf_GNU-G_txt
+gf_fig_scr              extended, f.i.g.-style screen editor
+gf_x                    \ example files
+gf_y                     ) for {chain} and {end}
+gf_z                    / (copy y & z to ram1_, and try CHAIN flp1_x)
+gf_f6as                 F6-assembler (job)
+gf_forth_scr            common screenfile library
+gf_ansext_scr           words to achieve ANS-Forth compliance
+gf_f6asm_scr            source of the F6 assembler
+gf_f6task_scr           single 4th-words QDOS-multi-tasker
+gf_f6task_4th           compiled tasker lo-level words, for {c-load}
+gf_QF                   F6 kernal-job
+gf_f6ed                 F6 editor-job, for files of up to 1M in _any_ QL.
+gf_msg_scr              (this is where F6ED fetches its helpscreen from)
+gf_JOBKEY_byt           provides part of the F6 <break>-key functionality
+gf_PEX20_byt            QDOS system extension, hidden refresh on buried windows
+gf_dvs_byt              F6-founts supporting QDOS system extension (after pex20)
+gf_f6xco_scr            some lo-level-definitions (256K-software-stacks, ..)
+
+* 1325K Directory "ap" : applications and sources
+ap_GNU_txt
+ap_GNU-G_txt
+ap_sintab_seq           {chain}- and {case:} example
+ap_hanoi_scr            "Towers of Hanoi"
+ap_f6hnoi               ditto, executable job
+ap_bh_scr               Kontokorrentbuchhaltung (not working with vers. 8...)
+ap_kt_scr               Kontendefinitionen dazu
+ap_msg_scr              Texte dazu
+ap_msg_dat              kurze Textdatei, wird vom Job ggf. bevorzugt geladen
+ap_f6bh                 old, functional, version of the accounting program
+ap_cc00_jur             empty list for "f6bh" to start with
+ap_f6z80_scr            Z80 disassembler source
+ap_f6a80_scr            lo-level words for the Z80 disassembler
+ap_f6a80_4th            the pre-compiled lo-level words
+ap_z80d                 executable Z80 disassembler job
+ap_ZX81dis_scr          z80d example screenfile, ZX81 rom disassembly
+ap_H4DIS_scr            z80d example screenfile, H-Forth disassembly
+ap_ZX81_H4TH_fnt        QDOS-fount for the Husband ZX81-Forth system
+ap_ZX81_rom_fnt         ZX81-style character fount for QDOS
+
+* The following most probably will not be included due to copyright reasons,
+* unless it was left by the copyright holders to non-commercial private use.
+ap_ZX81_H4TH            Husband-Forth rom
+ap_ZX81_rom             ZX81 rom
+
+» .hpr'96 » eof »

@@ -1,0 +1,613 @@
+---[ Graphics of the Second Kind, Part III ]----------[12/14/2006]---
+
+                         by Timothy Trussell
+
+---[ Where We Are ]--------------------------------------------------
+
+Working with sprites.
+
+We're going to take the next step with the sprite drawing that we
+have from the last column, and make them move on the screen.
+
+Strictly speaking, the DrawRandomBolls routine does this, but in a
+program that is trying to accomplish something, we need a screen to
+show an ordered sequence, rather than the chaos that results from
+just blasting the images to the screen randomly.
+
+\ ---[ Sprites III ]-------------------------------------------------
+
+The basic concept behind animating sprites is to draw the sprite to
+the screen, figure out where it's next position is going to be, then
+erase the previous image from the screen, and finally to draw to the
+new position.
+
+It's that erasing part that starts to cause us problems.
+
+If you only have a single sprite on the screen, and are using a black
+background (like most of my demos), then there isn't a problem doing
+this. The simplest and easiest way to accomplish the erasing function
+is to simply put a border of 0 pixels around the sprite image, so
+that when it moves, it automatically erases itself when it is drawn
+to the new position.
+
+This can be illustrated like this:
+
+        0000000000000000
+        0111111111111110
+        0111111111111110
+        0111111111111110
+        0111000000001110
+        0111000000001110
+        0111000000001110
+        0111000000001110
+        0111000000001110
+        0111000000001110
+        0111000000001110
+        0111000000001110
+        0111111111111110
+        0111111111111110
+        0111111111111110
+        0000000000000000
+
+I have modified the Packed Pixel sprite image of the Square to add a
+border of 0 bytes.
+
+When the Sprite is drawn onto the screen, and then a movement is made
+and the sprite is redrawn to it's next position, lets say one pixel
+down and one pixel to the right of movement, we will have this on the
+screen:
+
+        0000000000000000
+        0+--------------+
+        0|11111111111111|
+        0|11111111111111|
+        0|11111111111111|
+        0|11100000000111|
+        0|11100000000111|
+        0|11100000000111|
+        0|11100000000111|
+        0|11100000000111|
+        0|11100000000111|
+        0|11100000000111|
+        0|11100000000111|
+        0|11111111111111|
+        0|11111111111111|
+        0|11111111111111|
+         +--------------+
+
+For the second sprite drawn, I replace the 0s on the border with the
+'+-|' characters to show the position of the new sprite on top of the
+previous position.  The 0s being draw erase any 1 pixels, effectively
+erasing the previous image with no other work on our part.
+
+But, this doesn't allow for much choice in backgrounds, as we would
+have to stick with a single color (or black).
+
+A single pixel of movement gives us the smoothest possible motion as
+the sprite is moved, with no jerkiness or jumping being apparent, but
+if a larger movement step is required, then you would have to increase
+the number of 0s on the border sides to allow that larger movement to
+happen while erasing the previous image from the screen.
+
+An example of moving the sprite on the screen with this concept is:
+
+        \ Requires GotSK2.4th wordset
+
+        include gotsk2.4th
+
+        create SquareB[]
+        base @ binary
+        00000000 C, 00000000 C,
+        01111111 C, 11111110 C,
+        01111111 C, 11111110 C,
+        01111111 C, 11111110 C,
+        01110000 C, 00001110 C,
+        01110000 C, 00001110 C,
+        01110000 C, 00001110 C,
+        01110000 C, 00001110 C,
+        01110000 C, 00001110 C,
+        01110000 C, 00001110 C,
+        01110000 C, 00001110 C,
+        01110000 C, 00001110 C,
+        01111111 C, 11111110 C,
+        01111111 C, 11111110 C,
+        01111111 C, 11111110 C,
+        00000000 C, 00000000 C,
+        base !
+
+        variable %xmove
+        variable %dir
+
+        : DrawPackedSprite1 ( &image x y c -- )
+          >R rot to %src R>             \ x y c
+          16 0 do                       \ x y c
+            %src C@ 1 +to %src          \ x y c chi
+            8 LSHIFT                    \ x y c chi<<8
+            %src C@ 1 +to %src          \ x y c chi<<8 clo
+            OR                          \ x y c n
+            16 0 do                     \ x y c n
+              3 pick i +                \ x y c n x+i
+              3 pick j +                \ x y c n x+i y+j
+              2 pick $8000 and if       \ x y c n
+                3 pick                  \ x y c n x+i y+j c
+              else
+                0
+              then
+              %Speed if
+                FastPlot
+              else
+                Plot
+              then
+              1 LSHIFT
+            loop
+            drop
+          loop
+          2drop
+          drop
+        ;
+
+        : MoveSprite
+          $13 InitGraph
+          0 to %Speed
+          1 to %UseVR
+          0 %xmove !
+          1 %dir !
+          begin
+            KeyCheck
+          while
+            SquareB[] %xmove @  0 1 DrawPackedSprite1
+            SquareB[] %xmove @ 30 2 DrawPackedSprite1
+            SquareB[] %xmove @ 60 3 DrawPackedSprite1
+            SquareB[] %xmove @ 90 4 DrawPackedSprite1
+            %dir @ %xmove +!
+            %xmove @ 319 16 - = if -1 %dir ! then
+            %xmove @ 0 = if 1 %dir ! then
+            %UseVR if WaitRetrace then
+          repeat
+          CloseGraph
+        ;
+
+The DrawPackedSprite1 word is modified so that it specifically plots
+the 0 pixels as well as the 1s.
+
+We are only drawing 4 sprites here, so using the FastPlot with the
+WaitRetrace call disabled is a bit of overkill.
+
+A second method of moving the sprite is to physically erase the
+pixels from the screen before going on to draw the next sprite. This
+has the disadvantage of doubling the number of pixels being drawn for
+each sprite - but as you just saw, with modern computers this isn't
+really a concern.
+
+This method of sprite movement drawing works with multicolored images
+as well, but has the same limitations as far as background pollution
+goes.
+
+---[ Sprites IV ]----------------------------------------------------
+
+What we would like to do is to have some kind of background in place
+that the sprites can move back and forth over, without messing up the
+image at all.
+
+The way to do this is our next graphics concept: Double Buffering.
+
+The basic theory of Double Buffering is that you have an array of
+memory that you use to draw all your data to, and then during the
+Vertical Retrace period on your monitor, you blit the array to the
+video display.
+
+This Double Buffer concept is also referred to as Virtual Screens.
+
+Other graphics resolutions incorporate multiple screen pages in the
+memory of the VGA card itself, but in 320x200x256 Mode 13h, only one
+page is available for use, so we need to create the second buffer in
+main memory.
+
+We treat the buffer array as if it *were* the video screen, doing any
+data drawing to it exactly as we would be to the physical screen.
+
+This is where we start using some of that 1 meg of memory the 32Forth
+system has available to it.
+
+        create VPage0[] here 64000 dup allot 0 fill
+
+creates a 64000 byte array in the dictionary, and initializes it to
+a known-zero state.
+
+To be able to write pixel data to it, we will have to modify the
+existing version of FastPlot, like this:
+
+        code FastBPlot ( &buf x y c -- )
+                                \ c in bx on entry as TOS
+                    bx  push    \ put all parameters onto the stack
+                 bp sp  xchg    \ setup the stack frame
+                    es  push    \ save registers to be used
+                    di  push
+                    ds  push
+                    es  pop
+       \ Calculate Y*320+X
+       2 cells [bp] di  mov     \ di=x
+       1 cells [bp] ax  mov     \ ax=y
+                6 # cl  mov
+                 ax cl  shl     \ ax=y*64
+                 ax di  add     \ di=y*64+x
+                2 # cl  mov
+                 ax cl  shl     \ ax=y*256
+                 ax di  add     \ di=y*320+x
+       3 cells [bp] di  add     \ di=&buf[y*320+x]
+       0 cells [bp] ax  mov     \ al=c
+         es: al 0 [di]  mov     \ plot the pixel
+                    di  pop     \ restore registers
+                    es  pop
+                 bp sp  xchg    \ restore stack frame
+          4 cells # sp  add     \ drop parameters
+                    bx  pop     \ get new TOS
+                    end-code
+                    no-expand
+
+We have added an additional parameter to the calling list, &buf, that
+tells the FastBPlot code the initial address of the buffer array to
+draw the pixels to.
+
+We have changed the contents of the ES register, by setting it to DS
+as the target address is in the data space now, not the VGA screen.
+
+Finally, after the Y*320+X calculation is put into the DI register,
+we add the &buf address to DI to give us the correct pixel position
+in the buffer address space.
+
+In addition to allowing us to plot pixels directly to the buffer
+space, these changes also allow us to create multiple buffers and
+draw to any of them at any time.
+
+This can come in handy if you are doing a multi segment animation
+sequence where you perform different operations on each buffer screen
+and then combine the buffers into one common display before blitting
+the image to the video screen.  I will use this technique later.
+
+Now, to transfer the double buffer data to the video screen, we need
+what can be viewed as an expanded version of the FastPlot word, but
+it will transfer the entire 64000 bytes instead of a single pixel.
+Further, to speed up the operation of the word, we will use the
+32-bit opcode MOVS, and only have to perform 16000 transfers, instead
+of doing 64000 byte transfers.
+
+        code BlitBuffer ( &buf -- )
+                                \ bx=src on entry as TOS
+                    es  push    \ save registers to modify
+                    di  push
+                    si  push
+        VSelector # ax  mov
+                 ax es  mov     \ es=vselector
+                 di di  xor     \ di=offset 0
+                 bx si  mov     \ si=&buf
+                        cld     \ increment si/di
+            16000 # cx  mov     \ cx=# of dwords to copy
+                   rep  movs    \ blit it
+                    si  pop
+                    di  pop
+                    es  pop
+                    bx  pop     \ get new TOS
+                    end-code
+                    no-expand
+
+BlitBuffer is designed to transfer 16,000 dwords (64,000 bytes) all
+at once.  You will note that there is no check for the state of the
+Vertical Retrace timing. I prefer to do that explicitly prior to
+calling the BlitBuffer routine, as it gives me the option of turning
+it off if I want to see the max speed of data transfer in operation.
+
+One drawback to using the Double Buffer system is that every time you
+want to update the screen, you have to do a transfer of all 64,000
+bytes of the buffer.  The benefits of using the buffer outweigh this
+drawback, especially if you've designed your code correctly.  And,
+doing 32-bit transfers in the BlitBuffer word reduces that overhead
+quite a lot also.
+
+Now, I'm going to do an expanded demo that implements Double Buffers
+to animate a number of sprite images all over the screen.
+
+---[Note]------------------------------------------------------------
+     The full source for this is in the GotSK3.4th addendum
+--------------------------------------------------------[End Note]---
+
+First, we need some buffers to work with.
+
+        create VPage0[] here 64000 dup allot 0 fill
+        create VPage1[] here 64000 dup allot 0 fill
+        create VPage2[] here 64000 dup allot 0 fill
+        create VPage3[] here 64000 dup allot 0 fill
+        create VPage4[] here 64000 dup allot 0 fill
+
+We will use the sprite data for the Square, Diamond and Ovoid images
+defined in the previous column.
+
+However, we need to modify the DrawPackedSprite routine so that it
+will draw to our buffers.
+
+        value %src
+
+        : DrawPackedSpriteToBuffer ( &buf &image x y c -- )
+          >R rot to %src R>             \ &buf x y c
+          16 0 do                       \ &buf x y c
+            %src C@ 1 +to %src          \ &buf x y c chi
+            8 LSHIFT                    \ &buf x y c chi<<8
+            %src C@ 1 +to %src          \ &buf x y c chi<<8 clo
+            OR                          \ &buf x y c n
+            16 0 do                     \ &buf x y c n
+              dup $8000 and if          \ &buf x y c n
+                4 pick                  \ &buf x y c n &buf
+                4 pick i +              \ &buf x y c n &buf x+i
+                4 pick j +              \ &buf x y c n &buf x+i y+j
+                4 pick                  \ &buf x y c n &buf x+i y+j c
+                FastBPlot               \ &buf x y c n
+              then                      \ &buf x y c n
+              1 LSHIFT                  \ &buf x y c n<<1
+            loop                        \ &buf x y c n<<1
+            drop                        \ &buf x y c
+          loop                          \ &buf x y c
+          2drop                         \ &buf x
+          2drop                         \ --
+        ;
+
+As you can see, we added the parameter &buf that allows us to draw
+the sprite to any specified buffer, and changed the pixel plot call
+from FastPlot to FastBPlot.
+
+What we are going to do in this animation sequence is to draw each of
+the different colored sprites to a separate buffer - all the Red
+images will go to VPage3[], all the Greens to VPage2[], and all the
+Blues to VPage1[].  Additionally, we will be using VPage4[] to hold
+our background image.
+
+VPage0[] is the actual buffer where all the image data from the other
+four buffers will be combined to be blitted to the video display.
+
+We start off by copying VPage4[] directly over.
+
+The other three buffers we will copy in sequence one after the next,
+buf only the non-zero pixels will be moved.  This will allow us to
+"see" thru the holes left by the 0 pixels in each image, to what is
+behind them.
+
+We can also specify what the order of the "planes" we are using is
+going to be, and I have set these up so that the Reds are in back,
+Greens next, then the Blues, all on top of the background image.
+
+        : CombineVPages() ( -- )
+          VPage4[] VPage0 64000 cmove
+          64000 0 do
+            VPage3[] i + C@ dup if VPage0[] i + C! else drop then
+            VPage2[] i + C@ dup if VPage0[] i + C! else drop then
+            VPage1[] i + C@ dup if VPage0[] i + C! else drop then
+          loop
+        ;
+
+This is pretty straightforward.  It gets a byte from buffer VPage3[]
+and if it is non-zero, stores it to VPage0[].  Then it gets the same
+byte offset from VPage2[], and if non-zero overwrites that offset in
+VPage0[].  And finally, it does the same for the same offset in the
+VPage1[] array.  In this way, we are able to determine which "plane"
+has precedence - which is on top of the others in the display.
+
+This routine will be a lot faster converted to assembly, and since
+any large loop in high level Forth code is a potential bottleneck, we
+will do so:
+
+        code AddVPage ( &src &dst -- )
+                    bx  push
+                 bp sp  xchg
+                    es  push
+                    di  push
+                    si  push
+
+                    ds  push
+                    es  pop
+                        cld
+       0 cells [bp] di  mov
+       1 cells [bp] si  mov
+            64000 # cx  mov
+        1 L:
+             0 [si] al  mov     \ get the source pixel
+                0 # al  cmp
+                  2 L#  je      \ skip plotting if pixel=0
+         es: al 0 [di]  mov     \ else plot it
+        2 L:
+                    di  inc     \ increment plotted or not
+                    si  inc
+                    cx  dec
+                  1 L#  jnz
+
+                    si  pop     \ restore registers
+                    di  pop
+                    es  pop
+                 bp sp  xchg    \ restore stack frame
+          2 cells # sp  add     \ drop parameters
+                    bx  pop     \ get new TOS
+                    end-code
+                    no-expand
+
+
+        : CombineVPages ( -- )
+          VPage4[] VPage0[] 64000 cmove
+          VPage3[] VPage0[] AddVPage
+          VPage2[] VPage0[] AddVPage
+          VPage1[] VPage0[] AddVPage
+        ;
+
+For the background image, I'll be using a grid pattern, although with
+the PCX Library we could use any picture we wanted.
+
+I'll need to be able to draw vertical and horizontal lines to the
+buffers:
+
+        : Background
+          VPage4[] 64000 0 fill
+          42 0 do
+            VPage4[] i 8 * 0 199 7 VBLine
+          loop
+          VPage4[] 319 0 199 7 VBLine
+          21 0 do
+            VPage4[] 0 319 i 10 * 7 HBLine
+          loop
+          VPage4[] 0 319 199 7 HBLine
+        ;
+
+The VBLine and HBLine words are modified versions of the VLine and
+HLine words from our earlier column, set to work with the buffers,
+again with the addition of a &buf parameter to specify which buffer
+to draw the line to.
+
+In order to create an animated sequence of sprites, we need a method
+that will allow us to control each sprite on the screen, which has a
+number of variables that pertain to each sprite's movements.  This
+can be defined in a structure such as:
+
+        S{
+          {1WORD}-DEF :: .delay
+          {1WORD}-DEF :: .basedelay
+          {1WORD}-DEF :: .&image
+          {1WORD}-DEF :: .xcoord
+          {1WORD}-DEF :: .xinc
+          {1WORD}-DEF :: .xmin
+          {1WORD}-DEF :: .xmax
+          {1WORD}-DEF :: .ycoord
+          {1WORD}-DEF :: .yinc
+          {1WORD}-DEF :: .ymin
+          {1WORD}-DEF :: .ymax
+          {1WORD}-DEF :: .color
+        }S object-obj
+
+Rather than use a specific structure package, I will simply create a
+number of words that will let us simulate a structure package:
+
+        : .delay     0 + ;
+        : .basedelay 1 cells + ;
+        : .&image    2 cells + ;
+        : .xcoord    3 cells + ;
+        : .xinc      4 cells + ;
+        : .xmin      5 cells + ;
+        : .xmax      6 cells + ;
+        : .ycoord    7 cells + ;
+        : .yinc      8 cells + ;
+        : .ymin      9 cells + ;
+        : .ymax     10 cells + ;
+        : .color    11 cells + ;
+
+And now for the basic data to fill the structure with:
+
+   create Objects[]
+   1 , 21 , Diamond[] ,  44 , 2 ,  40 , 256 ,   8 , 0 , 0 , 195 , %R ,
+   1 , 15 , Ovoid[]   , 148 , 2 ,  56 , 240 ,  72 , 0 , 0 , 195 , %R ,
+   1 , 23 , Diamond[] ,  44 , 2 ,  40 , 256 , 128 , 0 , 0 , 195 , %R ,
+   1 , 13 , Ovoid[]   ,  60 , 0 ,   0 , 320 ,  72 , 2 , 0 , 160 , %B ,
+   1 , 11 , Diamond[] , 104 , 0 ,   0 , 320 ,  72 , 2 , 0 , 160 , %B ,
+   1 ,  8 , Ovoid[]   , 148 , 0 ,   0 , 320 ,  72 , 2 , 0 , 164 , %B ,
+   1 ,  9 , Diamond[] , 192 , 0 ,   0 , 320 ,  72 , 2 , 0 , 164 , %B ,
+   1 , 14 , Ovoid[]   , 236 , 0 ,   0 , 320 ,  72 , 2 , 0 , 160 , %B ,
+   1 ,  8 , Diamond[] , 100 , 4 ,   4 , 300 ,  24 , 3 , 0 , 180 , %G ,
+   1 ,  9 , Ovoid[]   , 124 , 4 ,   4 , 300 ,  48 , 3 , 0 , 180 , %G ,
+   1 ,  7 , Diamond[] , 148 , 4 ,   4 , 300 ,  72 , 3 , 0 , 180 , %G ,
+   1 ,  6 , Ovoid[]   , 172 , 4 ,   4 , 300 ,  96 , 3 , 0 , 180 , %G ,
+   1 ,  5 , Diamond[] , 196 , 4 ,   4 , 300 , 120 , 3 , 0 , 180 , %G ,
+
+Now we need to be able to draw the sprites, referencing the structure
+(Objects[]) that defines and controls their movements:
+
+        : DrawObject ( &obj -- )
+          >R
+          R@ .color @                   \ c
+          case                          \
+            %B of VPage1[] endof        \ &VPage1[]
+            %G of VPage2[] endof        \ &VPage2[]
+            %R of VPage3[] endof        \ &VPage3[]
+          endcase                       \ &buf
+          R@ .&image @                  \ &buf &image
+          R@ .xcoord @                  \ &buf &image x
+          R@ .ycoord @                  \ &buf &image x y
+          R> .color @ @                 \ &buf &image x y c
+          DrawPackedSpriteToBuffer      \ --
+        ;
+
+The &obj parameter is the base address of the specific sprite object
+control structure to be drawn.
+
+The next part controls the animation of all the objects, incrementing
+and decrementing the positions of the individual objects as the code
+runs.
+
+        : OneFrame
+          13 0 do                 \ cycle thru the objects
+            Objects[] i 12 cells * + >R
+            R@ .delay @ 1- dup R@ .delay !
+            if                    \ if .delay=0, move this object
+              R@ .basedelay @ R@ .delay ! \ reset to .basedelay
+              R@ .xcoord @ dup    \ inc x; reverse at xmin/xmax
+              R@ .xmin @ < over
+              R@ .xmax @ > or if
+                R@ .xinc @ negate R@ .xinc !
+              then
+              R@ .xinc @ + R@ .xcoord !   \ add XInc to XCoord
+              R@ .ycoord @ dup    \ inc y; reverse at ymin/ymax
+              R@ .ymin @ < over
+              R@ .ymax @ > or if
+                R@ .yinc @ negate R@ .yinc !
+              then
+              R@ .yinc @ + R@ .ycoord !   \ add YInc to YCoord
+
+              R> DrawObject       \ draw new image location
+
+            else
+              R> drop             \ lose last pointer
+            then                  \ and check next obj
+          loop
+        ;
+
+OneFrame does exactly that - it processes all the images and draws
+them to the individual buffers for the next animation frame to be
+displayed to the video screen.
+
+This next word, AnimatePacked, contains the looping structure, and
+the sequence that combines the images into one buffer and blits them
+to the video display.
+
+        : AnimatePacked
+          begin
+            key? not
+          while
+            OneFrame
+            CombineVPages           \ all for one
+            WaitRetrace             \ pause
+            VPage0[] BlitBuffer     \ and blit to the screen
+            VPage3[] ZeroIt         \ erase the buffers for
+            VPage2[] ZeroIt         \ the next cycle
+            VPage1[] ZeroIt
+          repeat
+          key drop
+        ;
+
+And SpriteDemo kicks the whole thing off.
+
+        : SpriteDemo
+          $13 InitGraph
+          Background
+          AnimatePacked
+          CloseGraph
+        ;
+
+I have these last three segments broken down as they are, because I
+plan to combine the SpriteDemo display with the upcoming Bolls demo.
+
+---[ Wrapping Up ]---------------------------------------------------
+
+The aforementioned Bolls demo will be in the next column.  It looks
+really cool. We get to do a bit of Floating Point in it also.
+
+I think I should mention that somewhere in the code I've done for
+this column is a "feature" (Microsoft-speak for glitch) that causes
+an error to occur when trying to perform another INCLUDE operation
+after having run the SpriteDemo program.  I'll try to track it down.
+One of my pointers must be off somewhere.
+
+See you in a couple days.
+

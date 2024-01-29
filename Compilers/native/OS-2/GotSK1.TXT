@@ -1,0 +1,440 @@
+---[ Graphics of the Second Kind, Part I ]------------[12/10/2006]---
+
+                         by Timothy Trussell
+
+---[ Where We Are ]--------------------------------------------------
+
+I was going to start off this second stage of my columns by getting
+into Sprites, but due to a cross-coding binge I went on this weekend,
+I'm going to do one on implementing a PCX library module.
+
+So, to start this off, I bring up a short description of how to do
+PCX image loading, by Toby Opferman.
+
+---------------------------------------------------------------------
+
+                  How to display a 256 Colour PCX File
+
+---------------------------------------------------------------------
+
+                             Toby Opferman
+                        http://www.opferman.net
+                        programming@opferman.net
+
+---------------------------------------------------------------------
+
+PCX is the easiest compressed image data file there is to display.
+The format consists of a 128 Byte Header, The Compressed Image, 768
+Byte palette.
+
+
+The Header:
+The 128 Byte Header Consists of the following fields:
+
+OFFSET    SIZE     DESCRIPTION
+--------------------------------------------------------------
+0        1 Byte      Manufacturer Of The File
+1        1 Byte      Version of PCX
+2        1 Byte      Type of Encoding (RLE Mostly)
+3        1 Byte      Number of Bits Per Pixel
+4        2 Bytes     Starting X location of Image
+6        2 Bytes     Starting Y location of Image
+8        2 Bytes     Width Of Image
+10       2 Bytes     Height Of Image
+12       2 Bytes     Horziontal DPI
+14       2 Bytes     Verticle DPI
+16       48 Bytes    Old EGA Pallete (Mostly Unused)
+64       1 Byte      RESERVED
+65       1 Byte      Number of Color Planes
+66       2 Bytes     Bytes Per Line
+68       2 Bytes     Palette Type (1 = Color, 0 = Grey Scale)
+70       58 Bytes    Extra Padding
+
+
+Of course, this header can usually be ignored if you already know
+your data indefinate.  Only reason to want to read this is if you
+want to check to make sure it's the right kind your reader will view
+or if you make a generic reader that will read any and all
+resolutions.  Of course, if you're making this for a program, and
+you make the image yourself, you already know all the imformation you
+need and you can usually strip this 128 bytes off the file to save
+some space.
+
+Whether you skip this or not, we will move onto the Body of the PCX
+file. The Body is of unknown size. It uses RLE (Run Length Encoding),
+which will be explained here.
+
+RLE Coding is very simple compression.  You read a Byte.  If the byte
+is less than 192, you plot it and increment your byte counter (When
+your byte counter is = to Height*Width of image, you are done).  If
+it is >= 192, you take this byte and subtract 192 from it (or AND it
+with 63).  Now, you read in the next byte.  No matter what the second
+byte is, you plot it the number of times as the first byte & 63 or
+byte - 192 which ever you did. Also, add the count to the Byte
+Counter.
+
+Pseudo Code:
+
+        BYTECOUNTER IS 0
+        PLOT IMAGE:
+         IS BYTECOUNTER = HEIGHT*WIDTH ? IF YES, THEN GO TO DONE
+           READ IN A BYTE TO F
+           PUT A ONE INTO PLOT_TIMES
+
+           IS F < 192 ? IF YES, THEN GO TO PLOT IT
+             PLOT_TIMES = F - 192
+             READ IN A BYTE TO F
+
+           PLOT IT:
+            PLOT F TO SCREEN PLOT_TIMES
+            ADD PLOT_TIMES TO BYTECOUNTER
+
+         GO TO PLOT IMAGE
+        DONE:
+
+As you see, it's very simple.
+
+Next is the palette.  The palette is 768 bytes at the end of the file,
+so you may want to go to the end of the file and seek -768.
+Each Byte is Multipled by 4 before it is put into the file.  The
+bytes are stored Red, Green Blue.  Here is simple Pseudo Code to
+read in the palette:
+
+
+        SEEK -768 BYTES FROM END OF FILE
+        LET X BE 0
+        LOAD PALETTE:
+          IS X = 256 ? IF YES THEN DONE
+           READ ONE BYTE INTO Y
+           DIVIDE Y BY 4
+           SET COLOR INDEX X RED TO Y
+
+           READ ONE BYTE INTO Y
+           DIVIDE Y BY 4
+           SET COLOR INDEX X GREEN TO Y
+
+           READ ONE BYTE INTO Y
+           DIVIDE Y BY 4
+           SET COLOR INDEX X BLUE TO Y
+
+           ADD ONE TO X
+          GO TO LOAD PALETTE
+        DONE:
+
+Pretty simple stuff.  Instead of using Divide, you may want to just
+shift right twice.
+
+And now you're ready to use PCX files in your code!
+
+---[ Switch channels back to GotSKPI ]-------------------------------
+
+There you go. It's not too complicated, so let's get started.
+
+The first thing I will do is to create a structure to define the 128
+byte header segment of the PCX image file.  These elements are listed
+at the start of Toby's article.
+
+For this we need a data structure system, and in this case I have
+used Bernd Payson's Mini-OOF package, which follows.  Now, be kind in
+your review of my coding here - it's my first time using this OOF
+system.
+
+\ --[ Object Oriented Forth - Bernd Paysan ]------
+\ Mini-OOF                                                 12apr98py
+: method ( m v -- m' v ) Create  over , swap cell+ swap
+  DOES> ( ... o -- ... ) @ over @ + @ execute ;
+: var ( m v size -- m v' ) Create  over , +
+  DOES> ( o -- addr ) @ + ;
+: class ( class -- class methods vars ) dup 2@ ;
+: end-class  ( class methods vars -- )
+  Create  here >r , dup , 2 cells ?DO ['] noop , 1 cells +LOOP
+  cell+ dup cell+ r> rot @ 2 cells /string move ;
+: defines ( xt class -- ) ' >body @ + ! ;
+: new ( class -- o )  here over @ allot swap over ! ;
+: :: ( class "name" -- ) ' >body @ + @ compile, ;
+Create object  1 cells , 2 cells ,
+
+With this package, we will implement a basic Object Oriented PCX
+library module.
+
+Now, to define the structure using this code, we do the following:
+
+        object class
+           1 var .manufact         \ the 128-byte PCX header listing
+           1 var .version          \ the element size is specific
+           1 var .encoding         \ so we have to match it.
+           1 var .bitsperpixel
+           2 var .xmin
+           2 var .ymin
+           2 var .xmax
+           2 var .ymax
+           2 var .hdpi
+           2 var .vdpi
+          48 var .palette16
+           1 var .reserved
+           1 var .colorplanes
+           2 var .bytesperline
+           2 var .palinfo
+          58 var .filler1
+
+          16 var .fname            \ filename to use
+        cell var .fsize            \ actual # of bytes in file
+        cell var .data             \ ptr to data buf of raw RLE image
+        cell var .expanded         \ ptr to 64k destination buffer
+         768 var .palette          \ palette buffer
+        cell var .width            \ image width - dpi
+        cell var .height           \ image height - dpi
+        cell var .isize            \ width*height
+        cell var .filler2          \ to round off size of structure
+
+          method (SetName)         \ sets the name in struct
+          method (SetBuffer)       \ sets address of buffer in struct
+          method LoadImage         \ loads an image data
+          method LoadPalette       \ loads the palette data
+          method SetImagePalette   \ sends palette to VGA card
+          method ImageToBuffer     \ decompress the image to a buffer
+          method ImageToScreen     \ draws buffer image to VGA memory
+        end-class pcx
+
+I am not going to do a detailed description of the Object Oriented
+Forth package.  Study of what I have done here may help others in
+their use of the Mini-OOF system.
+
+The first thing we do is define the data elements that are present in
+the PCX image file, which have specific element sizes that we have to
+conform with in this structure.
+
+The [1 var <name>] format defines an element that has a single byte
+as it's size. The total of all the element sizes in the first section
+is 128 bytes, which covers all the bytes defined in the PCX header.
+
+The second section defines the working variables that we need to work
+with the PCX image.  These can be considered as being private to the
+specific image the structure is being used with.
+
+The third section consists of the Methods that are implemented to do
+specific operations upon the data contained in the structure, as well
+as on the compressed picture data that will be loaded into a buffer.
+
+---[ Method Descriptions ]-------------------------------------------
+
+I will not display all the code for the methods here, you will need
+to reference the Code Addendum posted along with this column.  I will
+give a description of the methods I have included in this package.
+
+=[ (SetName) ]=
+
+An internal word that sets the .fname element of the structure to the
+filename passed to LoadImage.
+
+Calling sequence:  You don't
+
+=[ (SetBuffer) ]=
+
+Another internal word that sets the .expanded element to the buffer
+address to be used to decompress the PCX image data to.
+
+Calling sequence:  You don't
+
+These two are 'internal' words, as the programmer should never need
+to call them directly.  Note that this is *my* concept for these two
+methods, not Bernd Payson's.
+
+=[ LoadImage ]=
+
+Loads the PCX image file into a buffer and copies the header data to
+the structure for manipulation by the rest of the Methods.
+
+Calling sequence:
+
+        LoadImage ( &str len &dst size &obj -- )
+
+Calling Example:
+
+        " bots.pcx" Bots[] 65536 bots LoadImage
+
+where Bots[] is an array large enough to load the bots.pcx file into.
+
+If you specify a <size> parameter that is smaller than the actual
+file size of the image, only <size> bytes will be read in.
+
+If you are loading a 16,384 byte image file, and specify a <size>
+parameter of 65536, only 16,384 bytes will be read in.
+
+This is legal (in 32Forth).
+
+A more advanced version of this routine will do additional disk
+queries and get the actual file size from the operating system.
+This is a budget operation, and I'll get around to it if I ever
+feel the actual need to have that capability.
+
+=[ LoadPalette ]=
+
+Transfers the palette data from the PCX image file to the .palette
+element array, after processing the bytes.
+
+Calling sequence:
+
+        LoadPalette ( &obj -- )
+
+Calling Example:
+
+        bots LoadPalette
+
+=[ SetImagePalette ]=
+
+Sends the PCX image palette to the VGA card so that the correct
+palette information is used when displaying the image.
+
+Calling sequence:
+
+        SetImagePalette ( &obj -- )
+
+Calling Example:
+
+        bots SetImagePalette
+
+=[ ImageToBuffer ]=
+
+Decompresses the packed PCX image data to the specified buffer array.
+This data cannot simply be blitted to the screen, but can be drawn
+line by line, which is done by the ImageToScreen method.
+
+Calling sequence:
+
+        ImageToBuffer ( &buf &obj -- )
+
+Calling Example:
+
+        Buffer[] bots ImageToBuffer
+
+The decompressed data can then be used by your program, for such
+things as simply a background on the video display, or perhaps as the
+textures used in a Filled Polygon routine.
+
+=[ ImageToScreen ]=
+
+Draws the decompressed PCX image data that is now in a buffer to the
+video screen.  The palette data will need to be sent so the image can
+be viewed correctly, unless you choose to want to see the image in
+the default palette, which is precisely what I do in my demo words.
+
+Calling sequence:
+
+        ImageToScreen ( &buf x y &obj -- )
+
+Calling Example:
+
+        Buffer[]
+        320 bots .width @ - 2/     \ center the image on the screen
+        200 bots .height @ - 2/
+        bots ImageToScreen
+
+This routine draws directly to the video screen, so to view the data
+you will need to have already set the graphics mode prior to calling
+this word.
+
+I have included the capability to specify the x,y coordinates to draw
+the image to, but if you're in 320x200x256 mode, and you're drawing
+an image that is 320x200 (full screen size), and specify a location
+like the middle of the screen (160,100) as the starting location, the
+image will display exactly where you told it to.
+
+There is no clipping or error checking in the display routine, so be
+aware of the side effects of data going places you don't mean it to.
+
+---[ End of PCX Library ]--------------------------------------------
+
+To use the OOF class we have created here, it will be necesssary to
+declare an instance of the object to be used, such as
+
+        pcx new constant bots
+
+To access the elements of the pcx structure is straightforward:
+
+        bots .xmin H@
+        bots .manufact C@
+
+and so on.
+
+Using the Methods is done the same way:
+
+        " bots.pcx" Bots[] 65536 bots LoadImage
+        bots LoadPalette
+        Buffer[] bots ImageToBuffer
+
+If you attempt to use one of the methods without putting the object
+on the stack first, baaaaaaaadddd things will happen.
+
+You have been warned.
+
+I have tested this with only the 320x200x256 Mode 13h resolution,
+which is what we have used in all my columns so far, so I cannot
+claim that it will work with any other resolution that the video card
+can be set to.
+
+The [ ImageToScreen ] method calls the VPlotLine word, which draws
+the image data to the VGA memory.  The only change to allow the use
+of the module with a different display mode, such as Mode X, would be
+to modify VPlotLine to use planar plotting (as well as creating the
+modified InitGraph word to actually get you into that mode).
+
+I have included three demo words that all do the same thing - they
+draw the image to the screen. But, they all do it in a different way.
+
+Note that the code addendum for this column is self contained - you
+won't need any of the previous addendum code to run it.
+
+You will need to provide your own PCX image file, and replace the
+name [bots.pcx] with that filename.
+
+If you can't find a handy PCX file, then do what I did and make one
+by finding a small .BMP image and using your favorite graphics editor
+or display program (ie., ACDSEE) and simply do a SAVE AS with the
+PCX file format.
+
+        include gotsk1.4th
+
+        value PSelector $0A000 SEG>DESC to PSelector
+
+        \ create a new object [bots]
+        pcx new constant bots
+
+        create Buffer[] here 65536 dup allot 0 fill
+        create Bots[]   here 65536 dup allot 0 fill
+
+        : ShowPCX
+          " bots.pcx" Bots[] 65536 bots LoadImage
+          bots LoadPalette
+          Buffer[] bots ImageToBuffer
+          0                            \ seed for exit flag
+          begin
+            $13 InitGraph
+            Buffer[]
+            320 bots .width @ - 2/     \ center the image on the screen
+            200 bots .height @ - 2/
+            bots ImageToScreen
+            key 27 = if drop 1 then
+            bots SetImagePalette
+            key 27 = if drop 1 then
+            dup
+          until
+          drop
+          3 SetMode
+        ;
+
+The only stumbling block I see off hand to implementing this on a
+16-bit Forth is the allocation of memory blocks for the buffers, that
+I do directly into the 32Forth dictionary with no problems, since we
+have that 1meg of memory space to work with.  I would think that if
+you are comfortable with allocating/deallocating memory directly from
+your operating system, you won't have a problem with this code.
+
+My gosh, where does the time go.  We're at 15,600 characters for this
+column already.
+
+That's about if for my PCX Library.
+
+I'll get this out in the morning.
+
+

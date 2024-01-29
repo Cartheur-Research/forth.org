@@ -1,0 +1,1397 @@
+
+Forth Interest Group
+Category 18,  Topic 56        Sat Feb 24, 1990
+GARY-S                       at 09:23 EST
+Sub: botForth for 68K                       
+
+>From Usenet comp.lang.forth: Attn-Steve Sheppard, botForth for 68K
+11 message(s) total.
+----------
+Forth Interest Group
+Category 18,  Topic 56
+Message 1         Sat Feb 24, 1990
+GARY-S                       at 09:24 EST
+ 
+             
+  PORTED FROM UseNet =>
+              ------
+
+ From: rob@idacom.uucp (Rob Chapman)
+
+ Subject: attention Steve Sheppard  part1 
+   (1a of 1a,1b for ForthNet ) 
+ Message-ID: <1990Feb23.015218.22858@idacom.uucp>
+ Date: 23 Feb 90 01:52:18 GMT
+ Organization: IDACOM Electronics Ltd.
+
+ I tried several attempts to email the following info to you but they either
+ bounced back or got swallowed.  So as a last resort, I'll post it through the
+ news net.
+
+                                 68k-Forth
+
+ Overview
+
+ The source code is comprised of 3 parts: the metacompiler, the mini-assembler
+ and of course, the kernel.  Each part is described briefly below.  This
+ kernel is still in the testing stages but the kernel, as it is, will
+ metacompile itself which will allow for easy correction of bugs.  The easiest
+ thing to compile 68k-Forth on is another port of bot-Forth.  However since
+ most people don't have this, there are alternatives.  I originally
+ metacompiled bot-Forth on LMI's PCForth but the metacompiler needs to be
+ modified to do that (ie. T! and T@ need to do byte swapping).  I've tried to
+ keep the number of words that make up the metacompiler small so that it
+ shouldn't be to hard to port and the defintions for the words are in the
+ kernel itself.  If somebody wants, I could probably send out a binary image
+ of some sort (ie. ascii coded binary), but I think the best way is to
+ metacompile off a Forth somewhere.
+
+ Metacompiler
+
+ The metacompiler was presented at the 1989 Rochester Forth conference and a
+ paper describing it was published in the proceedings.  That one was more
+ general to convey its basic concepts.  The one in the source code is
+ specific for the 68k and works in conjunction with the Mini-assembler.
+
+ The metacompiler compiles the kernel source code into a buffer named tspace.
+ This buffer is about 12 kbytes.  The kernel source code has been arranged so
+ that there is no forward referencing.  This allows the code to be compiled
+ in a single pass without having to resolve forward references and simplifies
+ the work that the metacompiler has to do.
+
+ In normal compiling, defining words and immediate words do all the compiling
+ ( : ; IF ENDIF etc), while the interpreter lays down calls to non-immediate
+ words.  In the metacompiler world, ] takes over the interpreter's job.  ] is
+ invoked by : or an occurance in the input stream.  ] looks up each word in
+ the input stream in two dictionaries: meta dictionary (META-FIND) and the
+ target dictionary (TFIND).  The meta-dictionary is all the words in the host
+ dictionary from latest @ to meta-start @.  The target dictionary are all the
+ words that are compiled in the target kernel in the tspace buffer.  The
+ reason that the meta-dictionary is searched first, is to allow definition of
+ immediate words.  The immediate words in the target kernel aren't executable
+ and their action must be provided by similar words in the meta-dictionary. 
+ Most of these meta-compilers are SMUDGEed so that they will not interfere
+ with normal compiling.  The ones which aren't smudged, check a flag to see
+ if they should compile into the host or target dictionary.  If a word cannot
+ be found in either dictionary, then it is converted to a number and
+ compiled (TLITERAL).
+
+ Throughout the kernel, you will find metacompilers.  They are preceded by a
+ switch back to the host space (META) and followed by a switch back to the
+ target space (TARGET).  The reason that they are sprinkled throughout the
+ kernel, is because they compile words from the target kernel into subsequent
+ definitions (ie. ." needs (.") to be defined first).
+
+ There are some special metacompilers which are actually phrase optimizers. 
+ These metacompilers look back at the previously layed down instruction and
+ try to lay down more efficient code (ie. 3 + becomes one opcode instead of
+ 5).  At present, the optimizers are few in number and only optimize 2 word
+ sequences.
+
+ Mini-assembler
+
+ The mini-assembler compiles opcodes into target space or host space as
+ dictated by the target flag.  The syntax is very post-fix:
+
+         source  destination  instruction  post-operands
+
+ Some of the 68k addressing modes require post-operands to complete the
+ instruction.  These must be layed down after the instruction has been
+ compiled.  For example, to put a value in top, the assembler would be:
+
+         lit top move [ n T, ]   ( put n into top of stack register )
+
+ The source and destination operands are immediate constants and the
+ instruction is an immediate word which combines the source and destination
+ operands with a value and lays it down in memory (A,).
+----------
+Forth Interest Group
+Category 18,  Topic 56
+Message 2         Sat Feb 24, 1990
+GARY-S                       at 09:26 EST
+ 
+             
+  PORTED FROM UseNet =>
+              ------
+
+ From: rob@idacom.uucp (Rob Chapman)
+
+ Subject: attention Steve Sheppard  part1 
+   (1b of 1a,1b for ForthNet ) 
+ Message-ID: <1990Feb23.015218.22858@idacom.uucp>
+ Date: 23 Feb 90 01:52:18 GMT
+ Organization: IDACOM Electronics Ltd.
+
+ Kernel
+
+ Word structure:
+ The structure of each definition is:  | length | link | name | code |
+
+         length - this field is really there to make life easier for the
+                  compiler.  It contains the length of the code in words
+                  excluding the rts layed down by ;.  If this field is
+                  6 or less, then the compiler will inline the definition
+                  instead of compiling a call to it.  If the most significant
+                  bit is set, then the word cannot be inlined.  There are two
+                  reasons for the word not to be inlined: if the word has
+                  any bsr's (as opposed to jsr's) or if ; has converted the
+                  last subroutine call to jump to avoid coming back just for
+                  an rts.
+         link   - this is a pointer back to the link field of the previous
+                  definition.  The first word in the dictionary has this
+                  field set to 0.  So it follows that no word in the
+                  dictionary should have its link field at the address 0.
+                  The variable latest points to the most recent definition.
+         name   - this field is a count prefixed string which contains the
+                  name of the definition.  The count occupies the lower 5
+                  bits of the first byte.  The most significant bit of the
+                  first byte is always one to allow for reverse traversal of
+                  the header (C>LINK).  The second msb of the first byte is
+                  the immediate flag which is set by IMMEDIATE and checked by
+                  the interpreter.  The third msb is the smudge bit which is
+                  set by SMUDGE and cleared by RECURSE.  This is checked by
+                  the dictionary search word COMPARE.
+         code   - this variable length field contains 68k assembler opcodes.
+                  There is no difference between a constant, a variable or a
+                  word definition.  Since constants and variable's are 4 or 5
+                  words long, they are inlined as literals.
+
+ Virtual Forth model on the 68k:
+                         ,-------.
+                      d7 |__top__|
+                         ,-------.
+       ,-------.      d6 |_next__|        ,-------.
+    a6 |__sp___|--> ,------------.     a7 |__rp___|--> ,--------------.
+                    |            |                     |              |
+                    | data stack |                     | return stack |
+                    |            |                     |              |
+
+       ,-------.       ,-------.       ,-------.       ,-------.
+    d0 |__alu__|    d5 |_index_|    a0 |__ptr__|    a5 |_page__|
+
+         top   - top of data stack
+         next  - second data stack entry
+         sp    - pointer to the rest of data stack in memory (16 bit entries)
+         rp    - pointer to the return stack (32 bit entries)
+         alu   - general purpose data register
+         index - index for FOR NEXT loops
+         ptr   - general purpose address register
+         page  - 32 bit address of base of kernel.  This is set by RAM which
+                 is executed by QUIT upon startup.  This register is used for
+                 any access to memory or by subroutine calls.  Also anything
+                 which is pushed to the return stack (>R) has this added to
+                 it so that an address may be pushed to the return stack to
+                 modify control flow.
+
+ Memory Model:
+         origin# ,--------------.
+                 |  data stack  |
+                 | return stack |
+                 |     dp       |
+                 |   latest     |
+                 |___kernel_____|
+
+         origin#      - start of everything.  This is set in the metacompiler
+                        to 400H which is the end of the 68k exception vector
+                        table.
+         data stack   - starts at origin# 100 + and grows toward origin#
+         return stack - starts at origin# 200 + and grows toword data stack
+         dp           - dictionary pointer points to start of free space at
+                        the end of kernel.  dp and dp @ enclose the entire
+                        kernel which would need to be saved as a binary.
+         latest       - points to the link field of the latest definition
+         kernel       - definitions that comprise the kernel
+
+ It should be pointed out that the kernel is limited to a maximum size of 64
+ kbytes since it is a 16 bit Forth, but a funny thing will happen at the 32k
+ limit.  The 68k sign extends all 16 bit addresses to 32 bits.  So in our
+ local memory map, what is perceived as linear from 0 to FFFF (using unsigned
+ addresses, since signed addresses would straighten everthing out but it
+ would seem wierd), will actually run from 8000 to FFFF and then 0 to 7FFF in
+ global memory space.  The reference point of 0 is what is in the page
+ register.  The 64k limit may of course be expanded by changing page or using
+ the other 4 address registers as other page registers.
+
+ Large differences from other Forths:
+
+         COMPILE  ( cfa -- )
+           this word is completely different from what most people expect and
+           it is this way for clarity.  The definition of INTERPRET gets
+           the cfa (code field address) and if the word is to be executed it
+           calls EXECUTE.  If it is to be compiled, it calls COMPILE.  A word
+           may now be 'ed and passed onto EXECUTE or COMPILE in the same
+           manner.  For example compare the definitions of OF:
+
+           (a) : OF  COMPILE OVER  COMPILE =  [COMPILE] IF  COMPILE DROP ;
+
+           (b) : OF  ' OVER COMPILE  ' = COMPILE  ' IF EXECUTE  ' DROP COMPILE
+;
+
+           I've found that (b) is much more easily taught and there
+           is no problem remembering what it does at a later date.  This
+           definition for COMPILE was presented at the '89 FORML conference
+           and generally thought to be much clearer.
+
+         FOR  ( n -- )  NEXT  ( -- )
+           This looping construct was first proposed by Mr. Forth himself
+           (Chuck Moore) as a realization of a better way to do loops.  A lot
+           of code does  0 DO ... LOOP and makes no use of the index.  This
+           is slow since two parameters must be kept around.  Also in the
+           cases where the index is used as an address, the operators @+ !+
+           make better use of the data stack instead of  OVER + SWAP DO.
+           I've used this looping construct exclusively for the past year and
+           found that I don't need DO LOOP's any more.  The one difference
+           from Chuck's definition of this construct, is the number of times
+           that it executes the loop.  Chuck's FOR...NEXT will loop n 1 +
+           times whereas bot-Forth's FOR...NEXT will loop n times and not
+           loop if it is passed a 0.
+----------
+Forth Interest Group
+Category 18,  Topic 56
+Message 3         Sat Feb 24, 1990
+GARY-S                       at 09:31 EST
+ 
+             
+  PORTED FROM UseNet =>
+              ------
+
+ From: rob@idacom.uucp (Rob Chapman)
+
+ Subject: attention Steve Sheppard  part 2
+  ( part 2a of 2a,2b,2c for ForthNet  )
+ Message-ID: <1990Feb23.015505.22932@idacom.uucp>
+ Date: 23 Feb 90 01:55:05 GMT
+ Organization: IDACOM Electronics Ltd.
+
+
+ ( A one line comment on each of the words in bot-Forth Kernel  Jan 20, 90  RC
+)
+ ( ==== Stacks ==== )
+ SP!    ( ? -- )  reset the data stack
+ RP!    ( -- )  reset the return stack
+ DEPTH  ( -- n )  return the current depth of the data stack
+
+ ( ==== Data stack operators ==== )
+ SWAP  ( n \ m -- m \ n )  swap the top two items of the stack
+ NUP   ( a \ b -- a \ a \ b )  duplicate the second stack item (rhymes with
+DUP)
+ TUCK  ( a \ b -- b \ a \ b )  tuck a copy of the top item under the second
+item
+ DUP   ( n -- n \ n )  duplicate the top item of the stack
+ OVER  ( n \ m -- n \ m \ n )  copy the second item to the top of the stack
+ NIP   ( n \ m -- m )  drop the second item on the stack
+ DROP  ( n -- )  drop the top item of the stack
+ 2DUP  ( a \ b -- a \ b \ a \ b )  duplicate the top two items
+ 2DROP ( a \ b -- )  drop the top two items
+ ROT   ( a \ b \ c -- b \ c \ a )  rotate the third item to the top of stack
+ ?DUP  ( n -- [n] \ n )  duplicate the top item of the stack if it is not 0
+
+ ( ==== Return stack operators ==== )
+ DUP>R   ( n -- n )  push a copy of n to the return stack
+ R>DROP  ( -- )  drop the top of the return stack
+ >R      ( n -- )  push n to the return stack
+ R>      ( -- n )  pop n from the return stack
+ R       ( -- n )  get a copy of the top item on the return stack
+
+ ( ==== Math and Logic ==== )
+ +       ( n \ m -- p )  add n to m
+ -       ( n \ m -- p )  subtract m from n
+ AND     ( n \ m -- p )  AND n with m
+ OR      ( n \ m -- p )  OR n with m
+ XOR     ( n \ m -- p )  XOR n with m
+ 2*      ( n -- m )  shift n left one bit and set bit 0 to 0
+ 2/      ( n -- m )  shift n right one bit but don't change bit 15
+ U2/     ( n -- m )  shift n right one bit and set bit 15 to 0
+ NEGATE  ( n -- m )  take the two's complement of n
+ NOT     ( n -- m )  invert all the bits of n
+
+ ( ==== Memory access ==== )
+ @   ( a -- n )  fetch a word from address a
+ !   ( n \ a -- )  store a word at address a
+ C@  ( a -- c )  fetch a byte from address a
+ C!  ( c \ a -- )  store a byte at address a
+ +!  ( n \ addr -- )  increment the value at address a by n
+
+ ( ==== Incrementing/Decrementing memory access ==== )
+ @+  ( a -- n \ a+ )  fetch a word from address a and increment a by 2
+ @-  ( a -- n \ a- )  fetch a word from address a and decrement a by 2
+ C@+ ( a -- c \ a+ )  fetch a byte from address a and increment a by 1
+ C@- ( a -- c \ a- )  fetch a byte from address a and decrement a by 1
+ !+  ( n \ a -- a+ )  store a word at address a and increment a by 2
+ !-  ( n \ a -- a- )  store a word at address a and decrement a by 2
+ C!+ ( c \ a -- a+ )  store a byte at address a and increment a by 1
+ C!- ( c \ a -- a- )  store a byte at address a and decrement a by 1
+
+ ( ==== Unsigned multiply and unsigned divide ==== )
+ /MOD  ( n \ m -- rem \ quot )  16 bit unsigned divide with remainder
+ /     ( n \ m -- quot )  16 bit unsigned divide
+ MOD   ( n \ m -- rem )  16 bit modulus
+ *     ( n \ m -- nm* )  16 bit by 16 bit unsigned multiply with a 16 bit
+result
+
+ ( ==== Comparison ==== )
+ NO   ( -- 0 )  a false flag
+ YES  ( -- -1 )  a true flag
+ 0=   ( n -- flag )  return YES if n is 0, else return NO
+ 0<   ( n -- flag )  return YES if n is negative, else return NO
+ =    ( n \ m -- flag )  return YES if n is equal to m, else return NO
+ <    ( n \ m -- flag )  return YES if n is less than m, else return NO
+ >    ( n \ m -- flag )  return YES if n is greater than m, else return NO
+ U<   ( n \ m -- flag )  same as < but unsigned and used typically for
+addresses
+ U>   ( n \ m -- flag )  same as > but unsigned and used typically for
+addresses
+ ABS  ( n -- n )  take the absolute value of n  ( note: 8000 ABS is 8000 )
+ MAX  ( n \ m -- p )  return the maximum of n or m
+ MIN  ( n \ m -- p )  return the minimum of n or m
+
+ ( ==== Memory Manipulation ==== )
+ BL      ( -- n )  the ascii value of blank, hex 20
+ COUNT   ( addr -- addr' \ count )  read a byte and increment addr by 1
+ CMOVE   ( s \ d \ n -- )  move n bytes from a to b
+ <CMOVE  ( s \ d \ n -- )  same as CMOVE but going from high to low memory
+ MOVE    ( s \ d \ n -- )  move n words (16 bit) from a to b
+ FILL    ( a \ n \ c -- )  fill n bytes of memory with c starting at address a
+ ERASE   ( a \ n -- )  fill n bytes of memory with 0 starting at address a
+ BLANKS  ( a \ n -- )  fill n bytes of memory with 20H starting at address a
+
+ ( ==== Memory Management ==== )
+ dp    ( -- a )  variable containing the address of the start of free memory
+ HERE  ( -- addr )  return the contents of dp
+ ALLOT ( n -- )  allocate n bytes of memory
+ ,     ( n -- )  store n into free memory and increment dp by 2
+ C,    ( n -- )  store n into free memory and increment dp by 1
+ EVEN  ( -- )  round dp up to an even address
+
+ ( ==== Header Status Bits ==== )
+ latest     ( -- a )  points to the link field of the most recently def. word
+ +BITS      ( bits \ a -- )  set bits of the byte at address a
+ -BITS      ( bits \ a -- )  clear bits of the byte at address a
+ LATEST     ( -- lfa )  link field address of the latest word
+ IMMEDIATE  ( -- )  make the latest word immediate
+ SMUDGE     ( -- )  hide the latest word from the interpreter
+ RECURSE    ( -- )  reveal the latest word to the interpreter 
+
+ ( ==== Compile state: 0 for interpreting; 80 for compiling ==== )
+ compile  ( -- a )  variable containing current state of compiler
+ ]        ( -- )  set state to compile
+ [        ( -- )  set state to interpret
+----------
+Forth Interest Group
+Category 18,  Topic 56
+Message 4         Sat Feb 24, 1990
+GARY-S                       at 09:33 EST
+ 
+             
+  PORTED FROM UseNet =>
+              ------
+
+ From: rob@idacom.uucp (Rob Chapman)
+
+ Subject: attention Steve Sheppard  part 2
+  ( part 2b of 2a,2b,2c for ForthNet  )
+ Message-ID: <1990Feb23.015505.22932@idacom.uucp>
+ Date: 23 Feb 90 01:55:05 GMT
+ Organization: IDACOM Electronics Ltd.
+
+ ( ==== Queues ===== )
+ QUEUE  ( #words -- )  create a queue with #words entries
+ >Q     ( n \ queue -- )  append n to end of queue
+ Q>     ( queue -- n )  return first value in queue
+ Q      ( queue -- n )  get a copy of first value in queue
+ 0Q     ( queue -- )  remove all items from a queue
+ Q?     ( queue -- flag )  return number of items in a queue
+
+ ( ==== BARON Tasker ==== )
+ peasantq  ( -- a )  address of peasant queue
+ EXECUTE   ( cfa -- )  execute code at cfa
+ >BARON    ( cfa -- )  append a task to the peasant queue
+ BARON     ( -- )  execute a task from the peasant queue
+ KILL      ( cfa -- )  remove all occurances of a task from the peasantq
+ RUN    ( cfa -- )  append a task and remove any other occurances in the
+peasantq
+ ( ==== Forth character I/O ==== )
+ keyq    ( -- a )    keyboard input queue; checked by KEY
+ emitq   ( -- a )   output queue; used by EMIT
+ out     ( -- a )  variable holding the number of characters output since CR
+ KEY?    ( -- n )  number of items in keyq
+ KEY     ( -- char )  get a character from the keyq
+ ?WAIT   ( -- )  if the emitq is full, run the baron until emitq not full
+ EMIT    ( char -- )  stuff a character in the emitq
+ CR      ( -- )  emit a linefeed and a carriage return
+ ?CR     ( -- )  call CR if out is not 0
+ SPACE   ( -- )  emit a space
+ SPACES  ( n -- )  emit n spaces
+ TYPE    ( a \ n -- )  emit n characters from address a
+ PROMPT  ( -- )  output the prompt
+
+ ( ==== Numerical Output ==== )
+ base     ( -- a )  variable containing current base for number I/O
+ HEX      ( -- )  set current base to hex
+ BIN      ( -- )  set current base to binary
+ DECIMAL  ( -- )  set current base to decimal
+ PAD      ( -- addr )  a scratch pad area for number conversion
+ HOLD     ( char -- )  prepend char to current number string
+ <#       ( -- )  start number to string conversion
+ #>       ( n -- a \ n )  end number conversion and return address and length
+ SIGN     ( m \ n -- n )  prepend sign of m to current number string
+ #        ( n -- m )  convert one digit of n and prepend it to current num
+string
+ .R       ( n \ m -- )  output n to screen, right justified in field m
+ .        ( n -- )  output n to screen
+
+ ( ==== Parser ==== )
+ tib    ( -- a )  points to terminal input buffer
+ in     ( -- )  index into terminal input buffer for parsing
+ INPUT  ( -- addr )  current address within input buffer
+ +IN    ( addr -- )  increment in by difference from INPUT
+ SKIP   ( char -- )  skip over any bytes in tib that equal char
+ SCAN   ( char -- )  scan tib until char is found
+ PARSE  ( char -- )  copy all characters up until char to HERE
+ WORD   ( char -- )  copy all bytes up until char to HERE skipping leading
+chars
+ (      ( -- )  skip all characters up to and including )
+
+ ( ==== Word compiler ==== )
+ PUSH     ( -- n )  push the following word onto the data stack
+ C>LINK   ( cfa -- lfa )  convert a code field address to a link field address
+ L>CODE   ( lfa -- cfa )  convert a link field address to a code field address
+ COMPILE  ( cfa -- )  compile cfa into the dictionary
+----------
+Forth Interest Group
+Category 18,  Topic 56
+Message 5         Sat Feb 24, 1990
+GARY-S                       at 09:35 EST
+ 
+             
+  PORTED FROM UseNet =>
+              ------
+
+ From: rob@idacom.uucp (Rob Chapman)
+
+ Subject: attention Steve Sheppard  part 2
+  ( part 2c of 2a,2b,2c for ForthNet  )
+ Message-ID: <1990Feb23.015505.22932@idacom.uucp>
+ Date: 23 Feb 90 01:55:05 GMT
+ Organization: IDACOM Electronics Ltd.
+
+ ( ==== Strings ==== )
+ QUOTE  ( -- )  lay down all characters up to " in memory
+ (")    ( -- addr )  inner interpreter for "
+ "      ( -- addr )  return the address of a count-prefixed string delimited
+by "
+ ."     ( -- )  print out all characters up until "
+
+ ( ==== Errors ==== )
+ ABORT  ( -- )  reset the return stack
+ ERROR  ( -- )  print out any string at HERE and call ABORT
+ ?ERROR  ( flag -- )  call ERROR if flag is non-zero
+
+ ( ==== Number Conversion ==== )
+ DIGIT   ( char -- n \ flag )  try to convert a character to n and return a
+flag
+ NUMBER  ( string -- n )  convert a string to a number n or die trying
+
+ ( ==== Dictionary Searching ==== )
+ DIFFER?      ( a \ a -- a+ \ a+ \ f )  compare and increment bytes at
+address's
+ BIT-DIFFER?  ( a \ a \ mask -- a+ \ a+ \ f )  DIFFER? using bit mask
+ SAME?  ( string \ name \ mask -- flag )  compare string and name with count
+mask
+ SEARCH?  ( string \ >list -- lfa \ yes | -- string \ no ) search list for
+stri
+
+ ( ==== Interpreter ==== )
+ \  ( -- )  compile the next word in the input stream even if it's immediate
+ LITERAL  ( n -- [n] )  compile n in memory if in compile mode
+ '  ( -- cfa ) return the code field address of the next word in the input
+stream
+
+ ( ==== Key collector ==== )
+ PREPARE    ( key -- key )  massage keyboard input
+ COLLECTOR  ( -- )  collect keyboard input and interpret when cr is input
+
+ ( ==== SIO access ==== )
+ SIO   ( -- )  set access page to sio
+ SIO@  ( n -- c )  fetch a character from register n of sio chip
+ SIO!  ( c \ n -- )  store a character to register n
+
+ ( ==== SIO chip: DUART SCN2681 with a 3.6864mhz crystal ==== )
+ RESET-SIO   ( -- )  reset sio chip
+
+ ( ==== SIO porta primitives ==== )
+ RX?  ( -- flag )  check to see if a byte has been received
+ TX?  ( -- flag )  check to see if a byte may be transmitted
+ TX   ( char -- )  transmit a byte
+ RX   ( -- char )  receive a byte
+
+ ( ==== Sio port servicing ==== )
+ sio-in    ( -- a )  points to queue used to hold input usually keyq
+ sio-out   ( -- a )  points to queue used to hold output usually emitq
+ POLL-SIO  ( -- )  poll sio chip for input and output
+
+ ( ==== Control loop ==== )
+ INIT  ( -- )  initialize everything for Forth to run
+ QUIT  ( -- )  main control loop which continuosly executes BARON
+
+ ( ==== Conditional compilers ==== )
+ IF     ( -- addr )  compile a 'branch if top is 0 instruction'
+ ELSE   ( addr -- addr )  compile a branch always
+ ENDIF  ( addr -- )  resolve IF branch address
+ THEN   ( addr -- )  synonym for ENDIF
+ BEGIN  ( -- addr )  record beginning of loop constructs
+ UNTIL  ( addr -- )  compile a 'branch back if top is 0 instruction'
+ AGAIN  ( addr -- )  compile a branch always back to BEGIN
+ WHILE  ( addr -- addr \ addr )  compile a 'branch if top is 0 instruction'
+ REPEAT ( addr \ addr -- )  compile a branch back to BEGIN  
+ FOR    ( -- addr )  compile setup words for counting loop
+ NEXT   ( addr -- )  compile conditional counting branch
+
+ 0BRANCH  ( n -- )  branch to somewhere if n is zero
+ BRANCH   ( -- )  branch to somewhere
+ (FOR)    ( n -- )  inner interpreter for FOR
+ (NEXT)   ( -- )  inner interpreter for NEXT
+
+ ( ==== Defining Words ==== )
+ CALLED   ( -- )  mark the latest word to be called only; not to be inlined
+ MEASURE  ( -- )  record the length of the latest word
+ ?UNIQUE  ( -- )  report if the next word in the input stream already exists
+ HEADER   ( -- )  create a header for the next word in the input stream
+ FORGET   ( -- )  forget all definitions after and including the next input
+word
+ EXIT     ( -- )  exit the current word
+ :        ( -- )  start a word definition
+ ;        ( -- )  terminate a word definition
+ DATA     ( -- )  create a word and have it return the address of space after
+it
+ VARIABLE  ( n -- )  create a variable and initialize it to n
+ CONSTANT  ( n -- )  create a constant and set it to n
+ <BUILDS  ( -- )  create a header for a word which will be defined by DOES
+ DOES     ( -- )  set latest word to execute code after DOES then return
+ DOES>    ( -- addr )  same as DOES but leaves child's address is on stack
+
+ ( ==== File Loader: FF emitted to request a line of input ==== )
+ INPUT-LINE  ( -- )  obtain a line from file server
+ LD          ( -- )  ld a file from file server
+
+ ( ==== Version ==== )
+ VERSION  ( -- )  print out version of bot-Forth
+----------
+Forth Interest Group
+Category 18,  Topic 56
+Message 6         Sat Feb 24, 1990
+GARY-S                       at 09:37 EST
+ 
+             
+  PORTED FROM UseNet =>
+              ------
+
+ From: rob@idacom.uucp (Rob Chapman)
+
+ Subject: attention Steve Sheppard part 3
+  ( part 3a of 3a,3b,3c,3d,3e,3f for ForthNet )
+ Message-ID: <1990Feb23.015640.23007@idacom.uucp>
+ Date: 23 Feb 90 01:56:40 GMT
+ Organization: IDACOM Electronics Ltd.
+
+ ( bot-Forth kernel adapted for 68k: Dec 6, 1989  Rob Chapman )
+
+ HEX
+ ( ==== Target status ==== )
+   NO VARIABLE target    ( target definition flag )
+
+ : TARGET  ( -- )  YES target !  ?CR CR ." TARGET definitions: " CR ;
+ : META     ( -- )  NO target !  ?CR CR ." META definitions: "   CR ;
+ : TARGET?  ( -- flag )  target @ ;
+
+ ( ==== Target memory management ==== )
+   ( data stack | return stack | dp | latest | words... )
+   400 CONSTANT origin#                  ( address of start of kernel )
+   DATA tspace 3000 ALLOT                ( 12 kbytes target dict. space )
+        tspace 200 + CONSTANT tdp        ( target dictionary pointer )
+        tspace 202 + CONSTANT tlatest    ( address of latest word )
+       origin# 204 + tdp !  0 tlatest !  ( initial values )
+
+ : T>HOST  ( target address -- host address )  origin# -  tspace + ;
+ : HOST>T  ( host address -- target address )  tspace -  origin# + ;
+
+ : THERE  ( -- target here )  tdp @ ;
+ : TALLOT  ( n -- )  tdp +!  THERE origin# - 2F00 >
+    IF ." target space overflow " ABORT THEN ;
+
+ : TC!  ( n \ taddr -- )  T>HOST C! ;
+ : T!  ( n \ taddr -- )  T>HOST ! ;
+ : TC@  ( target address -- value )  T>HOST C@ ;
+ : T@  ( target address -- value )  T>HOST @ ;
+ : T+!  ( n \ taddr -- )  DUP >R T@ + R> T! ;
+
+ : TC,  ( char -- )  THERE TC!  1 TALLOT ;
+ : T,  ( word -- )  THERE T!  2 TALLOT ;
+ : EVEN  ( -- )  THERE 1 AND IF 0 TC, ENDIF ;
+
+ ( ==== Dictionary searching ==== Header structure: | link | name | code ... |
+)
+ 0 VARIABLE meta-start   ( contains nfa of start of meta compilers )
+
+ : TL>CODE  ( lfa -- cfa )  T>HOST 2 +  COUNT 1F AND +  DUP 1 AND +  HOST>T ; 
+
+ : TC>LINK  ( code -- link )  T>HOST C>LINK HOST>T ;
+
+ : COMPARE  ( string \ name -- flag )  1F SAME? ;
+
+ : TFIND  ( string -- cfa \ yes | -- string \ no )  tlatest @
+    BEGIN DUP WHILE
+      2DUP T>HOST 2 + COMPARE IF NIP  TL>CODE YES  EXIT ENDIF   T@
+    REPEAT ;
+ : META-FIND  ( string -- cfa \ yes | -- string \ no )  latest  meta-start @
+>R
+    BEGIN @ DUP R - WHILE
+      2DUP  2 +  COMPARE IF SWAP  R> 2DROP  L>CODE  YES EXIT ENDIF
+    REPEAT  R> 2DROP  NO ; 
+
+ META  LATEST meta-start !       ( record beginning of meta compilers )
+ ( ==== Mini assembler for 68k ==== )
+ ( ==== Definitions for assembler ==== )
+ : AHERE  ( -- a )  TARGET? IF THERE  ELSE HERE ENDIF ;
+ : A!  ( n \ a -- )  TARGET? IF T!  ELSE ! ENDIF ;
+ : A,  ( word -- )  TARGET? IF T,  ELSE , ENDIF ;
+ : A+!  ( n \ a -- )  TARGET? IF T+! ELSE +! ENDIF ;
+
+ ( ==== Register and mode definitions ==== )
+ : **  ( n \ m -- n )  FOR 2* NEXT ;
+ : MODE  ( mode -- )  <BUILDS  8000 OR  3 **  DUP 3 ** OR ,
+    DOES ( reg -- )  DUP 9 ** OR  R> @ OR  CONSTANT IMMEDIATE ;
+
+    0 MODE Dn       1 MODE An        2 MODE An@        3 MODE An@+
+         0 Dn alu        0 An ptr         0 An@ ptr@        0 An@+ ptr@+
+         5 Dn index      5 An page        5 An@ page@       5 An@+ page@+
+         6 Dn next       6 An sp          6 An@ sp@         6 An@+ sp@+
+         7 Dn top        7 An rp          7 An@ rp@         7 An@+ rp@+
+
+    4 MODE An-@     5 MODE dAn@      6 MODE +An@       7 MODE Other
+         0 An-@ ptr-@    5 dAn@ dpage@    5 +An@ +page@     0 Other lit@
+         6 An-@ sp-@                                        2 Other dpc@
+         7 An-@ rp-@                                        4 Other lit
+
+ 8 base !
+ ( ==== Masks to extract mode and register information ==== )
+ : UPPER  ( n -- n )  7700 AND ;
+ : LOWER  ( n -- n )  0077 AND ;
+ : MODES  ( n -- n )  0770 AND ;
+ : REGS   ( n -- n )  7007 AND ;
+
+ HEX
+ ( ==== Math ==== )
+ : extb  ( r -- )  REGS LOWER  4880 OR A, ; IMMEDIATE
+ : extw  ( r -- )  REGS LOWER  48C0 OR A, ; IMMEDIATE
+ : not  ( r -- )  LOWER  4640 OR A, ; IMMEDIATE
+ : neg  ( r -- )  LOWER  4440 OR A, ; IMMEDIATE
+ : ALU  ( n -- )  <BUILDS , IMMEDIATE
+    DOES> ( r \ r \ a -- )  @ >R  DUP MODES ( not data?)
+      IF rp LITERAL  OVER XOR  MODES ( not areg? )
+         IF SWAP 100  ELSE R 80 AND ( long?)  IF 140 ELSE 80 THEN ENDIF  R> OR
+>R
+
+         8040 ALU or             C040 ALU and
+         8000 ALU orb            C000 ALU andb
+         9040 ALU sub            D040 ALU add
+         9080 ALU subl
+
+ : eor  ( r \ r -- )    LOWER  SWAP  REGS UPPER OR  B140 OR A, ; IMMEDIATE
+ : addql  ( n \ r -- )  LOWER  SWAP 7 AND  9 ** OR  5080 OR  A, ; IMMEDIATE
+ : subq  ( n \ r -- )  LOWER  SWAP 7 AND  9 ** OR  5140 OR  A, ; IMMEDIATE
+
+ : 1SHIFT  ( n -- )  <BUILDS 1 9 ** OR , IMMEDIATE
+    DOES  ( r -- )  REGS LOWER  R> @ OR A, ;
+     E340 1SHIFT asl     E240 1SHIFT asr         E248 1SHIFT lsr
+
+ : mulu  ( s \ d -- )  REGS UPPER  SWAP LOWER OR  C0C0 OR A, ; IMMEDIATE
+ : divu  ( s \ d -- )  REGS UPPER  SWAP LOWER OR  80C0 OR A, ; IMMEDIATE
+----------
+Forth Interest Group
+Category 18,  Topic 56
+Message 7         Sat Feb 24, 1990
+GARY-S                       at 09:39 EST
+ 
+             
+  PORTED FROM UseNet =>
+              ------
+
+ From: rob@idacom.uucp (Rob Chapman)
+
+ Subject: attention Steve Sheppard part 3
+  ( part 3b of 3a,3b,3c,3d,3e,3f for ForthNet )
+ Message-ID: <1990Feb23.015640.23007@idacom.uucp>
+ Date: 23 Feb 90 01:56:40 GMT
+ Organization: IDACOM Electronics Ltd.
+
+ ( ==== Comparison ==== )
+   000 CONSTANT always
+   500 CONSTANT carry
+   600 CONSTANT notzero
+   700 CONSTANT zero
+   B00 CONSTANT minus
+   C00 CONSTANT ge
+   D00 CONSTANT lt
+
+ : difb  ( r \ r -- )  DUP MODES ( addr? ) ?ERROR  B000
+    SWAP REGS UPPER OR  SWAP LOWER OR  A, ; IMMEDIATE
+ : dif  ( r \ r -- )  DUP MODES ( addr? ) IF B0C0  ELSE B040 ENDIF
+    SWAP REGS UPPER OR  SWAP LOWER OR  A, ; IMMEDIATE
+ : scc  ( r \ c -- )  SWAP LOWER  OR  50C0 OR A, ; IMMEDIATE
+ : test  ( r -- )  LOWER  4A40 OR A, ; IMMEDIATE
+ : testb  ( r -- )  LOWER  4A00 OR A, ; IMMEDIATE
+ : invertz  ( -- )  0A3C A,  4 A, ; IMMEDIATE  ( lit ccr eorib [ 40 , ] )
+
+ ( ==== Data movement ==== )
+ : swap  ( dn -- )  REGS LOWER  4840 OR A, ; IMMEDIATE
+ : moveb  ( r \ r -- )  UPPER  SWAP LOWER OR  1000 OR A, ; IMMEDIATE
+ : move   ( r \ r -- )  UPPER  SWAP LOWER OR  3000 OR A, ; IMMEDIATE
+ : movel  ( r \ r -- )  UPPER  SWAP LOWER OR  2000 OR A, ; IMMEDIATE
+ : moveq  ( n \ r -- )  REGS UPPER  7000 OR  SWAP FF AND OR A, ; IMMEDIATE
+ : exg  ( r \ r -- )  2DUP XOR MODES  ( mixed address and data modes? )
+    IF OVER MODES ( addr? )  IF SWAP ( must be: exg dn,an) ENDIF  C188
+    ELSE DUP MODES  C140 OR ENDIF
+    >R  LOWER  SWAP UPPER OR  REGS  R> OR A, ; IMMEDIATE
+
+ ( ==== Page relative data movement ==== )
+ : rd,  ( r \ d -- )  FF AND  SWAP C **  OR  A, ; IMMEDIATE
+ : r,  ( r -- )  0 \ rd, ; IMMEDIATE
+ : cfetch  ( r \ r -- )      \ +page@  SWAP  \ moveb     \ r, ; IMMEDIATE
+ : cstore  ( r \ r -- )  >R  \ +page@        \ moveb  R> \ r, ; IMMEDIATE
+ : fetch  ( r \ r -- )       \ +page@  SWAP  \ move     \ r, ; IMMEDIATE
+ : store  ( r \ r -- )   >R  \ +page@        \ move  R> \ r, ; IMMEDIATE
+ : pea  ( r -- )  \ +page@ LOWER  4840 OR A,  \ r, ; IMMEDIATE
+ : leal  ( r \ r -- )  REGS UPPER  SWAP LOWER OR  41C0 OR  A, ; IMMEDIATE
+ : lea  ( r \ r -- )  \ +page@ SWAP  \ leal  \ r, ; IMMEDIATE
+
+ ( ==== Program counter ==== )
+ : nop  ( -- )  4E71 A, ; IMMEDIATE
+ : jump  ( r -- )  LOWER  4EC0 OR A, ; IMMEDIATE
+ : jsr   ( r -- )  LOWER  4E80 OR A, ; IMMEDIATE
+ : bsr   ( disp -- )  FF AND  6100 OR A, ; IMMEDIATE
+ : rts  ( -- )  4E75 A, ; IMMEDIATE
+ : bcc  ( cc -- )  6000 OR A, ;
+
+ : ?long  ( n -- n )  DUP ABS 7F U> IF ?CR ." long " ENDIF ;
+ : bcc> ( cc -- a )  THERE  SWAP bcc ;
+ : <bcc ( a \ cc -- )  SWAP THERE 2 +  - ?long  FF AND  OR  bcc ;
+
+ : begin  ( -- a )  THERE ;
+ : <br   ( a -- )  always <bcc ;
+ : <0br  ( a -- )  zero <bcc ;
+ : br>  ( -- a )  always bcc> ;
+ : if  ( -- a )  zero bcc> ;
+ : endif  ( a -- )  THERE OVER 2 +  - ?long  FF AND  SWAP A+! ;
+ : <dbr ( a \ dr -- )  REGS LOWER  51C8 OR A,  THERE - A, ;
+
+ ( ==== Tools ==== )
+ : PUSH  ( -- n )  R> @+ >R ;
+ : >alu  ( n -- n )  PUSH top alu move A, ;
+ : alu>  ( n -- m )  PUSH alu top move A, ;
+
+ ( ==== Automatic page register setting by using pc ==== )
+ : RAM  ( -- )  PUSH dpc@ page leal T,  THERE NEGATE T, ; SMUDGE
+
+ ( ==== Meta Threader ==== )
+   0 VARIABLE last  ( address of last compiled instruction )
+
+ : T'  ( -- cfa )  BL WORD  HERE TFIND 0= ?ERROR  \ LITERAL ; IMMEDIATE
+ : TMEASURE  ( -- )  tlatest @  THERE OVER TL>CODE - 2/  SWAP 2 - T+! ;
+
+ : TCALLED  ( -- )  80 tlatest @ 2 - T>HOST  +BITS ;
+ : TCOMPILE  ( cfa -- )  T>HOST  DUP C>LINK 2 - @  DUP 5 U< ( # to inline)
+    IF  FOR  @+  SWAP T,  NEXT  DROP
+    ELSE DROP  HOST>T  DUP THERE 2 + -  DUP ABS 80 U<
+         IF \ bsr  DROP  TCALLED  ELSE  DROP  PUSH dpage@ jsr T,  T, THEN
+    ENDIF ;
+ : TINSERT  ( string -- )  TFIND 0= ?ERROR  TCOMPILE ;
+ : TLITERAL  ( n -- )  " DUP" TINSERT  DUP ABS 80 U<
+    IF \ top \ moveq  ELSE  PUSH lit top move  T,  T, ENDIF ;
+ : ]  ( -- )  TARGET? 0= IF ] EXIT ENDIF  0 last !
+    BEGIN  BEGIN  BL WORD  HERE  DUP C@  WHILE  META-FIND 
+       IF EXECUTE  0
+       ELSE THERE  SWAP TFIND
+            IF TCOMPILE  ELSE NUMBER TLITERAL ENDIF
+       ENDIF  last !
+    REPEAT DROP  INPUT-LINE  0 in !  AGAIN ;
+
+ ( ==== Target word creators ==== )
+ : .NAME  ( lfa -- )  2 + COUNT 1F AND  out @ OVER + 2 + 4E >
+    IF ?CR ENDIF  TYPE 2 SPACES ;
+ : THEADER  ( -- )  0 T,  THERE  tlatest @ T,  tlatest !
+    BL WORD  HERE COUNT DUP>R  80 OR TC,  THERE T>HOST  R CMOVE  R> TALLOT
+EVEN
+    tlatest @ T>HOST .NAME ;
+
+ : CONSTANT  ( n -- )  TARGET?
+    IF THEADER  TLITERAL  TMEASURE  PUSH rts T,
+    ELSE CONSTANT ENDIF ;
+ : VARIABLE  ( n -- )  TARGET?
+    IF THEADER  " DUP" TINSERT
+       PUSH lit top move T, THERE 0 T,  TMEASURE  PUSH rts T,  THERE SWAP T! 
+T,
+    ELSE VARIABLE ENDIF ;
+ : QUEUE  ( #words -- )  TARGET? 0= IF QUEUE EXIT ENDIF
+    0 VARIABLE -2 TALLOT  THERE 6 +  DUP T, T,  1 + 2*  DUP THERE + T,  TALLOT
+;
+    ( Queues: | >insert | >remove | >end | queue... | )
+
+ : V,  ( -- )  \ T'  DUP TC>LINK  2 - T@  2*  2 +  +  T, ; ( compile var
+address)
+    IF T@  DUP FF00 AND  6100 =
+       IF DROP  1 last @ T>HOST     -BITS  TCALLED  EXIT ENDIF
+       FFC0 AND  4E80 =  IF      40 last @ T>HOST 1 + +BITS  TCALLED  EXIT
+ENDIF
+    ENDIF  PUSH rts T, ; 
+ : :  ( -- )  TARGET? IF THEADER  ]  ELSE \ : ENDIF ; 
+ : ;  ( -- )  TMEASURE  TEXIT  R>DROP ; SMUDGE
+ : [  ( -- )  R>DROP ; SMUDGE
+ : \  ( -- )  BL WORD  HERE TFIND IF  TCOMPILE  ELSE ABORT  ENDIF ; SMUDGE
+ : EXIT  ( -- )  TEXIT ; SMUDGE
+ : '  ( -- )  \ T' TLITERAL ; SMUDGE
+ : (  ( -- )  \ ( ; SMUDGE
+ : IMMEDIATE  ( -- )
+    TARGET? IF 40  tlatest @  2 +  T>HOST  +BITS  ELSE IMMEDIATE ENDIF ;
+----------
+Forth Interest Group
+Category 18,  Topic 56
+Message 8         Sat Feb 24, 1990
+GARY-S                       at 09:41 EST
+ 
+             
+  PORTED FROM UseNet =>
+              ------
+
+ From: rob@idacom.uucp (Rob Chapman)
+
+ Subject: attention Steve Sheppard part 3
+  ( part 3c of 3a,3b,3c,3d,3e,3f for ForthNet )
+ Message-ID: <1990Feb23.015640.23007@idacom.uucp>
+ Date: 23 Feb 90 01:56:40 GMT
+ Organization: IDACOM Electronics Ltd.
+
+ TARGET
+ ( ==== Stacks ==== )
+ : SP!  ( ? -- )  lit alu move [ origin# 100 + T, ]  alu sp lea ;
+ : RP!  ( -- )    lit alu move [ origin# 1FC + T, ]  alu rp lea ;
+ : DEPTH  ( -- n )  sp alu movel  page alu subl  next sp-@ move  top next
+movel
+    lit top move  [ origin# 100 + T, ]  alu top sub  top asr ;
+
+ ( ==== Stack Operators ==== )
+ : SWAP  ( a \ b -- b \ a )  top next exg ;
+
+ : NUP  ( a \ b -- a \ a \ b )  next sp-@ move ;
+ : TUCK  ( a \ b -- b \ a \ b )  top sp-@ move ;
+ : DUP  ( n -- n \ n )  NUP  top next movel ;
+ : OVER  ( a \ b -- a \ b \ a )  SWAP TUCK ;
+
+ : NIP  ( a \ b -- b )  sp@+ next move ;
+ : DROP  ( n -- )  next top movel  NIP ;
+
+ : 2DUP  ( a \ b -- a \ b \ a \ b )  NUP TUCK ;
+ : 2DROP  ( a \ b -- )  sp@+ top move  NIP ;
+ : ROT  ( a \ b \ c -- b \ c \ a )
+    sp@ alu move  next sp@ move  top next movel  alu top movel ;
+
+ META
+ ( ==== Control structures ==== )
+ : IF  ( -- addr )  >alu  T' DROP TCOMPILE  PUSH alu test T, if ; SMUDGE
+ : ENDIF  ( addr -- )  endif ; SMUDGE
+ : ELSE  ( addr -- addr )  br>  SWAP endif ; SMUDGE
+ : THEN  ( addr -- )  endif ; SMUDGE
+
+ : BEGIN  ( -- addr )  begin ;  SMUDGE
+ : UNTIL  ( addr -- )  >alu  T' DROP TCOMPILE  PUSH alu test T, <0br ; SMUDGE
+ : AGAIN  ( addr -- )  <br ; SMUDGE
+
+ ( BEGIN ... top test  if DROP  ...  <br endif  DROP )
+ ( BEGIN ...        WHILE       ...        REPEAT      )
+ : WHILE  ( -- addr )  >alu  if  T' DROP TCOMPILE ; SMUDGE
+ : REPEAT ( addr \ addr -- )  SWAP <br  endif  T' DROP TCOMPILE ; SMUDGE
+
+ : FOR  ( -- a )  PUSH index rp-@ move T,  PUSH top index move T,
+    T' DROP TCOMPILE   br> ; SMUDGE
+ : NEXT  ( a -- )  DUP endif
+    2 +  index LITERAL  <dbr  PUSH rp@+ index move A, ; SMUDGE
+
+ TARGET
+ ( ==== Return stack primitives ==== )
+ : DUP>R  ( n -- n )  top pea ;
+ : R>DROP  ( -- )  [ 4 ] rp addql ;
+ : >R  ( n -- )   DUP>R  DROP ;
+ : R>  ( -- n )  DUP  rp@+ top movel  page top sub ;
+ : R   ( -- n )  DUP  rp@  top movel  page top sub ;
+
+ : EXECUTE  ( cfa -- )  >alu  DROP  +page@ jsr  alu r, ;
+
+ ( ==== Arithmetic operators ==== )
+ : +  ( a \ b -- c )  next top add  NIP ;
+ : -  ( a \ b -- c )  top next sub  DROP ;
+ : AND  ( a \ b -- c )  next top and  NIP ;
+ : OR   ( a \ b -- c )  next top or   NIP ;
+ : XOR  ( a \ b -- c )  next top eor  NIP ;
+
+ : 2*  ( n -- m )  top asl ;
+ : 2/  ( n -- m )  top asr ;
+ : U2/  ( n -- n )  top lsr ;
+ : NEGATE  ( n -- -n )  top neg ;
+ : NOT  ( n -- m )  top not ;
+
+ META
+ ( ==== Optimizers ==== )
+ : SEQ  ( n -- )  <BUILDS , ( # of bytes to compare )
+    DOES> ( seq -- f )  NO >R  last @ ?DUP
+    IF T>HOST  SWAP @+ SWAP  R> SWAP FOR  >R  DIFFER?  R> OR  NEXT  0=  NIP
+NIP
+    ELSE DROP  R> ENDIF ;
+
+   6 SEQ LIT?  next sp-@ move  top next movel  lit top move
+   5 SEQ SLIT? next sp-@ move  top next movel  0 top moveq
+
+ : UNLIT?  ( -- [n] \ f )  SLIT?  IF  THERE 1 - TC@  YES  -6 TALLOT  EXIT
+ENDIF
+    LIT?  IF  THERE 2 - T@  YES  -8 TALLOT  EXIT ENDIF  NO ;
+
+ : +  ( -- )  UNLIT?
+    IF DUP 9 U<  IF  \ top \ addql  ELSE  PUSH lit top add T,  T, ENDIF
+    ELSE  T' + TCOMPILE  ENDIF ; SMUDGE
+ : -  ( -- )  UNLIT?
+    IF DUP 9 U<  IF  \ top \ subq   ELSE  PUSH lit top sub T,  T, ENDIF
+    ELSE  T' - TCOMPILE  ENDIF ; SMUDGE
+ : AND  ( -- )  UNLIT?
+    IF PUSH lit top and T,  T,  ELSE  T' AND TCOMPILE  ENDIF ; SMUDGE
+
+ TARGET
+ ( ==== Memory primitives ==== )
+ : @  ( a -- n )  top top fetch ;
+ : !  ( n \ a -- )  next top store  2DROP ;
+ : C@  ( a -- n )  top top cfetch  FF AND ;
+ : C!  ( n \ a -- )  next top cstore  2DROP ;
+
+ META
+ ( ==== Memory optimizers ==== )
+ : @  ( -- )  UNLIT?
+    IF T' DUP TCOMPILE  PUSH dpage@ top move T,  T,
+    ELSE T' @ TCOMPILE ENDIF ; SMUDGE
+ : !  ( -- )  UNLIT?
+    IF PUSH top dpage@ move T,  T,  T' DROP  ELSE T' ! ENDIF  TCOMPILE ;
+SMUDGE
+ : C@  ( -- )  UNLIT?
+    IF T' DUP TCOMPILE  0 \ top \ moveq  PUSH dpage@ top moveb T,  T,
+    ELSE T' C@ TCOMPILE ENDIF ; SMUDGE
+ : C!  ( -- )  UNLIT?
+    IF PUSH top dpage@ moveb T,  T,  T' DROP  ELSE T' C! ENDIF  TCOMPILE ;
+SMUDGE
+----------
+Forth Interest Group
+Category 18,  Topic 56
+Message 9         Sat Feb 24, 1990
+GARY-S                       at 09:44 EST
+ 
+             
+  PORTED FROM UseNet =>
+              ------
+
+ From: rob@idacom.uucp (Rob Chapman)
+
+ Subject: attention Steve Sheppard part 3
+  ( part 3d of 3a,3b,3c,3d,3e,3f for ForthNet )
+ Message-ID: <1990Feb23.015640.23007@idacom.uucp>
+ Date: 23 Feb 90 01:56:40 GMT
+ Organization: IDACOM Electronics Ltd.
+
+ TARGET
+ ( ==== Incrementing/Decrementing memory operators ==== )
+ : @+  ( a -- n \ a+ )  NUP  top next fetch  2 + ;
+ : @-  ( a -- n \ a- )  NUP  top next fetch  2 - ;
+ : C@+ ( a -- c \ a+ )  NUP  [ 0 ] next moveq  top next cfetch  1 + ;
+ : C@- ( a -- c \ a- )  NUP  [ 0 ] next moveq  top next cfetch  1 - ;
+ : !+  ( n \ a -- a+ )  next top store  NIP  2 + ;
+ : !-  ( n \ a -- a- )  next top store  NIP  2 - ;
+ : C!+ ( c \ a -- a+ )  next top cstore  NIP  1 + ;
+ : C!- ( c \ a -- a- )  next top cstore  NIP  1 - ;
+
+ ( ==== signed multiply and unsigned divide ==== )
+ : /MOD  ( n \ m -- rem \ quot )  next swap  next next eor  next swap
+    top next divu  next top movel  next swap ;
+ : /  ( m \ n -- quot )  next swap  next next eor  next swap
+    top next divu  DROP ;
+ : MOD  ( n \ m -- rem )  /  top swap ;
+
+ : *  ( n \ m -- nm* )  next top mulu  NIP ;
+
+ ( ==== Comparison ==== )
+    0 CONSTANT NO
+   -1 CONSTANT YES
+
+ : 0=  ( n -- f )  top test  top zero scc  top extb ;
+ : 0<  ( n -- f )  top test  top minus scc  top extb ;
+
+ : =   ( n \ m -- flag )  top next dif  top zero scc   top extb  NIP ;
+ : <   ( n \ m -- flag )  top next dif  top lt scc     top extb  NIP ;
+ : >   ( n \ m -- flag )  next top dif  top lt scc     top extb  NIP ;
+ : U<  ( n \ m -- flag )  top next dif  top carry scc  top extb  NIP ;
+ : U>  ( n \ m -- flag )  next top dif  top carry scc  top extb  NIP ;
+
+ : ABS  ( n -- n )  top test  ge bcc>  top neg  endif ;
+ : MAX  ( n \ m -- p )  top next dif  lt bcc>  DROP  EXIT  endif  NIP ;
+ : MIN  ( n \ m -- p )  next top dif  lt bcc>  DROP  EXIT  endif  NIP ;
+ : ?DUP  ( n -- [n] \ n )  top test  if DUP endif ;
+
+ ( ==== Memory Manipulation ==== )
+   20 CONSTANT BL
+
+ : COUNT  ( addr -- addr' \ count )  C@+ SWAP ;
+ : CMOVE  ( s \ d \ count -- )  next ptr lea  NIP  page alu movel  next page
+lea
+    FOR  page@+ ptr@+ moveb  NEXT  alu page movel  DROP ;
+ : <CMOVE  ( src \ dest \ count -- )  >R  SWAP R 1 - +  SWAP R 1 - +
+    R> FOR >R  C@- SWAP  R> C!-  NEXT 2DROP ;
+ : MOVE  ( src \ dest \ count -- )  FOR >R @+ SWAP R> !+ NEXT 2DROP ;
+
+ : FILL  ( addr \ count \ char -- )
+    >alu  DROP  FOR  alu next cstore  [ 1 ] next addql  NEXT  2DROP ;
+ : ERASE ( addr \ count -- )  0 FILL ;
+ : BLANKS ( addr \ count -- )  BL FILL ;
+
+ ( ==== Memory Management ==== )
+   origin# 200 + CONSTANT dp               ( dictionary pointer )
+
+ : +!  ( n \ addr -- )  next +page@ add  top r,  2DROP ;
+
+ : HERE  ( -- addr )  dp @ ;
+ : ALLOT  ( n -- )  dp +! ;
+
+ : ,  ( n -- )  HERE !  2 ALLOT ;
+ : C,  ( n -- )  HERE C!  1 ALLOT ;
+ : EVEN  ( -- )  HERE 1 AND IF 0 C, ENDIF ;
+
+ ( ==== Header Status Bits ==== )
+   origin# 202 + CONSTANT latest
+
+ : +BITS  ( bits \ addr -- )  next +page@ orb  top r,  2DROP ;
+ : -BITS  ( bits \ addr -- )  next not  next +page@ andb  top r,  2DROP ;
+
+ : LATEST ( -- nfa )  latest @ ;
+ : IMMEDIATE ( -- )  40 LATEST 2 + +BITS ;
+ : SMUDGE    ( -- )  20 LATEST 2 + +BITS ;
+ : RECURSE   ( -- )  20 LATEST 2 + -BITS ; IMMEDIATE
+
+ ( ==== State ==== )
+  0 VARIABLE compile     ( set to 80 if compiling; immediate words are C0 )
+
+ : ]  ( -- )  80 compile ! ;
+ : [  ( -- )  0 compile ! ; IMMEDIATE
+
+ ( ==== Queues ===== )
+ : >Q  ( n \ queue -- )  top alu fetch
+    4 +  [ 2 ] alu subq  top alu dif
+    if  alu +page@ move  top [ -4 ] rd,
+    ELSE  +page@ +page@ move  top r,  top [ -4 ] rd,  ENDIF
+    next +page@ move  alu [ 2 ] rd,  2DROP ;
+ : Q>  ( queue -- n )  +page@ alu move  top [ 2 ] rd,
+    4 +  [ 2 ] alu subq  top alu dif
+    if  alu +page@ move  top [ -2 ] rd,
+    ELSE  +page@ +page@ move  top r,  top [ -2 ] rd,  ENDIF
+    +page@ top move  alu [ 2 ] rd, ;
+ : Q  ( queue -- n )  +page@ top move  top [ 2 ] rd,  @ ;
+
+ : 0Q  ( queue -- )  +page@ +page@ move  top r,  top [ 2 ] rd,  DROP ;
+ : Q?  ( queue -- n )
+    @+ @+ >R  SWAP -  DUP 0< IF  R @  R> -  + 2/ EXIT ENDIF  R>DROP  2/ ;
+----------
+Forth Interest Group
+Category 18,  Topic 56
+Message 10        Sat Feb 24, 1990
+GARY-S                       at 09:46 EST
+ 
+             
+  PORTED FROM UseNet =>
+              ------
+
+ From: rob@idacom.uucp (Rob Chapman)
+
+ Subject: attention Steve Sheppard part 3
+  ( part 3e of 3a,3b,3c,3d,3e,3f for ForthNet )
+ Message-ID: <1990Feb23.015640.23007@idacom.uucp>
+ Date: 23 Feb 90 01:56:40 GMT
+ Organization: IDACOM Electronics Ltd.
+
+ ( ==== BARON Tasker ==== )
+   80 QUEUE peasantq     ( maximum of 80H peasants )
+
+ : >BARON  ( cfa -- )  peasantq >Q ;
+ : BARON  ( -- )  peasantq Q> EXECUTE ;
+
+ : KILL  ( cfa -- )  peasantq  DUP Q?
+    FOR  DUP>R Q>  2DUP - IF  R >Q  ELSE DROP  ENDIF  R>  NEXT  2DROP ;
+ : RUN  ( cfa -- )  DUP KILL  >BARON ;
+
+ ( ==== Forth character I/O ==== )
+   100 QUEUE keyq   ( 256; enough for one string )
+   100 QUEUE emitq  ( 256; enough for one string )
+     0 VARIABLE out ( characters output since last cr )
+
+ : KEY?  ( -- flag )  keyq Q? ;
+ : KEY   ( -- char )  BEGIN  KEY? 0=  WHILE  BARON  REPEAT  keyq Q> ;
+
+ : ?WAIT  ( -- )  BEGIN emitq Q? 100 = WHILE BARON  REPEAT ;
+ : EMIT  ( char -- )  >R  ?WAIT  out @
+    R A -  IF  R 8 =  IF  1 -  ELSE  R D =  IF  DROP 0  ELSE  1 +
+           ENDIF      ENDIF                 ENDIF  out !  R> emitq >Q ;
+
+ : CR  ( -- )  D EMIT  A EMIT ;
+ : SPACE ( -- )  BL EMIT ;
+ : SPACES  ( n -- )  0 MAX  FOR SPACE NEXT ;
+ : TYPE ( addr \ count -- )  FOR  C@+  SWAP EMIT  NEXT  DROP ;
+
+ ( ==== Numerical Output ==== )
+   10 VARIABLE base
+
+ : HEX  ( -- )  10 base ! ;
+ : BIN  ( -- )  2 base ! ;
+ : DECIMAL  ( -- )  A base ! ;
+
+ : PAD ( -- addr )  HERE 50 + ;
+ : HOLD  ( char -- )  -1 PAD +!  PAD @ C! ;
+
+ : <#  ( -- )  PAD DUP ! ;
+ : #>  ( n -- addr \ count )  DROP PAD @ PAD OVER - ;
+ : SIGN  ( m \ n -- n )  SWAP 0< IF 2D HOLD ENDIF ;
+ : #  ( n -- n )  base @ /MOD  SWAP  9 OVER <  IF 7 + ENDIF  30 +  HOLD ;
+ : #S  ( n -- n )  BEGIN # DUP 0= UNTIL ;
+
+ : .R  ( n \ m -- )  >R  <# base @ A = IF DUP ABS #S SIGN ELSE #S ENDIF #>
+    R> OVER - SPACES TYPE ;
+ : .  ( n -- )  0 .R SPACE ;
+
+ ( ==== Parser ==== )
+   0 VARIABLE tib  52 TALLOT  ( tib points to terminal input buffer )
+   0 VARIABLE in              ( index into TIB )
+
+ : INPUT  ( -- addr )  DUP  dpage@ top move  V, tib  dpage@ top add  V, in ;
+ : +IN  ( addr -- )  dpage@ ptr move  V, tib  dpage@ ptr add  V, in  ptr top
+sub
+    lit alu move  V, in  top +page@ add  alu r,  DROP ;
+
+ : SKIP  ( char -- )  INPUT  top ptr lea
+    begin  ptr@+ alu moveb  if  next alu difb  invertz  endif  notzero <bcc
+    page ptr subl  [ 1 ] ptr subq  ptr top move  NIP  +IN ;
+ : SCAN  ( char -- )  INPUT  top ptr lea
+    begin  ptr@+ alu moveb  if  next alu difb  endif  notzero <bcc
+    page ptr subl  alu testb  notzero bcc>  [ 1 ] ptr subq  endif
+    ptr top move  NIP  +IN ;
+
+ : PARSE  ( char -- )  INPUT  top ptr lea  HERE  NIP
+    begin  ptr@+ alu moveb
+           if  1 +  alu top cstore  next alu difb  endif
+    notzero <bcc
+    alu testb  if 1 -  ELSE  [ 1 ] ptr subq  endif
+    HERE -  HERE C!  page ptr subl  ptr top move  +IN ;
+
+ : WORD  ( char -- )  DUP SKIP PARSE ;
+ : (  ( -- )  29 SCAN ; IMMEDIATE
+
+ ( ==== Word compiler ==== )
+ : PUSH  ( -- n )  DUP  lit top move ;
+ : C>LINK  ( code -- link )  BEGIN 2 - DUP C@  80 AND  UNTIL  2 - ;
+ : L>CODE  ( link -- code )  2 +  C@+ SWAP  1F AND  +  EVEN ;
+ : COMPILE  ( cfa -- )  DUP C>LINK 2 - @  DUP 6 U< ( # to inline)
+    IF  FOR  @+ SWAP ,  NEXT  DROP  ELSE  DROP  \ PUSH dpage@ jsr  ,  , ENDIF
+;
+
+ ( ==== Strings ==== )
+ : QUOTE  ( -- )  22 PARSE  HERE C@ 1 + ALLOT  EVEN ;
+ : (")  ( -- addr )  R  DUP C@ 2 +  -2 AND  R> + >R ;
+ : "  ( -- [addr] )  compile @
+    IF ' (") COMPILE  ELSE HERE ENDIF  QUOTE ; IMMEDIATE
+ : (.")  ( -- )  R COUNT  DUP 2 +  -2 AND  R> + >R  TYPE ;
+ : ."  ( -- )  compile @ IF ' (.") COMPILE  QUOTE
+    ELSE 22 PARSE  HERE COUNT TYPE  ENDIF ; IMMEDIATE
+
+ META
+ : ."  ( -- )  T' (.") TCOMPILE  22 WORD HERE
+    COUNT >R  R TC,  THERE T>HOST R CMOVE  R> TALLOT  EVEN ; SMUDGE
+
+ TARGET
+ ( ==== Errors ==== )
+ : ABORT  ( -- )  RP! ;
+ : ERROR  ( -- )  HERE COUNT TYPE  ." <- eh?" ABORT ;
+ : ?ERROR  ( flag -- )  IF ERROR ENDIF ;
+
+ ( ==== Number Conversion ==== )
+ : DIGIT  ( char -- n \ flag )
+    30 -  DUP 9 >  IF 7 -  DUP A <  OR ENDIF  DUP base @ U< ;
+ : NUMBER  ( string -- n )  COUNT >R  COUNT 2D = TUCK
+    IF R> 1 - >R  ELSE 1 -  ENDIF  0 SWAP
+    R> FOR C@+ >R  DIGIT NOT ?ERROR  SWAP base @ * +  R> NEXT DROP
+    SWAP IF NEGATE ENDIF ;
+
+ ( ==== Dictionary Searching ==== )
+ : C>LINK  ( code -- link )  BEGIN 2 - DUP C@  80 AND  UNTIL  2 - ;
+ : L>CODE  ( link -- code )  2 +  C@+ SWAP  1F AND +  DUP 1 AND + ;
+
+ : DIFFER?  ( a \ a -- a+ \ a+ \ f )
+    +page@ alu moveb  next r,  [ 1 ] next addql  DUP
+    +page@ top moveb  next r,  [ 1 ] next addql  alu top eor  top extb ;
+ : BIT-DIFFER?  ( a \ a \ mask -- a+ \ a+ \ f )  >R  DIFFER?  R> AND ;
+ : SAME?  ( string \ name \ mask -- flag )  BIT-DIFFER? IF 2DROP NO EXIT ENDIF
+    OVER 1 - C@ 
+    FOR  DIFFER?  IF 2DROP  NO  rp@+ index move  EXIT  ENDIF  NEXT  2DROP YES
+;
+ : COMPARE  ( string \ name -- flag )  3F SAME? ;
+
+ : SEARCH?  ( string \ >list -- lfa \ yes | -- string \ no )  
+    BEGIN @ ?DUP WHILE  2DUP 2 + COMPARE  IF NIP YES EXIT ENDIF  REPEAT  NO ;
+
+ : FIND?  ( -- cfa \ status | -- string \ no )  BL WORD
+    HERE latest SEARCH?  DUP IF DROP  DUP L>CODE  SWAP 2 + C@  E0 AND  ENDIF ;
+ : ?FIND  ( -- addr )  FIND? 0= ?ERROR ;
+
+ ( ==== Interpreter ==== )
+ : \  ( -- )  ?FIND  COMPILE ; IMMEDIATE
+ : LITERAL  ( n -- )  compile @ IF ' PUSH COMPILE  , ENDIF ; IMMEDIATE
+
+ : '  ( -- pfa )  ?FIND  \ LITERAL ; IMMEDIATE
+
+ : INTERPRET  ( -- )
+    BEGIN
+        BEGIN FIND? ?DUP WHILE
+          compile @ = IF COMPILE  ELSE EXECUTE ENDIF
+        REPEAT
+    DUP C@ WHILE  NUMBER \ LITERAL  REPEAT  DROP ;
+----------
+Forth Interest Group
+Category 18,  Topic 56
+Message 11        Sat Feb 24, 1990
+GARY-S                       at 09:48 EST
+ 
+             
+  PORTED FROM UseNet =>
+              ------
+
+ From: rob@idacom.uucp (Rob Chapman)
+
+ Subject: attention Steve Sheppard part 3
+  ( part 3f of 3a,3b,3c,3d,3e,3f for ForthNet )
+ Message-ID: <1990Feb23.015640.23007@idacom.uucp>
+ Date: 23 Feb 90 01:56:40 GMT
+ Organization: IDACOM Electronics Ltd.
+
+ ( ==== Key collector ==== )
+ : ?CR  ( -- )  dpage@ test V, out  if CR endif ;
+ : PROMPT  ( -- )  ?CR  compile @ IF ."    : "  ELSE ." 68k: " ENDIF ;
+ : PREPARE  ( key -- key )  DUP 1A >
+    IF out @ 4E <  IF DUP INPUT C!+ +IN  ELSE DROP 7 ENDIF  EXIT ENDIF
+    DUP D = IF DROP 0  0 INPUT C!  EXIT ENDIF
+    DUP 8 = IF in @ ?DUP  IF 1 - in !  ELSE DROP 7 ENDIF  EXIT ENDIF
+    DROP 7 ;
+ : COLLECTOR  ( -- )
+    KEY? IF KEY PREPARE  ?DUP
+            IF EMIT  ELSE  SPACE  0 in !  INTERPRET 0 in !  PROMPT  ENDIF
+         ENDIF  ' COLLECTOR >BARON ;
+
+ ( ==== SIO access on page 1 ==== )
+ : SIO  ( -- )  lit page movel [ 1 T, tspace T, ( insert real sio addr here) ]
+
+ : SIO@  ( a -- c )  SIO  C@  RAM ;
+ : SIO!  ( c \ a -- )  SIO  C!  RAM ;
+
+ ( ==== SIO chip: DUART SCN2681 with a 3.6864mhz crystal ==== )
+ : RESET-SIO   ( -- )  SIO  ( set page reg. to base address of sio chip )
+    10  DUP 02 C!  0A C! ( command register: reset MR pointer )
+    20  DUP 02 C!  0A C!                   ( reset receiver )
+    30  DUP 02 C!  0A C!                   ( reset transmitter )
+    40  DUP 02 C!  0A C!                   ( reset error status )
+    50  DUP 02 C!  0A C!                   ( reset break status )
+    13  DUP 00 C!  08 C! ( mode register 1: 8bits no parity )
+    07  DUP 00 C!  08 C! ( mode register 2: 1 stop bit )
+    BB  DUP 01 C!  09 C! ( 9600 baud )
+    05  DUP 02 C!  0A C!                   ( enable transmitter/receiver )
+    24 05 C!  ( interrupt mask register: channel breaks; channel b input )
+    FF 0F C!  ( reset output port bits )  RAM ;
+
+ ( ==== SIO porta primitives ==== )
+ : RX?  ( -- flag )  01 SIO@  1 AND ;
+ : TX?  ( -- flag )  01 SIO@  8 AND ;
+ : TX  ( char -- )  03 SIO! ;
+ : RX  ( -- char )  03 SIO@ ;
+
+ ( ==== Sio port servicing ==== )
+   0 VARIABLE sio-in     ( points to queue used to hold input )
+   0 VARIABLE sio-out    ( points to queue used to hold output )
+
+ : POLL-SIO  ( -- )  RX? IF  RX  sio-in @ >Q  ENDIF  
+    sio-out @ Q? IF  TX? IF  sio-out @ Q>  TX  THEN ENDIF  ' POLL-SIO >BARON ;
+
+ ( ==== Control loop ==== )
+ : INIT  ( -- )  keyq 0Q  0 in !  tib 2 + tib !  0 INPUT C!  RESET-SIO
+    keyq sio-in !  emitq sio-out !  ' POLL-SIO RUN   ' COLLECTOR RUN ;
+
+ : QUIT  ( -- )  RAM  SP!  RP!  R>DROP  ' QUIT >R ( for error return )  \ [
+    INIT  CR PROMPT  BEGIN BARON AGAIN ;
+
+ ( ==== Conditionals ==== )
+ : 0BRANCH  ( n -- )  >alu  DROP  alu test  zero bcc ;
+ : BRANCH  ( -- )  always bcc ;
+
+ : IF  ( -- addr )  ' 0BRANCH COMPILE  HERE 0 , ; IMMEDIATE
+ : ENDIF  ( addr -- )  HERE OVER -  SWAP ! ; IMMEDIATE
+ : ELSE  ( addr -- addr )  ' BRANCH COMPILE  HERE 0 ,  SWAP \ ENDIF ;
+IMMEDIATE
+ : THEN  ( addr -- )  \ ENDIF ; IMMEDIATE
+
+ : BEGIN  ( -- addr )  HERE ;  IMMEDIATE
+ : UNTIL  ( addr -- )  ' 0BRANCH COMPILE  HERE - , ; IMMEDIATE
+ : AGAIN  ( addr -- )  ' BRANCH COMPILE  HERE - , ; IMMEDIATE
+
+ : WHILE  ( -- addr )  \ IF ; IMMEDIATE
+ : REPEAT  ( addr \ addr -- )  SWAP  \ AGAIN  \ ENDIF ; IMMEDIATE
+
+ : (FOR)  ( n -- )  index rp-@ move  top index move  DROP  BRANCH ;
+ : (NEXT)  ( -- )  [ 0 ] index <dbr  rp@+ index move ;
+ : FOR  ( -- a )  ' (FOR) COMPILE  HERE 0 , ; IMMEDIATE
+ : NEXT  ( a -- )  DUP \ ENDIF  2 +
+    ' (NEXT) COMPILE  HERE 4 -  DUP>R  -  R> ! ; IMMEDIATE
+
+ ( ==== Defining Words ==== )
+ : CALLED  ( -- )  80  latest @ 2 -  +BITS ;
+ : MEASURE  ( -- )  latest @  HERE OVER L>CODE - 2/  SWAP 2 - ! ;
+ : ?UNIQUE  ( -- )  FIND? IF HERE COUNT TYPE ."  is not unique.  "
+    ELSE  DUP C@ 0= ?ERROR  ENDIF  DROP ;
+ : HEADER  ( -- )  EVEN  0 ,  HERE latest @ ,  ?UNIQUE  latest !
+    HERE C@ DUP 80 OR C,  ALLOT EVEN ;
+ : FORGET ( -- )  ?FIND C>LINK  DUP @ latest !  HERE -  2 - ALLOT ;
+
+ : EXIT  ( -- )  rts ;
+
+ : :  ( -- )  HEADER  SMUDGE  \ ] ;
+ : ;  ( -- )  MEASURE  ' EXIT COMPILE  \ [  \ RECURSE ; IMMEDIATE
+
+ : DATA  ( -- )  \ :  ' PUSH COMPILE  HERE 0 ,  \ ;  HERE SWAP ! ;
+ : VARIABLE  ( n -- )  DATA , ;
+ : CONSTANT  ( n -- )  \ :  \ LITERAL  \ ; ;
+
+ : <BUILDS  ( -- )  HEADER  CALLED  ' ERROR COMPILE ;
+ : DOES  ( -- )  R> LATEST L>CODE 2 + ! ;
+ : DOES>  ( -- addr )  ' DOES COMPILE  ' R> COMPILE ; IMMEDIATE
+
+ : QUEUE  ( #words -- ) ( Queues: | >insert | >remove | >end | queue... | )
+    DATA  HERE 6 +  DUP , ,  1 + 2*  DUP HERE + ,  ALLOT ;
+
+ ( ==== File Loader: FF emitted to request a line of input ==== )
+ : INPUT-LINE  ( -- )  FF EMIT  ( signal for input )
+    0 in !  INPUT  BEGIN KEY DUP D - WHILE SWAP C!+ REPEAT DROP  0 SWAP C! ;
+ : LD  ( -- )  BEGIN  INPUT-LINE INTERPRET AGAIN ;
+
+ ( ==== Version ==== )
+ : VERSION  ( -- )  ." 68k-Forth V.14" ;  ( derived from 68k-Forth V.13 )
+ ( ==== End of kernel ==== )
+
+ CR THERE origin# - .D ." bytes."  META
+ QUIT 
+----------
+
+

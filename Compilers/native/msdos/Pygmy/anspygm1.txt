@@ -1,0 +1,86 @@
+Some ANS Compatibility words           Jet Thomas
+                                       jethomas@ix.netcom.com
+
+Here are most of the Core words that are missing from Pygmy 1.5.
+Here is the remaining missing Core word:
+
+STATE
+
+Needless to say, all of the code should be tested before use.
+
+To load all the compatibility words, open the ANSPYGMY.SCR file and
+load the 2nd screen.  Like:
+
+" ANSPYGMY.SCR" 5 OPEN 5001 LOAD
+
+-------------------------------------------------------------------
+If you have a problem or a question, contact Jet Thomas at
+jethomas@ix.netcom.com  or failing that, perhaps Frank Sergeant at
+pygmy@eskimo.com or Greg Lisle at lglisle@aol.com.  Do not contact
+the site manager where you downloaded this -- he has no interest in
+dealing with any problems that might show up with this code!
+-------------------------------------------------------------------
+
+
+Beyond the missing words, a few words that are present have behaviors
+sometimes *very* different from those mandated by the standard, the
+ones I've noticed are:
+
+TIB \
+
+Also, Pygmy is nonstandard in fundamental structural ways.  A great
+deal of code will be completely unaffected by these, but they may
+occasionally cause trouble.  The ones I've noticed so far are:
+
+1.  LOAD and EVALUATE reset BASE to decimal when done.  You have to
+keep resetting the base to what you want.  (If you need to import
+code, you can take this out of the source code for Pygmy and
+metacompile to get a version that doesn't do that.)
+
+2.  LOAD and EVALUATE reset the state to interpret whenever they
+start.  Pygmy also resets state to interpret whenever accepting a new
+line of keyboard input.  To continue compiling, you must explicitly
+switch with ] after each "ok".  Subtle code that makes much use of
+EVALUATE will fail badly here.
+
+3.  You cannot POSTPONE ; etc.  In Pygmy the switch between
+interpreting and compiling is made explicitly by manipulating the
+return stack.  Anything you do to the return stack while this is in
+process (eg call : from one word and ; from another) is likely to
+give unexpected results.
+
+4.  A number of words such as ' use WORD when they should not, and so
+they trash the WORD buffer.  Occasionally standard programs may
+depend on that buffer to be intact when Pygmy trashes it.
+
+5.  <# #> use a shortcut -- they use UM/MOD to find digits.  If the
+first digit overflows then Pygmy crashes.  The largest number you can
+parse depends on the base, it is 2*65535-1 for binary and 655349 for
+decimal.
+
+6.  If you ' an immediate word, you'll get a different execution
+token than when you ['] it.  One of them is the COMPILER version and
+the other is the FORTH version.
+
+7.  I took a shortcut when writing IMMEDIATE that results in the
+following bug:  If you have a compiling word such as IF or an
+immediate word that you have defined, and you later make a new
+version that is not immediate and has the same name, the new version
+will be found only while interpreting.  The old version will be found
+when compiling.  This shouldn't come up very often, but when it does
+it could be hard to understand what is going wrong and why.
+
+8.  Needless to say, without STATE you can't write state-smart words.
+
+
+If standard code that runs correctly on multiple other platforms
+fails on Pygmy, it is likely to be due to one of these reasons, and
+often a simple rewrite will fix the problem.  None of these will
+prevent you from writing code which will be portable to standard
+systems, the difficulties are mostly in the other direction.
+
+
+It is not difficult to revise Pygmy into a standard Forth, but it
+requires multiple metacompiles and the result will not be Pygmy.
+
+

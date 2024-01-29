@@ -1,0 +1,48 @@
+			** IMPORTANT NOTICE ** 
+
+	FSL.EXE has been deliberately pruned. Its sole purpose 
+	is to aid in developing the FSL. Please do not condemn 
+	the Forth fsl.exe is derived from on the basis of the 
+	pitiful documentation contained in this file!
+	The only things that are supposed to work correctly are
+	_ALL_ Forth words contained in the ANS documents. Other
+	words you might accidently try may or may not work.
+
+			        -*-
+
+
+Contributers and reviewers in need of 'a second opinion' on FSL code
+are invited to use fsl.exe .
+
+FSL.EXE can directly compile any of the FSL algorithm files. A
+scientific function plotter (2D and 3D) is built-in. FSL is a
+32-bit protected mode Forth. It can use both VCPI and DPMI, so
+it is possible to run it directly from DOS or Windows (startup time
+under Windows is long, please don't panic and wait patiently).
+
+FSL only runs on INTEL machines and as such won't tell you about alignment
+problems. However, you _can_ switch it to case sensitive mode
+and turn on the strict ANS flag.
+
+
+To run fsl.exe:
+
+ set temp=<some path>  ; this the location of an optional swap file
+ graphres              ; a TSR needed for VGA 16 color graphics
+ fsl <parameters>      ; any Forth statements
+
+Once started, try:  S" r250.frt" INCLUDED
+The options are set so that non ANS words are flagged and
+the Forth is case sensitive. Use BYE to go back to DOS.
+Try EDIT <filename> to edit files. This calls SZ.COM, Tom Zimmers small
+Z editor. Try SHOW <filename> to list a file. SHELL goes to DOS, temporarily.
+OS <text> lets DOS execute <text>.
+
+Plotting a function:
+
+<left_X_limit> <right_X_limit> SKETCH <function_name>
+Here <function_name> should have the following stack diagram: ( F: x -- y )
+Example: PI FNEGATE PI SKETCH FSIN .
+
+
+

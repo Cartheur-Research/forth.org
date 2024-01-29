@@ -1,0 +1,35 @@
+
+F68K - a portable Forth system for 680x0 computer
+
+
+
+F68K is a native code, portable implementation of Forth. It should run
+on every Motorola 680x0 computer without recompiling the binaries.
+
+F68K is connected to the surrounding system via a small loader program,
+some kind of a BIOS.
+
+The distribution includes loader programs for Atari ST/TT, Commodore Amiga,
+OS9 and Sinclair QL. Only ST/TT is from myself, I have never seen the
+others running, so do not blame me for anything.
+
+I am willing to give the best support I can. You can reach me:
+
+	joerg.plewe@mpi-dortmund.mpg.de
+
+or
+
+	Joerg Plewe
+	Grossenbaumer Str. 27
+	D-4330 Muelheim an der Ruhr
+	FRG
+
+or
+
+	(+49)-(0)208-423514
+
+
+
+It would be nice to hear from you!!!
+
+	- Joerg

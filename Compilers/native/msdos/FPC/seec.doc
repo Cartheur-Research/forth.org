@@ -1,0 +1,19 @@
+Representation of the FORTH-program in a kind of text on C.
+Needs F-PC.
+ Loading of a system:  f seec.seq  ok
+ 
+ Use example: 'sss interp
+
+ debug  name - installation of a mode of step-by-step fulfilment of a given
+ word
+
+ see  name - desFORTH.
+ v  neme 
+                                        Maksimov M.O.
+
+					Mak@xperts1.rtc.neva.ru
+					Mak@informix.rtc.neva.ru
+
+
+
+

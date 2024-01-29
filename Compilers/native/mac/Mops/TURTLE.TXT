@@ -1,0 +1,137 @@
+\  Turtle Graphics Objects for Demo
+
+need	sin
+
+decimal
+
+\ Class PEN defines a turtle-graphics pen.
+
+:class	PEN	super{ object }
+
+record{			\ These first 5 ivars comprise a PenState structure
+	point	PnLoc			\ location of pen
+	point	PnSize			\ width,  height
+	int		PnMode
+	var		PnPatLo
+	var		PnPatHi
+}
+	angle	Direction
+	point	homeLoc 
+	int		maxReps
+	int		initLen
+	int		deltaLen			\ change in len
+	int		deltaDeg			\ change in angle
+
+
+:m GET:    ^base   call GetPenState   ;m		\ Save state here
+:m SET:    ^base   call SetPenState   ;m		\ Restore from here
+
+:m TURN:  ( deg -- )	+: direction   ;m
+
+:m UP:		90 put: direction   ;m
+
+:m MOVETO:	\ ( x y -- )	Draws a line to x,y if pen shows
+	set: self  pack  call LineTo  get: self   ;m
+
+:m MOVE:  { dist  -- }	\ Draws dist bits in current direction
+	set: self  cos: direction  dist * 10000 /
+	sin: direction  dist * 10000 /   negate
+	pack  call Line  get: self    ;m
+	   
+:m GOTO:	\ ( x y -- )	Goes to a location without drawing
+	put:  PnLoc   ;m
+   
+:m CENTER:	\ ( x y -- )	Sets the center coordinates
+	put: homeLoc   ;m
+   
+:m HOME:	\ ( -- )		Places pen in center of Mops window
+	get: homeLoc  goto: self   ;m
+
+:m SIZE:		\ ( w h -- )	Sets size in pixels of drawing pen
+	put: PnSize   ;m
+
+:m INIT:		\ ( x y w h mode  -- )
+	put:  PnMode  put: PnSize   put: PnLoc   ;m
+
+:m PUTRANGE:		\ ( initlen dLen dDeg -- )	  Sets parameters
+	put: deltaDeg  put: deltaLen  put: initLen   ;m
+
+:m PUTMAX:   ( maxReps -- )    put: maxReps   ;m
+
+:m CLASSINIT:   get: self   200 put: maxReps   ;m
+
+:m SPIRAL:  { \ dist  degrees delta  reps -- }
+			\ Draws a spiral of line segments - Logo POLYSPI
+	home: self
+	get: initLen  -> dist  get: deltaLen  -> delta
+	get: deltaDeg  -> degrees   0 -> reps
+	begin	1 ++> reps  reps  get: maxReps  < 
+	while	dist  move: self   degrees  turn: self
+		delta ++> dist  
+	repeat   ;m
+
+:m DRAGON:	\ ( n -- )	Dragon curves from Martin Gardner
+	dup
+	NIF	get: deltaLen  move: self  drop  
+	ELSE	dup  0> 
+		IF	dup  1-  dragon: self  
+			get: deltadeg  turn: self
+			1 swap -   dragon: self 
+		ELSE
+			-1 over -   dragon: self
+			360 get: deltadeg  -  turn: self
+			1+  dragon: self 
+		THEN
+	THEN   ;m
+		
+:m LJ:  { \ reps -- }	\ Draws an infinite Lissajous figure 
+	up: self   0 -> reps
+	get: initLen   get: direction  *  cos	120 /          getX: homeLoc  +
+	get: deltalen  get: direction  *  sin   120 /  negate  getY: homeLoc  +
+	goto: self 
+	begin   1 ++> reps  reps  get: maxReps  <
+	WHILE
+		get: initLen    get: direction  *  cos 120 /  getX: homeLoc +
+		get: deltaLen get: direction  *  sin  120 /  negate
+		getY: homeLoc + moveTo: self
+		get: deltaDeg turn: self
+	REPEAT   ;m
+;class
+
+\ Define a Smalltalk Polygon object as subclass of Pen 
+
+:class  POLY	super{  pen  }
+
+	int	Sides		\ # of sides in the Polygon  
+	int	Length		\ Length of each side  
+
+:m DRAW:  { \ turnAngle -- }
+	360  get: sides  /   -> turnAngle
+	get: sides  0
+	do	get:  length  move: self  
+		turnAngle  turn: self
+	loop   ;m
+
+:m SIZE:		\ ( len  #sides -- )	Stores sides and goes to Home
+	get: self  put: sides  put: length 
+	home:  self   up: self   ;m
+
+:m SPIN:  { \ reps -- }		\ Spins a series of polygons around a point  
+	home: self  10 get: initLen  size: self
+	0 -> reps 
+	BEGIN	reps  get: maxReps  < 
+	WHILE	draw: self  get: deltaDeg  turn: self
+		get: deltaLen  +: length  1 ++> reps
+	REPEAT   ;m
+	 
+:m CLASSINIT:		\ Default Poly is 30-dot triangle
+	30 3 size: self  100 put: maxReps   ;m
+ 
+;class
+
+\ Create a pen named Bic
+Pen	BIC
+
+\ Create a Polygon named Anna
+Poly	ANNA
+60 4  Size: Anna

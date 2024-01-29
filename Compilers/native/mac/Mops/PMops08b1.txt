@@ -1,0 +1,27 @@
+This is the first beta release of PowerMops 0.8b1, of October '97.
+
+This package has to be used in conjunction with Mops 2.8.3, which
+should be available in the same location from which you obtained this.
+
+The distribution file PMops08b1.sea.bin is in binary format, which
+shouldn't present any problems to current Mac network software.  It's
+a self-extracting archive, so on a Mac, just double-click the file and
+it will expand itself.  (If you only have a Windows machine, bad luck.)
+
+When you expand the file, please read the files "ReadMe.1st" and
+"PowerMops 0.8b1 Release Notes" first.  They'll tell you what to do
+next.
+
+
+I hope you enjoy Mops/PowerMops.
+
+
+------------------------------------------------------------------------
+Mike Hore        email:          mikeh@zeta.org.au
+                 Mops web page:  http://www.netaxs.com/~jayfar/mops.html
+snail-mail:                                                      _--_|\
+        Michael Hore                                            /      \
+        54 Frederick St,                                        \_.--._*
+		Sydenham  NSW  2044,                                          v
+		AUSTRALIA.
+------------------------------------------------------------------------

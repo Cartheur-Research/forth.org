@@ -1,0 +1,31 @@
+Readme file for HC12E4th.ASM
+
+        68HC12 eForth is a direct threaded eforth meant to be assembled
+        with the Motorola MCUasm M68HC12 Macro Assembler Version 5.3
+        and used on the Motorola M68HC12EVB. The M68HC12EVB used for
+        this example of eForth has external RAM installed in sockets
+        U4 and U6A. The RAM in these sockets is both byte and word
+        addressable. According to the HC12 documentation, there is no
+        penalty (in most cases) for byte accesses not aligned on word
+        boundaries. However, you will notice the liberal use of the
+        directive EVEN and NOPs in the macro expansion.
+
+        Yes, it is true, trying to use a different assembler can provide
+        many hours of 'enjoyment' and perhaps some enlightenment. This
+        particular MASM had difficulty generating an S record file when
+        many ORG directives were used to cause the NAME dictionary to
+        separately grow down towards the CODE dictionary growing up.
+        Let me know if you find an elegant way to do it.
+
+        Most of the words have been tested. There still may be a bug
+        or two in this version of 68HC12 eForth, but it has been working.
+        Add interrupts, fuzzy logic and low speed DSP code and the
+        learning begins.
+
+        by Pete Zawasky
+                PZEF Company
+                518 Hamden RD
+                Annandale, NJ 08801
+                (908) 735-2165
+
+

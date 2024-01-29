@@ -1,0 +1,22 @@
+This is the Manual for Mops 3.4, of February 1999, in Microsoft Word
+format.
+
+The distribution file Mops34Wrd.sea.bin is in binary format, which
+shouldn't present any problems to current Mac network software.  
+It's a self-extracting archive, so on a Mac, just double-click 
+the file and it will expand itself.  (If you only have a Windows 
+machine, bad luck.)
+
+
+I hope you enjoy Mops.
+
+
+------------------------------------------------------------------------
+Mike Hore        email:          mikeh@zeta.org.au
+                 Mops web page:  http://www.netaxs.com/~jayfar/mops.html
+snail-mail:                                                      _--_|\
+        Michael Hore                                            /      \
+        54 Frederick St,                                        \_.--._*
+		Sydenham  NSW  2044,                                          v
+		AUSTRALIA.
+------------------------------------------------------------------------

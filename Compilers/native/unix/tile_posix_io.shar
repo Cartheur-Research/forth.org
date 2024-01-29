@@ -1,0 +1,233 @@
+#! /bin/sh
+# This is a shell archive, meaning:
+# 1. Remove everything above the #! /bin/sh line.
+# 2. Save the resulting text in a file.
+# 3. Execute the file with /bin/sh (not csh) to create the files:
+#	README
+#	kernel-patch
+#	posix_io.v
+#	posix_io.f83
+# This archive created: Fri Feb 12 22:38:38 1993
+export PATH; PATH=/bin:$PATH
+if test -f 'README'
+then
+	echo shar: will not over-write existing file "'README'"
+else
+sed 's/^X//' << \SHAR_EOF > 'README'
+X			     -*- Text -*-
+X
+X	 A little hack to add POSIX style IO commands to TILE
+X
+XThis adds the POSIX commands "close", "open", "read" and "write".
+XThe distribution consists of the following files :-
+X
+Xkernel-patch
+X
+X  Contains the lines that should be added to kernel.c in the TILE
+X  distribution to register the POSIX IO vocabulary.  (This should be a
+X  "patch" file, which can be applied using the "patch" command, but it
+X  isn't since I didn't have the original kernel.c source around to
+X  make a patch file)
+X
+Xposix_io.v
+X
+X  A vocabulary containing the four new commands.
+X
+Xposix_io.f83
+X
+X  Defines various constants which are needed as arguments to "open".
+X
+X
+Xenjoy,
+X
+XStephen J. Bevan	<bevan@cs.man.ac.uk>	19930212
+SHAR_EOF
+fi # end of overwriting check
+if test -f 'kernel-patch'
+then
+	echo shar: will not over-write existing file "'kernel-patch'"
+else
+sed 's/^X//' << \SHAR_EOF > 'kernel-patch'
+XAdd this around like 364 in kernel.c
+X
+X/* POSIX IO */
+X
+X#include "posix_io.v"
+X
+XNORMAL_VOCABULARY(posix_io, string, "posix_io", &posix_write, NIL); 
+X
+X
+X/* FLOATING POINT */
+X
+X#include "float.v"
+X
+XNORMAL_VOCABULARY(float_entry, posix_io, "float", &qfloat, &qfloat); 
+SHAR_EOF
+fi # end of overwriting check
+if test -f 'posix_io.v'
+then
+	echo shar: will not over-write existing file "'posix_io.v'"
+else
+sed 's/^X//' << \SHAR_EOF > 'posix_io.v'
+X/* $Id$ */
+X
+X/*+file-overview
+X**
+X** FORTH<->C interface for adding POSIX I/O to TILE
+X**
+X**-file-overview
+X**
+X** Stephen J. Bevan <bevan@cs.man.ac.uk> 19930202
+X*/
+X
+X
+X/*
+X** arguments: file-descriptor
+X** returns:   0 | -1
+X** signature: int -- int
+X**
+X** 0 on success -1 on failure (opposite of FORTH)
+X*/
+X
+XVOID do_posix_close ()
+X{
+X  int fd, ret;
+X  fd= (int)spop(INT32);
+X  ret= close(fd);
+X  spush(ret, INT32);
+X}
+X
+XNORMAL_CODE(posix_close, forth, "posix:close", do_posix_close);
+X
+X
+X
+X/*
+X** arguments: mode flags file
+X** returns:   file-handle | -1
+X** signature: int int char * -- int
+X**
+X** 0 on success -1 on failure (opposite of FORTH)
+X*/
+X
+XVOID do_posix_open ()
+X{
+X  int flags, ret;
+X  unsigned short mode;
+X  CSTR path;
+X  mode= (unsigned short)spop(INT32);
+X  flags= (int)spop(INT32);
+X  path= spop(CSTR);
+X  ret= open(path, flags, mode);
+X  spush(ret, INT32);
+X}
+X
+XNORMAL_CODE(posix_open, posix_close, "posix:open", do_posix_open);
+X
+X
+X
+X/*
+X** arguments: file-descriptor buffer-to-store-in number-of-bytes
+X** returns:   number-of-bytes-read | -1
+X** signature: int char * int -- int
+X**
+X*/
+X
+XVOID do_posix_read ()
+X{
+X  int fd, nbyte, ret;
+X  CSTR buf;
+X  nbyte= (int)spop(INT32);
+X  buf= spop(CSTR);
+X  fd= (int)spop(INT32);
+X  ret= read(fd, buf, nbyte);
+X  spush(ret, INT32);
+X}
+X
+XNORMAL_CODE(posix_read, posix_open, "posix:read", do_posix_read);
+X
+X
+X/*
+X** arguments: file-descriptor buffer-to-write number-of-bytes
+X** returns:   number-of-bytes-written | -1
+X** signature: int char * int -- int
+X**
+X*/
+X
+XVOID do_posix_write ()
+X{
+X  int fd, nbyte, ret;
+X  CSTR buf;
+X  nbyte= (int)spop(INT32);
+X  buf= spop(CSTR);
+X  fd= (int)spop(INT32);
+X  ret= write(fd, buf, nbyte);
+X  spush(ret, INT32);
+X}
+X
+XNORMAL_CODE(posix_write, posix_read, "posix:write", do_posix_write);
+X
+X/* eof */
+SHAR_EOF
+fi # end of overwriting check
+if test -f 'posix_io.f83'
+then
+	echo shar: will not over-write existing file "'posix_io.f83'"
+else
+sed 's/^X//' << \SHAR_EOF > 'posix_io.f83'
+X( $Id$ )
+X
+X( POSIX style I/O for TILE
+X
+X  Stephen J. Bevan <bevan@cs.man.ac.uk> 19930202 )
+X
+Xposix_io definitions
+X
+X( FORTH<->C interface to the POSIX I/O calls defines :-
+X  close: fd -- int
+X  open:  name flags mode -- fd | -1
+X  read:  fd buf nbytes -- nbytes | -1
+X  write: fd buf nbytes -- nbytes | -1 )
+X
+X( The following are the valid values for the "flags" argument of "posix:open".
+X  They _should_ be portable across UNIX systems.
+X  The names are taken from /usr/include/sys/fcntlcom.h in SunOS 4.1.2 )
+X
+Xhex
+X
+X   0 constant posix:o_rdonly
+X   1 constant posix:o_wronly
+X   2 constant posix:o_rdwr
+X   8 constant posix:o_append
+X 200 constant posix:o_creat
+X 400 constant posix:o_trunc
+X 800 constant posix:o_execl
+X4000 constant posix:o_nonblock
+X8000 constant posix:o_noctty
+X
+X( The following are the valid values for the "mode" argument to "posix:open"
+X  They _should_ be portable across any UNIX system.
+X  The names are taken from /usr/include/sys/stat.h in SunOS 4.1.2 )
+X
+X
+Xoctal
+X
+X700 constant posix:s_irwxu ( rwx, owner )
+X400 constant posix:s_irusr ( r  , owner )
+X200 constant posix:s_iwusr ( w  , owner )
+X100 constant posix:s_ixusr ( x  , owner )
+X 70 constant posix:s_irwxg ( rwx, group )
+X 40 constant posix:s_irgrp ( r  , group )
+X 20 constant posix:s_iwgrp ( w  , group )
+X 10 constant posix:s_ixgrp ( x  , group )
+X  7 constant posix:s_irwxo ( rwx, other )
+X  4 constant posix:s_iroth ( r  , other )
+X  2 constant posix:s_iwoth ( w  , other )
+X  1 constant posix:s_ixoth ( x  , other )
+X
+Xdecimal
+X
+Xforth only
+SHAR_EOF
+fi # end of overwriting check
+#	End of shell archive
+exit 0

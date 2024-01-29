@@ -1,0 +1,143 @@
+         CAMELFORTH FOR THE 8051 - VERSION 1.5 - 26 AUGUST 1997
+         ======================================================
+
+This release of CamelForth/51 includes an 8051 multitasker which is
+IN DEVELOPMENT.  (That's the stage before Alpha test.)  It is not yet
+documented.  Use it at your own risk.  The rest of this release is
+well tested and relatively stable, and includes all known bug fixes.
+
+                                 * * *
+
+This is a BETA TEST version of CamelForth/51, an ANSI Standard Forth
+for the Intel 8051 family of microprocessors.  This means that I and
+others have tested the bulk of this code for correct functioning, but
+you may still discover bugs.  I'd appreciate hearing of any such by
+email at bj@headwaters.com.
+
+I'll also answer questions and try to solve problems.
+
+                                 * * *
+
+As distributed, CamelForth will assemble to run in ROM at address 0000.
+It initializes the 8051 assuming an 11.0592 MHz crystal.  You can freely
+change the program origin:
+
+   ; RESET AND INTERRUPT VECTORS ===================
+        .org 0
+        ljmp reset
+
+"reset" is the main entry point.  If you are combining this with some
+other program, you may want to delete the 8051 initialization code.
+
+As distributed, CamelForth assumes 4K bytes of program/data RAM starting
+at address E000 hex, and 4K bytes of data RAM starting at F000 hex.  (Or
+just 8K bytes of Program/Data RAM at E000 hex.)  You can change the RAM
+addresses by changing the following equates:
+
+   ; Initial RAM & ROM pointers for CamelForth.
+    .equ coderam,h'0e000    ; where new code goes
+    .equ dataram,h'0f000    ; where data goes
+    .equ UPHI,h'FE          ; User area at FE00 hex
+
+To run programs, CamelForth requires a 512-byte "user area" which begins
+on a 256-byte boundary (i.e., any address xx00 hex).  The high byte of
+this address is specified by the UPHI (User Pointer HI) equate.  Thus
+the file as distributed puts the user area from FE00 to FFFF hex.
+
+"dataram" is where VARIABLEs, arrays, and all user-defined data
+structures begin.  This is external RAM on the 8051.  This RAM is also
+required to run the Forth command interpreter.
+
+"coderam" is where new code is compiled by CamelForth's built-in
+compiler.  To use the compiler, some RAM MUST APPEAR AS BOTH DATA RAM
+AND PROGRAM ROM.  The easiest way to achieve this is to logically AND
+the 8051 signals PSEN\ and RD\, and use this as the read strobe for all
+memory.  This will cause all memory to appear as both Program and Data,
+which means you can only have a total of 64K bytes.  Some 8051 boards
+include this feature.  Others allow you to specify a limited range of
+addresses to appear as both Program and Data.  Change the "coderam"
+equate to the start of this Program/Data region.
+
+Please note that you CAN use the Forth INTERPRETER even if you don't
+have combined Program/Data RAM.  In this case you can type Forth
+commands, but you can't define new words.  (Beware: trying to define new
+words in this case -- even VARIABLEs -- will crash the system.)
+
+                                 * * *
+
+This program was written using PseudoCorp's freeware 8051 assembler,
+A51.  You'll need to download A51.ZIP.  The 8051 Microcontroller FAQ
+lists the following FTP sites which carry A51:
+
+      Program: A51.ZIP
+      Description: PseudoSam 8051 Cross Assembler
+      Location:  ftp.pppl.gov : /pub/8051/signetics-bbs
+                 ftp.funet.fi : /pub/microprocs/MCS-51/signetics-bbs
+
+Then you can assemble the CamelForth source file with the command
+
+        a51 camel51.asm
+
+As distributed, this will produce an Intel hex file camel51.obj.  Intel
+hex files are supported by many PROM programmers, PROM emulators, and
+debug programs.  You may need to rename this file camel51.hex.
+
+There are TWO WAYS to write programs in CamelForth:
+
+1. If you have CamelForth running on your 8051 board, and you have some
+Program RAM, you can download Forth code directly to CamelForth.  This
+lets you type new words from the keyboard, test them as they are
+defined, and re-define them to make changes.  Or you can edit an ASCII
+text file, and use a program such as Procomm to send this file over the
+serial port to your 8051.  Depending on the speed of your 8051 board, it
+can take a few seconds to compile each line, so be sure to leave plenty
+of delay after the line.  (See the application note on handshaking.)
+Also be sure that no line exceeds 80 characters.
+
+2. If your board won't support Program RAM, or you want to burn your
+program into PROM, you can add your code to the file CAMEL51.ASM.  This
+requires you to convert your Forth code to assembler code.  To show how
+this is done, every high-level Forth word in the file is shown with its
+equivalent Forth code in a comment.  Be especially careful with control
+structures (IF..ELSE..THEN, BEGIN..UNTIL, DO..LOOP, and the like), and
+with the Forth word headers.  Reassemble CAMEL51.ASM and burn a PROM (or
+download to a PROM emulator or debug monitor), then test.  This is a
+much slower process, and is best saved for the final stage when you have
+a tested & debugged program that you want to put in PROM.
+
+                                 * * *
+
+--------------------------- LICENSE TERMS ------------------------------
+CamelForth for the Intel 8051 (c) 1994,1997 Bradford J. Rodriguez.
+Permission is granted to freely copy, modify, and distribute this
+program for personal or educational use.  Commercial inquiries should be
+directed to the author at 115 First St. #105, Collingwood, Ontario
+L9Y 4W3 Canada
+------------------------------------------------------------------------
+
+Freely translated, this means: I'm keeping the copyright to this
+program, but you're welcome to use it, change it, experiment with it,
+give it to friends, build it into your projects, teach it to your
+students -- anything EXCEPT make money from it.  If you want to sell
+CamelForth, include it as part of something you're selling, or base a
+product upon it, let's talk.  I'm reasonable.
+
+               ========== THE COMPUTER JOURNAL ==========
+
+CamelForth for the 6809, Z80, and 8051, and the ScroungeMaster II 6809
+multiprocessor, have been extensively described in The Computer Journal,
+a magazine I highly recommend.  A one-year subscription (6 issues) is
+$24.00 in the U.S., and back issues are available for $5.25 each.  The
+Computer Journal, P.O. Box 3900, Citrus Heights CA 95611-3900 USA,
+telephone 916-722-4970, fax 916-722-7480, email tcj@psyber.com.
+
+             ========= THE FORTH INTEREST GROUP ==========
+
+If you are (or will be) a regular Forth user, a membership in the Forth
+Interest Group "FIG" is invaluable.  Membership is $45/year in the U.S.,
+and includes a subscription to the bimonthly magazine Forth Dimensions,
+plus many other benefits.  FIG members may join the CamelForth email
+list, fig-camel@forth.org.  Contact FIG at 100 Dolores St., Suite 183,
+Carmel CA 93923 USA, telephone 408-373-6784, fax 408-373-2845, email
+office@forth.org, or see FIG's web page http://www.forth.org/fig.html.
+

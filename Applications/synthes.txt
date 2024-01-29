@@ -1,0 +1,27 @@
+                   FORTH programs generation.
+
+  The form of the task of generation has a kind:
+  S ( < a condition of a stack before operation > --
+      < a condition of a stack after operation > )
+     the condition of a stack is in this case set:
+  1. Models of data
+  2. Models of operations
+
+  The models of data are defined with the help of word COMMENTS{
+  on a example: COMMENTS{ a b c }
+  a b c - the models data
+  The models of operations are defined with
+   the help of words (0->1):, (1->1):, (1->2):
+  On a example (2->1): +
+  + - model of operation of addition
+
+  The installation of the relations between data models is
+  defined with the help of analysis FORTH-program.
+  The form of the analysis has a kind:
+  ANALYSIS{ < FORTH program ( allowed only models of
+  operations and s( -- ) design) > }
+
+ See a example in a file: MAIN.SEQ
+
+ Maksimov                             mak@informix.rtc.neva.ru
+                                      mak@xperts1.rtc.neva.ru

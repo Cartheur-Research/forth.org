@@ -1,0 +1,48 @@
+*** WHAT THIS IS
+
+Mops App (MA) is a set of Mops source code files that provide a basic framework
+for a typical multi-window Macintosh application.
+
+Also included is an updated Selection Framework (SF).  The SF works well with MA
+because action handlers are almost never used so it is simple to instantiate
+multiple objects.  Multiple window objects are needed when an application allows
+the user to open more than one document at a time.
+
+
+*** HOW TO USE MOPS APP 3.0
+
+Note.  You must be using Mops 68K version 3.3 or later in order to use Mops App.
+MA and SF do not yet work with Power Mops, but changing them to do so should
+not be difficult and is planned for the near future.
+
+
+1) Place the folder "Mops App 3.0" in the same directory as your "Mops 3.x" folder.
+ Not *in* the "Mops 3.x" folder, but in the same directory, or folder.
+ Add the following lines to your "Mops.paths" file (in your "Mops Ä" folder):
+
+:::Mops App 3.0:
+:::Mops App 3.0:SF 3.0:
+
+2) Place the resource file "Mops App.rsrc" in your "Mops Ä" folder.
+
+3) You should now be able to load the file "Example Application", which will also
+load, via need, all of the necessary files to see how an example Mops App can
+work.
+
+4) You can now either execute 'go' to use Mops App during your
+Mops development session or you can invoke Install... from the Mops menu to
+create an installed application.  If you do an install, be sure to copy all
+of the resources from the file "Mops App.rsrc" to the installed application
+before running it.
+
+
+*** MOPS APP 3.0
+
+By Douglas B. Hoffman
+14Feb99
+e-mail  dhoffman@oakland-info.com
+
+565 Countryside Lane
+Oakland, MI 48363
+USA
+

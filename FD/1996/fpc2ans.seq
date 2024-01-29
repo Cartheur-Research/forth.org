@@ -1,0 +1,46 @@
+\ fpc2ans.seq           Loads the stuff to add ANS compliance for F-PC
+
+cr .( FPC2ANS.SEQ       V1.6           23 September 1994     EFC )
+
+fload ansi.seq
+
+Only Forth also definitions ANSI CORE also
+
+: GET-CURRENT ( -- wid )
+        CURRENT @
+;
+
+: SET-CURRENT ( wid -- )
+        CURRENT !
+;
+
+fload ffloat.seq        \ get the floating point package
+
+: to      ' >body state @ if [compile] literal compile !
+                          else ! then   ; immediate
+
+: d>s     drop ;
+
+: d>f     float ;
+
+: F>D     int ;
+
+: >float drop 1- (mantissa) (exp) float falog f* -1 ;
+
+\ size of a floating point element
+8 constant fcell
+
+: floats   fcell *   ;
+
+: cell+    1 cells + ;
+: float+   1 floats + ;
+
+: FE.   F.  ;           \ not excatly right but good enough
+: SF@   F@  ;
+: SF!   F!  ;
+
+: FALIGN    ALIGN ;
+: FALIGNED  ALIGNED ;
+
+: FSINCOS   FDUP FSIN FSWAP FCOS ;
+

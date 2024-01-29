@@ -1,0 +1,10 @@
+00Index		This file
+4th2txt.c       Utility to convert block files to text files
+ansi.seq        Ulrich Hoffmann's ANS-Forth compatibility package for F-PC
+dynmem.seq      An ANS compatible dynamic memory package
+fpc2ans.seq     File for loading ANS compatiblity on top of F-PC
+txt24th.c       Utility to convert text files to block files
+uudecode.seq    UUDECODE utility
+uuencode.seq    UUENCODE utility
+zipit.bin       File Zip utility for the Mac
+

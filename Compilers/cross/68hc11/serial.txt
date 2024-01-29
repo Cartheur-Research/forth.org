@@ -1,0 +1,82 @@
+
+    The follwowing code is written for MaxFORTH and a 68HC11 processor 
+connected to a 6552 dual serial port chip.  The 6552 is mapped into the 
+address space of the processor.  Similar code is used for a 6551 chip 
+although the registers are a bit different.  In fact an 8251 INTEL serial 
+chip wowuld be used in about the same manner.  The registers are different, 
+but polled operation would be done by monitoring the transmitter ready and 
+received data flags.  The handshaking is done in TDRF? and RDRF? ( read data 
+ready flag?)
+
+
+
+( Serial port S1                    June 2, 1988
+( modified from code by RANDY DUMSE for 6551 chip by KEN BUTTERFIELD
+( software polled half duplex operation 
+( do not hook int to processor for this example 
+( designed to talk to 1/2 of a 6552 dual serial port adapter
+(  second half would use A404, A405, A407 for register addresses
+(  register addresses are mapped into the memory address space for 68hc11
+
+(  Added keyboard interrupt in S-KEY    7-12-88
+
+HEX
+
+A403 CONSTANT S-DATA
+A400 CONSTANT S-STATUS
+A401 CONSTANT S-CONTROL
+40   CONSTANT S-WF
+01   CONSTANT S-RF
+
+: S-INIT  ( init davidson port ( s1, or s2 )
+   E0 S-CONTROL C! 0C S-CONTROL C! 7F S-STATUS C! ;
+                 ( ODD PARITY, DISABLED, ) 
+                 ( RTS HI, DTR HI, 7 BITS ) 
+                 ( 1 STOP BITS, NO  ECHO )
+                 ( 9600 BAUD )
+                 ( DISABLE ALL INTERRUPTS AND INIT )
+
+
+: TDRF? S-STATUS C@ S-WF AND ;
+: RDRF? S-STATUS C@ S-RF AND ;
+: S-EMIT BEGIN TDRF? UNTIL S-DATA C! ;
+: S-KEY 
+   BEGIN 
+      ?TERMINAL IF ABORT THEN
+      RDRF? 
+   UNTIL 
+   S-DATA C@ 
+;
+: S-?TERMINAL RDRF? ;
+: S-TYPE DUP IF OVER + SWAP DO I C@ 7F AND S-EMIT LOOP ELSE 2DROP THEN ;
+: S-. S->D SWAP OVER DABS <# #S SIGN #> S-TYPE ;
+: S-CR D S-EMIT ;
+: S-SPACE 20 S-EMIT ;
+: S-EXPECT ( ADDR,COUNT) 
+( FORMS COUNTED STRING AT ADDR, TERMINATED WITH SPACE TO BE USED WITH NUMBER )
+   2DUP BLANK
+   1 - 1 DO I OVER C!
+   S-KEY DUP 0D = IF DROP LEAVE
+   ELSE OVER I + C! THEN 
+   LOOP DROP ;
+
+: BYPASS  ( CONNECT MAIN TERMINAL TO EXTERNAL SERIAL PORT )
+    S-INIT BEGIN ?TERMINAL IF KEY S-EMIT THEN
+             S-?TERMINAL IF S-KEY EMIT THEN
+           AGAIN ;
+
+
+: S-ECHO  ( echo the name of word defined by this command to the port )
+    <BUILDS LATEST , DOES> 
+    @ COUNT 7F AND S-TYPE  S-SPACE 
+;
+
+
+: S-DRAIN ( Remove characters from serial stream until CR )
+   BEGIN  (  used to help handshaking with remote system )
+      S-KEY D = 
+   UNTIL
+;
+
+
+

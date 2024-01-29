@@ -1,0 +1,79 @@
+
+I have written a program in Mops that should be of interest to Mops
+programmers.  If you also happen to be a radio controlled sailplane modeler, as
+I am, then you will be doubly interested.
+
+The program is called J-Foil and is a highly vertical application.  It is an
+airplane modeler's tool used for creating extremely accurate plots of airfoils
+using standard Macintosh printers.  These plots are then used to build wings. 
+The type and accuracy of an airfoil is critical to the model in terms of its
+flying characteristics, hence the need for and interest in software to assist
+the task.
+
+J-Foil is a "freeware" program that I released into the public domain a few
+months ago.  It has been well received with no reports of problems.  I
+developed the program on a 68030 PowerBook with a StyleWriter II printer.  I
+then tested it on an old 512KE floppy-only system (System 6.x) with an
+ImageWriter I printer.  It worked perfectly!  I know that since then many
+others have used J-Foil on a wide variety of Macs and printers, including PPC
+Macs, with no problems reported.  Nice going, Mike!
+
+
+J-Foil source code should be of interest to Mops programmers primarily for the
+following two reasons:
+
+- A fairly sophisticated cubic spline curve fitting routine is used, based on
+the Akima algorithm.  The original source code for the Akima routine was
+obtained from an old unstructured Fortran source listing which is also included
+for the curious.
+
+- A PrintGeneral class is used, which is a PrintManager subclass and allows for
+simple usage of high resolution printing.  The printer is queried as to what
+are the available resolutions and the program then selects the highest
+resolution available.  This is all transparent to the user, and not very hard
+for the programmer.
+
+
+Additional items of interest to Mops programmers are as follows:
+
+- Mops App is used as the framework.  Default Mops App event handling is used
+throughout, which makes for simplified user interface programming.
+
+- The main window uses 5 selection objects: 2 text edit objects, 2 pushbutton 
+objects, and a popup menu object.
+
+- A helpText selection object is used which is a read only scrollable text
+object that gets it's text from a resource (so the text is easy to change).
+
+- Data is read from a standard text file.  Numeric text is parsed into floating
+point numbers.
+
+
+Note that this program "competes" with a few commercial and shareware products,
+all of which are PC/Windows based, I believe.
+
+I apologize a bit for the lack of clear documentation and verbage concerning
+this program.  The source code is essentially in its "first cut" form, rather
+than a final cleaned up form which I will eventually get around to doing. 
+Anyway, by seeing the source code as I first used it, including the load order
+(refer to the file "Load J-Foil") you can see the order in which I developed
+the program which is probably pretty typical, for me at least.  First comes the
+hard stuff which is the code that actually does something, in this case plot
+the airfoil.  After that was working, then the GUI user interface elements were
+added.
+
+Also note that there are clearly many improvements and enhancements that could
+be made to J-Foil.  As time permits I will be updating J-Foil.  If there are
+any significant new programming techniques or useful classes created I will try
+to pass them along.
+
+I have sent the source code for J-Foil to Jay Farrell and I presume that he
+will soon make it available on his web page:
+
+<URL:http://www.netaxs.com/~jayfar/mops.html>
+
+
+
+- Doug Hoffman
+-- 
+Doug Hoffman  72310.1743@compuserve.com

@@ -1,0 +1,157 @@
+    A BRIEF INTRODUCTION TO FORTH
+    -----------------------------
+
+  Forth is both an extensible language and an interactive program development
+methodology.  Originally developed for small embedded control mini- and micro-
+computers, Forth seems to have been implemented on every major processor
+manufactured.  It has been used in a wide variety of applications, including
+spreadsheets, expert systems, and multi-user databases.
+
+
+TWO-STACK ABSTRACT MACHINE
+
+  At the most superficial level, Forth is a directly executable language for a
+stack-based abstract machine.  In its essential form, the Forth abstract
+machine has a program counter, memory, ALU, data evaluation pushdown stack,
+and subroutine return address pushdown stack.
+
+  Data evaluation in Forth is accomplished on the Data Stack using Reverse
+Polish Notation (RPN), also called postfix notation.  For example, the
+following sequence typed from the keyboard:
+
+  3 4 +  5 *  .  __35 ok__
+
+interactively pushes the value 3 on the stack, pushes the value 4 on top of
+the 3, destructively adds 3 and 4 to get 7, then multiplies by 5.  The .
+operation displays the single resultant top value on the stack, 35 (computer
+output is underlined).  "ok" is the Forth command prompt. Operations such as
+SWAP and DUP (duplicate) reorder and replicate the top few Data Stack
+elements.
+
+
+FACTORING
+
+  At a deeper level, Forth programs use RPN not as an end in itself, but
+rather as a means to achieve simple syntax and flexible modularity.  Small,
+simple programs to perform complex functions are written by reusing common
+code sequences through a programming practice known as factoring.
+
+  Subroutine calls and returns are an important part of Forth programs and the
+factoring process.  As an example, consider the following function (called a
+word in Forth) which computes the sum of squares of two integers on top of the
+Data Stack and returns the result on the Data Stack:
+
+  : SUM-OF-SQUARES   ( a b -- c )   DUP *   SWAP   DUP *  +  ;
+
+  The Data Stack inputs to the word at run-time are two integers a and b.  The
+Data Stack output is a single integer c.  The : denotes a function definition
+with the name SUM-OF-SQUARES.  The ; terminates the definition.  Comments are
+enclosed in parentheses.  This example follows the Forth convention of
+including a stack-effect comment showing that a (the second stack element) and
+b (the top stack element) are consumed as stack inputs, with c produced as the
+stack output.
+
+  By the process of factoring, the example program would be re-written in
+Forth using a new definition (a factor) called SQUARED to allow sharing the
+common function of duplicating and multiplying a number on the Data Stack.
+The separation of the Return Stack from the Data Stack in the abstract machine
+allows the values on the Data Stack to be cleanly passed down through multiple
+levels of subroutine calls without run-time overhead.  In this new version,
+Data Stack elements are implicitly passed as parameters from SUM- OF-SQUARES
+to SQUARED:
+
+  : SQUARED   ( n -- n**2 )     DUP *  ;
+  : SUM-OF-SQUARES   ( a b -- c )  SQUARED  SWAP SQUARED  +  ;
+
+  Good Forth programmers strive to write programs containing very short (often
+one-line), well-named word definitions and reused factored code segments.  The
+ability to pick just the right name for a word is a prized talent. Factoring
+is so important that it is common for a Forth program to have more subroutine
+calls than stack operations. Factoring also simplifies speed optimization via
+replacing commonly used factors with assembly language definitions. In the
+preceding example, SQUARED could be re-written in assembly language for speed
+while maintaining the same stack effects.
+
+  Writing a Forth program is equivalent to extending the language to include
+all functions needed to implement an application.  Therefore, programming in
+Forth may be thought of as creating an application-specific language
+extension. This paradigm, when coupled with a very quick edit/compile/test
+cycle, seems to significantly increase productivity.  As each Forth word is
+written, it can be tested from the keyboard for immediate programmer feedback.
+For example, the definitions above could be summarily tested with:
+
+  3 SQUARED .   __9 ok__
+  3 4 SUM-OF-SQUARES .   __25 ok__
+
+
+INTERPRETATION, COMPILATION AND EXECUTION
+
+  Forth systems use two levels of interpretation: a text interpreter and an
+address interpreter.  When accepting keyboard or file-based input, the text
+interpreter extracts whitespace-separated character strings.  In
+interpretation mode it attempts to execute the corresponding words (numeric
+input is trapped and converted as a special case).  : is a word like any
+other, but creates a new dictionary entry containing the word name (symbol)
+and places the text interpreter into compilation mode.  While in compilation
+mode, most words extracted from the input stream are compiled to a pointer to
+the word's definition in the dictionary instead of being executed.
+
+  A compiled Forth program is a collection of words, each of which contains a
+statically allocated list of pointers to other words. Ultimately the pointers
+lead to assembly language primitives, some of which are typically user-
+written.  The Forth address interpreter is used to execute compiled words,
+classically using threaded code techniques. The Forth text interpreter, while
+not used in executing compiled programs, is often included in applications as
+the basis of a command-line user interface.
+
+  Forth systems use one-pass compilation.  There is no explicit Forth parser
+(and, for practical purposes, no formal grammar).  Control flow words have a
+special immediate attribute, and are executed immediately even when the text
+interpreter is in compilation mode.  Immediate words, when executed, typically
+cause compilation of special structures.  For example, IF compiles a branch
+conditional upon the top runtime Data Stack value, and the matching THEN (the
+"endif" word) back-patches the branch target address. Users can readily create
+their own immediate words, thus extending the compiler by adding new control
+flow structures or other language features.
+
+  Data structures are created by another special class of words: defining
+words.  Defining words have two parts: the CREATE clause creates the
+dictionary entry for the data structure instance, while the DOES> clause is a
+definition shared by all data structures created by that defining word. For
+example, an array defining word creates a named array and reserves storage
+with its CREATE clause, and computes an address (given indices) in its DOES>
+clause.  Defining words are commonly used to hide data structure
+implementations and to create families of similar words.
+
+  Forth programmers traditionally value complete understanding and control
+over the machine and their programming environment. Therefore, what Forth
+compilers don't do reveals something about the language and its use. Type
+checking, macro preprocessing, common subexpression elimination, and other
+traditional compiler services are feasible, but not included in production
+Forth compilers. This simplicity allows Forth development systems to be small
+enough to fit in the on-chip ROM of an 8-bit microcontroller.  On the other
+hand, Forth's extensibility allows "full-featured" systems to consume over
+100K bytes and provide comprehensive window-based programming environments.
+Forth also allows (and often encourages) programmers to completely understand
+the entire compiler and run-time system.  Forth supports extremely flexible
+and productive application development while making ultimate control of both
+the language and hardware easily attainable.
+
+
+Philip J. Koopman Jr. United Technologies Research Center, East Hartford, CT
+
+This description is copyright 1993 by ACM, and was developed for the Second
+History of Programming Languages Conference (HOPL-II), Boston MA.
+
+Permission to copy without fee all or part of this material is granted,
+provided that the copies are not made or distributed for direct commercial
+advantage, the ACM copyright notice and the title of the publication and its
+data appear, and notice is given that copying is by permission of the
+Association for Computing Machinery.  To copy otherwise, or to republish,
+requires a fee and/or specific permission.
+
+---------------------------------------------------------------
+Note: the notation __stuff__ used by Dr. Koopman in the above discussion simply
+means "stuff" has been written to the display by the program.
+---------------------------------------------------------------
+

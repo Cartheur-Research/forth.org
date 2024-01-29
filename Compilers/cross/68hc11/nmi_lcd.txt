@@ -1,0 +1,195 @@
+
+( The following words are useful when attaching a Seiko M4024 LCD  )
+( to the New Micros Inc. 68HC11 board set.  These words also allow )
+( the display to function as a scrolling horizontal bargraph.      )
+
+( Comments to:                                                     )
+(                  Pete Zawasky                                    )
+(                  PZEF Co.                                        )
+(                  263 W. Warren St.                               )
+(                  Washington, NJ 07882                            )
+(                  908-689-7450                                    )
+
+( LCD.TXT       28may91ppz )
+( use to drive LCD thru NMIS-7070 interface )
+( words defined for the SEIKO M4024, 40 character x 4 line )
+(      set up as two 2 line x 40 character modules )
+
+HEX
+
+( ram storage locations )
+0398 CONSTANT LCD_SAVE    ( point to storage area for lcd screen )
+                          ( like stack -- grows downward -- 80 bytes )
+
+( NMIS-7070 is addressed BC00 -> BC10 )
+BC00 CONSTANT LCD1        ( module #1 instruction port )
+BC01 CONSTANT LCD1_DATA   (           data port )
+BC02 CONSTANT LCD2        ( module #2 instruction port )
+BC03 CONSTANT LCD2_DATA   (           data port )
+
+: ?LCD_BUSY        ( adr --- adr )
+  BEGIN DUP C@ 80 AND 0= UNTIL
+;
+
+: LCD_CMD!         ( 8b adr --- )
+  ?LCD_BUSY C!            ( send to selected lcd instruction port )
+;
+
+: LCD_DATA!        ( 8b adr --- )
+  ?LCD_BUSY 1+ C!         ( send to selected lcd data port )
+;
+
+: LCD_CLEAR      ( --- )
+  06 LCD1 LCD_CMD!   ( character entry right, top 2 lines )
+  0C LCD1 LCD_CMD!   ( display control ON, cursor OFF )
+  01 LCD1 LCD_CMD!   ( clear display top 2 lines )
+  80 LCD1 LCD_CMD!   ( home positon of DD RAM )
+  06 LCD2 LCD_CMD!   ( character entry right, bottom 2 lines )
+  0E LCD2 LCD_CMD!   ( display control ON, cursor ON )
+  01 LCD2 LCD_CMD!   ( clear display bottom 2 lines ) 
+  C0 LCD2 LCD_CMD!   ( home position of DD RAM )
+;
+
+: LCD_ON         ( --- )
+  ( reset LCD at power on )
+  38 LCD1 C!        ( get attention )
+  38 LCD1 C!        ( top 2 lines )
+  38 LCD2 C!        ( get attention )
+  38 LCD2 C!        ( bottom 2 lines )
+  LCD_CLEAR
+  01FF LCD_SAVE !   ( init top of screen save area )
+;
+
+: LCD_MOVE_CURSOR   ( 8b adr --- )
+  SWAP 80 OR SWAP 
+  LCD_CMD!                   ( send cursor to new position )
+;
+
+: LCD_CURSOR?    ( adr --- 8b )
+  ?LCD_BUSY C@ 7F AND        ( get cursor position )
+;
+
+: LCD_SAVE!      ( 8b --- )
+  LCD_SAVE @ C!            ( save data in screen save area )
+  LCD_SAVE 1-!             ( point to next free location )
+;
+      
+: LCD_SAVE@      ( --- 8b )
+  LCD_SAVE 1+!             ( bump pointer back up to last data saved )
+  LCD_SAVE @ C@            ( restore data from screen save area )
+;
+
+: <LCD           ( adr --- )
+  ?LCD_BUSY 1+ C@          ( get data from LCD DD RAM, lines 1/2 )
+  LCD_SAVE!                (                        or lines 3/4 )
+;
+
+: >LCD           ( adr --- )
+  LCD_SAVE@ SWAP
+  LCD_DATA!                ( put data into LCD DD RAM, lines 1/2 )
+;                          (                        or lines 3/4 )
+
+: LCD_CRLF      ( --- )      ( scroll lines up )
+                             ( always enter new data on line 4 )
+  67 LCD2 LCD_MOVE_CURSOR    ( end of line 4 )
+  04 LCD2 LCD_CMD!           ( auto decrement )
+  50 0                       ( 80 characters )
+  DO                         ( get line 4 and then line 3 ) 
+    LCD2 <LCD                ( save in screen save area )
+  LOOP
+  67 LCD1 LCD_MOVE_CURSOR    ( end of line 2 )
+  04 LCD1 LCD_CMD!           ( auto decrement )
+  28 0                       ( 40 characters )
+  DO                         ( get line 2 ) 
+    LCD1 <LCD                ( save in screen save area )
+  LOOP
+  00 LCD1 LCD_MOVE_CURSOR    ( leave cursor on line 1, col 1 )
+  06 LCD1 LCD_CMD!           ( auto increment )
+  50 0
+  DO
+    LCD1 >LCD                ( move line 2 to line 1 )
+  LOOP                       ( move line 3 to line 2 )
+  01 LCD2 LCD_CMD!           ( clear display bottom 2 lines ) 
+  06 LCD2 LCD_CMD!           ( auto increment )
+  28 0
+  DO
+    LCD2 >LCD                ( move line 4 to line 3 )
+  LOOP                       ( cursor should be at line 4, col 1 )
+;
+
+: LCD_EMIT       ( 8b --- )
+  LCD2 LCD_DATA!         ( put new data on line 4 )
+  LCD2 LCD_CURSOR? 0=    ( has cursor rolled over to line 3, col 1 ? )
+  IF
+    LCD_CRLF
+  THEN
+;
+
+: LCD_SPACE      ( --- )
+  BL LCD_EMIT
+;
+
+: LCD_SPACES     ( 8b --- )
+  0 MAX                  ( don't want negative numbers )
+  BEGIN
+    ?DUP
+  WHILE
+    1- LCD_SPACE
+  REPEAT
+;
+
+( LCD$.TXT         28may91ppz )
+( output formatting and string words for the LCD interface )
+( requires LCD words )
+
+DECIMAL
+
+: LCD_TYPE    ( addr +n --- )
+  BEGIN
+    DUP 0= NOT
+  WHILE
+    1- SWAP DUP C@ LCD_EMIT 1+ SWAP
+  REPEAT
+  2DROP
+;
+
+: LCD.    ( n --- )
+  S->D SWAP OVER DABS
+  <# #S SIGN #>
+  LCD_TYPE LCD_SPACE
+;
+
+: LCD.XXX     ( n --- )
+  0 <# # # # 46 HOLD #S #> LCD_TYPE LCD_SPACE
+;
+
+: LCD.XXXX    ( n --- )
+  0 <# # # # # 46 HOLD #S #> LCD_TYPE LCD_SPACE
+;
+
+: (.L")       ( --- )
+  R> 2+               ( address of the in-line string )
+  COUNT 2DUP + 2-     ( addr len addr_next_word_less_2 )
+  >R  LCD_TYPE        ( adjust return stack and output string )
+;
+
+: .L"         ( --- )
+  COMPILE (.L")       ( usage   .L" ccc"  , compile mode only )
+  34 WORD C@ 1+ ALLOT
+; IMMEDIATE
+
+: TEST_LINE   ( --- )
+  .L" S/W DEVELOPED BY PETE ZAWASKY "
+;
+
+: SCROLL_TEST ( --- )
+  BEGIN
+    TEST_LINE
+    ?TERMINAL
+  UNTIL
+;
+                                 )
+
+( LCD.
+
+

@@ -1,0 +1,607 @@
+
+Forth-83 6800 and 6809 Assemblers
+
+This file is a concatenation of four text files:
+  ASM0_DOC.TXT - 6800 usage notes
+  ASM0_SRC.TXT - 6800 assembler source, from block file
+  ASM9_DOC.TXT - 6809 usage notes
+  ASM9_SRC.TXT - 6809 assembler source, from block file
+
+Wilson M. Federici
+1208 NW Grant
+Corvallis OR 97330
+GEnie [W.FEDERICI]
+CompuServe 74756,2716
+
+
+------------------------------------------------------------------------
+ASM0_DOC.TXT
+------------------------------------------------------------------------
+Forth 6800 assembler notes
+
+Addressing modes
+
+1) Inherent takes no parameters from stack, needs no special
+   indicator of mode.
+   Examples:  SWI   PULB   RTI   PSHA   RTS
+2) Inherent, but with separate register specifier, A or B.
+   Examples:  A CLR   B INC   A TST
+   ( Note that PUL- and PSH- are a bit irregular, see above)
+3) Indexed uses  ,X  specifier and takes 8-bit offset from
+   stack.  Zero offset must be explicit.
+   Examples:  0 ,X CLR   10 ,X DEC
+   Some instructions also require a register specifier.
+   Examples:  0 ,X A STA   10 ,X B LDA
+4) Immediate uses  #  specifier, and takes either 8- or 16-bit
+   operande from stack, depending on instruction.
+   Examples:  1234 # LDX   24 # A LDA  (note A-register)
+5) Extended or direct take absolute address from stack.  Choice
+   of direct is automatic for page-zero addresses.
+   Examples:  0AD03 JMP   10 A LDA   0B406 JSR
+
+Structures
+
+Instead of labels, the assembler uses structuring words similar
+to those used in colon-definitions.  Note the commas, which
+distinguish the assembler versions.  Conditions are indicated
+by:  ALWAYS
+     HI LS        (unsigned higher than, lower-or-same, etc)
+     GT LT LE GE  (signed greater than, less than, etc)
+     EQ NE        (equal, not equal)
+     CC CS VC VS  (carry set, carry clear, etc)
+     PL MI        (plus, minus)
+Examples:  ... CC IF, .....  THEN,
+           BEGIN, ... EQ WHILE, ... REPEAT,
+
+General
+
+All code definitions start with CODE and terminate with END-CODE .
+All usually end with a jump to the Forth "virtual machine",
+known as "NEXT".  In FF2 the address of this routine is supplied
+by the constant >NEXT .
+
+Examples:
+Fast multiply-by-2 (i.e., left shift) of top stack item.
+   CODE 2*  TSX  ( SP is the data stack ptr, get it into X )
+            1 ,X ASL  0 ,X ROL  (16-bit left shift of top item)
+            >NEXT JMP  (back to Forth)
+   END-CODE
+
+Take address from top of stack as a pointer, output characters
+to Flex PUTCHR until an ASCII EOT ( 04 ) is found.
+   CODE PUTSTRING  TSX  (X points to top of stack)
+        0 ,X LDX (get pointer into X)
+        INS INS  (discard it from stack)
+     BEGIN,  0 ,X A LDA (get character)
+        4 # A CMP (look for EOT)
+        EQ IF, >NEXT JMP THEN, (leave if all done)
+        0AD18 JSR (call PUTCHR)  INX (bump the pointer)
+     REPEAT, (and go again)
+   END-CODE
+------------------------------------------------------------------------
+ASM0_SRC.TXT
+------------------------------------------------------------------------
+( 6800 ASSEMBLER        PT.1 OF 7    WMF 4/81 )
+( AFTER FIG 6800 ASSEMBLER BY D. LION )
+( WITH  BRA  ALTERED AND CONDITIONALS ADDED )
+( 83-std. and error chk, 11/85 )
+FORTH DEFINITIONS  VOCABULARY ASSEMBLER
+ALSO ASSEMBLER DEFINITIONS HEX
+
+VARIABLE %BR
+VARIABLE %REG
+VARIABLE %MODE
+
+: A  0 %REG !  ;
+: B 10 %REG !  ;
+: #  0 %MODE !  ;
+: ,X  20 %MODE !  ;
+-->
+( 6800 ASSEMBLER        PT.2 OF 7    WMF 4/81 )
+: %INIT  30 DUP %MODE !  %REG !  0 %BR ! ;
+%INIT
+
+: %CHK  %REG @ 30 - %MODE @ 30 - OR
+    %BR @ OR  ABORT" Assembler mode error"  %INIT  ;
+
+: (0) CREATE C, DOES> C@ C, %CHK ;
+
+: %X %MODE @ + C, %MODE @ DUP 0= SWAP 30 = OR
+   IF , ELSE C, THEN 30 %MODE ! ;
+
+: (1) CREATE C, DOES> C@ %REG @ 30 = IF %X ELSE %REG @ + C,
+  30 %REG !  THEN %CHK ;
+
+-->
+( 6800 ASSEMBLER        PT.3 OF 7    WMF 4/81 )
+
+: (2) CREATE C, DOES> C@ %MODE @ 30 =
+  IF OVER FF00 AND 0= 20 * %MODE +! THEN
+ %REG @ 30 = IF %X ELSE %REG @ 4 * + %MODE
+   @  + C, %MODE @ 30 = IF ,  ELSE C, THEN THEN
+   30 %REG !  30 %MODE !  %CHK  ;
+
+
+
+
+
+
+
+
+-->
+( 6800 ASSEMBLER        PT.4 OF 7    WMF 4/81 )
+01 (0) NOP  06 (0) TAP  07 (0) TPA  08 (0) INX  09 (0) DEX
+0A (0) CLV  0B (0) SEV  0C (0) CLC  0D (0) SEC  0E (0) CLI
+0F (0) SEI  10 (0) SBA  11 (0) CBA  16 (0) TAB  17 (0) TBA
+19 (0) DAA  1B (0) ABA  30 (0) TSX  31 (0) INS  32 (0) PULA
+33 (0) PULB 34 (0) DES  35 (0) TXS  36 (0) PSHA 37 (0) PSHB
+39 (0) RTS  3B (0) RTI  3E (0) WAI  3F (0) SWI
+40 (1) NEG  43 (1) COM  44 (1) LSR  46 (1) ROR  47 (1) ASR
+48 (1) ASL  49 (1) ROL  4A (1) DEC  4C (1) INC  4D (1) TST
+4E (1) JMP  4F (1) CLR  80 (2) SUB  81 (2) CMP  82 (2) SBC
+84 (2) AND  85 (2) BIT  86 (2) LDA  87 (2) STA  88 (2) EOR
+89 (2) ADC  8A (2) ORA  8B (2) ADD  8C (2) CPX  8D (2) JSR
+8E (2) LDS  8F (2) STS  CE (2) LDX  CF (2) STX
+
+
+-->
+( 6800 ASSEMBLER        PT.5 OF 7    WMF 4/81 )
+: REL.ADR  ( there   here  ---  offset )
+      2+  -  DUP 7F > OVER FF80 < OR
+      ABORT" Assembler range error"  ;
+: BRA  HERE  REL.ADR  %BR @ 20 + C, C, 0 %BR ! %CHK  ;
+
+: ALWAYS 0 %BR ! ;
+: HI 2 %BR ! ; : LS 3 %BR ! ; : CC 4 %BR ! ; : CS 5 %BR ! ;
+: NE 6 %BR ! ; : EQ 7 %BR ! ; : VC 8 %BR ! ; : VS 9 %BR ! ;
+: PL 0A %BR ! ; : MI 0B %BR ! ; : GE 0C %BR ! ;
+: LT 0D %BR ! ; : GT 0E %BR ! ; : LE 0F %BR ! ;
+
+: ?PAIRS  - ABORT" Assembler structure error"  ;
+
+
+-->
+( 6800 ASSEMBLER        PT.6 OF 7    WMF 4/81 )
+: IF,  HERE 0F2   %BR @ 1 XOR 20 + C, 0 C, 0 %BR ! ;
+: THEN,  0F2 ?PAIRS  HERE OVER REL.ADR  SWAP 1+ C! ;
+: ELSE,  0F2 ?PAIRS  >R HERE 0F2  20 C, 0 C,  R> 0F2 THEN, ;
+: BEGIN,  HERE  F1  ;
+
+: WHILE,  F1 ?PAIRS  IF,  2+ ( F2 -> F4 ) ;
+
+: REPEAT,  F4 ?PAIRS >R  ALWAYS BRA   R>  F2  THEN, ;
+
+: UNTIL,   F1 ?PAIRS  %BR @  1 XOR  %BR ! BRA  ;
+
+: AGAIN,   F1 ?PAIRS  ALWAYS BRA  ;
+
+
+-->
+( 6800 ASSEMBLER        PT.7 OF 7    WMF 4/81 )
+
+: POPX,  ( USEFUL MACRO )  TSX  0 ,X LDX  INS INS ;
+
+: END-CODE   CURRENT @ CONTEXT ! ?CSP  REVEAL  ;
+
+ONLY FORTH DEFINITIONS ALSO DECIMAL
+
+: CODE  SP@ CSP ! CREATE HIDE  HERE HERE 2- !
+    ASSEMBLER    [ ASSEMBLER ] %INIT  ;
+
+: ;CODE  ?CSP  COMPILE (;CODE)  REVEAL [COMPILE] [
+      ASSEMBLER  [ ASSEMBLER ] %INIT  ; IMMEDIATE
+
+FORTH
+
+------------------------------------------------------------------------
+ASM9_DOC.TXT
+------------------------------------------------------------------------
+Forth 6809 Assembler Notes
+( wmf  9/1/82 )
+
+
+Like other Forth assemblers, this 6809 assembler operates in  the
+interpretive  state.   The opcode mnemonics are Forth words which
+take numeric operands from the stack and  assemble  machine  code
+into  the  dictionary.  Address mode designators must leave flags
+in a set of variables before the opcode name is executed, so  the
+general sequence for generating a machine instruction is
+     <numeric operand> <mode designation> <mnemonic>
+as illustrated below.
+
+All  addressing  modes  except  long   (16-bit)   branching   are
+supported,  and  a full set of control structures eliminates most
+explicit use of branches and labels.
+
+Security
+
+The assembler tests for
+          -  net change in stack depth between CODE
+             and END-CODE during assembly
+          -  improper pairing of conditionals
+          -  most illegal addressing modes, see below
+          -  relative branches out of range
+
+Addressing modes
+
+1) Inherent, no operand, no mode designator:
+          RTS     CLRA     SWI3    etc.
+     The  opcodes   TFR  EXG  PSHS  PULS  PSHU  PULU require
+     register specifications, such as
+          _X _Y _DP PSHU
+          _A _B PULS  ( or just  _D PULS )
+          _A _B  TFR   ( from A to B )
+          _D _X  EXG
+          (No error report for unlike register sizes.)
+
+2) Extended, operand is 16-bit address, no mode  designator.
+     Examples:
+          HEX 0CD09 JSR    0CC11 LDA   0CC2B CMPD
+
+3) Direct  page,  low byte of operand is direct-page offset,
+     mode designator  <<  .  For example   6 << LDX .
+
+4) Immediate,  8/16-bit  operand, mode designator  # .  (For
+     8-bit registers, high  byte  of  operand  is  dropped.)
+     Examples:
+          HEX 0CC14 # LDX   0D # LDA  0FE # ANDCC
+
+5) Indexed.  Let us count the ways, using r to represent any
+     of the index registers:
+
+     a) Signed 16-bit offset, mode designators
+          ,r    ,PC
+     Assembler selects 0,5,8, or 16-bit offset, depending on
+     magnitude of operand.
+     b) 16-bit absolute address, mode designator
+          ,PCR
+     Assembler calculates 8 or 16-bit offset.
+     c) Auto-inc/decrement, no operand, mode designators
+          ,r+   ,r++   ,-r   ,--r
+     d) Register offset, no operand, mode designators
+          A,r   B,r   D,r
+     e) Extended indirect, 16-bit address, mode designator
+          []
+     f) For indirection with types a) thru d), use both mode
+     designators.  (No error check for ,r+ [] or ,-r [] )
+
+     Examples of indexing:
+          1 ,X LEAX
+          0 ,Y LDA   ( zero must be explicit! )
+          ,Y++ LDX   0 ,X [] JMP  ( this is NEXT )
+          HEX 0D3F7 [] JSR
+
+6) Short  relative,  operand  is  absolute  address, no mode
+     designator.  BRA uses a condition designator.
+     Examples:
+          HERE 2+ BSR
+          HEX 1AB9 CS BRA  ( branch if carry set )
+          HEX 1AB9 ALWAYS BRA ( unconditional )
+          (Error if beyond 8-bit range.)
+
+Forth 6809 virtual machine
+
+All  Forth  registers  except the user pointer UP are represented
+directly by 6809 cpu registers:
+     IP = Y-reg.   SP = U-reg.   RP = S-reg.   W = X-reg.
+(The direct-page  register  is  always  zero,  although  not  all
+versions  use it.) The user pointer is an ordinary Forth variable
+in the dictionary.
+
+Code  definitions  may freely alter X, A, B, and CC, but the rest
+must be properly maintained.  Registers are usually saved on  the
+S-stack  ( = Forth return-stack ) so that operands on the U-stack
+( = Forth data-stack ) can be pulled and pushed.  Two-byte values
+always have the high byte at lower address, by 68xx convention.
+
+The code for NEXT is simply
+     ,Y++ LDX  ( fetch instruction into W, increment IP )
+     0 ,X [] JMP ( execute indirectly )
+This  may  be  coded in-line, or reached by a jump to the address
+returned by  >NEXT .
+
+Control structures
+
+This assembler supports the following control  structures,  which
+are similar to those in  high-level Forth:
+     <condition> IF, ... ELSE, ( optional ) ... THEN,
+     BEGIN, ... <condition> WHILE, ... REPEAT,
+     BEGIN, ... <condition> UNTIL,
+     BEGIN, ... AGAIN,  ( unconditional )
+Note carefully, however, that while high-level  branches  respond
+to   flags   from  the  stack,  assembler  branches  examine  the
+condition-code register.
+
+The  condition  specifiers  are  equivalent to the 6809 branching
+conditions:
+     ALWAYS  NEVER  ( unconditional )
+     CC      CS     ( Carry Clear or Set )
+     HI      LS     ( unsigned HIgher, Lower/Same )
+     NE      EQ     ( Not Equal, EQual )
+     VC      VS     ( oVerflow Clear or Set )
+     PL      MI     ( PLus, MInus )
+     GE      LT     ( signed Greater/Equal, Less Than )
+     GT      LE     ( signed Greater Than, Less/Equal )
+
+Some practical examples
+
+1) Fast 8-bit by 8-bit multiply
+          CODE 8*8  ( n1, n2 -- product-of-low-bytes )
+            _D PULU  ( get n2, low byte in B-reg. )
+            1,U LDA ( get n1, low byte only, into A-reg. )
+            MUL  ( what else? )
+            0,U STD ( overwrite n1 )
+            NEXT,  ( a "macro" )
+          END-CODE
+
+2) Get input from an ACIA, do warm restart for control-C
+          CODE ACIA-IN  ( port-address -- char., or restart )
+            _X PULU  ( port base address )
+            BEGIN,   0 ,X LDA  ASRA   ( look at right-most bit )
+            CS UNTIL,  ( wait till bit=1 )
+            1,X LDB  07F # ANDB ( clear parity bit )
+            3# CMPB  EQ IF,  03 << JMP  THEN,
+            (else ) CLRA ( high byte ) _D PSHU  NEXT,
+          END-CODE
+------------------------------------------------------------------------
+ASM9_SRC.TXT
+------------------------------------------------------------------------
+( 6809 ASSEMBLER  1 OF 16   WMF 9/1/82 Forth-83 vers. 2/85 )
+ONLY FORTH DEFINITIONS ALSO
+VOCABULARY ASSEMBLER
+ASSEMBLER DEFINITIONS HEX
+
+VARIABLE %#   ( IMMEDIATE-MODE FLAG )
+VARIABLE %<<  ( DIRECT-MODE FLAG )
+VARIABLE %I   ( INDEXING FLAG AND POSTBYTE )
+VARIABLE %P   ( PSH,PUL REGISTER LIST )
+VARIABLE %T   ( TFR,EXG REGISTER LIST )
+VARIABLE %B   ( BRANCHING CONDITION )
+
+
+
+
+-->
+( 6809 ASSEMBLER  2 OF 16   WMF 9/1/82 Forth-83 vers. 2/85 )
+
+: %INIT  0 %# !    0 %<< !    0 %I !
+         0 %P !    0 %T !     0 %B !  ;
+%INIT
+
+: %CHK  %# @ %<< @ OR %I @ OR %P @ OR %T @ OR %B @ OR
+        %INIT  ABORT" Address-mode error"  ;
+
+: #   1 %#  !  ;  ( immediate mode )
+: <<  1 %<< !  ;  ( direct-page mode )
+
+
+
+
+-->
+( 6809 ASSEMBLER  3 OF 16   WMF 9/1/82 Forth-83 vers. 2/85 )
+
+: %Z  CREATE C,  DOES> C@ C, %CHK ;
+( creates zero-address opcodes )
+12 %Z NOP   13 %Z SYNC  19 %Z DAA   1D %Z SEX
+40 %Z NEGA  43 %Z COMA  44 %Z LSRA  46 %Z RORA
+47 %Z ASRA  48 %Z ASLA  49 %Z ROLA  4A %Z DECA
+4C %Z INCA  4D %Z TSTA  4F %Z CLRA  50 %Z NEGB
+53 %Z COMB  54 %Z LSRB  56 %Z RORB  57 %Z ASRB
+58 %Z ASLB  59 %Z ROLB  5A %Z DECB  5C %Z INCB
+5D %Z TSTB  5F %Z CLRB  39 %Z RTS   3A %Z ABX
+3B %Z RTI   3D %Z MUL   3F %Z SWI
+
+: SWI2  10 C, SWI ;   : SWI3  11 C, SWI ;
+
+-->
+( 6809 ASSEMBLER  4 OF 16   WMF 9/1/82 Forth-83 vers. 2/85 )
+
+: %X  CREATE  ,  DOES>  @ %I @ OR  %I ! ;
+( creates indexing modes )
+010  %X []
+048C %X ,PC  0C8C %X ,PCR
+0100 %X ,X   0120 %X ,Y    0140 %X ,U   0160 %X ,S
+0280 %X ,X+  0281 %X ,X++  0282 %X ,-X  0283 %X ,--X
+02A0 %X ,Y+  02A1 %X ,Y++  02A2 %X ,-Y  02A3 %X ,--Y
+02C0 %X ,U+  02C1 %X ,U++  02C2 %X ,-U  02C3 %X ,--U
+02E0 %X ,S+  02E1 %X ,S++  02E2 %X ,-S  02E3 %X ,--S
+0286 %X A,X  0285 %X B,X   028B %X D,X
+02A6 %X A,Y  02A5 %X B,Y   02AB %X D,Y
+02C6 %X A,U  02C5 %X B,U   02CB %X D,U
+02E6 %X A,S  02E5 %X B,S   02EB %X D,S
+-->
+( 6809 ASSEMBLER  5 OF 16   WMF 9/1/82 Forth-83 vers. 2/85 )
+
+
+(  []   sets indirection bit in postbyte                   )
+(  ,PC  sets flag 0400 and sets postbyte for 8-bit offset  )
+(  ,PCR sets flags 0C00 and sets postbyte for 8-bit offset )
+(  ,R  sets flag 0100 and sets register bits in postbyte;  )
+(     must have an operand on stack, even for zero!        )
+(  ,R+  A,X  etc.  set flag 0200 and postbyte; no operand  )
+
+
+
+
+
+
+-->
+( 6809 ASSEMBLER  6 OF 16   WMF 9/1/82 Forth-83 vers. 2/85 )
+
+: %R   ( operand --  )  ( handles  ,R  modes )
+  ?DUP 0= IF ( 0-OFFSET )  %I @ 84 OR C, EXIT THEN
+  DUP ABS 0FF80 AND
+     IF ( 16-BIT OFFSET )  %I @ 89 OR C, , EXIT THEN
+  DUP ABS 0FFF0 AND %I @ 10 AND OR
+     IF ( 8-BIT OFFSET )  %I @ 88 OR C, C, EXIT THEN
+ ( ELSE 5 BITS )  01F AND %I @ OR C,  ;
+
+
+
+
+
+
+-->
+( 6809 ASSEMBLER  7 OF 16   WMF 9/1/82 Forth-83 vers. 2/85 )
+
+: %PC  ( operand --  )    ( handles  ,PC  and ,PCR  modes )
+ 800 %I @ AND IF ( ,PCR ) HERE 2+ - ( try 1 byte first ) THEN
+ DUP ABS 0FF80 AND IF ( oops, needs 2 bytes )
+                     800 %I @ AND IF ( ,PCR ) 1 - THEN
+                     %I @ 1+ C, ,
+                   ELSE  %I @ C, C,  THEN ;
+
+: %IX  ( handles all indexing modes )
+ 100 %I @ AND IF %R ELSE
+ 200 %I @ AND IF  %I @ C, ELSE
+ 400 %I @ AND IF %PC ELSE
+ 09F C, ,  THEN THEN THEN  0 %I !  ;
+
+-->
+( 6809 ASSEMBLER  8 OF 16   WMF 9/1/82 Forth-83 vers. 2/85 )
+
+: %1  CREATE  C,  ( direct-page opcode )
+  DOES> C@  %I @ IF 60 + C, %IX
+               ELSE %<< @ IF C, C, 0 %<< !
+               ELSE 70 + C, , THEN THEN  %CHK ;
+
+( type-1 opcodes, direct or indexed or extended modes )
+00 %1 NEG  03 %1 COM  04 %1 LSR  06 %1 ROR
+07 %1 ASR  08 %1 ASL  09 %1 ROL  0A %1 DEC
+0C %1 INC  0D %1 TST  0E %1 JMP  0F %1 CLR
+
+
+
+
+-->
+( 6809 ASSEMBLER  9 OF 16   WMF 9/1/82 Forth-83 vers. 2/85 )
+
+: %23  ( handle type 2,3 except immediate mode )
+   %I @  IF 20 + C, %IX EXIT  THEN
+   %<< @ IF 10 + C, C,  0 %<< ! EXIT THEN
+   30 +  C, ,  ;
+
+: %2  CREATE  C, ( type 2, like type 1 plus 8-bit imm. )
+  DOES> C@ %# @ IF C, C, 0 %# ! ELSE %23 THEN  %CHK ;
+
+: %3  CREATE  C,   ( type 3, like type 2 but 16-bit imm. )
+  DOES> C@ %# @ IF C, , 0 %# ! ELSE %23 THEN   %CHK  ;
+
+
+
+-->
+( 6809 ASSEMBLER  10 OF 16   WMF 9/1/82 Forth-83 vers. 2/85 )
+
+80 %2 SUBA  81 %2 CMPA  82 %2 SBCA  83 %3 SUBD
+84 %2 ANDA  85 %2 BITA  86 %2 LDA   88 %2 EORA
+89 %2 ADCA  8A %2 ORA   8B %2 ADDA  8C %3 CMPX
+8E %3 LDX   C0 %2 SUBB  C1 %2 CMPB  C2 %2 SBCB
+C3 %3 ADDD  C4 %2 ANDB  C5 %2 BITB  C6 %2 LDB
+C8 %2 EORB  C9 %2 ADCB  CA %2 ORB   CB %2 ADDB
+CC %3 LDD   CE %3 LDU
+
+: LDY  10 C, LDX  ;   : LDS  10 C, LDU  ;
+: CMPY 10 C, CMPX ;   : CMPD 10 C, SUBD ;
+: CMPS 11 C, CMPX ;   : CMPU 11 C, SUBD ;
+
+
+-->
+( 6809 ASSEMBLER  11 OF 16   WMF 9/1/82 Forth-83 vers. 2/85 )
+
+: %S  CREATE C,   ( handles STr and JSR )
+  DOES> %# @ IF %CHK ( mode error ) THEN  C@ %23  %CHK  ;
+
+87 %S STA  C7 %S STB  8F %S STX  CD %S STD
+CF %S STU  8D %S JSR
+
+: STY  10 C, STX ;   : STS  10 C, STU ;
+
+
+
+
+
+
+-->
+( 6809 ASSEMBLER  12 OF 16   WMF 9/1/82 Forth-83 vers. 2/85 )
+
+: %L  CREATE C,   DOES> %I @ 0= IF  1 %I ! %CHK
+   ( mode err. ) THEN C@ C, %IX  %CHK ;
+
+30 %L LEAX  31 %L LEAY  32 %L LEAS  33 %L LEAU
+
+: %C  CREATE C,  DOES> %# @ 0= IF 1 %# ! %CHK
+ ( mode err. ) THEN C@ C, C, 0 %# !  %CHK ;
+
+1A %C ORCC   1C %C ANDCC  3C %C CWAI
+
+
+
+
+-->
+( 6809 ASSEMBLER  13 OF 16   WMF 9/1/82 Forth-83 vers. 2/85 )
+
+: %RL CREATE C, C, DOES> DUP C@ %P @ OR %P !
+     1+ C@  %T @ 10 * + %T ! ;
+( register lists for TFR EXG PSHr PULr )
+05 80 %RL _PC    04 40 %RL _S    03 40 %RL _U
+02 20 %RL _Y     01 10 %RL _X    00 06 %RL _D
+0B 08 %RL _DP    0A 01 %RL _CC   09 04 %RL _B
+08 02 %RL _A
+
+: %PTE  0 %P !  0 %T !  %CHK  ;
+: %PP CREATE C, DOES> C@ C,  %P @ C, %PTE  ;
+34 %PP PSHS   36 %PP PSHU   35 %PP PULS   37 %PP PULU
+
+: TFR  1F C, %T @ C, %PTE ;   : EXG  1E C, %T @ C, %PTE ;
+-->
+( 6809 ASSEMBLER  14 OF 16   WMF 9/1/82 Forth-83 vers. 2/85 )
+
+: %RA  ( there   here  ---  offset ) 2+  -  DUP 7F >
+      OVER FF80 < OR  ABORT" Address-range error" ;
+
+: BRA  HERE  %RA  %B @ 20 + C, C, 0 %B ! %CHK ;
+: BSR  HERE %RA  8D C, C, %CHK ;
+
+: %CB CREATE C, DOES> C@ %B ! ;
+
+ 0 %CB ALWAYS   1 %CB NEVER
+ 2 %CB HI       3 %CB LS      4 %CB CC      5 %CB CS
+ 6 %CB NE       7 %CB EQ      8 %CB VC      9 %CB VS
+0A %CB PL      0B %CB MI     0C %CB GE
+0D %CB LT      0E %CB GT     0F %CB LE
+-->
+( 6809 ASSEMBLER  15 OF 16   WMF 9/1/82 Forth-83 vers. 2/85 )
+: %PAIR  - ABORT" Unpaired conditionals" ;
+: %-B ( negate condition ) %B @ 1 XOR %B ! ;
+
+: IF,    HERE 0F2   %-B HERE  BRA ;
+: THEN,  1 OR 0F3 %PAIR  HERE OVER %RA  SWAP 1+ C! ;
+: ELSE,  0F2 %PAIR  >R HERE 0F3
+         HERE ALWAYS BRA   R> 0F2 THEN,  ;
+
+: BEGIN,  HERE 0F1  ;
+: WHILE,   0F1 %PAIR  IF,  2+ ( 0F2 -> 0F4 ) ;
+: REPEAT,  0F4 %PAIR >R  ALWAYS BRA   R>  0F2  THEN, ;
+: UNTIL,   0F1 %PAIR  %-B BRA  ;
+: AGAIN,  NEVER UNTIL, ;
+
+-->
+( 6809 ASSEMBLER  16 OF 16   WMF 9/1/82 Forth-83 vers. 2/85 )
+
+: END-CODE   CURRENT @ CONTEXT ! ?CSP  REVEAL  ;
+
+: NEXT,  >NEXT  DUP 100 < IF << THEN  JMP ;
+( for in-line NEXT,  use  ,Y++ LDX  0 ,X [] JMP  )
+
+FORTH DEFINITIONS
+
+: CODE  SP@ CSP ! CREATE HIDE  HERE HERE 2- !
+    ASSEMBLER    [ ASSEMBLER ] %INIT  ;
+
+: ;CODE  ?CSP  COMPILE (;CODE)  REVEAL [COMPILE] [
+      ASSEMBLER  [ ASSEMBLER ] %INIT  ; IMMEDIATE
+
+FORTH DEFINITIONS DECIMAL
+------------------------------------------------------------------------
+
+
