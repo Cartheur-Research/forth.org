@@ -1,6 +1,6 @@
 # forth.org
 
-Collection of 2005-era Forth files from the ftp server
+Collection of 2005-era Forth files from the ftp server `ftp.taygeta.com`.
 
 ## Purpose
 
